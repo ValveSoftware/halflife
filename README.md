@@ -14,8 +14,9 @@ If it has not been reported, create a new issue with at least the following info
 
 - a short, descriptive title;
 - a detailed description of the issue, including any output from the command line;
-- steps for reproducing the issue; and
-- your system information.\*
+- steps for reproducing the issue;
+- your system information.\*; and
+- the `version` output from the in‐game console.
 
 Please place logs either in a code block (press `M` in your browser for a GFM cheat sheet) or a [gist](https://gist.github.com).
 
