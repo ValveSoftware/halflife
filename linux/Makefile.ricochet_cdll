@@ -1,0 +1,163 @@
+#
+# ricochet client Makefile for x86 Linux
+#
+#
+
+RICOCHET_SRC_DIR=$(SOURCE_DIR)/ricochet/cl_dll
+GAME_SHARED_SRC_DIR=$(SOURCE_DIR)/game_shared
+PM_SHARED_SRC_DIR=$(RICOCHET_SRC_DIR)/../pm_shared
+
+RICOCHET_OBJ_DIR=$(BUILD_OBJ_DIR)/ricochet_client
+PUBLIC_OBJ_DIR=$(RICOCHET_OBJ_DIR)/public
+COMMON_OBJ_DIR=$(RICOCHET_OBJ_DIR)/common
+GAME_SHARED_OBJ_DIR=$(RICOCHET_OBJ_DIR)/game_shared
+PM_SHARED_OBJ_DIR=$(RICOCHET_OBJ_DIR)/pm_shared
+
+CFLAGS=$(BASE_CFLAGS) $(ARCH_CFLAGS) -DCLIENT_DLL -I/usr/include/malloc -D_snwprintf=swprintf \
+		 -DDISABLE_JUMP_ORIGIN -DDISABLE_VEC_ORIGIN -D_MAX_PATH=PATH_MAX
+		 
+INCLUDEDIRS=-I$(RICOCHET_SRC_DIR) -I$(RICOCHET_SRC_DIR)/../dlls -I../engine -I$(PUBLIC_SRC_DIR)  -I$(COMMON_SRC_DIR) \
+	 -I../game_shared -I$(RICOCHET_SRC_DIR)/../pm_shared  -I../utils/vgui/include -I../utils/common -I../external
+
+ifeq ($(OS),Darwin)
+LDFLAGS=$(SHLIBLDFLAGS) $(CPP_LIB) -framework Carbon $(CFG)/vgui.dylib -L. -lSDL2-2.0.0
+else
+LDFLAGS=$(SHLIBLDFLAGS) $(CPP_LIB) vgui.so -L. libSDL2-2.0.so.0
+endif
+
+DO_CC=$(CPLUS) $(INCLUDEDIRS) $(CFLAGS) -o $@ -c $<
+DO_PUBLIC_CC=$(CPLUS) $(COMMON_INCLUDEDIRS) $(CFLAGS) $(SHLIBCFLAGS) -o $@ -c $<
+DO_COMMON_CC=$(CPLUS) $(INCLUDEDIRS)  $(CFLAGS) $(SHLIBCFLAGS) -o $@ -c $<
+DO_PM_SHARED_CC=$(CC) $(INCLUDEDIRS)  $(CFLAGS) $(SHLIBCFLAGS) -o $@ -c $<
+
+#####################################################################
+
+RICOCHET_OBJS = \
+	$(RICOCHET_OBJ_DIR)/ev_common.o \
+	$(RICOCHET_OBJ_DIR)/ev_hldm.o \
+	$(RICOCHET_OBJ_DIR)/hl/hl_baseentity.o \
+	$(RICOCHET_OBJ_DIR)/hl/hl_events.o \
+	$(RICOCHET_OBJ_DIR)/hl/hl_objects.o \
+	$(RICOCHET_OBJ_DIR)/hl/hl_weapons.o \
+	$(RICOCHET_OBJ_DIR)/disc_weapon_disc.o \
+	$(RICOCHET_OBJ_DIR)/Ricochet_JumpPads.o \
+	$(RICOCHET_OBJ_DIR)/ammo.o \
+	$(RICOCHET_OBJ_DIR)/ammo_secondary.o \
+	$(RICOCHET_OBJ_DIR)/ammohistory.o \
+	$(RICOCHET_OBJ_DIR)/battery.o \
+	$(RICOCHET_OBJ_DIR)/cdll_int.o \
+	$(RICOCHET_OBJ_DIR)/com_weapons.o \
+	$(RICOCHET_OBJ_DIR)/death.o \
+	$(RICOCHET_OBJ_DIR)/demo.o \
+	$(RICOCHET_OBJ_DIR)/entity.o \
+	$(RICOCHET_OBJ_DIR)/events.o \
+	$(RICOCHET_OBJ_DIR)/flashlight.o \
+	$(RICOCHET_OBJ_DIR)/GameStudioModelRenderer.o \
+	$(RICOCHET_OBJ_DIR)/geiger.o \
+	$(RICOCHET_OBJ_DIR)/health.o \
+	$(RICOCHET_OBJ_DIR)/hud.o \
+	$(RICOCHET_OBJ_DIR)/hud_msg.o \
+	$(RICOCHET_OBJ_DIR)/hud_redraw.o \
+	$(RICOCHET_OBJ_DIR)/hud_servers.o \
+	$(RICOCHET_OBJ_DIR)/hud_update.o \
+	$(RICOCHET_OBJ_DIR)/in_camera.o \
+	$(RICOCHET_OBJ_DIR)/input.o \
+	$(RICOCHET_OBJ_DIR)/inputw32.o \
+	$(RICOCHET_OBJ_DIR)/menu.o \
+	$(RICOCHET_OBJ_DIR)/message.o \
+	$(RICOCHET_OBJ_DIR)/saytext.o \
+	$(RICOCHET_OBJ_DIR)/status_icons.o \
+	$(RICOCHET_OBJ_DIR)/statusbar.o \
+	$(RICOCHET_OBJ_DIR)/StudioModelRenderer.o \
+	$(RICOCHET_OBJ_DIR)/text_message.o \
+	$(RICOCHET_OBJ_DIR)/train.o \
+	$(RICOCHET_OBJ_DIR)/tri.o \
+	$(RICOCHET_OBJ_DIR)/util.o \
+	$(RICOCHET_OBJ_DIR)/view.o \
+	$(RICOCHET_OBJ_DIR)/vgui_int.o \
+	$(RICOCHET_OBJ_DIR)/vgui_ConsolePanel.o \
+	$(RICOCHET_OBJ_DIR)/vgui_ControlConfigPanel.o \
+	$(RICOCHET_OBJ_DIR)/vgui_CustomObjects.o \
+	$(RICOCHET_OBJ_DIR)/vgui_discobjects.o \
+	$(RICOCHET_OBJ_DIR)/vgui_MOTDWindow.o \
+	$(RICOCHET_OBJ_DIR)/vgui_ScorePanel.o \
+	$(RICOCHET_OBJ_DIR)/vgui_ServerBrowser.o \
+	$(RICOCHET_OBJ_DIR)/vgui_TeamFortressViewport.o \
+	$(RICOCHET_OBJ_DIR)/vgui_SchemeManager.o \
+	$(RICOCHET_OBJ_DIR)/studio_util.o \
+	$(RICOCHET_OBJ_DIR)/voice_status.o \
+
+PUBLIC_OBJS = \
+	$(PUBLIC_OBJ_DIR)/interface.o \
+
+COMMON_OBJS = \
+	$(COMMON_OBJ_DIR)/parsemsg.o \
+
+GAME_SHARED_OBJS = \
+	$(GAME_SHARED_OBJ_DIR)/voice_banmgr.o \
+	$(GAME_SHARED_OBJ_DIR)/vgui_checkbutton2.o \
+	$(GAME_SHARED_OBJ_DIR)/vgui_grid.o \
+	$(GAME_SHARED_OBJ_DIR)/vgui_helpers.o \
+	$(GAME_SHARED_OBJ_DIR)/vgui_listbox.o \
+	$(GAME_SHARED_OBJ_DIR)/vgui_loadtga.o \
+	$(GAME_SHARED_OBJ_DIR)/vgui_scrollbar2.o \
+	$(GAME_SHARED_OBJ_DIR)/vgui_slider2.o \
+#	$(GAME_SHARED_OBJ_DIR)/voice_status.o \
+
+PM_SHARED_OBJS = \
+	$(PM_SHARED_OBJ_DIR)/pm_debug.o \
+	$(PM_SHARED_OBJ_DIR)/pm_shared.o \
+	$(PM_SHARED_OBJ_DIR)/pm_math.o \
+
+
+all: client_ricochet.$(SHLIBEXT)
+
+client_ricochet.$(SHLIBEXT): $(RICOCHET_OBJS) $(PUBLIC_OBJS) $(COMMON_OBJS) $(GAME_SHARED_OBJS) $(PM_SHARED_OBJS)
+	$(CLINK) -o $(BUILD_DIR)/$@ $(RICOCHET_OBJS) $(PUBLIC_OBJS) $(COMMON_OBJS) $(GAME_SHARED_OBJS) $(PM_SHARED_OBJS) $(LDFLAGS)  $(CPP_LIB)
+	p4 edit ../../game/mod/cl_dlls/client.$(SHLIBEXT)
+	cp $(BUILD_DIR)/$@  ../../game/mod/cl_dlls/client.$(SHLIBEXT)
+	./gendbg.sh ../../game/mod/cl_dlls/client.$(SHLIBEXT)		
+
+$(RICOCHET_OBJ_DIR):
+	mkdir -p $(RICOCHET_OBJ_DIR)
+	mkdir -p $(RICOCHET_OBJ_DIR)/dlls
+	mkdir -p $(RICOCHET_OBJ_DIR)/dlls/wpn_shared
+	mkdir -p $(RICOCHET_OBJ_DIR)/hl
+
+$(PUBLIC_OBJ_DIR):
+	mkdir -p $(PUBLIC_OBJ_DIR)
+
+$(COMMON_OBJ_DIR):
+	mkdir -p $(COMMON_OBJ_DIR)
+
+$(GAME_SHARED_OBJ_DIR):
+	mkdir -p $(GAME_SHARED_OBJ_DIR)
+
+$(PM_SHARED_OBJ_DIR):
+	mkdir -p $(PM_SHARED_OBJ_DIR)
+
+$(RICOCHET_OBJ_DIR)/%.o: $(RICOCHET_SRC_DIR)/%.cpp $(filter-out $(wildcard  $(RICOCHET_OBJ_DIR)),  $(RICOCHET_OBJ_DIR))
+	$(DO_CC)
+
+$(RICOCHET_OBJ_DIR)/%.o: $(RICOCHET_SRC_DIR)/hl/%.cpp $(filter-out $(wildcard  $(RICOCHET_OBJ_DIR)),  $(RICOCHET_OBJ_DIR))
+	$(DO_CC)
+
+$(RICOCHET_OBJ_DIR)/%.o: $(RICOCHET_SRC_DIR)/../dlls/wpn_shared/%.cpp $(filter-out $(wildcard  $(RICOCHET_OBJ_DIR)),  $(RICOCHET_OBJ_DIR))
+	$(DO_CC)
+
+$(PUBLIC_OBJ_DIR)/%.o : $(PUBLIC_SRC_DIR)/%.cpp $(filter-out $(wildcard  $(PUBLIC_OBJ_DIR)),  $(PUBLIC_OBJ_DIR))
+	$(DO_PUBLIC_CC)
+
+$(COMMON_OBJ_DIR)/%.o : $(COMMON_SRC_DIR)/%.cpp $(filter-out $(wildcard  $(COMMON_OBJ_DIR)),  $(COMMON_OBJ_DIR))
+	$(DO_COMMON_CC)
+
+$(GAME_SHARED_OBJ_DIR)/%.o : $(GAME_SHARED_SRC_DIR)/%.cpp $(filter-out $(wildcard  $(GAME_SHARED_OBJ_DIR)),  $(GAME_SHARED_OBJ_DIR))
+	$(DO_COMMON_CC)
+
+$(PM_SHARED_OBJ_DIR)/%.o : $(PM_SHARED_SRC_DIR)/%.c $(filter-out $(wildcard  $(PM_SHARED_OBJ_DIR)),  $(PM_SHARED_OBJ_DIR))
+	$(DO_PM_SHARED_CC)
+
+
+clean:
+	-rm -rf $(RICOCHET_OBJ_DIR)
+	-rm -f client_ricochet.$(SHLIBEXT)

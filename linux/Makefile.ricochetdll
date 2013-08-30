@@ -1,0 +1,128 @@
+#
+# Ricochet game library Makefile for x86 Linux
+#
+# June 2001 by Leon Hartwig (hartwig@valvesoftware.com)
+#
+OS:=$(shell uname)
+
+RICOCHETDLL_SRC_DIR=$(SOURCE_DIR)/ricochet/dlls
+RICOCHETWPN_SRC_DIR=$(RICOCHETDLL_SRC_DIR)/wpn_shared
+PM_SRC_DIR=$(SOURCE_DIR)/ricochet/pm_shared
+
+RICOCHETDLL_OBJ_DIR=$(BUILD_OBJ_DIR)/ricochetdll
+RICOCHETWPN_OBJ_DIR=$(RICOCHETDLL_OBJ_DIR)/wpn_shared
+PM_OBJ_DIR=$(RICOCHETDLL_OBJ_DIR)/pm_shared
+GAME_SHARED_OBJ_DIR=$(RICOCHETDLL_OBJ_DIR)/game_shared
+
+#CFLAGS=$(BASE_CFLAGS) -g
+CFLAGS=$(BASE_CFLAGS) -O3 -ffast-math -fno-strength-reduce
+
+RICOCHETDLL_INCLUDEDIRS=-I$(ENGINE_SRC_DIR) -I$(COMMON_SRC_DIR) -I$(PM_SRC_DIR) -I$(GAME_SHARED_SRC_DIR) -I$(PUBLIC_SRC_DIR)
+RICOCHETWPN_INCLUDEDIRS=-I$(RICOCHETDLL_SRC_DIR) -I$(ENGINE_SRC_DIR) -I$(COMMON_SRC_DIR) -I$(PM_SRC_DIR) -I$(PUBLIC_SRC_DIR)
+PM_INCLUDEDIRS=-I$(COMMON_SRC_DIR) -I$(PUBLIC_SRC_DIR)
+GAME_SHARED_INCLUDEDIRS=-I$(RICOCHETDLL_SRC_DIR) -I$(ENGINE_SRC_DIR) -I$(COMMON_SRC_DIR) -I$(PUBLIC_SRC_DIR)
+
+LDFLAGS=
+
+DO_RICOCHETDLL_CC=$(CC) $(RICOCHETDLL_INCLUDEDIRS) $(CFLAGS) $(SHLIBCFLAGS) -o $@ -c $<
+DO_RICOCHETWPN_CC=$(CC) $(RICOCHETWPN_INCLUDEDIRS) $(CFLAGS) $(SHLIBCFLAGS) -o $@ -c $<
+DO_PM_CC=$(CC) $(PM_INCLUDEDIRS) $(CFLAGS) $(SHLIBCFLAGS) -o $@ -c $<
+DO_GAME_SHARED_CC=$(CC) $(GAME_SHARED_INCLUDEDIRS) $(CFLAGS) $(SHLIBFLAGS) -o $@ -c $<
+
+#####################################################################
+
+RICOCHETDLL_OBJS = \
+	$(RICOCHETDLL_OBJ_DIR)/airtank.o \
+	$(RICOCHETDLL_OBJ_DIR)/animating.o \
+	$(RICOCHETDLL_OBJ_DIR)/animation.o \
+	$(RICOCHETDLL_OBJ_DIR)/bmodels.o \
+	$(RICOCHETDLL_OBJ_DIR)/buttons.o \
+	$(RICOCHETDLL_OBJ_DIR)/cbase.o \
+	$(RICOCHETDLL_OBJ_DIR)/client.o \
+	$(RICOCHETDLL_OBJ_DIR)/combat.o \
+	$(RICOCHETDLL_OBJ_DIR)/disc_arena.o \
+	$(RICOCHETDLL_OBJ_DIR)/disc_powerups.o \
+	$(RICOCHETDLL_OBJ_DIR)/doors.o \
+	$(RICOCHETDLL_OBJ_DIR)/effects.o \
+	$(RICOCHETDLL_OBJ_DIR)/explode.o \
+	$(RICOCHETDLL_OBJ_DIR)/func_break.o \
+	$(RICOCHETDLL_OBJ_DIR)/func_tank.o \
+	$(RICOCHETDLL_OBJ_DIR)/game.o \
+	$(RICOCHETDLL_OBJ_DIR)/gamerules.o \
+	$(RICOCHETDLL_OBJ_DIR)/ggrenade.o \
+	$(RICOCHETDLL_OBJ_DIR)/globals.o \
+	$(RICOCHETDLL_OBJ_DIR)/h_ai.o \
+	$(RICOCHETDLL_OBJ_DIR)/h_battery.o \
+	$(RICOCHETDLL_OBJ_DIR)/h_cycler.o \
+	$(RICOCHETDLL_OBJ_DIR)/h_export.o \
+	$(RICOCHETDLL_OBJ_DIR)/healthkit.o \
+	$(RICOCHETDLL_OBJ_DIR)/items.o \
+	$(RICOCHETDLL_OBJ_DIR)/lights.o \
+	$(RICOCHETDLL_OBJ_DIR)/maprules.o \
+	$(RICOCHETDLL_OBJ_DIR)/mortar.o \
+	$(RICOCHETDLL_OBJ_DIR)/mpstubb.o \
+	$(RICOCHETDLL_OBJ_DIR)/multiplay_gamerules.o \
+	$(RICOCHETDLL_OBJ_DIR)/observer.o \
+	$(RICOCHETDLL_OBJ_DIR)/pathcorner.o \
+	$(RICOCHETDLL_OBJ_DIR)/plane.o \
+	$(RICOCHETDLL_OBJ_DIR)/plats.o \
+	$(RICOCHETDLL_OBJ_DIR)/player.o \
+	$(RICOCHETDLL_OBJ_DIR)/singleplay_gamerules.o \
+	$(RICOCHETDLL_OBJ_DIR)/skill.o \
+	$(RICOCHETDLL_OBJ_DIR)/sound.o \
+	$(RICOCHETDLL_OBJ_DIR)/soundent.o \
+	$(RICOCHETDLL_OBJ_DIR)/spectator.o \
+	$(RICOCHETDLL_OBJ_DIR)/subs.o \
+	$(RICOCHETDLL_OBJ_DIR)/teamplay_gamerules.o \
+	$(RICOCHETDLL_OBJ_DIR)/triggers.o \
+	$(RICOCHETDLL_OBJ_DIR)/util.o \
+	$(RICOCHETDLL_OBJ_DIR)/weapons.o \
+	$(RICOCHETDLL_OBJ_DIR)/world.o \
+	$(RICOCHETDLL_OBJ_DIR)/xen.o
+
+RICOCHETWPN_OBJS = \
+	$(RICOCHETWPN_OBJ_DIR)/disc_weapon_disc.o
+
+PM_OBJS = \
+	$(PM_OBJ_DIR)/pm_shared.o \
+	$(PM_OBJ_DIR)/pm_math.o \
+	$(PM_OBJ_DIR)/pm_debug.o
+
+GAME_SHARED_OBJS = \
+	$(GAME_SHARED_OBJ_DIR)/voice_gamemgr.o
+
+all: dirs ricochet.$(SHLIBEXT)
+
+dirs:
+	-mkdir $(BUILD_OBJ_DIR)
+	-mkdir $(RICOCHETDLL_OBJ_DIR)
+	-mkdir $(RICOCHETWPN_OBJ_DIR)
+	-mkdir $(PM_OBJ_DIR)
+	-mkdir $(GAME_SHARED_OBJ_DIR)
+
+ricochet.$(SHLIBEXT): $(RICOCHETDLL_OBJS) $(RICOCHETWPN_OBJS) $(PM_OBJS) $(GAME_SHARED_OBJS)
+	$(CLINK) $(SHLIBLDFLAGS) -o $(BUILD_DIR)/$@ $(RICOCHETDLL_OBJS) $(RICOCHETWPN_OBJS) $(PM_OBJS) $(GAME_SHARED_OBJS) $(LDFLAGS) $(CPP_LIB)
+	p4 edit ../../game/mod/dlls/$@
+	cp $(BUILD_DIR)/$@  ../../game/mod/dlls
+	./gendbg.sh ../../game/mod/dlls/$@
+		
+$(RICOCHETWPN_OBJ_DIR)/%.o : $(RICOCHETWPN_SRC_DIR)/%.cpp
+	$(DO_RICOCHETWPN_CC)
+
+$(RICOCHETDLL_OBJ_DIR)/%.o : $(RICOCHETDLL_SRC_DIR)/%.cpp
+	$(DO_RICOCHETDLL_CC)
+
+$(PM_OBJ_DIR)/%.o : $(PM_SRC_DIR)/%.c
+	$(DO_PM_CC)
+
+$(GAME_SHARED_OBJ_DIR)/%.o : $(GAME_SHARED_SRC_DIR)/%.cpp
+	$(DO_GAME_SHARED_CC)
+
+clean:
+	-rm -rf $(GAME_SHARED_OBJ_DIR)
+	-rm -rf $(PM_OBJ_DIR)
+	-rm -rf $(RICOCHETWPN_OBJ_DIR)
+	-rm -rf $(RICOCHETDLL_OBJ_DIR)
+	-rm -f ricochet_$(ARCH).$(SHLIBEXT)
+	-rm -f ricochet.$(SHLIBEXT)
+

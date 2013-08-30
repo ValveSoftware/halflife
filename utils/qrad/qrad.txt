@@ -1,0 +1,152 @@
+QRAD DOCUMENTATION
+
+
+qrad [parameters] bspfile
+
+PARAMETERS YOU MIGHT WANT TO USE
+
+-bounce <0-???>			default: 8
+Specifies the number of light bounces to perform.
+0 gives direct lighting only, and does not calculate any
+transfer functions, giving a very fast run. Under a minute
+for a level with vis info, a few minutes without.
+Because most of the time in full runs is in the transfer
+function generation, the number of bounces greater than 0
+is not a crucial speed factor.
+
+-chop <16 - 256>		default: 65
+Determines how finely patches will be chopped up for the
+radiosity process.  Smaller number give better results,
+but use quadratically more ram and time.  You can use
+larger values like 96 or 128 to get the light properly
+dispersed in the level (no need for a -ambient) but still
+take lots less time than a full process.  The older qrad
+used a chop of 49, but it didn't do the direct lighting
+as a seperate step.
+
+-ambient <0.0 - 1.0>	default: 0.0
+This value is added to every light sample before any lighting
+is done.  An ambient of 0.1 (10%) or so can be used in
+conjunction with a -bounce 0 to get a very fast aproximation
+to the full process.
+
+-maxlight <1.0 - 2.0>	default: 1.5
+If set to 1.0, no surface will ever be overbrighted,
+no matter how much light shines on it.  Artist types may
+push for this to keep their textures from being abused by
+the overbright tables.
+
+
+PARAMETERS YOU AREN'T LIKELY TO USE
+
+-verbose
+Turns on more detailed statistic printing.
+
+-dumppatches
+Development aid -- writes bounce0.txt and bounce7.txt polygon
+files for visualizing the radiosity process with glview.exe.
+
+-threads <1-???>		default: number of cpus
+Specifies the number of threads to use for calculations.
+Set to 1 to isolate potential multithreaded errors.
+
+-scale <0.0 - ???>		default: 1.0
+Multiplies all light values by this factor to brighten or
+dim the entire level.  If you are just way off either
+overbright or almost black, you can easily try scales like
+this.
+
+
+USAGE IN DEVELOPMENT
+
+You should do a vis before performing a qrad.  All of the
+lighting tests are accelerated by the PVS information.
+
+If you haven't vised the map, subdiv will be forced to 9999
+to keep it from taking all day to complete.  Even a fast vis
+will help.
+
+The first part of the radiosity process is the accurate
+calculation of direct lighting.
+
+All entity lights and the bright (5000 or greater) surface
+patches exactly trace lines to the individual lightmap
+samples.
+
+If -bounce 0 is specified, thats it for the lighting.
+Otherwise, the lightmap values are summed up to give the
+initial amount of light to be bounced around the world in the
+radiosity pass.
+
+
+
+SURFACE LIGHTING
+
+All textures that are on the "light emiting" list will cast
+light into the world, oriented down the surface normal.
+
+The lights.rad file is found inside the game directory 
+(f:\quake\id2, etc).  It contains a list of texture names
+and the amount of light they emit.
+
+A value of 100-300 is reasonable for a large, dim surface, like
+slime, lava, or a dark sky.  Lights that will illuminate large
+areas with a small surface area will have values of 5000
+or greater.
+
+The total amount of light emited from a surface is proportional
+to the surface's area, so the size of the brush face has as
+much effect on the light sent into the world as the light value.
+
+Surface lighting falls off with the sqare of distance, so if
+you double the height of a room, you will need to have four
+times the light intensity on the ceiling to get the floor
+the same brightness.  The walls would then be much brighter
+near the top than they were with the smaller room as well.
+
+
+SKY LIGHTING
+
+Skys emit light like other surfaces, but have slightly
+different characteristics.  They emit light from all angles,
+so it doesn't matter if you see a horizontal or vertical sky
+brush.  Light also does not bounce off of a sky in the
+radiosity pass, if it flies out a sky texture it is just gone.
+
+
+ENTITY LIGHTING
+
+You can use "light" entities to have light come from space
+without a surface.  A level designer goto.  They should
+function similar to quake 1 lights, with linear falloff
+instead of inverse quadratic.
+
+The new class "light_spot" can be used to make a spotlight.
+If it is targeted at another entity, the spotlight will point
+directly at it, otherwise it will point in the direction of
+its "angle" field, so you can easily make simple axial pointing
+spotlights.
+
+The field "_cone" determines the spread of the spotlight.  If
+not specified, a _cone of 15 will default.
+
+
+
+
+ISSUES WITH BMODELS
+
+Brush models emit and absorb light like other surfaces, but
+they do not block light, so after normalization, a little less
+light lands on the nearby surfaces, because it was absorbed
+both by the door and the surfaces beyond it.  You probably
+won't notice anything unless you have a row of spotlights
+on normal walls, then an identical one on a bmodel.
+
+
+ISSUES WITH WATER
+
+Light does NOT cross through water surfaces if the vis has
+been calculated, because the areas are in different potentially
+visible sets, but if you run qrad without a vis, then light
+will be sent through as well.
+

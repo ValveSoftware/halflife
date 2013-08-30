@@ -1,0 +1,114 @@
+#
+# DMC game library Makefile for x86 Linux
+#
+# May 2001 by Leon Hartwig (hartwig@valvesoftware.com)
+#
+OS:=$(shell uname)
+
+DMCDLL_SRC_DIR=$(SOURCE_DIR)/dmc/dlls
+PM_SRC_DIR=$(SOURCE_DIR)/dmc/pm_shared
+
+DMCDLL_OBJ_DIR=$(BUILD_OBJ_DIR)/dmcdll
+PM_OBJ_DIR=$(DMCDLL_OBJ_DIR)/pm_shared
+GAME_SHARED_OBJ_DIR=$(DMCDLL_OBJ_DIR)/game_shared
+
+#full optimization
+CFLAGS=$(BASE_CFLAGS) $(ARCH_CFLAGS)
+
+DMCDLL_INCLUDEDIRS=-I$(ENGINE_SRC_DIR) -I$(COMMON_SRC_DIR) -I$(PM_SRC_DIR) -I$(GAME_SHARED_SRC_DIR) -I$(PUBLIC_SRC_DIR)
+PM_INCLUDEDIRS=-I$(COMMON_SRC_DIR) -I$(PUBLIC_SRC_DIR)
+GAME_SHARED_INCLUDEDIRS=-I$(DMCDLL_SRC_DIR) -I$(ENGINE_SRC_DIR) -I$(COMMON_SRC_DIR) -I$(PUBLIC_SRC_DIR)
+
+LDFLAGS=
+
+DO_DMCDLL_CC=$(CC) $(DMCDLL_INCLUDEDIRS) $(CFLAGS) $(SHLIBCFLAGS) -o $@ -c $<
+DO_PM_CC=$(CC) $(PM_INCLUDEDIRS) $(CFLAGS) $(SHLIBCFLAGS) -o $@ -c $<
+DO_GAME_SHARED_CC=$(CC) $(GAME_SHARED_INCLUDEDIRS) $(CFLAGS) $(SHLIBFLAGS) -o $@ -c $<
+
+#############################################################################
+
+DMCDLL_OBJS = \
+	$(DMCDLL_OBJ_DIR)/animating.o \
+	$(DMCDLL_OBJ_DIR)/animation.o \
+    $(DMCDLL_OBJ_DIR)/bmodels.o \
+    $(DMCDLL_OBJ_DIR)/buttons.o \
+    $(DMCDLL_OBJ_DIR)/cbase.o \
+    $(DMCDLL_OBJ_DIR)/client.o \
+	$(DMCDLL_OBJ_DIR)/combat.o \
+	$(DMCDLL_OBJ_DIR)/doors.o \
+	$(DMCDLL_OBJ_DIR)/effects.o \
+	$(DMCDLL_OBJ_DIR)/explode.o \
+	$(DMCDLL_OBJ_DIR)/func_break.o \
+	$(DMCDLL_OBJ_DIR)/func_tank.o \
+	$(DMCDLL_OBJ_DIR)/game.o \
+	$(DMCDLL_OBJ_DIR)/gamerules.o \
+	$(DMCDLL_OBJ_DIR)/globals.o \
+	$(DMCDLL_OBJ_DIR)/h_ai.o \
+	$(DMCDLL_OBJ_DIR)/h_export.o \
+	$(DMCDLL_OBJ_DIR)/lights.o \
+	$(DMCDLL_OBJ_DIR)/maprules.o \
+	$(DMCDLL_OBJ_DIR)/monsters.o \
+	$(DMCDLL_OBJ_DIR)/monsterstate.o \
+	$(DMCDLL_OBJ_DIR)/multiplay_gamerules.o \
+	$(DMCDLL_OBJ_DIR)/nodes.o \
+	$(DMCDLL_OBJ_DIR)/observer.o \
+	$(DMCDLL_OBJ_DIR)/pathcorner.o \
+	$(DMCDLL_OBJ_DIR)/plane.o \
+	$(DMCDLL_OBJ_DIR)/plats.o \
+	$(DMCDLL_OBJ_DIR)/player.o \
+	$(DMCDLL_OBJ_DIR)/quake_gun.o \
+	$(DMCDLL_OBJ_DIR)/quake_items.o \
+	$(DMCDLL_OBJ_DIR)/quake_nail.o \
+	$(DMCDLL_OBJ_DIR)/quake_player.o \
+	$(DMCDLL_OBJ_DIR)/quake_rocket.o \
+	$(DMCDLL_OBJ_DIR)/quake_weapons_all.o \
+	$(DMCDLL_OBJ_DIR)/schedule.o \
+	$(DMCDLL_OBJ_DIR)/singleplay_gamerules.o \
+	$(DMCDLL_OBJ_DIR)/skill.o \
+	$(DMCDLL_OBJ_DIR)/sound.o \
+	$(DMCDLL_OBJ_DIR)/spectator.o \
+	$(DMCDLL_OBJ_DIR)/subs.o \
+	$(DMCDLL_OBJ_DIR)/teamplay_gamerules.o \
+	$(DMCDLL_OBJ_DIR)/threewave_gamerules.o \
+	$(DMCDLL_OBJ_DIR)/triggers.o \
+	$(DMCDLL_OBJ_DIR)/util.o \
+	$(DMCDLL_OBJ_DIR)/weapons.o \
+	$(DMCDLL_OBJ_DIR)/world.o
+
+PM_OBJS = \
+	$(PM_OBJ_DIR)/pm_shared.o \
+	$(PM_OBJ_DIR)/pm_math.o \
+	$(PM_OBJ_DIR)/pm_debug.o
+
+GAME_SHARED_OBJS = \
+	$(GAME_SHARED_OBJ_DIR)/voice_gamemgr.o
+
+all: dirs dmc.$(SHLIBEXT)
+
+dirs:
+	-mkdir $(BUILD_OBJ_DIR)
+	-mkdir $(DMCDLL_OBJ_DIR)
+	-mkdir $(PM_OBJ_DIR)
+	-mkdir $(GAME_SHARED_OBJ_DIR)
+
+dmc.$(SHLIBEXT): $(DMCDLL_OBJS) $(PM_OBJS) $(GAME_SHARED_OBJS)
+	$(CLINK) $(SHLIBLDFLAGS) -o $(BUILD_DIR)/$@ $(DMCDLL_OBJS) $(PM_OBJS) $(GAME_SHARED_OBJS) $(LDFLAGS) $(CPP_LIB)
+	p4 edit ../../game/mod/dlls/$@
+	cp $(BUILD_DIR)/$@  ../../game/mod/dlls
+	./gendbg.sh ../../game/dmc/mod/dmc.$(SHLIBEXT)
+		
+$(DMCDLL_OBJ_DIR)/%.o : $(DMCDLL_SRC_DIR)/%.cpp
+	$(DO_DMCDLL_CC)
+
+$(PM_OBJ_DIR)/%.o : $(PM_SRC_DIR)/%.c
+	$(DO_PM_CC)
+
+$(GAME_SHARED_OBJ_DIR)/%.o : $(GAME_SHARED_SRC_DIR)/%.cpp
+	$(DO_GAME_SHARED_CC)
+
+clean:
+	-rm -rf $(GAME_SHARED_OBJ_DIR)
+	-rm -rf $(PM_OBJ_DIR)
+	-rm -rf $(DMCDLL_OBJ_DIR)
+	-rm -f dmc_$(ARCH).$(SHLIBEXT)
+
