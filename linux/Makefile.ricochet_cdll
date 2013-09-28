@@ -20,9 +20,9 @@ INCLUDEDIRS=-I$(RICOCHET_SRC_DIR) -I$(RICOCHET_SRC_DIR)/../dlls -I../engine -I$(
 	 -I../game_shared -I$(RICOCHET_SRC_DIR)/../pm_shared  -I../utils/vgui/include -I../utils/common -I../external
 
 ifeq ($(OS),Darwin)
-LDFLAGS=$(SHLIBLDFLAGS) $(CPP_LIB) -framework Carbon $(CFG)/vgui.dylib -L. -lSDL2-2.0.0
+LDFLAGS=$(SHLIBLDFLAGS) $(CPP_LIB) -framework Carbon release/vgui.dylib -L. -lSDL2-2.0.0
 else
-LDFLAGS=$(SHLIBLDFLAGS) $(CPP_LIB) vgui.so -L. libSDL2-2.0.so.0
+LDFLAGS=$(SHLIBLDFLAGS) $(CPP_LIB) release/vgui.so -L. libSDL2-2.0.so.0
 endif
 
 DO_CC=$(CPLUS) $(INCLUDEDIRS) $(CFLAGS) -o $@ -c $<
