@@ -1,0 +1,411 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Source Files\_quake">
+      <UniqueIdentifier>{ba2e92e5-2bf1-4a18-bfe8-9bc0a15c543c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\_quake\dmc">
+      <UniqueIdentifier>{86d90742-ec24-48ae-b07e-3df59ef6a396}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\_quake\dmc\cl_dll">
+      <UniqueIdentifier>{a5a4b4d3-85ff-47c2-bc80-2ff5a63bc0b9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\_quake\dmc\cl_dll\quake">
+      <UniqueIdentifier>{4c151355-546d-4443-84c4-1ba971369673}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\_quake\dmc\dlls">
+      <UniqueIdentifier>{be83ab2d-f1d8-460a-9305-a04d3d10a47c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\dmc">
+      <UniqueIdentifier>{4bf24b6f-ef41-4f61-b6b0-ce72c3f73024}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\dmc\cl_dll">
+      <UniqueIdentifier>{31fcf31c-1923-42b1-b9fe-01999692a141}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\public">
+      <UniqueIdentifier>{841cb2e7-79c0-401e-902c-1f611e2a9b3b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\common">
+      <UniqueIdentifier>{b9feaf89-58f1-4793-890d-6e83fc5fb5d4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\dmc\pm_shared">
+      <UniqueIdentifier>{d820ee67-598d-43dc-bbde-c2f752cc2042}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\game_shared">
+      <UniqueIdentifier>{edb88f62-96a7-40c3-8359-970e191dc3f6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\dmc">
+      <UniqueIdentifier>{3156f528-cb57-4cd3-b345-721adac4edd3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\dmc\cl_dll">
+      <UniqueIdentifier>{1f8decdb-4fcb-4acc-b89b-eb581ed1ec7d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\dmc\pm_shared">
+      <UniqueIdentifier>{63fd35da-8094-4173-856a-c2f2fedf547d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\common">
+      <UniqueIdentifier>{91fac5dc-7cd5-4d5a-8819-36bdefdb7fd6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\dmc\dlls">
+      <UniqueIdentifier>{32a1be15-b6a8-4181-945a-ef7081d4e4e5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\game_shared">
+      <UniqueIdentifier>{c7b58d57-c9fe-4904-94e4-4c70a89ee725}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\dmc\cl_dll\CTF_FlagStatus.cpp">
+      <Filter>Source Files\_quake\dmc\cl_dll</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dmc\cl_dll\CTF_HudMessage.cpp">
+      <Filter>Source Files\_quake\dmc\cl_dll</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dmc\cl_dll\DMC_Teleporters.cpp">
+      <Filter>Source Files\_quake\dmc\cl_dll</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dmc\cl_dll\ev_hldm.cpp">
+      <Filter>Source Files\_quake\dmc\cl_dll</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dmc\cl_dll\quake\quake_weapons.cpp">
+      <Filter>Source Files\_quake\dmc\cl_dll\quake</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dmc\cl_dll\quake\quake_baseentity.cpp">
+      <Filter>Source Files\_quake\dmc\cl_dll\quake</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dmc\cl_dll\quake\quake_events.cpp">
+      <Filter>Source Files\_quake\dmc\cl_dll\quake</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dmc\cl_dll\quake\quake_objects.cpp">
+      <Filter>Source Files\_quake\dmc\cl_dll\quake</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dmc\dlls\quake_weapons_all.cpp">
+      <Filter>Source Files\_quake\dmc\dlls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dmc\dlls\quake_gun.cpp">
+      <Filter>Source Files\_quake\dmc\dlls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dmc\cl_dll\studio_util.cpp">
+      <Filter>Source Files\_quake\dmc\cl_dll</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dmc\cl_dll\vgui_SpectatorPanel.cpp">
+      <Filter>Source Files\_quake\dmc\cl_dll</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dmc\cl_dll\input.cpp">
+      <Filter>Source Files\dmc\cl_dll</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dmc\cl_dll\inputw32.cpp">
+      <Filter>Source Files\dmc\cl_dll</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dmc\cl_dll\ammo.cpp">
+      <Filter>Source Files\dmc\cl_dll</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dmc\cl_dll\ammo_secondary.cpp">
+      <Filter>Source Files\dmc\cl_dll</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dmc\cl_dll\ammohistory.cpp">
+      <Filter>Source Files\dmc\cl_dll</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dmc\cl_dll\battery.cpp">
+      <Filter>Source Files\dmc\cl_dll</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dmc\cl_dll\cdll_int.cpp">
+      <Filter>Source Files\dmc\cl_dll</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dmc\cl_dll\com_weapons.cpp">
+      <Filter>Source Files\dmc\cl_dll</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dmc\cl_dll\death.cpp">
+      <Filter>Source Files\dmc\cl_dll</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dmc\cl_dll\demo.cpp">
+      <Filter>Source Files\dmc\cl_dll</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dmc\cl_dll\entity.cpp">
+      <Filter>Source Files\dmc\cl_dll</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dmc\cl_dll\ev_common.cpp">
+      <Filter>Source Files\dmc\cl_dll</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dmc\cl_dll\events.cpp">
+      <Filter>Source Files\dmc\cl_dll</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dmc\cl_dll\GameStudioModelRenderer.cpp">
+      <Filter>Source Files\dmc\cl_dll</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dmc\cl_dll\geiger.cpp">
+      <Filter>Source Files\dmc\cl_dll</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dmc\cl_dll\health.cpp">
+      <Filter>Source Files\dmc\cl_dll</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dmc\cl_dll\hud.cpp">
+      <Filter>Source Files\dmc\cl_dll</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dmc\cl_dll\hud_msg.cpp">
+      <Filter>Source Files\dmc\cl_dll</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dmc\cl_dll\hud_redraw.cpp">
+      <Filter>Source Files\dmc\cl_dll</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dmc\cl_dll\hud_servers.cpp">
+      <Filter>Source Files\dmc\cl_dll</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dmc\cl_dll\hud_spectator.cpp">
+      <Filter>Source Files\dmc\cl_dll</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dmc\cl_dll\hud_update.cpp">
+      <Filter>Source Files\dmc\cl_dll</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dmc\cl_dll\in_camera.cpp">
+      <Filter>Source Files\dmc\cl_dll</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\public\interface.cpp">
+      <Filter>Source Files\public</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dmc\cl_dll\message.cpp">
+      <Filter>Source Files\dmc\cl_dll</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dmc\cl_dll\menu.cpp">
+      <Filter>Source Files\dmc\cl_dll</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\common\parsemsg.cpp">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dmc\pm_shared\pm_shared.c">
+      <Filter>Source Files\dmc\pm_shared</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dmc\pm_shared\pm_debug.c">
+      <Filter>Source Files\dmc\pm_shared</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dmc\pm_shared\pm_math.c">
+      <Filter>Source Files\dmc\pm_shared</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dmc\cl_dll\util.cpp">
+      <Filter>Source Files\dmc\cl_dll</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dmc\cl_dll\saytext.cpp">
+      <Filter>Source Files\dmc\cl_dll</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dmc\cl_dll\status_icons.cpp">
+      <Filter>Source Files\dmc\cl_dll</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dmc\cl_dll\statusbar.cpp">
+      <Filter>Source Files\dmc\cl_dll</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dmc\cl_dll\StudioModelRenderer.cpp">
+      <Filter>Source Files\dmc\cl_dll</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dmc\cl_dll\text_message.cpp">
+      <Filter>Source Files\dmc\cl_dll</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dmc\cl_dll\train.cpp">
+      <Filter>Source Files\dmc\cl_dll</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dmc\cl_dll\tri.cpp">
+      <Filter>Source Files\dmc\cl_dll</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dmc\cl_dll\vgui_int.cpp">
+      <Filter>Source Files\dmc\cl_dll</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\game_shared\vgui_scrollbar2.cpp">
+      <Filter>Source Files\game_shared</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\game_shared\vgui_checkbutton2.cpp">
+      <Filter>Source Files\game_shared</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\game_shared\vgui_grid.cpp">
+      <Filter>Source Files\game_shared</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\game_shared\vgui_helpers.cpp">
+      <Filter>Source Files\game_shared</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\game_shared\vgui_listbox.cpp">
+      <Filter>Source Files\game_shared</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\game_shared\vgui_loadtga.cpp">
+      <Filter>Source Files\game_shared</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dmc\cl_dll\voice_status.cpp">
+      <Filter>Source Files\dmc\cl_dll</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dmc\cl_dll\vgui_ScorePanel.cpp">
+      <Filter>Source Files\dmc\cl_dll</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dmc\cl_dll\vgui_ServerBrowser.cpp">
+      <Filter>Source Files\dmc\cl_dll</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dmc\cl_dll\vgui_viewport.cpp">
+      <Filter>Source Files\dmc\cl_dll</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dmc\cl_dll\view.cpp">
+      <Filter>Source Files\dmc\cl_dll</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\game_shared\voice_banmgr.cpp">
+      <Filter>Source Files\game_shared</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\game_shared\vgui_slider2.cpp">
+      <Filter>Source Files\game_shared</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dmc\cl_dll\vgui_CustomObjects.cpp">
+      <Filter>Source Files\dmc\cl_dll</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dmc\cl_dll\vgui_SchemeManager.cpp">
+      <Filter>Source Files\dmc\cl_dll</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\dmc\cl_dll\vgui_MOTDWindow.cpp">
+      <Filter>Source Files\dmc\cl_dll</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\dmc\cl_dll\kbutton.h">
+      <Filter>Header Files\dmc\cl_dll</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dmc\cl_dll\ammo.h">
+      <Filter>Header Files\dmc\cl_dll</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dmc\cl_dll\ammohistory.h">
+      <Filter>Header Files\dmc\cl_dll</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dmc\cl_dll\camera.h">
+      <Filter>Header Files\dmc\cl_dll</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dmc\cl_dll\cl_dll.h">
+      <Filter>Header Files\dmc\cl_dll</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dmc\cl_dll\cl_util.h">
+      <Filter>Header Files\dmc\cl_dll</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dmc\cl_dll\com_weapons.h">
+      <Filter>Header Files\dmc\cl_dll</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dmc\cl_dll\demo.h">
+      <Filter>Header Files\dmc\cl_dll</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dmc\cl_dll\DMC_BSPFile.h">
+      <Filter>Header Files\dmc\cl_dll</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dmc\cl_dll\DMC_Teleporters.h">
+      <Filter>Header Files\dmc\cl_dll</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dmc\cl_dll\ev_hldm.h">
+      <Filter>Header Files\dmc\cl_dll</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dmc\cl_dll\eventscripts.h">
+      <Filter>Header Files\dmc\cl_dll</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dmc\cl_dll\GameStudioModelRenderer.h">
+      <Filter>Header Files\dmc\cl_dll</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dmc\cl_dll\health.h">
+      <Filter>Header Files\dmc\cl_dll</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dmc\cl_dll\hud.h">
+      <Filter>Header Files\dmc\cl_dll</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dmc\cl_dll\hud_iface.h">
+      <Filter>Header Files\dmc\cl_dll</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dmc\cl_dll\hud_servers.h">
+      <Filter>Header Files\dmc\cl_dll</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dmc\cl_dll\hud_servers_priv.h">
+      <Filter>Header Files\dmc\cl_dll</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dmc\cl_dll\hud_spectator.h">
+      <Filter>Header Files\dmc\cl_dll</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dmc\cl_dll\in_defs.h">
+      <Filter>Header Files\dmc\cl_dll</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\parsemsg.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dmc\pm_shared\pm_shared.h">
+      <Filter>Header Files\dmc\pm_shared</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dmc\pm_shared\pm_debug.h">
+      <Filter>Header Files\dmc\pm_shared</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dmc\pm_shared\pm_defs.h">
+      <Filter>Header Files\dmc\pm_shared</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dmc\pm_shared\pm_info.h">
+      <Filter>Header Files\dmc\pm_shared</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dmc\pm_shared\pm_materials.h">
+      <Filter>Header Files\dmc\pm_shared</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dmc\pm_shared\pm_movevars.h">
+      <Filter>Header Files\dmc\pm_shared</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dmc\dlls\quake_gun.h">
+      <Filter>Header Files\dmc\dlls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dmc\cl_dll\vgui_ControlConfigPanel.h">
+      <Filter>Header Files\dmc\cl_dll</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dmc\cl_dll\StudioModelRenderer.h">
+      <Filter>Header Files\dmc\cl_dll</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dmc\cl_dll\util.h">
+      <Filter>Header Files\dmc\cl_dll</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dmc\cl_dll\util_vector.h">
+      <Filter>Header Files\dmc\cl_dll</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\game_shared\vgui_checkbutton2.h">
+      <Filter>Header Files\game_shared</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\game_shared\vgui_grid.h">
+      <Filter>Header Files\game_shared</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\game_shared\vgui_helpers.h">
+      <Filter>Header Files\game_shared</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\game_shared\vgui_listbox.h">
+      <Filter>Header Files\game_shared</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\game_shared\vgui_loadtga.h">
+      <Filter>Header Files\game_shared</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dmc\cl_dll\vgui_SpectatorPanel.h">
+      <Filter>Header Files\dmc\cl_dll</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dmc\cl_dll\vgui_int.h">
+      <Filter>Header Files\dmc\cl_dll</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dmc\cl_dll\vgui_SchemeManager.h">
+      <Filter>Header Files\dmc\cl_dll</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dmc\cl_dll\vgui_ScorePanel.h">
+      <Filter>Header Files\dmc\cl_dll</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dmc\cl_dll\vgui_ServerBrowser.h">
+      <Filter>Header Files\dmc\cl_dll</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dmc\cl_dll\voice_status.h">
+      <Filter>Header Files\dmc\cl_dll</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dmc\cl_dll\wrect.h">
+      <Filter>Header Files\dmc\cl_dll</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dmc\cl_dll\vgui_viewport.h">
+      <Filter>Header Files\dmc\cl_dll</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\dmc\cl_dll\view.h">
+      <Filter>Header Files\dmc\cl_dll</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

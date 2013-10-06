@@ -13,7 +13,9 @@
 #define WIN32_LEAN_AND_MEAN		// Exclude rarely-used stuff from Windows headers
 #define WIN32_EXTRA_LEAN
 
+#include "winsani_in.h"
 #include <windows.h>
+#include "winsani_out.h"
 
 #include <stdlib.h>
 #include <stdio.h>

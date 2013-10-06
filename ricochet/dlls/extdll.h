@@ -40,7 +40,9 @@
 #define NOSERVICE
 #define NOMCX
 #define NOIME
+#include "winsani_in.h"
 #include "windows.h"
+#include "winsani_out.h"
 
 #else // _WIN32
 #define FALSE 0
