@@ -1,0 +1,333 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Source Files\ricochet">
+      <UniqueIdentifier>{a3e19434-b8d9-43ec-a1ed-e260f8aee591}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ricochet\dlls">
+      <UniqueIdentifier>{9b833c3f-4e64-4ba6-9143-c7a365cef6fa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ricochet\dlls\wpn_shared">
+      <UniqueIdentifier>{c683dfc8-f9d2-49d0-bc80-c2aa7e10dab5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ricochet\pm_shared">
+      <UniqueIdentifier>{6334b1f8-a9a7-44e0-a020-afa31543406a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\game_shared">
+      <UniqueIdentifier>{be7399a9-5600-4d83-b06d-4edbed45200b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\ricochet">
+      <UniqueIdentifier>{684ab4d1-82f9-4ff3-868a-0d9919cc32f7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\ricochet\dlls">
+      <UniqueIdentifier>{2dc019ff-0dfb-4478-9ecd-58c90ae0111e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\ricochet\pm_shared">
+      <UniqueIdentifier>{8b020c05-4536-4f4f-82c9-2206caef635a}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\ricochet\dlls\disc_powerups.cpp">
+      <Filter>Source Files\ricochet\dlls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ricochet\dlls\airtank.cpp">
+      <Filter>Source Files\ricochet\dlls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ricochet\dlls\animating.cpp">
+      <Filter>Source Files\ricochet\dlls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ricochet\dlls\animation.cpp">
+      <Filter>Source Files\ricochet\dlls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ricochet\dlls\bmodels.cpp">
+      <Filter>Source Files\ricochet\dlls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ricochet\dlls\buttons.cpp">
+      <Filter>Source Files\ricochet\dlls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ricochet\dlls\cbase.cpp">
+      <Filter>Source Files\ricochet\dlls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ricochet\dlls\client.cpp">
+      <Filter>Source Files\ricochet\dlls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ricochet\dlls\combat.cpp">
+      <Filter>Source Files\ricochet\dlls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ricochet\dlls\disc_arena.cpp">
+      <Filter>Source Files\ricochet\dlls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ricochet\dlls\wpn_shared\disc_weapon_disc.cpp">
+      <Filter>Source Files\ricochet\dlls\wpn_shared</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ricochet\dlls\player.cpp">
+      <Filter>Source Files\ricochet\dlls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ricochet\dlls\doors.cpp">
+      <Filter>Source Files\ricochet\dlls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ricochet\dlls\effects.cpp">
+      <Filter>Source Files\ricochet\dlls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ricochet\dlls\explode.cpp">
+      <Filter>Source Files\ricochet\dlls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ricochet\dlls\func_break.cpp">
+      <Filter>Source Files\ricochet\dlls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ricochet\dlls\func_tank.cpp">
+      <Filter>Source Files\ricochet\dlls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ricochet\dlls\game.cpp">
+      <Filter>Source Files\ricochet\dlls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ricochet\dlls\gamerules.cpp">
+      <Filter>Source Files\ricochet\dlls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ricochet\dlls\ggrenade.cpp">
+      <Filter>Source Files\ricochet\dlls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ricochet\dlls\globals.cpp">
+      <Filter>Source Files\ricochet\dlls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ricochet\dlls\h_ai.cpp">
+      <Filter>Source Files\ricochet\dlls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ricochet\dlls\h_battery.cpp">
+      <Filter>Source Files\ricochet\dlls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ricochet\dlls\h_cycler.cpp">
+      <Filter>Source Files\ricochet\dlls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ricochet\dlls\h_export.cpp">
+      <Filter>Source Files\ricochet\dlls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ricochet\dlls\healthkit.cpp">
+      <Filter>Source Files\ricochet\dlls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ricochet\dlls\items.cpp">
+      <Filter>Source Files\ricochet\dlls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ricochet\dlls\lights.cpp">
+      <Filter>Source Files\ricochet\dlls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ricochet\dlls\maprules.cpp">
+      <Filter>Source Files\ricochet\dlls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ricochet\dlls\mortar.cpp">
+      <Filter>Source Files\ricochet\dlls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ricochet\dlls\mpstubb.cpp">
+      <Filter>Source Files\ricochet\dlls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ricochet\dlls\multiplay_gamerules.cpp">
+      <Filter>Source Files\ricochet\dlls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ricochet\dlls\observer.cpp">
+      <Filter>Source Files\ricochet\dlls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ricochet\dlls\pathcorner.cpp">
+      <Filter>Source Files\ricochet\dlls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ricochet\dlls\plane.cpp">
+      <Filter>Source Files\ricochet\dlls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ricochet\dlls\plats.cpp">
+      <Filter>Source Files\ricochet\dlls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ricochet\pm_shared\pm_shared.c">
+      <Filter>Source Files\ricochet\pm_shared</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ricochet\pm_shared\pm_debug.c">
+      <Filter>Source Files\ricochet\pm_shared</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ricochet\pm_shared\pm_math.c">
+      <Filter>Source Files\ricochet\pm_shared</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ricochet\dlls\world.cpp">
+      <Filter>Source Files\ricochet\dlls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ricochet\dlls\xen.cpp">
+      <Filter>Source Files\ricochet\dlls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ricochet\dlls\singleplay_gamerules.cpp">
+      <Filter>Source Files\ricochet\dlls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ricochet\dlls\skill.cpp">
+      <Filter>Source Files\ricochet\dlls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ricochet\dlls\sound.cpp">
+      <Filter>Source Files\ricochet\dlls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ricochet\dlls\soundent.cpp">
+      <Filter>Source Files\ricochet\dlls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ricochet\dlls\spectator.cpp">
+      <Filter>Source Files\ricochet\dlls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ricochet\dlls\subs.cpp">
+      <Filter>Source Files\ricochet\dlls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ricochet\dlls\teamplay_gamerules.cpp">
+      <Filter>Source Files\ricochet\dlls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ricochet\dlls\triggers.cpp">
+      <Filter>Source Files\ricochet\dlls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ricochet\dlls\util.cpp">
+      <Filter>Source Files\ricochet\dlls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ricochet\dlls\weapons.cpp">
+      <Filter>Source Files\ricochet\dlls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\game_shared\voice_gamemgr.cpp">
+      <Filter>Source Files\game_shared</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\ricochet\dlls\gamerules.h">
+      <Filter>Header Files\ricochet\dlls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ricochet\dlls\activity.h">
+      <Filter>Header Files\ricochet\dlls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ricochet\dlls\activitymap.h">
+      <Filter>Header Files\ricochet\dlls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ricochet\dlls\animation.h">
+      <Filter>Header Files\ricochet\dlls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ricochet\dlls\basemonster.h">
+      <Filter>Header Files\ricochet\dlls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ricochet\dlls\cbase.h">
+      <Filter>Header Files\ricochet\dlls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ricochet\dlls\cdll_dll.h">
+      <Filter>Header Files\ricochet\dlls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ricochet\dlls\client.h">
+      <Filter>Header Files\ricochet\dlls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ricochet\dlls\decals.h">
+      <Filter>Header Files\ricochet\dlls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ricochet\dlls\disc_arena.h">
+      <Filter>Header Files\ricochet\dlls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ricochet\dlls\discwar.h">
+      <Filter>Header Files\ricochet\dlls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ricochet\dlls\doors.h">
+      <Filter>Header Files\ricochet\dlls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ricochet\dlls\effects.h">
+      <Filter>Header Files\ricochet\dlls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ricochet\dlls\enginecallback.h">
+      <Filter>Header Files\ricochet\dlls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ricochet\dlls\explode.h">
+      <Filter>Header Files\ricochet\dlls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ricochet\dlls\extdll.h">
+      <Filter>Header Files\ricochet\dlls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ricochet\dlls\func_break.h">
+      <Filter>Header Files\ricochet\dlls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ricochet\dlls\game.h">
+      <Filter>Header Files\ricochet\dlls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ricochet\dlls\player.h">
+      <Filter>Header Files\ricochet\dlls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ricochet\dlls\hornet.h">
+      <Filter>Header Files\ricochet\dlls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ricochet\dlls\items.h">
+      <Filter>Header Files\ricochet\dlls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ricochet\dlls\maprules.h">
+      <Filter>Header Files\ricochet\dlls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ricochet\dlls\monsterevent.h">
+      <Filter>Header Files\ricochet\dlls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ricochet\dlls\monsters.h">
+      <Filter>Header Files\ricochet\dlls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ricochet\dlls\nodes.h">
+      <Filter>Header Files\ricochet\dlls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ricochet\dlls\plane.h">
+      <Filter>Header Files\ricochet\dlls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ricochet\pm_shared\pm_shared.h">
+      <Filter>Header Files\ricochet\pm_shared</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ricochet\pm_shared\pm_debug.h">
+      <Filter>Header Files\ricochet\pm_shared</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ricochet\pm_shared\pm_defs.h">
+      <Filter>Header Files\ricochet\pm_shared</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ricochet\pm_shared\pm_info.h">
+      <Filter>Header Files\ricochet\pm_shared</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ricochet\pm_shared\pm_materials.h">
+      <Filter>Header Files\ricochet\pm_shared</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ricochet\pm_shared\pm_movevars.h">
+      <Filter>Header Files\ricochet\pm_shared</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ricochet\dlls\weapons.h">
+      <Filter>Header Files\ricochet\dlls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ricochet\dlls\saverestore.h">
+      <Filter>Header Files\ricochet\dlls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ricochet\dlls\schedule.h">
+      <Filter>Header Files\ricochet\dlls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ricochet\dlls\scriptevent.h">
+      <Filter>Header Files\ricochet\dlls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ricochet\dlls\skill.h">
+      <Filter>Header Files\ricochet\dlls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ricochet\dlls\soundent.h">
+      <Filter>Header Files\ricochet\dlls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ricochet\dlls\spectator.h">
+      <Filter>Header Files\ricochet\dlls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ricochet\dlls\talkmonster.h">
+      <Filter>Header Files\ricochet\dlls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ricochet\dlls\teamplay_gamerules.h">
+      <Filter>Header Files\ricochet\dlls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ricochet\dlls\trains.h">
+      <Filter>Header Files\ricochet\dlls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ricochet\dlls\util.h">
+      <Filter>Header Files\ricochet\dlls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ricochet\dlls\vector.h">
+      <Filter>Header Files\ricochet\dlls</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

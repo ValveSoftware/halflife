@@ -13,7 +13,9 @@
 #include "net_api.h"
 #include <string.h>
 #ifdef _WIN32
+#include "winsani_in.h"
 #include <winsock.h>
+#include "winsani_out.h"
 #else
 #define __cdecl
 #include <arpa/inet.h>

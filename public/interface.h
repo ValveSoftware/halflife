@@ -14,9 +14,9 @@
 //    for legacy code). In this case, you need to make a new version name for your new interface, and make a wrapper interface and 
 //    expose it for the old interface.
 
-#if _MSC_VER >= 1300  // VC7
-#include "tier1/interface.h"
-#else
+//#if _MSC_VER >= 1300  // VC7
+//#include "tier1/interface.h"
+//#else
 
 #ifndef INTERFACE_H
 #define INTERFACE_H
@@ -144,6 +144,6 @@ extern CreateInterfaceFn	Sys_GetFactory( CSysModule *pModule );
 
 
 #endif
-#endif // MSVC 6.0
+//#endif // MSVC 6.0
 
 

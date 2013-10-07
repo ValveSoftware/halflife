@@ -1,0 +1,5 @@
+# Force CRLF for Windows files:
+*.dsp text eol=crlf
+*.vcxproj text eol=crlf
+*.vcxproj.filters text eol=crlf
+*.sln text eol=crlf

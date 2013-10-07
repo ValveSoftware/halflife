@@ -1,0 +1,205 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\game_shared\voice_gamemgr.cpp" />
+    <ClCompile Include="..\..\ricochet\dlls\airtank.cpp" />
+    <ClCompile Include="..\..\ricochet\dlls\animating.cpp" />
+    <ClCompile Include="..\..\ricochet\dlls\animation.cpp" />
+    <ClCompile Include="..\..\ricochet\dlls\bmodels.cpp" />
+    <ClCompile Include="..\..\ricochet\dlls\buttons.cpp" />
+    <ClCompile Include="..\..\ricochet\dlls\cbase.cpp" />
+    <ClCompile Include="..\..\ricochet\dlls\client.cpp" />
+    <ClCompile Include="..\..\ricochet\dlls\combat.cpp" />
+    <ClCompile Include="..\..\ricochet\dlls\disc_arena.cpp" />
+    <ClCompile Include="..\..\ricochet\dlls\disc_powerups.cpp" />
+    <ClCompile Include="..\..\ricochet\dlls\doors.cpp" />
+    <ClCompile Include="..\..\ricochet\dlls\effects.cpp" />
+    <ClCompile Include="..\..\ricochet\dlls\explode.cpp" />
+    <ClCompile Include="..\..\ricochet\dlls\func_break.cpp" />
+    <ClCompile Include="..\..\ricochet\dlls\func_tank.cpp" />
+    <ClCompile Include="..\..\ricochet\dlls\game.cpp" />
+    <ClCompile Include="..\..\ricochet\dlls\gamerules.cpp" />
+    <ClCompile Include="..\..\ricochet\dlls\ggrenade.cpp" />
+    <ClCompile Include="..\..\ricochet\dlls\globals.cpp" />
+    <ClCompile Include="..\..\ricochet\dlls\healthkit.cpp" />
+    <ClCompile Include="..\..\ricochet\dlls\h_ai.cpp" />
+    <ClCompile Include="..\..\ricochet\dlls\h_battery.cpp" />
+    <ClCompile Include="..\..\ricochet\dlls\h_cycler.cpp" />
+    <ClCompile Include="..\..\ricochet\dlls\h_export.cpp" />
+    <ClCompile Include="..\..\ricochet\dlls\items.cpp" />
+    <ClCompile Include="..\..\ricochet\dlls\lights.cpp" />
+    <ClCompile Include="..\..\ricochet\dlls\maprules.cpp" />
+    <ClCompile Include="..\..\ricochet\dlls\mortar.cpp" />
+    <ClCompile Include="..\..\ricochet\dlls\mpstubb.cpp" />
+    <ClCompile Include="..\..\ricochet\dlls\multiplay_gamerules.cpp" />
+    <ClCompile Include="..\..\ricochet\dlls\observer.cpp" />
+    <ClCompile Include="..\..\ricochet\dlls\pathcorner.cpp" />
+    <ClCompile Include="..\..\ricochet\dlls\plane.cpp" />
+    <ClCompile Include="..\..\ricochet\dlls\plats.cpp" />
+    <ClCompile Include="..\..\ricochet\dlls\player.cpp" />
+    <ClCompile Include="..\..\ricochet\dlls\singleplay_gamerules.cpp" />
+    <ClCompile Include="..\..\ricochet\dlls\skill.cpp" />
+    <ClCompile Include="..\..\ricochet\dlls\sound.cpp" />
+    <ClCompile Include="..\..\ricochet\dlls\soundent.cpp" />
+    <ClCompile Include="..\..\ricochet\dlls\spectator.cpp" />
+    <ClCompile Include="..\..\ricochet\dlls\subs.cpp" />
+    <ClCompile Include="..\..\ricochet\dlls\teamplay_gamerules.cpp" />
+    <ClCompile Include="..\..\ricochet\dlls\triggers.cpp" />
+    <ClCompile Include="..\..\ricochet\dlls\util.cpp" />
+    <ClCompile Include="..\..\ricochet\dlls\weapons.cpp" />
+    <ClCompile Include="..\..\ricochet\dlls\world.cpp" />
+    <ClCompile Include="..\..\ricochet\dlls\wpn_shared\disc_weapon_disc.cpp" />
+    <ClCompile Include="..\..\ricochet\dlls\xen.cpp" />
+    <ClCompile Include="..\..\ricochet\pm_shared\pm_debug.c" />
+    <ClCompile Include="..\..\ricochet\pm_shared\pm_math.c" />
+    <ClCompile Include="..\..\ricochet\pm_shared\pm_shared.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\ricochet\dlls\activity.h" />
+    <ClInclude Include="..\..\ricochet\dlls\activitymap.h" />
+    <ClInclude Include="..\..\ricochet\dlls\animation.h" />
+    <ClInclude Include="..\..\ricochet\dlls\basemonster.h" />
+    <ClInclude Include="..\..\ricochet\dlls\cbase.h" />
+    <ClInclude Include="..\..\ricochet\dlls\cdll_dll.h" />
+    <ClInclude Include="..\..\ricochet\dlls\client.h" />
+    <ClInclude Include="..\..\ricochet\dlls\decals.h" />
+    <ClInclude Include="..\..\ricochet\dlls\discwar.h" />
+    <ClInclude Include="..\..\ricochet\dlls\disc_arena.h" />
+    <ClInclude Include="..\..\ricochet\dlls\doors.h" />
+    <ClInclude Include="..\..\ricochet\dlls\effects.h" />
+    <ClInclude Include="..\..\ricochet\dlls\enginecallback.h" />
+    <ClInclude Include="..\..\ricochet\dlls\explode.h" />
+    <ClInclude Include="..\..\ricochet\dlls\extdll.h" />
+    <ClInclude Include="..\..\ricochet\dlls\func_break.h" />
+    <ClInclude Include="..\..\ricochet\dlls\game.h" />
+    <ClInclude Include="..\..\ricochet\dlls\gamerules.h" />
+    <ClInclude Include="..\..\ricochet\dlls\hornet.h" />
+    <ClInclude Include="..\..\ricochet\dlls\items.h" />
+    <ClInclude Include="..\..\ricochet\dlls\maprules.h" />
+    <ClInclude Include="..\..\ricochet\dlls\monsterevent.h" />
+    <ClInclude Include="..\..\ricochet\dlls\monsters.h" />
+    <ClInclude Include="..\..\ricochet\dlls\nodes.h" />
+    <ClInclude Include="..\..\ricochet\dlls\plane.h" />
+    <ClInclude Include="..\..\ricochet\dlls\player.h" />
+    <ClInclude Include="..\..\ricochet\dlls\saverestore.h" />
+    <ClInclude Include="..\..\ricochet\dlls\schedule.h" />
+    <ClInclude Include="..\..\ricochet\dlls\scriptevent.h" />
+    <ClInclude Include="..\..\ricochet\dlls\skill.h" />
+    <ClInclude Include="..\..\ricochet\dlls\soundent.h" />
+    <ClInclude Include="..\..\ricochet\dlls\spectator.h" />
+    <ClInclude Include="..\..\ricochet\dlls\talkmonster.h" />
+    <ClInclude Include="..\..\ricochet\dlls\teamplay_gamerules.h" />
+    <ClInclude Include="..\..\ricochet\dlls\trains.h" />
+    <ClInclude Include="..\..\ricochet\dlls\util.h" />
+    <ClInclude Include="..\..\ricochet\dlls\vector.h" />
+    <ClInclude Include="..\..\ricochet\dlls\weapons.h" />
+    <ClInclude Include="..\..\ricochet\pm_shared\pm_debug.h" />
+    <ClInclude Include="..\..\ricochet\pm_shared\pm_defs.h" />
+    <ClInclude Include="..\..\ricochet\pm_shared\pm_info.h" />
+    <ClInclude Include="..\..\ricochet\pm_shared\pm_materials.h" />
+    <ClInclude Include="..\..\ricochet\pm_shared\pm_movevars.h" />
+    <ClInclude Include="..\..\ricochet\pm_shared\pm_shared.h" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{CE8DCBE4-D8DB-46E5-8607-8FCC5FA667FB}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>ricochetdll</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>NotSet</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>NotSet</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>$(Configuration)\$(ProjectName)\</OutDir>
+    <IntDir>$(Configuration)\$(ProjectName)\int\</IntDir>
+    <TargetName>mp</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(Configuration)\$(ProjectName)\</OutDir>
+    <IntDir>$(Configuration)\$(ProjectName)\int\</IntDir>
+    <TargetName>mp</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;VALVE_DLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\ricochet\dlls;..\..\engine;..\..\common;..\..\public;..\..\game_shared;..\..\ricochet\pm_shared;..\..\ricochet;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ModuleDefinitionFile>$(ProjectDir)..\..\ricochet\dlls\mp.def</ModuleDefinitionFile>
+    </Link>
+    <PostBuildEvent>
+      <Command>call ..\..\filecopy.bat $(TargetPath) ..\..\..\game\mod\dlls\$(TargetName).dll
+call ..\..\filecopy.bat $(TargetDir)\$(TargetName).pdb ..\..\..\game\mod\dlls\$(TargetName).pdb</Command>
+    </PostBuildEvent>
+    <PostBuildEvent>
+      <Message>Performing Post-Build Event</Message>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;VALVE_DLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\ricochet\dlls;..\..\engine;..\..\common;..\..\public;..\..\game_shared;..\..\ricochet\pm_shared;..\..\ricochet;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <ModuleDefinitionFile>$(ProjectDir)..\..\ricochet\dlls\mp.def</ModuleDefinitionFile>
+    </Link>
+    <PostBuildEvent>
+      <Command>call ..\..\filecopy.bat $(TargetPath) ..\..\..\game\mod\dlls\$(TargetName).dll
+call ..\..\filecopy.bat $(TargetDir)\$(TargetName).pdb ..\..\..\game\mod\dlls\$(TargetName).pdb</Command>
+    </PostBuildEvent>
+    <PostBuildEvent>
+      <Message>Performing Post-Build Event</Message>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
