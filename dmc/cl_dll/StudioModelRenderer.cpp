@@ -440,7 +440,7 @@ void CStudioModelRenderer::StudioSetUpTransform (int trivial_accept)
 	{
 		float timemod;
 
-		timemod = fmod( gEngfuncs.GetClientTime(), 2.0 );
+		timemod = fmod( gEngfuncs.GetClientTime(), 2.0f );
 
 		m_pCurrentEntity->angles[0] = 0;
 		m_pCurrentEntity->angles[YAW] = timemod * 180.0 - 90.0;

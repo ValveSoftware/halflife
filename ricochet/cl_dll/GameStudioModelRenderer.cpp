@@ -368,7 +368,7 @@ void CGameStudioModelRenderer::StudioProcessGait( entity_state_t *pplayer )
 	// calc side to side turning
 	flYaw = m_pCurrentEntity->angles[YAW] - m_pPlayerInfo->gaityaw;
 
-	flYaw = fmod( flYaw, 360.0 );
+	flYaw = fmod( flYaw, 360.0f );
 
 	if (flYaw < -180)
 	{
