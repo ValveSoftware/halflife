@@ -23,7 +23,9 @@
 #include <sys/stat.h>
 
 #pragma warning(disable: 4142 4028)
+#define filelength IO_filelength
 #include <io.h>
+#undef filelength
 #pragma warning(default: 4142 4028)
 
 #include <fcntl.h>

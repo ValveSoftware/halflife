@@ -21,7 +21,7 @@
 // Font stuff
 
 #define NUM_GLYPHS 256
-#include "basetypes.h"
+// does not exist: // #include "basetypes.h"
 
 typedef struct
 {
@@ -35,7 +35,7 @@ typedef struct qfont_s
 	int			rowcount;
 	int			rowheight;
 	charinfo	fontinfo[ NUM_GLYPHS ];
-	byte 		data[4];
+	unsigned char data[4];
 } qfont_t;
 
 #endif // qfont.h

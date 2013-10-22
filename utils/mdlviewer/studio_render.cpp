@@ -22,6 +22,7 @@
 ////////////////////////////////////////////////////////////////////////
 
 #include "mathlib.h"
+#include "../../public/steam/steamtypes.h" // defines int32, required by studio.h
 #include "..\..\engine\studio.h"
 #include "mdlviewer.h"
 
@@ -265,7 +266,7 @@ mstudioanim_t * StudioModel::GetAnim( mstudioseqdesc_t *pseqdesc )
 
 	if (pseqdesc->seqgroup == 0)
 	{
-		return (mstudioanim_t *)((byte *)m_pstudiohdr + pseqgroup->data + pseqdesc->animindex);
+		return (mstudioanim_t *)((byte *)m_pstudiohdr + pseqgroup->unused2 /* was pseqgroup->data, will be almost always be 0 */ + pseqdesc->animindex);
 	}
 
 	return (mstudioanim_t *)((byte *)m_panimhdr[pseqdesc->seqgroup] + pseqdesc->animindex);

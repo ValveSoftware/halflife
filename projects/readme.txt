@@ -2,13 +2,13 @@ Directory Contents
 ==================
 
 vs2010
-  Contains .vcxproj for building valve, dmc and ricochet dlls with
-  Visual C++ 2010 Express
-  
+  Contains Visual C++ 2010 Express project and solution files.
+  Please read readme.txt included in that folder for further instructions.
+
 
 Other notes
 ===========
 
-MSVC++ 6.0 .dsp files can be found in the appropiate folders.
+MSVC++ 6.0 .dsp files can be found in the appropriate folders.
 
 Linux Makefiles can be found in ../linux/
