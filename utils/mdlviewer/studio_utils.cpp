@@ -20,6 +20,7 @@
 #include <gl\glu.h>
 
 #include "mathlib.h"
+#include "../../public/steam/steamtypes.h" // defines int32, required by studio.h
 #include "..\..\engine\studio.h"
 #include "mdlviewer.h"
 
@@ -32,19 +33,20 @@ static int g_texnum = 1;
 void StudioModel::UploadTexture(mstudiotexture_t *ptexture, byte *data, byte *pal)
 {
 	// unsigned *in, int inwidth, int inheight, unsigned *out,  int outwidth, int outheight;
+	int outwidth, outheight;
 	int		i, j;
 	int		row1[256], row2[256], col1[256], col2[256];
 	byte	*pix1, *pix2, *pix3, *pix4;
 	byte	*tex, *out;
 
 	// convert texture to power of 2
-	for (int outwidth = 1; outwidth < ptexture->width; outwidth <<= 1)
+	for (outwidth = 1; outwidth < ptexture->width; outwidth <<= 1)
 		;
 
 	if (outwidth > 256)
 		outwidth = 256;
 
-	for (int outheight = 1; outheight < ptexture->height; outheight <<= 1)
+	for (outheight = 1; outheight < ptexture->height; outheight <<= 1)
 		;
 
 	if (outheight > 256)
@@ -266,10 +268,11 @@ void StudioModel::GetSequenceInfo( float *pflFrameRate, float *pflGroundSpeed )
 
 float StudioModel::SetController( int iController, float flValue )
 {
+	int i;
 	mstudiobonecontroller_t	*pbonecontroller = (mstudiobonecontroller_t *)((byte *)m_pstudiohdr + m_pstudiohdr->bonecontrollerindex);
 
 	// find first controller that matches the index
-	for (int i = 0; i < m_pstudiohdr->numbonecontrollers; i++, pbonecontroller++)
+	for (i = 0; i < m_pstudiohdr->numbonecontrollers; i++, pbonecontroller++)
 	{
 		if (pbonecontroller->index == iController)
 			break;
