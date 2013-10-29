@@ -62,7 +62,7 @@ SOURCE="$(InputPath)"
 
 BuildCmds= \
 	call ..\filecopy.bat $(InputPath) $(ProjDir)\..\..\game\mod\dlls\$(InputName).dll \
-	call ..\filecopy.bat $(InputDir)\$(InputName).pdb $(ProjDir)\..\..\game\moddlls\$(InputName).pdb \
+	call ..\filecopy.bat $(InputDir)\$(InputName).pdb $(ProjDir)\..\..\game\mod\dlls\$(InputName).pdb \
 	
 
 "$(ProjDir)\..\..\game\mod\dlls\$(InputName).dll" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
