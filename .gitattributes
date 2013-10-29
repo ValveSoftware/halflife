@@ -1,4 +1,5 @@
 # Force CRLF for Windows files:
+*.bat text eol=crlf
 *.dsp text eol=crlf
 *.dsw text eol=crlf
 *.sln text eol=crlf
