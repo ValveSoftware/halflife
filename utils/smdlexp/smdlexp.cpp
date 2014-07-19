@@ -821,7 +821,8 @@ Point3 DumpModelTEP::Pt3GetRVertexNormal(RVertex *prvertex, DWORD smGroupFace)
 		return prvertex->rn.getNormal();
 	else
 	{
-		for (int irn = 0; irn < cNormals; irn++)
+		int irn;
+		for (irn = 0; irn < cNormals; irn++)
 			if (prvertex->ern[irn].getSmGroup() & smGroupFace)
 				break;
 
@@ -908,7 +909,8 @@ void SetIndexOfINode(INode *pnode, int inode)
 {
 	TSTR strNodeName(pnode->GetName());
 	NAMEMAP *pnm;
-	for (int inm = 0; inm < g_inmMac; inm++)
+	int inm;
+	for (inm = 0; inm < g_inmMac; inm++)
 		if (FStrEq(g_rgnm[inm].szNodeName, (char*)strNodeName))
 			break;
 	if (inm < g_inmMac)
