@@ -6,9 +6,11 @@ projects.sln
   compiling the valve, dmc and ricochet DLL files.
   
 utils.sln
-  Solution file containing projects for the utilities. Special user interaction
-  is required in order to compile a share of the projects, see "Installing GLUT
-  and GLAUX" bellow.
+  Solution file containing projects for the utilities.
+  Special user interaction is required in order to compile a share of the
+  projects, see "Installing GLUT and GLAUX" bellow.
+  Special user interaction is also required for the smdlexp project, see
+  "smdlexp project" bellow.
   The serverctrl project is problematic, see "serverctrl project" bellow.
   Further project specific notes are also provided bellow.
   
@@ -129,4 +131,17 @@ smdlexp project
 
 Please note that this project requires the 3D Studio Max 4.2 SDK.
 You might need to adjust Include and Additional Library Directories according
-to your intallation.
+to your intallation in C++ and Linker settings.
+
+The MAX 4.2 SDK needs adjustment:
+Comment out the following line in max.h
+#include <ctl3d.h>
+So that it reads
+//#include <ctl3d.h
+.
+
+You also need the phyexp.h from Character Studio, which you should place in
+c:\3dsmax42\cstudio\sdk or adjust the Include Directories accordingly.
+
+Someone should port that project to a newer MAX SDK Version, but that is
+really beyond the current scope.
