@@ -60,7 +60,7 @@
       <AdditionalDependencies>COMCTL32.LIB;maxutil.lib;geom.lib;mesh.lib;core.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>c:\3dsmax42\maxsdk\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <OutputFile>c:\3dsmax42\plugins\smdlexp.dle</OutputFile>
-      <ModuleDefinitionFile>$(MSBuildProjectDirectory)\..\..\utils\smdlexp\smdlexp.def</ModuleDefinitionFile>
+      <ModuleDefinitionFile>$(ProjectDir)..\..\utils\smdlexp\smdlexp.def</ModuleDefinitionFile>
     </Link>
     <PostBuildEvent>
       <Command>
@@ -85,6 +85,7 @@
       <AdditionalDependencies>COMCTL32.LIB;maxutil.lib;geom.lib;mesh.lib;core.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>c:\3dsmax42\maxsdk\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <OutputFile>c:\3dsmax42\plugins\smdlexp.dle</OutputFile>
+      <ModuleDefinitionFile>$(ProjectDir)..\..\utils\smdlexp\smdlexp.def</ModuleDefinitionFile>
     </Link>
     <PostBuildEvent>
       <Command>
