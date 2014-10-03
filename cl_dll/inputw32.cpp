@@ -32,6 +32,7 @@
 int	g_iVisibleMouse = 0;
 
 extern cl_enginefunc_t gEngfuncs;
+
 extern int iMouseInUse;
 
 extern kbutton_t	in_strafe;
@@ -54,10 +55,13 @@ extern cvar_t *cl_forwardspeed;
 extern cvar_t *cl_pitchspeed;
 extern cvar_t *cl_movespeedkey;
 
-
+#ifdef _WIN32
 static double s_flRawInputUpdateTime = 0.0f;
 static bool m_bRawInput = false;
 static bool m_bMouseThread = false;
+bool isMouseRelative = false;
+#endif
+
 extern globalvars_t *gpGlobals;
 
 // mouse variables
@@ -111,7 +115,6 @@ enum _ControlList
 	AxisSide,
 	AxisTurn
 };
-
 
 
 DWORD	dwAxisMap[ JOY_MAX_AXES ];
@@ -232,6 +235,14 @@ void CL_DLLEXPORT IN_ActivateMouse (void)
 		if (mouseparmsvalid)
 			restore_spi = SystemParametersInfo (SPI_SETMOUSE, 0, newmouseparms, 0);
 
+		m_bRawInput = CVAR_GET_FLOAT( "m_rawinput" ) != 0;
+		if(m_bRawInput)
+		{
+			SDL_SetRelativeMouseMode(SDL_TRUE);
+			isMouseRelative = true;
+		}
+#else
+		SDL_SetRelativeMouseMode(SDL_TRUE);
 #endif
 		mouseactive = 1;
 	}
@@ -251,6 +262,13 @@ void CL_DLLEXPORT IN_DeactivateMouse (void)
 		if (restore_spi)
 			SystemParametersInfo (SPI_SETMOUSE, 0, originalmouseparms, 0);
 
+		if(isMouseRelative)
+		{
+			SDL_SetRelativeMouseMode(SDL_FALSE);
+			isMouseRelative = false;
+		}
+#else
+		SDL_SetRelativeMouseMode(SDL_FALSE);
 #endif
 
 		mouseactive = 0;
@@ -367,6 +385,20 @@ void IN_ResetMouse( void )
 	{
 		s_flRawInputUpdateTime = gpGlobals->time;
 		m_bRawInput = CVAR_GET_FLOAT( "m_rawinput" ) != 0;
+
+		if(mouseactive)
+		{
+			if(m_bRawInput && !isMouseRelative)
+			{
+				SDL_SetRelativeMouseMode(SDL_TRUE);
+				isMouseRelative = true;
+			}
+			else if(!m_bRawInput && isMouseRelative)
+			{
+				SDL_SetRelativeMouseMode(SDL_FALSE);
+				isMouseRelative = false;
+			}
+		}
 	}
 #endif
 }
@@ -451,6 +483,64 @@ void IN_ScaleMouse( float *x, float *y )
 	}
 }
 
+void IN_GetMouseDelta( int *pOutX, int *pOutY)
+{
+	int mx, my;
+	int deltaX, deltaY;
+#ifdef _WIN32
+	if ( !m_bRawInput )
+	{
+		if ( m_bMouseThread )
+		{
+			ThreadInterlockedExchange( &current_pos.x, s_mouseDeltaX );
+			ThreadInterlockedExchange( &current_pos.y, s_mouseDeltaY );
+			ThreadInterlockedExchange( &s_mouseDeltaX, 0 );
+			ThreadInterlockedExchange( &s_mouseDeltaY, 0 );
+		}
+		else
+		{
+			GetCursorPos (&current_pos);
+		}
+	}
+	else
+#endif
+	{
+		SDL_GetRelativeMouseState( &deltaX, &deltaY );
+		current_pos.x = deltaX;
+		current_pos.y = deltaY;	
+	}
+		
+#ifdef _WIN32
+	if ( !m_bRawInput )
+	{
+		if ( m_bMouseThread )
+		{
+			mx = current_pos.x;
+			my = current_pos.y;
+		}
+		else
+		{
+			mx = current_pos.x - gEngfuncs.GetWindowCenterX() + mx_accum;
+			my = current_pos.y - gEngfuncs.GetWindowCenterY() + my_accum;
+		}
+	}
+	else
+#endif
+	{
+		mx = deltaX + mx_accum;
+		my = deltaY + my_accum;
+	}
+		
+	mx_accum = 0;
+	my_accum = 0;
+
+	if(pOutX) *pOutX = mx;
+	if(pOutY) *pOutY = my;
+
+	// reset mouse position if required, so there is room to move:
+	IN_ResetMouse();
+}
+
 /*
 ===========
 IN_MouseMove
@@ -472,53 +562,7 @@ void IN_MouseMove ( float frametime, usercmd_t *cmd)
 	//      move the camera, or if the mouse cursor is visible or if we're in intermission
 	if ( !iMouseInUse && !gHUD.m_iIntermission && !g_iVisibleMouse )
 	{
-		int deltaX, deltaY;
-#ifdef _WIN32
-		if ( !m_bRawInput )
-		{
-			if ( m_bMouseThread )
-			{
-				ThreadInterlockedExchange( &current_pos.x, s_mouseDeltaX );
-				ThreadInterlockedExchange( &current_pos.y, s_mouseDeltaY );
-				ThreadInterlockedExchange( &s_mouseDeltaX, 0 );
-				ThreadInterlockedExchange( &s_mouseDeltaY, 0 );
-			}
-			else
-			{
-				GetCursorPos (&current_pos);
-			}
-		}
-		else
-#endif
-		{
-			SDL_GetRelativeMouseState( &deltaX, &deltaY );
-			current_pos.x = deltaX;
-			current_pos.y = deltaY;	
-		}
-		
-#ifdef _WIN32
-		if ( !m_bRawInput )
-		{
-			if ( m_bMouseThread )
-			{
-				mx = current_pos.x;
-				my = current_pos.y;
-			}
-			else
-			{
-				mx = current_pos.x - gEngfuncs.GetWindowCenterX() + mx_accum;
-				my = current_pos.y - gEngfuncs.GetWindowCenterY() + my_accum;
-			}
-		}
-		else
-#endif
-		{
-			mx = deltaX + mx_accum;
-			my = deltaY + my_accum;
-		}
-		
-		mx_accum = 0;
-		my_accum = 0;
+		IN_GetMouseDelta( &mx, &my );
 
 		if (m_filter && m_filter->value)
 		{
@@ -561,12 +605,6 @@ void IN_MouseMove ( float frametime, usercmd_t *cmd)
 			{
 				cmd->forwardmove -= m_forward->value * mouse_y;
 			}
-		}
-
-		// if the mouse has moved, force it to the center, so there's room to move
-		if ( mx || my )
-		{
-			IN_ResetMouse();
 		}
 	}
 
@@ -649,10 +687,10 @@ void IN_StartupJoystick (void)
 	// abort startup if user requests no joystick
 	if ( gEngfuncs.CheckParm ("-nojoy", NULL ) ) 
 		return; 
- 
- 	// assume no joystick
+	
+	// assume no joystick
 	joy_avail = 0; 
-
+	
 	int nJoysticks = SDL_NumJoysticks();
 	if ( nJoysticks > 0 )
 	{
@@ -677,7 +715,6 @@ void IN_StartupJoystick (void)
 					joy_advancedinit = 0;
 					break;
 				}
-
 			}
 		}
 	}
@@ -685,23 +722,21 @@ void IN_StartupJoystick (void)
 	{
 		gEngfuncs.Con_DPrintf ("joystick not found -- driver not present\n\n");
 	}
-	
 }
-
 
 int RawValuePointer (int axis)
 {
 	switch (axis)
 	{
-		default:
-		case JOY_AXIS_X:
-			return SDL_GameControllerGetAxis( s_pJoystick, SDL_CONTROLLER_AXIS_LEFTX );
-		case JOY_AXIS_Y:
-			return SDL_GameControllerGetAxis( s_pJoystick, SDL_CONTROLLER_AXIS_LEFTY );
-		case JOY_AXIS_Z:
-			return SDL_GameControllerGetAxis( s_pJoystick, SDL_CONTROLLER_AXIS_RIGHTX );
-		case JOY_AXIS_R:
-			return SDL_GameControllerGetAxis( s_pJoystick, SDL_CONTROLLER_AXIS_RIGHTY );
+	default:
+	case JOY_AXIS_X:
+		return SDL_GameControllerGetAxis( s_pJoystick, SDL_CONTROLLER_AXIS_LEFTX );
+	case JOY_AXIS_Y:
+		return SDL_GameControllerGetAxis( s_pJoystick, SDL_CONTROLLER_AXIS_LEFTY );
+	case JOY_AXIS_Z:
+		return SDL_GameControllerGetAxis( s_pJoystick, SDL_CONTROLLER_AXIS_RIGHTX );
+	case JOY_AXIS_R:
+		return SDL_GameControllerGetAxis( s_pJoystick, SDL_CONTROLLER_AXIS_RIGHTY );
 		
 	}
 }
@@ -1090,7 +1125,7 @@ void IN_Init (void)
 	m_customaccel_exponent	= gEngfuncs.pfnRegisterVariable ( "m_customaccel_exponent", "1", FCVAR_ARCHIVE );
 
 #ifdef _WIN32
-	m_bRawInput				= CVAR_GET_FLOAT( "m_rawinput" ) > 0;
+	m_bRawInput				= CVAR_GET_FLOAT( "m_rawinput" ) != 0;
 	m_bMouseThread			= gEngfuncs.CheckParm ("-mousethread", NULL ) != NULL;
 	m_mousethread_sleep			= gEngfuncs.pfnRegisterVariable ( "m_mousethread_sleep", "10", FCVAR_ARCHIVE );
 
