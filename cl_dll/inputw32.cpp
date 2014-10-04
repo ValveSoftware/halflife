@@ -28,8 +28,8 @@
 
 #define MOUSE_BUTTON_COUNT 5
 
-// Set this to 1 to show mouse cursor.  Experimental
-int	g_iVisibleMouse = 0;
+// use IN_SetVisibleMouse to set:
+int	iVisibleMouse = 0;
 
 extern cl_enginefunc_t gEngfuncs;
 
@@ -222,14 +222,14 @@ DWORD WINAPI MousePos_ThreadFunction( LPVOID p )
 }
 #endif
 
-/*
-===========
-IN_ActivateMouse
-===========
-*/
-void CL_DLLEXPORT IN_ActivateMouse (void)
+void IN_SetMouseMode(bool enable)
 {
-	if (mouseinitialized)
+	static bool currentMouseMode = false;
+	
+	if(enable == currentMouseMode)
+		return;
+
+	if(enable)
 	{
 #ifdef _WIN32
 		if (mouseparmsvalid)
@@ -244,6 +244,46 @@ void CL_DLLEXPORT IN_ActivateMouse (void)
 #else
 		SDL_SetRelativeMouseMode(SDL_TRUE);
 #endif
+
+		currentMouseMode = true;
+	}
+	else
+	{
+#ifdef _WIN32
+		if(isMouseRelative)
+		{
+			SDL_SetRelativeMouseMode(SDL_FALSE);
+			isMouseRelative = false;
+		}
+
+		if (restore_spi)
+			SystemParametersInfo (SPI_SETMOUSE, 0, originalmouseparms, 0);
+#else
+		SDL_SetRelativeMouseMode(SDL_FALSE);
+#endif
+
+		currentMouseMode = false;
+	}
+}
+
+void IN_SetVisibleMouse(bool visible)
+{
+	iVisibleMouse = visible;
+
+	IN_SetMouseMode(!visible);
+}
+
+/*
+===========
+IN_ActivateMouse
+===========
+*/
+void CL_DLLEXPORT IN_ActivateMouse (void)
+{
+	if (mouseinitialized)
+	{
+		IN_SetMouseMode(true);
+
 		mouseactive = 1;
 	}
 }
@@ -258,18 +298,7 @@ void CL_DLLEXPORT IN_DeactivateMouse (void)
 {
 	if (mouseinitialized)
 	{
-#ifdef _WIN32
-		if (restore_spi)
-			SystemParametersInfo (SPI_SETMOUSE, 0, originalmouseparms, 0);
-
-		if(isMouseRelative)
-		{
-			SDL_SetRelativeMouseMode(SDL_FALSE);
-			isMouseRelative = false;
-		}
-#else
-		SDL_SetRelativeMouseMode(SDL_FALSE);
-#endif
+		IN_SetMouseMode(false);
 
 		mouseactive = 0;
 	}
@@ -412,7 +441,7 @@ void CL_DLLEXPORT IN_MouseEvent (int mstate)
 {
 	int		i;
 
-	if ( iMouseInUse || g_iVisibleMouse )
+	if ( iMouseInUse || iVisibleMouse )
 		return;
 
 	// perform button actions
@@ -485,60 +514,69 @@ void IN_ScaleMouse( float *x, float *y )
 
 void IN_GetMouseDelta( int *pOutX, int *pOutY)
 {
+	bool active = mouseactive && !iVisibleMouse;
 	int mx, my;
-	int deltaX, deltaY;
-#ifdef _WIN32
-	if ( !m_bRawInput )
+
+	if(active)
 	{
-		if ( m_bMouseThread )
+		int deltaX, deltaY;
+#ifdef _WIN32
+		if ( !m_bRawInput )
 		{
-			ThreadInterlockedExchange( &current_pos.x, s_mouseDeltaX );
-			ThreadInterlockedExchange( &current_pos.y, s_mouseDeltaY );
-			ThreadInterlockedExchange( &s_mouseDeltaX, 0 );
-			ThreadInterlockedExchange( &s_mouseDeltaY, 0 );
+			if ( m_bMouseThread )
+			{
+				ThreadInterlockedExchange( &current_pos.x, s_mouseDeltaX );
+				ThreadInterlockedExchange( &current_pos.y, s_mouseDeltaY );
+				ThreadInterlockedExchange( &s_mouseDeltaX, 0 );
+				ThreadInterlockedExchange( &s_mouseDeltaY, 0 );
+			}
+			else
+			{
+				GetCursorPos (&current_pos);
+			}
 		}
 		else
-		{
-			GetCursorPos (&current_pos);
-		}
-	}
-	else
 #endif
-	{
-		SDL_GetRelativeMouseState( &deltaX, &deltaY );
-		current_pos.x = deltaX;
-		current_pos.y = deltaY;	
-	}
+		{
+			SDL_GetRelativeMouseState( &deltaX, &deltaY );
+			current_pos.x = deltaX;
+			current_pos.y = deltaY;	
+		}
 		
 #ifdef _WIN32
-	if ( !m_bRawInput )
-	{
-		if ( m_bMouseThread )
+		if ( !m_bRawInput )
 		{
-			mx = current_pos.x;
-			my = current_pos.y;
+			if ( m_bMouseThread )
+			{
+				mx = current_pos.x;
+				my = current_pos.y;
+			}
+			else
+			{
+				mx = current_pos.x - gEngfuncs.GetWindowCenterX() + mx_accum;
+				my = current_pos.y - gEngfuncs.GetWindowCenterY() + my_accum;
+			}
 		}
 		else
+#endif
 		{
-			mx = current_pos.x - gEngfuncs.GetWindowCenterX() + mx_accum;
-			my = current_pos.y - gEngfuncs.GetWindowCenterY() + my_accum;
+			mx = deltaX + mx_accum;
+			my = deltaY + my_accum;
 		}
+		
+		mx_accum = 0;
+		my_accum = 0;
+
+		// reset mouse position if required, so there is room to move:
+		IN_ResetMouse();
 	}
 	else
-#endif
 	{
-		mx = deltaX + mx_accum;
-		my = deltaY + my_accum;
+		mx = my = 0;
 	}
-		
-	mx_accum = 0;
-	my_accum = 0;
 
 	if(pOutX) *pOutX = mx;
 	if(pOutY) *pOutY = my;
-
-	// reset mouse position if required, so there is room to move:
-	IN_ResetMouse();
 }
 
 /*
@@ -560,7 +598,7 @@ void IN_MouseMove ( float frametime, usercmd_t *cmd)
 
 	//jjb - this disbles normal mouse control if the user is trying to 
 	//      move the camera, or if the mouse cursor is visible or if we're in intermission
-	if ( !iMouseInUse && !gHUD.m_iIntermission && !g_iVisibleMouse )
+	if ( !iMouseInUse && !gHUD.m_iIntermission && !iVisibleMouse )
 	{
 		IN_GetMouseDelta( &mx, &my );
 
@@ -631,7 +669,7 @@ IN_Accumulate
 void CL_DLLEXPORT IN_Accumulate (void)
 {
 	//only accumulate mouse if we are not moving the camera with the mouse
-	if ( !iMouseInUse && !g_iVisibleMouse)
+	if ( !iMouseInUse && !iVisibleMouse)
 	{
 	    if (mouseactive)
 	    {

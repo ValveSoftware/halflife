@@ -29,8 +29,6 @@ int grgLogoFrame[MAX_LOGO_FRAMES] =
 	29, 29, 29, 29, 29, 28, 27, 26, 25, 24, 30, 31 
 };
 
-extern int g_iVisibleMouse;
-
 // Think
 void CHud::Think(void)
 {

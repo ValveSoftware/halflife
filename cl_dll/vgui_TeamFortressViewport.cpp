@@ -58,7 +58,7 @@
 #include "shake.h"
 #include "screenfade.h"
 
-extern int g_iVisibleMouse;
+void IN_SetVisibleMouse(bool visible);
 class CCommandMenu;
 int g_iPlayerClass;
 int g_iTeamNumber;
@@ -2060,7 +2060,7 @@ void TeamFortressViewport::UpdateCursorState()
 	// Need cursor if any VGUI window is up
 	if ( m_pSpectatorPanel->m_menuVisible || m_pCurrentMenu || m_pTeamMenu->isVisible() || m_pServerBrowser->isVisible() || GetClientVoiceMgr()->IsInSquelchMode() )
 	{
-		g_iVisibleMouse = true;
+		IN_SetVisibleMouse(true);
 		App::getInstance()->setCursorOveride( App::getInstance()->getScheme()->getCursor(Scheme::scu_arrow) );
 		return;
 	}
@@ -2069,7 +2069,7 @@ void TeamFortressViewport::UpdateCursorState()
 		// commandmenu doesn't have cursor if hud_capturemouse is turned off
 		if ( gHUD.m_pCvarStealMouse->value != 0.0f )
 		{
-			g_iVisibleMouse = true;
+			IN_SetVisibleMouse(true);
 			App::getInstance()->setCursorOveride( App::getInstance()->getScheme()->getCursor(Scheme::scu_arrow) );
 			return;
 		}
@@ -2081,7 +2081,7 @@ void TeamFortressViewport::UpdateCursorState()
 		IN_ResetMouse();
 	}
 
-	g_iVisibleMouse = false;
+	IN_SetVisibleMouse(false);
 	App::getInstance()->setCursorOveride( App::getInstance()->getScheme()->getCursor(Scheme::scu_none) );
 }
 
