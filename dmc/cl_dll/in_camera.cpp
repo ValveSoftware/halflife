@@ -28,12 +28,13 @@ extern cl_enginefunc_t gEngfuncs;
 #define CAM_ANGLE_DELTA 2.5
 #define CAM_ANGLE_SPEED 2.5
 #define CAM_MIN_DIST 30.0
-#define CAM_ANGLE_MOVE .5
 #define MAX_ANGLE_DIFF 10.0
 #define PITCH_MAX 90.0
 #define PITCH_MIN 0
 #define YAW_MAX  135.0
 #define YAW_MIN	 -135.0
+#define CAM_DIST_MOUSEFAC 0.05
+#define CAM_ANGLE_MOUSEFAC 1.67
 
 enum ECAM_Command
 {
@@ -43,6 +44,11 @@ enum ECAM_Command
 };
 
 //-------------------------------------------------- Global Variables
+
+extern cvar_t	*m_pitch;
+extern cvar_t	*m_yaw;
+extern cvar_t	*m_forward;
+extern cvar_t	*m_side;
 
 cvar_t	*cam_command;
 cvar_t	*cam_snapto;
@@ -67,7 +73,7 @@ int cam_thirdperson;
 int cam_mousemove; //true if we are moving the cam with the mouse, False if not
 int iMouseInUse=0;
 int cam_distancemove;
-POINT		cam_mouse;
+
 //-------------------------------------------------- Local Variables
 
 static kbutton_t cam_pitchup, cam_pitchdown, cam_yawleft, cam_yawright;
@@ -84,11 +90,22 @@ void CAM_EndDistance(void);
 
 // defined in inputw32.cpp:
 void IN_GetMouseDelta( int *pOutX, int *pOuty);
+void IN_ScaleMouse( float *x, float *y );
 
-void CAM_GetMouseDelta( POINT *p )
+void CAM_GetScaledMouseDelta( float *pOutX, float *pOutY )
 {
-	if(p)
-		IN_GetMouseDelta( (int *)&p->x, (int *)&p->y );
+	int x,y;
+	float fx, fy;
+
+	IN_GetMouseDelta( &x, &y );
+
+	fx = x;
+	fy = y;
+
+	IN_ScaleMouse( &fx, &fy );
+
+	if(pOutX) *pOutX = fx;
+	if(pOutY) *pOutY = fy;
 }
 
 //-------------------------------------------------- Local Functions
@@ -150,6 +167,7 @@ extern trace_t SV_ClipMoveToEntity (edict_t *ent, vec3_t start, vec3_t mins, vec
 
 void CL_DLLEXPORT CAM_Think( void )
 {
+	float cam_mouse_x, cam_mouse_y;
 	vec3_t origin;
 	vec3_t ext, pnt, camForward, camRight, camUp;
 	moveclip_t	clip;
@@ -195,7 +213,7 @@ void CL_DLLEXPORT CAM_Think( void )
 	if (cam_mousemove)
 	{
 	    //get mouse cursor delta
-		CAM_GetMouseDelta (&cam_mouse);
+		CAM_GetScaledMouseDelta (&cam_mouse_x,&cam_mouse_y);
 		//check for X delta values and adjust accordingly
 		//eventually adjust YAW based on amount of movement
 	  //don't do any movement of the cam using YAW/PITCH if we are zooming in/out the camera	
@@ -203,12 +221,12 @@ void CL_DLLEXPORT CAM_Think( void )
 	  {
 		
 		//keep the camera within certain limits around the player (ie avoid certain bad viewing angles)  
-		if (cam_mouse.x>0)
+		if (cam_mouse_x>0)
 		{
 			//if ((camAngles[YAW]>=225.0)||(camAngles[YAW]<135.0))
 			if (camAngles[YAW]<c_maxyaw->value)
 			{
-				camAngles[ YAW ] += (CAM_ANGLE_MOVE)*((cam_mouse.x)/2);
+				camAngles[ YAW ] += CAM_ANGLE_MOUSEFAC * m_yaw->value * cam_mouse_x;
 			}
 			if (camAngles[YAW]>c_maxyaw->value)
 			{
@@ -216,12 +234,12 @@ void CL_DLLEXPORT CAM_Think( void )
 				camAngles[YAW]=c_maxyaw->value;
 			}
 		}
-		else if (cam_mouse.x<0)
+		else if (cam_mouse_x<0)
 		{
 			//if ((camAngles[YAW]<=135.0)||(camAngles[YAW]>225.0))
 			if (camAngles[YAW]>c_minyaw->value)
 			{
-			   camAngles[ YAW ] -= (CAM_ANGLE_MOVE)* ((-cam_mouse.x)/2);
+			   camAngles[ YAW ] -= CAM_ANGLE_MOUSEFAC * m_yaw->value * -cam_mouse_x;
 			   	
 			}
 			if (camAngles[YAW]<c_minyaw->value)
@@ -234,22 +252,22 @@ void CL_DLLEXPORT CAM_Think( void )
 		//check for y delta values and adjust accordingly
 		//eventually adjust PITCH based on amount of movement
 		//also make sure camera is within bounds
-		if (cam_mouse.y>0)
+		if (cam_mouse_y>0)
 		{
 			if(camAngles[PITCH]<c_maxpitch->value)
 			{
-			    camAngles[PITCH] +=(CAM_ANGLE_MOVE)* ((cam_mouse.y)/2);
+			    camAngles[PITCH] += CAM_ANGLE_MOUSEFAC * m_pitch->value * cam_mouse_y;
 			}
 			if (camAngles[PITCH]>c_maxpitch->value)
 			{
 				camAngles[PITCH]=c_maxpitch->value;
 			}
 		}
-		else if (cam_mouse.y<0)
+		else if (cam_mouse_y<0)
 		{
 			if (camAngles[PITCH]>c_minpitch->value)
 			{
-			   camAngles[PITCH] -= (CAM_ANGLE_MOVE)*((-cam_mouse.y)/2);
+			   camAngles[PITCH] -= CAM_ANGLE_MOUSEFAC * m_pitch->value * -cam_mouse_y;
 			}
 			if (camAngles[PITCH]<c_minpitch->value)
 			{
@@ -287,22 +305,22 @@ void CL_DLLEXPORT CAM_Think( void )
 
 	if (cam_distancemove)
 	{
-		if (cam_mouse.y>0)
+		if (cam_mouse_y>0)
 		{
 			if(dist<c_maxdistance->value)
 			{
-			    dist +=CAM_DIST_DELTA * ((cam_mouse.y)/2);
+			    dist += CAM_DIST_MOUSEFAC * m_forward->value * cam_mouse_y;
 			}
 			if (dist>c_maxdistance->value)
 			{
 				dist=c_maxdistance->value;
 			}
 		}
-		else if (cam_mouse.y<0)
+		else if (cam_mouse_y<0)
 		{
 			if (dist>c_mindistance->value)
 			{
-			   dist -= (CAM_DIST_DELTA)*((-cam_mouse.y)/2);
+			   dist -= CAM_DIST_MOUSEFAC * m_forward->value * -cam_mouse_y;
 			}
 			if (dist<c_mindistance->value)
 			{
