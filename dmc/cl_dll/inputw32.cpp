@@ -784,8 +784,6 @@ void IN_JoyMove ( float frametime, usercmd_t *cmd )
 	{
 		// get the floating point zero-centered, potentially-inverted data for the current axis
 		fAxisValue = (float)pdwRawValue[i];
-		// move centerpoint to zero
-		fAxisValue -= 32768.0;
 
 		if (joy_wwhack2->value != 0.0)
 		{
