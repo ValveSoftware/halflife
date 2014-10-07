@@ -2075,14 +2075,14 @@ void TeamFortressViewport::UpdateCursorState()
 		}
 	}
 
+	App::getInstance()->setCursorOveride( App::getInstance()->getScheme()->getCursor(Scheme::scu_none) );
+	IN_SetVisibleMouse(false);
+
 	// Don't reset mouse in demo playback
 	if ( !gEngfuncs.pDemoAPI->IsPlayingback() )
 	{
 		IN_ResetMouse();
 	}
-
-	IN_SetVisibleMouse(false);
-	App::getInstance()->setCursorOveride( App::getInstance()->getScheme()->getCursor(Scheme::scu_none) );
 }
 
 void TeamFortressViewport::UpdateHighlights()

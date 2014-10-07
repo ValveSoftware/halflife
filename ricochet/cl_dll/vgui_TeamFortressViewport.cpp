@@ -1682,9 +1682,9 @@ void TeamFortressViewport::UpdateCursorState()
 		}
 	}
 
-	IN_ResetMouse();
-	IN_SetVisibleMouse(false);
 	App::getInstance()->setCursorOveride( App::getInstance()->getScheme()->getCursor(Scheme::scu_none) );
+	IN_SetVisibleMouse(false);
+	IN_ResetMouse();
 }
 
 void TeamFortressViewport::UpdateHighlights()
