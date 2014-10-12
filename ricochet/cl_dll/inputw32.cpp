@@ -208,6 +208,9 @@ void CL_DLLEXPORT IN_ActivateMouse (void)
 		IN_SetMouseMode(true);
 
 		mouseactive = 1;
+
+		// now is a good time to reset mouse positon:
+		IN_ResetMouse();
 	}
 }
 
