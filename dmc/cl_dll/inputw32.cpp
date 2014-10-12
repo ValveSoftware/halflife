@@ -196,6 +196,8 @@ void IN_SetVisibleMouse(bool visible)
 	IN_SetMouseMode(!visible);
 }
 
+void IN_ResetMouse( void );
+
 /*
 ===========
 IN_ActivateMouse

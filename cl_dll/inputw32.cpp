@@ -85,7 +85,7 @@ static cvar_t *m_customaccel_exponent;
 
 #ifdef _WIN32
 // if threaded mouse is enabled then the time to sleep between polls
-static cvar_t *m_mousethread_sleep;
+static volatile cvar_t *m_mousethread_sleep;
 #endif
 
 int			mouse_buttons;
