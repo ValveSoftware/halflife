@@ -210,8 +210,16 @@ void MouseThread_ActiveLock_Exit( void )
 
 unsigned __stdcall MouseThread_Function( void * pArg )
 {
-	while ( WaitForSingleObject( s_hMouseQuitEvent, (int)m_mousethread_sleep->value ) != WAIT_OBJECT_0 )
+	while ( true )
 	{
+		int sleepVal = (int)m_mousethread_sleep->value;
+		if(0 > sleepVal) sleepVal = 0;
+		else if(1000 < sleepVal) sleepVal = 1000;
+		if(WAIT_OBJECT_0 == WaitForSingleObject( s_hMouseQuitEvent, sleepVal))
+		{
+			break;
+		}
+
 		if( MouseThread_ActiveLock_Enter() )
 		{
 			if ( InterlockedExchangeAdd(&mouseThreadActive, 0) )
@@ -479,29 +487,6 @@ void IN_ResetMouse( void )
 
 			if(lockEntered) MouseThread_ActiveLock_Exit();
 		}
-
-		if ( gpGlobals && gpGlobals->time - s_flRawInputUpdateTime > 1.0f )
-		{
-			s_flRawInputUpdateTime = gpGlobals->time;
-
-			bool lockEntered = MouseThread_ActiveLock_Enter();
-
-			m_bRawInput = CVAR_GET_FLOAT( "m_rawinput" ) != 0;
-
-			if(m_bRawInput && !isMouseRelative)
-			{
-				SDL_SetRelativeMouseMode(SDL_TRUE);
-				isMouseRelative = true;
-			}
-			else if(!m_bRawInput && isMouseRelative)
-			{
-				SDL_SetRelativeMouseMode(SDL_FALSE);
-				isMouseRelative = false;
-			}
-
-			UpdateMouseThreadActive();
-			if(lockEntered) MouseThread_ActiveLock_Exit();
-		}
 	}
 #endif
 }
@@ -651,6 +636,32 @@ void IN_GetMouseDelta( int *pOutX, int *pOutY)
 		if(true)
 #endif
 			IN_ResetMouse();
+
+#ifdef _WIN32
+		// update m_bRawInput occasionally: 
+		if ( gpGlobals && gpGlobals->time - s_flRawInputUpdateTime > 1.0f )
+		{
+			s_flRawInputUpdateTime = gpGlobals->time;
+
+			bool lockEntered = MouseThread_ActiveLock_Enter();
+
+			m_bRawInput = CVAR_GET_FLOAT( "m_rawinput" ) != 0;
+
+			if(m_bRawInput && !isMouseRelative)
+			{
+				SDL_SetRelativeMouseMode(SDL_TRUE);
+				isMouseRelative = true;
+			}
+			else if(!m_bRawInput && isMouseRelative)
+			{
+				SDL_SetRelativeMouseMode(SDL_FALSE);
+				isMouseRelative = false;
+			}
+
+			UpdateMouseThreadActive();
+			if(lockEntered) MouseThread_ActiveLock_Exit();
+		}
+#endif
 	}
 	else
 	{
@@ -1256,7 +1267,9 @@ void IN_Init (void)
 	m_bMouseThread			= gEngfuncs.CheckParm ("-mousethread", NULL ) != NULL;
 	m_mousethread_sleep		= gEngfuncs.pfnRegisterVariable ( "m_mousethread_sleep", "1", FCVAR_ARCHIVE ); // default to less than 1000 Hz
 
-	if (m_bMouseThread && m_mousethread_sleep ) 
+	m_bMouseThread = m_bMouseThread && NULL != m_mousethread_sleep;
+
+	if (m_bMouseThread) 
 	{
 		s_hMouseQuitEvent = CreateEvent( NULL, FALSE, FALSE, NULL );
 		s_hMouseThreadActiveLock = CreateEvent( NULL, FALSE, TRUE, NULL );

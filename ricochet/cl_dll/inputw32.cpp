@@ -753,7 +753,6 @@ IN_JoyMove
 */
 void IN_JoyMove ( float frametime, usercmd_t *cmd )
 {
-#ifdef _WIN32
 	float	speed, aspeed;
 	float	fAxisValue, fTemp;
 	int		i;
@@ -932,7 +931,6 @@ void IN_JoyMove ( float frametime, usercmd_t *cmd )
 		viewangles[PITCH] = -cl_pitchup->value;
 
 	gEngfuncs.SetViewAngles( (float *)viewangles );
-#endif
 }
 
 /*
