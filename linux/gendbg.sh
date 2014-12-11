@@ -1,10 +1,18 @@
 #!/bin/bash
 
+if [ -z "$PERFORCE" ]; then
+	PERFORCE=true
+fi
+
 UNAME=`uname`
 if [ "$UNAME" == "Darwin" ]; then
-	p4 edit $1.dSYM/...
+	if [ "$PERFORCE" == true ]; then
+		p4 edit $1.dSYM/...
+	fi
 	dsymutil $1
-	p4 revert -a $1.dSYM/...
+	if [ "$PERFORCE" == true ]; then
+		p4 revert -a $1.dSYM/...
+	fi
 	exit 0;
 fi
 

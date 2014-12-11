@@ -93,7 +93,9 @@ dirs:
 
 dmc.$(SHLIBEXT): $(DMCDLL_OBJS) $(PM_OBJS) $(GAME_SHARED_OBJS)
 	$(CLINK) $(SHLIBLDFLAGS) -o $(BUILD_DIR)/$@ $(DMCDLL_OBJS) $(PM_OBJS) $(GAME_SHARED_OBJS) $(LDFLAGS) $(CPP_LIB)
+ifeq ($(PERFORCE), true)
 	p4 edit ../../game/mod/dlls/$@
+endif
 	cp $(BUILD_DIR)/$@  ../../game/mod/dlls
 	./gendbg.sh ../../game/mod/dlls/dmc.$(SHLIBEXT)
 		
