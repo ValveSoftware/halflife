@@ -1,9 +1,14 @@
+//========= Copyright © 1996-2002, Valve LLC, All rights reserved. ============
+//
+// Purpose: 
+//
+// $NoKeywords: $
+//=============================================================================
+
 // in_win.c -- windows 95 mouse and joystick code
 // 02/21/97 JCB Added extended DirectInput code to support external controllers.
 
 #include "port.h"
-#include <SDL2/SDL_mouse.h>
-#include <SDL2/SDL_gamecontroller.h>
 
 #include "hud.h"
 #include "cl_util.h"
@@ -18,10 +23,13 @@
 #include "view.h"
 #include "Exports.h"
 
+#include <SDL2/SDL_mouse.h>
+#include <SDL2/SDL_gamecontroller.h>
+
 #define MOUSE_BUTTON_COUNT 5
 
-// Set this to 1 to show mouse cursor.  Experimental
-int	g_iVisibleMouse = 0;
+// use IN_SetVisibleMouse to set:
+int	iVisibleMouse = 0;
 
 extern cl_enginefunc_t gEngfuncs;
 
@@ -70,7 +78,7 @@ float		mouse_x, mouse_y;
 
 static int	restore_spi;
 static int	originalmouseparms[3], newmouseparms[3] = {0, 0, 1};
-static int	mouseactive;
+static int	mouseactive = 0;
 int			mouseinitialized;
 static int	mouseparmsvalid;
 static int	mouseshowtoggle = 1;
@@ -99,13 +107,13 @@ enum _ControlList
 
 DWORD	dwAxisMap[ JOY_MAX_AXES ];
 DWORD	dwControlMap[ JOY_MAX_AXES ];
-DWORD	pdwRawValue[ JOY_MAX_AXES ];
+int	pdwRawValue[ JOY_MAX_AXES ];
 DWORD		joy_oldbuttonstate, joy_oldpovstate;
 
 int			joy_id;
 DWORD		joy_numbuttons;
-SDL_GameController *s_pJoystick = NULL;
 
+SDL_GameController *s_pJoystick = NULL;
 
 // none of these cvars are saved over a session
 // this means that advanced controller configuration needs to be executed
@@ -151,6 +159,45 @@ void Force_CenterView_f (void)
 	}
 }
 
+void IN_SetMouseMode(bool enable)
+{
+	static bool currentMouseMode = false;
+	
+	if(enable == currentMouseMode)
+		return;
+
+	if(enable)
+	{
+#ifdef _WIN32
+		if (mouseparmsvalid)
+			restore_spi = SystemParametersInfo (SPI_SETMOUSE, 0, newmouseparms, 0);
+#endif
+		SDL_SetRelativeMouseMode(SDL_TRUE);
+
+		currentMouseMode = true;
+	}
+	else
+	{
+		SDL_SetRelativeMouseMode(SDL_FALSE);
+
+#ifdef _WIN32
+		if (restore_spi)
+			SystemParametersInfo (SPI_SETMOUSE, 0, originalmouseparms, 0);
+#endif
+
+		currentMouseMode = false;
+	}
+}
+
+void IN_SetVisibleMouse(bool visible)
+{
+	iVisibleMouse = visible;
+
+	IN_SetMouseMode(!visible);
+}
+
+void IN_ResetMouse( void );
+
 /*
 ===========
 IN_ActivateMouse
@@ -160,13 +207,15 @@ void CL_DLLEXPORT IN_ActivateMouse (void)
 {
 	if (mouseinitialized)
 	{
-#ifdef _WIN32
-		if (mouseparmsvalid)
-			restore_spi = SystemParametersInfo (SPI_SETMOUSE, 0, newmouseparms, 0);
-#endif
+		IN_SetMouseMode(true);
+
 		mouseactive = 1;
+
+		// now is a good time to reset mouse positon:
+		IN_ResetMouse();
 	}
 }
+
 
 /*
 ===========
@@ -177,10 +226,7 @@ void CL_DLLEXPORT IN_DeactivateMouse (void)
 {
 	if (mouseinitialized)
 	{
-#ifdef _WIN32
-		if (restore_spi)
-			SystemParametersInfo (SPI_SETMOUSE, 0, originalmouseparms, 0);
-#endif
+		IN_SetMouseMode(false);
 
 		mouseactive = 0;
 	}
@@ -265,7 +311,7 @@ void CL_DLLEXPORT IN_MouseEvent (int mstate)
 {
 	int		i;
 
-	if ( iMouseInUse || g_iVisibleMouse )
+	if ( iMouseInUse || iVisibleMouse )
 		return;
 
 	// perform button actions
@@ -336,6 +382,35 @@ void IN_ScaleMouse( float *x, float *y )
 	}
 }
 
+void IN_GetMouseDelta( int *pOutX, int *pOutY)
+{
+	bool active = mouseactive && !iVisibleMouse;
+	int mx, my;
+
+	if(active)
+	{
+		int deltaX, deltaY;
+		SDL_GetRelativeMouseState( &deltaX, &deltaY );
+		current_pos.x = deltaX;
+		current_pos.y = deltaY;	
+		mx = deltaX + mx_accum;
+		my = deltaY + my_accum;
+		
+		mx_accum = 0;
+		my_accum = 0;
+
+		// reset mouse position if required, so there is room to move:
+		IN_ResetMouse();
+	}
+	else
+	{
+		mx = my = 0;
+	}
+
+	if(pOutX) *pOutX = mx;
+	if(pOutY) *pOutY = my;
+}
+
 /*
 ===========
 IN_MouseMove
@@ -359,19 +434,11 @@ void IN_MouseMove ( float frametime, usercmd_t *cmd)
 
 	//jjb - this disbles normal mouse control if the user is trying to 
 	//      move the camera, or if the mouse cursor is visible or if we're in intermission
-	if ( !iMouseInUse && !gHUD.m_iIntermission && !g_iVisibleMouse && !iSpectator )
+	if ( !iMouseInUse && !gHUD.m_iIntermission && !iVisibleMouse && !iSpectator )
 	{
-		int deltaX, deltaY;
-		SDL_GetRelativeMouseState( &deltaX, &deltaY );
-		current_pos.x = deltaX;
-		current_pos.y = deltaY;	
-		mx = deltaX + mx_accum;
-		my = deltaY + my_accum;
-		
-		mx_accum = 0;
-		my_accum = 0;
+		IN_GetMouseDelta( &mx, &my );
 
-		if (m_filter->value)
+		if (m_filter && m_filter->value)
 		{
 			mouse_x = (mx + old_mouse_x) * 0.5;
 			mouse_y = (my + old_mouse_y) * 0.5;
@@ -413,12 +480,6 @@ void IN_MouseMove ( float frametime, usercmd_t *cmd)
 				cmd->forwardmove -= m_forward->value * mouse_y;
 			}
 		}
-
-		// if the mouse has moved, force it to the center, so there's room to move
-		if ( mx || my )
-		{
-			IN_ResetMouse();
-		}
 	}
 
 	gEngfuncs.SetViewAngles( (float *)viewangles );
@@ -444,7 +505,7 @@ IN_Accumulate
 void CL_DLLEXPORT IN_Accumulate (void)
 {
 	//only accumulate mouse if we are not moving the camera with the mouse
-	if ( !iMouseInUse && !g_iVisibleMouse)
+	if ( !iMouseInUse && !iVisibleMouse)
 	{
 	    if (mouseactive)
 	    {
@@ -513,7 +574,6 @@ void IN_StartupJoystick (void)
 					joy_advancedinit = 0;
 					break;
 				}
-				
 			}
 		}
 	}
@@ -521,7 +581,6 @@ void IN_StartupJoystick (void)
 	{
 		gEngfuncs.Con_DPrintf ("joystick not found -- driver not present\n\n");
 	}
-	
 }
 
 int RawValuePointer (int axis)
@@ -540,7 +599,6 @@ int RawValuePointer (int axis)
 		
 	}
 }
-
 
 /*
 ===========
@@ -601,7 +659,6 @@ void Joy_AdvancedUpdate_f (void)
 		dwAxisMap[JOY_AXIS_V] = dwTemp & 0x0000000f;
 		dwControlMap[JOY_AXIS_V] = dwTemp & JOY_RELATIVE_AXIS;
 	}
-
 }
 
 
@@ -696,7 +753,6 @@ IN_JoyMove
 */
 void IN_JoyMove ( float frametime, usercmd_t *cmd )
 {
-#ifdef _WIN32
 	float	speed, aspeed;
 	float	fAxisValue, fTemp;
 	int		i;
@@ -736,9 +792,7 @@ void IN_JoyMove ( float frametime, usercmd_t *cmd )
 	for (i = 0; i < JOY_MAX_AXES; i++)
 	{
 		// get the floating point zero-centered, potentially-inverted data for the current axis
-		fAxisValue = (float) pdwRawValue[i];
-		// move centerpoint to zero
-		fAxisValue -= 32768.0;
+		fAxisValue = (float)pdwRawValue[i];
 
 		if (joy_wwhack2->value != 0.0)
 		{
@@ -877,7 +931,6 @@ void IN_JoyMove ( float frametime, usercmd_t *cmd )
 		viewangles[PITCH] = -cl_pitchup->value;
 
 	gEngfuncs.SetViewAngles( (float *)viewangles );
-#endif
 }
 
 /*
