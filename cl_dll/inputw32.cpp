@@ -85,7 +85,7 @@ static cvar_t *m_customaccel_exponent;
 
 #ifdef _WIN32
 // if threaded mouse is enabled then the time to sleep between polls
-static volatile cvar_t *m_mousethread_sleep;
+static cvar_t *m_mousethread_sleep;
 #endif
 
 int			mouse_buttons;
@@ -186,11 +186,12 @@ void Force_CenterView_f (void)
 
 #ifdef _WIN32
 
-long mouseThreadActive = 0;
-long mouseThreadCenterX = 0;
-long mouseThreadCenterY = 0;
-long mouseThreadDeltaX = 0;
-long mouseThreadDeltaY = 0;
+LONG mouseThreadActive = 0;
+LONG mouseThreadCenterX = 0;
+LONG mouseThreadCenterY = 0;
+LONG mouseThreadDeltaX = 0;
+LONG mouseThreadDeltaY = 0;
+LONG mouseThreadSleep = 0;
 
 bool MouseThread_ActiveLock_Enter( void )
 {
@@ -212,7 +213,7 @@ unsigned __stdcall MouseThread_Function( void * pArg )
 {
 	while ( true )
 	{
-		int sleepVal = (int)m_mousethread_sleep->value;
+		DWORD sleepVal = (DWORD)InterlockedExchangeAdd(&mouseThreadSleep, 0);
 		if(0 > sleepVal) sleepVal = 0;
 		else if(1000 < sleepVal) sleepVal = 1000;
 		if(WAIT_OBJECT_0 == WaitForSingleObject( s_hMouseQuitEvent, sleepVal))
@@ -584,6 +585,9 @@ void IN_GetMouseDelta( int *pOutX, int *pOutY)
 		{
 			if ( m_bMouseThread )
 			{
+				// update mouseThreadSleep:
+				InterlockedExchange(&mouseThreadSleep, (LONG)m_mousethread_sleep->value);
+
 				bool lockEntered = MouseThread_ActiveLock_Enter();
 
 				current_pos.x = InterlockedExchange( &mouseThreadDeltaX, 0 );
@@ -1270,7 +1274,10 @@ void IN_Init (void)
 	m_bMouseThread = m_bMouseThread && NULL != m_mousethread_sleep;
 
 	if (m_bMouseThread) 
-	{
+	{		
+		// init mouseThreadSleep:
+		InterlockedExchange(&mouseThreadSleep, (LONG)m_mousethread_sleep->value);
+
 		s_hMouseQuitEvent = CreateEvent( NULL, FALSE, FALSE, NULL );
 		s_hMouseThreadActiveLock = CreateEvent( NULL, FALSE, TRUE, NULL );
 		if ( s_hMouseQuitEvent && s_hMouseThreadActiveLock)
