@@ -627,7 +627,8 @@ void CBasePlayerItem::DefaultTouch( CBaseEntity *pOther )
 	// then after the item touches the ground its Touch will be set back to DefaultTouch,
 	// so the player will pick it up again, this time Kill-ing the item (since we already have it in the inventory),
 	// which will make the pointer bad and crash the game.
-	SetThink( NULL );
+	if (m_pfnThink == &CBasePlayerItem::FallThink)
+		SetThink( NULL );
 }
 
 BOOL CanAttack( float attack_time, float curtime, BOOL isPredicted )
