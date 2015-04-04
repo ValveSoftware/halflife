@@ -521,14 +521,20 @@ int CGraph::NextNodeInRoute( int iCurrentNode, int iDest, int iHull, int iCap )
 {
 	int iNext = iCurrentNode;
 	int nCount = iDest+1;
-	char *pRoute = m_pRouteInfo + m_pNodes[ iCurrentNode ].m_pNextBestNode[iHull][iCap];
-
+        int nRouteOffset = m_pNodes[ iCurrentNode ].m_pNextBestNode[iHull][iCap];
+	if( (nRouteOffset >= m_nRouteInfo) || (nRouteOffset < 0) )
+	{
+		// HACK on arm =(
+		return iDest;
+	}
+	char *pRoute = m_pRouteInfo + nRouteOffset;
+	
 	// Until we decode the next best node
 	//
 	while (nCount > 0)
 	{
 		char ch = *pRoute++;
-		//ALERT(at_aiconsole, "C(%d)", ch);
+		ALERT(at_aiconsole, "C(%d)", ch);
 		if (ch < 0)
 		{
 			// Sequence phrase
@@ -538,17 +544,17 @@ int CGraph::NextNodeInRoute( int iCurrentNode, int iDest, int iHull, int iCap )
 			{
 				iNext = iDest;
 				nCount = 0;
-				//ALERT(at_aiconsole, "SEQ: iNext/iDest=%d\n", iNext);
+				ALERT(at_aiconsole, "SEQ: iNext/iDest=%d\n", iNext);
 			}
 			else
 			{
-				//ALERT(at_aiconsole, "SEQ: nCount + ch (%d + %d)\n", nCount, ch);
+				ALERT(at_aiconsole, "SEQ: nCount + ch (%d + %d)\n", nCount, ch);
 				nCount = nCount - ch;
 			}
 		}
 		else
 		{
-			//ALERT(at_aiconsole, "C(%d)", *pRoute);
+			ALERT(at_aiconsole, "C(%d)", *pRoute);
 
 			// Repeat phrase
 			//
@@ -558,11 +564,11 @@ int CGraph::NextNodeInRoute( int iCurrentNode, int iDest, int iHull, int iCap )
 				if (iNext >= m_cNodes) iNext -= m_cNodes;
 				else if (iNext < 0) iNext += m_cNodes;
 				nCount = 0;
-				//ALERT(at_aiconsole, "REP: iNext=%d\n", iNext);
+				ALERT(at_aiconsole, "REP: iNext=%d\n", iNext);
 			}
 			else
 			{
-				//ALERT(at_aiconsole, "REP: nCount - ch+1 (%d - %d+1)\n", nCount, ch);
+				ALERT(at_aiconsole, "REP: nCount - ch+1 (%d - %d+1)\n", nCount, ch);
 				nCount = nCount - ch - 1;
 			}
 			pRoute++;
@@ -3301,6 +3307,7 @@ void CGraph :: ComputeStaticRoutingTables( void )
 						if (i < m_nRouteInfo - nRoute)
 						{
 							m_pNodes[ iFrom ].m_pNextBestNode[iHull][iCap] = i;
+							//ALERT(at_aiconsole, "m_pNextBestNode = %i", i);
 						}
 						else
 						{
