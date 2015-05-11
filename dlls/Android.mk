@@ -9,7 +9,7 @@ LOCAL_MODULE := server
 
 LOCAL_CFLAGS += -D_LINUX -DCLIENT_WEAPONS -D_DEBUG \
 	-Dstricmp=strcasecmp -Dstrnicmp=strncasecmp -D_snprintf=snprintf \
-	-msoft-float -fno-exceptions -fsigned-char
+	-fno-exceptions
 
 LOCAL_CPPFLAGS := $(LOCAL_CFLAGS) -frtti
 
