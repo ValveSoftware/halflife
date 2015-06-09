@@ -143,6 +143,7 @@ TARGETS+= \
 
 build_dir:
 	-mkdir $(BUILD_DIR);
+	cp vgui.dylib vgui.so $(BUILD_DIR)
 	cd $(BUILD_DIR)
 
 targets: $(TARGETS)
@@ -168,3 +169,7 @@ ricochet: build_dir
 
 clean:
 	-rm -rf $(BUILD_OBJ_DIR)
+
+distclean:
+	-rm -rf $(BUILD_DIR)
+	-rm -f *_map.txt
