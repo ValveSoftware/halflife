@@ -104,10 +104,10 @@ int CHudSayText :: Draw( float flTime )
 		return 1;
 
 	// make sure the scrolltime is within reasonable bounds,  to guard against the clock being reset
-	flScrollTime = min( flScrollTime, flTime + m_HUD_saytext_time->value );
+	flScrollTime = V_min( flScrollTime, flTime + m_HUD_saytext_time->value );
 
 	// make sure the scrolltime is within reasonable bounds,  to guard against the clock being reset
-	flScrollTime = min( flScrollTime, flTime + m_HUD_saytext_time->value );
+	flScrollTime = V_min( flScrollTime, flTime + m_HUD_saytext_time->value );
 
 	if ( flScrollTime <= flTime )
 	{
@@ -136,8 +136,10 @@ int CHudSayText :: Draw( float flTime )
 					//char buf[MAX_PLAYER_NAME_LENGTH+32];
 
 					// draw the first x characters in the player color
-					strncpy( buf, g_szLineBuffer[i], min(g_iNameLengths[i], MAX_PLAYER_NAME_LENGTH+32) );
-					buf[ min(g_iNameLengths[i], MAX_PLAYER_NAME_LENGTH+31) ] = 0;
+					strncpy( buf, g_szLineBuffer[i], V_min(g_iNameLengths[i], MAX_PLAYER_NAME_LENGTH+32) );
+
+					buf[V_min(g_iNameLengths[i], MAX_PLAYER_NAME_LENGTH+31) ] = 0;
+
 					gEngfuncs.pfnDrawSetTextColor( g_pflNameColors[i][0], g_pflNameColors[i][1], g_pflNameColors[i][2] );
 					int x = DrawConsoleString( LINE_START, y, buf + 1 ); // don't draw the control code at the start
 					strncpy( buf, g_szLineBuffer[i] + g_iNameLengths[i], strlen( g_szLineBuffer[i] ));
@@ -217,7 +219,7 @@ void CHudSayText :: SayTextPrint( const char *pszBuf, int iBufSize, int clientIn
 		}
 	}
 
-	strncpy( g_szLineBuffer[i], pszBuf, max(iBufSize , MAX_CHARS_PER_LINE) );
+	strncpy( g_szLineBuffer[i], pszBuf, V_max(iBufSize , MAX_CHARS_PER_LINE) );
 
 	// make sure the text fits in one line
 	EnsureTextFitsInOneLineAndWrapIfHaveTo( i );

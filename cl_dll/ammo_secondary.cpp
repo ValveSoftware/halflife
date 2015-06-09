@@ -61,7 +61,9 @@ int CHudAmmoSecondary :: Draw(float flTime)
 	// draw secondary ammo icons above normal ammo readout
 	int a, x, y, r, g, b, AmmoWidth;
 	UnpackRGB( r, g, b, RGB_YELLOWISH );
-	a = (int) max( MIN_ALPHA, m_fFade );
+
+	a = (int)V_max( MIN_ALPHA, m_fFade );
+
 	if (m_fFade > 0)
 		m_fFade -= (gHUD.m_flTimeDelta * 20);  // slowly lower alpha to fade out icons
 	ScaleColors( r, g, b, a );
@@ -141,7 +143,7 @@ int CHudAmmoSecondary :: MsgFunc_SecAmmoVal( const char *pszName, int iSize, voi
 	int count = 0;
 	for ( int i = 0; i < MAX_SEC_AMMO_VALUES; i++ )
 	{
-		count += max( 0, m_iAmmoAmounts[i] );
+		count += V_max( 0, m_iAmmoAmounts[i] );
 	}
 
 	if ( count == 0 ) 

@@ -1,0 +1,55 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Source Files\utils">
+      <UniqueIdentifier>{3d07af82-de85-47cb-bd87-125a9043c5ad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\utils">
+      <UniqueIdentifier>{acb9edd8-ccf7-4221-8893-0cd5a3368fbc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\utils\smdlexp">
+      <UniqueIdentifier>{c35dd471-5706-455f-bd22-6964d0906c6e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\utils">
+      <UniqueIdentifier>{17940ef9-04e1-45c8-b52e-7030fbd6de03}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\utils\smdlexp">
+      <UniqueIdentifier>{3980e5e7-942c-40ad-9660-0a40a185ede0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\utils\smdlexp">
+      <UniqueIdentifier>{d82ea4d8-83a8-4071-b2c6-379a38d00c5b}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\..\utils\smdlexp\smdlexp.rc">
+      <Filter>Resource Files\utils\smdlexp</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\utils\smdlexp\smdlexp.cpp">
+      <Filter>Source Files\utils\smdlexp</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\utils\smdlexp\smdlexp.def">
+      <Filter>Source Files\utils\smdlexp</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\utils\smdlexp\smedefs.h">
+      <Filter>Header Files\utils\smdlexp</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

@@ -748,7 +748,8 @@ void IN_JoyMove ( float frametime, usercmd_t *cmd )
 				// y=ax^b; where a = 300 and b = 1.3
 				// also x values are in increments of 800 (so this is factored out)
 				// then bounds check result to level out excessively high spin rates
-				fTemp = 300.0 * pow(abs(fAxisValue) / 800.0, 1.3);
+				fTemp = 300.0f * ::powf(V_fabs(fAxisValue) / 800.0f, 1.3f);
+
 				if (fTemp > 14000.0)
 					fTemp = 14000.0;
 				// restore direction information
