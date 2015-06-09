@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -12,7 +12,7 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{2DE8C1AF-56AE-4B99-8AA5-BEDBF33D6216}</ProjectGuid>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <Keyword>ManagedCProj</Keyword>
     <RootNamespace>procinfo</RootNamespace>
   </PropertyGroup>
@@ -21,11 +21,13 @@
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v140</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v140</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -51,7 +53,8 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE</PreprocessorDefinitions>
+      <DisableSpecificWarnings>4005;4013;4018;4101;4133;4244;4273;4305;4996</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -59,8 +62,8 @@
       </AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>attrib -r ..\..\utils\procinfo\lib\win32_vc6\procinfo.lib
-copy $(TargetPath) ..\..\utils\procinfo\lib\win32_vc6\procinfo.lib</Command>
+      <Command>attrib -r "..\..\utils\procinfo\lib\win32_vc6\procinfo.lib"
+copy "$(TargetPath)" "..\..\utils\procinfo\lib\win32_vc6\procinfo.lib"</Command>
     </PostBuildEvent>
     <PostBuildEvent>
       <Message>Post-Build Event</Message>
@@ -69,7 +72,8 @@ copy $(TargetPath) ..\..\utils\procinfo\lib\win32_vc6\procinfo.lib</Command>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>WIN32;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE</PreprocessorDefinitions>
+      <DisableSpecificWarnings>4005;4013;4018;4101;4133;4244;4273;4305;4996</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -77,8 +81,8 @@ copy $(TargetPath) ..\..\utils\procinfo\lib\win32_vc6\procinfo.lib</Command>
       </AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>attrib -r ..\..\utils\procinfo\lib\win32_vc6\procinfo.lib
-copy $(TargetPath) ..\..\utils\procinfo\lib\win32_vc6\procinfo.lib</Command>
+      <Command>attrib -r "..\..\utils\procinfo\lib\win32_vc6\procinfo.lib"
+copy "$(TargetPath)" "..\..\utils\procinfo\lib\win32_vc6\procinfo.lib"</Command>
       <Message>Post-Build Event</Message>
     </PostBuildEvent>
   </ItemDefinitionGroup>

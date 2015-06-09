@@ -11,11 +11,14 @@ Package=<5>
 
 Package=<4>
 {{{
+    Begin Project Dependency
+    Project_Dep_Name mxToolKit Win32
+    End Project Dependency
 }}}
 
 ###############################################################################
 
-Project: "Half Life Model Viewer Safe Mode"=".\Half Life Model Viewer Safe Mode.dsp" - Package Owner=<4>
+Project: "mxToolKit Win32"="..\mxtk\msvc\mxToolKit Win32.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{

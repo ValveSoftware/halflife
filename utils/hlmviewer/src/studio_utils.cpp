@@ -14,11 +14,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#if 0
 #include <mx/gl.h>
-#else
-#include <FL/gl.h>
-#endif
 #include <GL/glu.h>
 #include "StudioModel.h"
 
@@ -37,13 +33,15 @@ bool bFilterTextures = true;
 
 static int g_texnum = 3;
 
-
+//Mugsy - upped the maximum texture size to 512. All changes are the replacement of '256'
+//with this define, MAX_TEXTURE_DIMS
+#define MAX_TEXTURE_DIMS 512	
 
 void StudioModel::UploadTexture(mstudiotexture_t *ptexture, byte *data, byte *pal, int name)
 {
 	// unsigned *in, int inwidth, int inheight, unsigned *out,  int outwidth, int outheight;
 	int		i, j;
-	int		row1[256], row2[256], col1[256], col2[256];
+	int		row1[MAX_TEXTURE_DIMS], row2[MAX_TEXTURE_DIMS], col1[MAX_TEXTURE_DIMS], col2[MAX_TEXTURE_DIMS];
 	byte	*pix1, *pix2, *pix3, *pix4;
 	byte	*tex, *out;
 
@@ -52,17 +50,15 @@ void StudioModel::UploadTexture(mstudiotexture_t *ptexture, byte *data, byte *pa
 	for (outwidth = 1; outwidth < ptexture->width; outwidth <<= 1)
 		;
 
-	//outwidth >>= 1;
-	if (outwidth > 256)
-		outwidth = 256;
+	if (outwidth > MAX_TEXTURE_DIMS)
+		outwidth = MAX_TEXTURE_DIMS;
 
 	int outheight;
 	for (outheight = 1; outheight < ptexture->height; outheight <<= 1)
 		;
 
-	//outheight >>= 1;
-	if (outheight > 256)
-		outheight = 256;
+	if (outheight > MAX_TEXTURE_DIMS)
+		outheight = MAX_TEXTURE_DIMS;
 
 	tex = out = (byte *)malloc( outwidth * outheight * 4);
 	if (!out)

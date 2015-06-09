@@ -12,7 +12,11 @@
 #include <windows.h>
 #include <GL/gl.h>
 #include <GL/glu.h>
+#ifdef NO_LIB_GLAUX
+#include "GL/glut.h"
+#else
 #include <GL/glaux.h>
+#endif
 
 #include "csg.h"
 
@@ -27,9 +31,16 @@ vec3_t	draw_mins, draw_maxs;
 
 void InitWindow (void)
 {
-    auxInitDisplayMode (AUX_SINGLE | AUX_RGB);
-    auxInitPosition (0, 0, WIN_SIZE, WIN_SIZE);
-    auxInitWindow ("qcsg");
+#ifdef NO_LIB_GLAUX
+	glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
+	glutInitWindowPosition(0, 0);
+	glutInitWindowSize(WIN_SIZE, WIN_SIZE);
+	glutInitDisplayString("qcsg");
+#else
+	auxInitDisplayMode (AUX_SINGLE | AUX_RGB);
+	auxInitPosition(0, 0, WIN_SIZE, WIN_SIZE);
+	auxInitWindow("qcsg");
+#endif
 }
 
 void Draw_ClearWindow (void)

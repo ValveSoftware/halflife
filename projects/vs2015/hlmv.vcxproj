@@ -1,0 +1,140 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{651D2EE5-6A4D-4959-BD4C-E6D7BD0898FB}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>vs2013</RootNamespace>
+    <TargetPlatformVersion>8.1</TargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>NotSet</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>NotSet</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <IntDir>$(Configuration)\$(ProjectName)\int\</IntDir>
+    <OutDir>$(Configuration)\$(ProjectName)\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <IntDir>$(Configuration)\$(ProjectName)\int\</IntDir>
+    <OutDir>$(Configuration)\$(ProjectName)\</OutDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>../../utils/hlmviewer/src/;../../utils/hlmviewer/mxtk/include/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>../../utils/hlmviewer/mxtk/lib/;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>winmm.lib;comctl32.lib;opengl32.lib;glu32.lib;mxtk.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <PostBuildEvent>
+      <Command>if not exist "..\..\utils\hlmviewer\bin" mkdir "..\..\utils\hlmviewer\bin"
+copy "$(TargetPath)" "..\..\utils\hlmviewer\bin\$(TargetFileName)"
+copy "$(TargetDir)$(TargetName).pdb" "..\..\utils\hlmviewer\bin\$(TargetName).pdb"
+if not exist "..\..\..\valve" mkdir "..\..\..\valve"
+copy "$(TargetPath)" "..\..\..\valve\$(TargetFileName)"
+copy "$(TargetDir)$(TargetName).pdb" "..\..\..\valve\$(TargetName).pdb"</Command>
+      <Message>Copying $(TargetFileName)  to  ..\..\valve\ </Message>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>../../utils/hlmviewer/src/;../../utils/hlmviewer/mxtk/include/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>../../utils/hlmviewer/mxtk/lib/;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>winmm.lib;comctl32.lib;opengl32.lib;glu32.lib;mxtk.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <PostBuildEvent>
+      <Command>if not exist "..\..\utils\hlmviewer\bin" mkdir "..\..\utils\hlmviewer\bin"
+copy "$(TargetPath)" "..\..\utils\hlmviewer\bin\$(TargetFileName)"
+if not exist "..\..\..\valve" mkdir "..\..\..\valve"
+copy "$(TargetPath)" "..\..\..\valve\$(TargetFileName)"</Command>
+      <Message>Copying $(TargetFileName)  to  ..\..\valve\ </Message>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\utils\hlmviewer\src\ControlPanel.cpp" />
+    <ClCompile Include="..\..\utils\hlmviewer\src\FileAssociation.cpp" />
+    <ClCompile Include="..\..\utils\hlmviewer\src\GlWindow.cpp" />
+    <ClCompile Include="..\..\utils\hlmviewer\src\mathlib.c" />
+    <ClCompile Include="..\..\utils\hlmviewer\src\mdlviewer.cpp" />
+    <ClCompile Include="..\..\utils\hlmviewer\src\pakviewer.cpp" />
+    <ClCompile Include="..\..\utils\hlmviewer\src\studio_render.cpp" />
+    <ClCompile Include="..\..\utils\hlmviewer\src\studio_utils.cpp" />
+    <ClCompile Include="..\..\utils\hlmviewer\src\ViewerSettings.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\..\utils\hlmviewer\src\icon1.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\utils\hlmviewer\src\anorms.h" />
+    <ClInclude Include="..\..\utils\hlmviewer\src\ControlPanel.h" />
+    <ClInclude Include="..\..\utils\hlmviewer\src\FileAssociation.h" />
+    <ClInclude Include="..\..\utils\hlmviewer\src\GlWindow.h" />
+    <ClInclude Include="..\..\utils\hlmviewer\src\mathlib.h" />
+    <ClInclude Include="..\..\utils\hlmviewer\src\mdlviewer.h" />
+    <ClInclude Include="..\..\utils\hlmviewer\src\pakviewer.h" />
+    <ClInclude Include="..\..\utils\hlmviewer\src\resource.h" />
+    <ClInclude Include="..\..\utils\hlmviewer\src\studio.h" />
+    <ClInclude Include="..\..\utils\hlmviewer\src\StudioModel.h" />
+    <ClInclude Include="..\..\utils\hlmviewer\src\ViewerSettings.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\..\utils\hlmviewer\src\hlmviewer.rc" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
