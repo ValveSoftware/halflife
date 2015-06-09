@@ -2072,7 +2072,7 @@ void CBasePlayer::CheckTimeBasedDamage()
 		return;
 
 	// only check for time based damage approx. every 2 seconds
-	if (abs(gpGlobals->time - m_tbdPrev) < 2.0)
+	if (V_fabs(gpGlobals->time - m_tbdPrev) < 2.0f)
 		return;
 	
 	m_tbdPrev = gpGlobals->time;

@@ -549,14 +549,13 @@ void CFuncRotating :: RampPitchVol (int fUp)
 	int pitch;
 	
 	// get current angular velocity
-
-	vecCur = abs(vecAVel.x != 0 ? vecAVel.x : (vecAVel.y != 0 ? vecAVel.y : vecAVel.z));
+	vecCur = V_fabs(vecAVel.x != 0 ? vecAVel.x : (vecAVel.y != 0 ? vecAVel.y : vecAVel.z));
 	
 	// get target angular velocity
 
 	vecFinal = (pev->movedir.x != 0 ? pev->movedir.x : (pev->movedir.y != 0 ? pev->movedir.y : pev->movedir.z));
 	vecFinal *= pev->speed;
-	vecFinal = abs(vecFinal);
+	vecFinal = V_fabs(vecFinal);
 
 	// calc volume and pitch as % of final vol and pitch
 
@@ -592,9 +591,9 @@ void CFuncRotating :: SpinUp( void )
 	vecAVel = pev->avelocity;// cache entity's rotational velocity
 
 	// if we've met or exceeded target speed, set target speed and stop thinking
-	if (	abs(vecAVel.x) >= abs(pev->movedir.x * pev->speed)	&&
-			abs(vecAVel.y) >= abs(pev->movedir.y * pev->speed)	&&
-			abs(vecAVel.z) >= abs(pev->movedir.z * pev->speed) )
+	if (V_fabs(vecAVel.x) >= V_fabs(pev->movedir.x * pev->speed)	&&
+		V_fabs(vecAVel.y) >= V_fabs(pev->movedir.y * pev->speed)	&&
+		V_fabs(vecAVel.z) >= V_fabs(pev->movedir.z * pev->speed) )
 	{
 		pev->avelocity = pev->movedir * pev->speed;// set speed in case we overshot
 		EMIT_SOUND_DYN(ENT(pev), CHAN_STATIC, (char *)STRING(pev->noiseRunning), 

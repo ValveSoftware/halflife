@@ -68,6 +68,10 @@ typedef int BOOL;
 #include "stdlib.h"
 #include "math.h"
 
+#if !defined ( USE_OLD_VALVE_MIN_MAX )
+#include "vminmax.h"
+#endif
+
 // Header file containing definition of globalvars_t and entvars_t
 typedef unsigned int func_t;					//
 typedef unsigned int string_t;				// from engine's pr_comp.h;

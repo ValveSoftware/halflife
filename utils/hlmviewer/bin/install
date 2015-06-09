@@ -1,0 +1,29 @@
+# Note: dont forget the ;
+# 6 essential lines
+Title ("Half-Life Model Viewer v1.23 for Win9x/NT");
+NumFiles (5);
+RootDirectory ("\Half-Life Model Viewer");
+TargetDirectory ("%p%r");
+Registry (2, "Software\Microsoft\Windows\CurrentVersion\Uninstall\Half-Life Model Viewer", "DisplayName", "Half-Life Model Viewer");
+Registry (2, "Software\Microsoft\Windows\CurrentVersion\Uninstall\Half-Life Model Viewer", "UninstallString", "%t\uninstaller.exe");
+
+# optional
+MakeDirectory ("%t");
+MoveFile ("readme.txt", "%t\readme.txt");
+MoveFile ("hlmv.exe", "%t\hlmv.exe");
+MoveFile ("hlmv_sm.exe", "%t\hlmv_sm.exe");
+MoveFile ("hlmv.fa", "%t\hlmv.fa");
+MoveFile ("hlmv.rf", "%t\hlmv.rf");
+MoveFile ("3dfxgl.dll", "%t\3dfxgl.dll");
+
+Ask ("Do you want to create shortcuts in the startmenu?");
+        StartMenu ("%t\readme.txt", "Half-Life Model Viewer", "Half-Life Model Viewer - Readme");
+        StartMenu ("%t\hlmv.exe", "Half-Life Model Viewer", "Half-Life Model Viewer");
+        StartMenu ("%t\hlmv_sm.exe", "Half-Life Model Viewer", "Half-Life Model Viewer - Safe Mode");
+        StartMenu ("%t\uninstaller.exe", "Half-Life Model Viewer", "Uninstall Half-Life Model Viewer");
+EndAsk ();
+
+# Message ("Congratulations! Installation complete.");
+
+# 1 last essential line
+MoveFile ("uninstaller.exe", "%t\uninstaller.exe");

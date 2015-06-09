@@ -1,0 +1,167 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{81A08BEE-9C7C-4928-958F-E375204B163B}</ProjectGuid>
+    <RootNamespace>vs2013</RootNamespace>
+    <TargetPlatformVersion>8.1</TargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>NotSet</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>NotSet</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>$(Configuration)\$(ProjectName)\</OutDir>
+    <IntDir>$(Configuration)\$(ProjectName)\int\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>$(Configuration)\$(ProjectName)\</OutDir>
+    <IntDir>$(Configuration)\$(ProjectName)\int\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>../../utils/hlmviewer/mxtk/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE</PreprocessorDefinitions>
+      <DisableSpecificWarnings>4996</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+    <PostBuildEvent>
+      <Command>if not exist "$(ProjectDir)..\..\utils\hlmviewer\mxtk\lib" mkdir "$(ProjectDir)..\..\utils\hlmviewer\mxtk\lib"
+copy "$(TargetPath)" "..\..\utils\hlmviewer\mxtk\lib\$(TargetFileName)"</Command>
+    </PostBuildEvent>
+    <Lib>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>../../utils/hlmviewer/mxtk/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE</PreprocessorDefinitions>
+      <DisableSpecificWarnings>4996</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+    <PostBuildEvent>
+      <Command>if not exist "$(ProjectDir)..\..\utils\hlmviewer\mxtk\lib" mkdir "$(ProjectDir)..\..\utils\hlmviewer\mxtk\lib"
+copy "$(TargetPath)" "..\..\utils\hlmviewer\mxtk\lib\$(TargetFileName)"</Command>
+    </PostBuildEvent>
+    <Lib>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\utils\hlmviewer\mxtk\src\common\mxBmp.cpp" />
+    <ClCompile Include="..\..\utils\hlmviewer\mxtk\src\common\MXPATH.CPP" />
+    <ClCompile Include="..\..\utils\hlmviewer\mxtk\src\common\mxPcx.cpp" />
+    <ClCompile Include="..\..\utils\hlmviewer\mxtk\src\common\MXSTRING.CPP" />
+    <ClCompile Include="..\..\utils\hlmviewer\mxtk\src\common\mxTga.cpp" />
+    <ClCompile Include="..\..\utils\hlmviewer\mxtk\src\win32\Mx.cpp" />
+    <ClCompile Include="..\..\utils\hlmviewer\mxtk\src\win32\mxAccelerator.cpp" />
+    <ClCompile Include="..\..\utils\hlmviewer\mxtk\src\win32\mxButton.cpp" />
+    <ClCompile Include="..\..\utils\hlmviewer\mxtk\src\win32\mxCheckBox.cpp" />
+    <ClCompile Include="..\..\utils\hlmviewer\mxtk\src\win32\mxChoice.cpp" />
+    <ClCompile Include="..\..\utils\hlmviewer\mxtk\src\win32\mxChooseColor.cpp" />
+    <ClCompile Include="..\..\utils\hlmviewer\mxtk\src\win32\mxFileDialog.cpp" />
+    <ClCompile Include="..\..\utils\hlmviewer\mxtk\src\win32\mxGlWindow.cpp" />
+    <ClCompile Include="..\..\utils\hlmviewer\mxtk\src\win32\mxGroupBox.cpp" />
+    <ClCompile Include="..\..\utils\hlmviewer\mxtk\src\win32\mxLabel.cpp" />
+    <ClCompile Include="..\..\utils\hlmviewer\mxtk\src\win32\mxLineEdit.cpp" />
+    <ClCompile Include="..\..\utils\hlmviewer\mxtk\src\win32\mxListBox.cpp" />
+    <ClCompile Include="..\..\utils\hlmviewer\mxtk\src\win32\mxMenu.cpp" />
+    <ClCompile Include="..\..\utils\hlmviewer\mxtk\src\win32\mxMenuBar.cpp" />
+    <ClCompile Include="..\..\utils\hlmviewer\mxtk\src\win32\mxMessageBox.cpp" />
+    <ClCompile Include="..\..\utils\hlmviewer\mxtk\src\win32\mxMultiLineEdit.cpp" />
+    <ClCompile Include="..\..\utils\hlmviewer\mxtk\src\win32\mxPopupMenu.cpp" />
+    <ClCompile Include="..\..\utils\hlmviewer\mxtk\src\win32\mxProgressBar.cpp" />
+    <ClCompile Include="..\..\utils\hlmviewer\mxtk\src\win32\mxRadioButton.cpp" />
+    <ClCompile Include="..\..\utils\hlmviewer\mxtk\src\win32\mxSlider.cpp" />
+    <ClCompile Include="..\..\utils\hlmviewer\mxtk\src\win32\mxTab.cpp" />
+    <ClCompile Include="..\..\utils\hlmviewer\mxtk\src\win32\mxToggleButton.cpp" />
+    <ClCompile Include="..\..\utils\hlmviewer\mxtk\src\win32\mxToolTip.cpp" />
+    <ClCompile Include="..\..\utils\hlmviewer\mxtk\src\win32\mxTreeView.cpp" />
+    <ClCompile Include="..\..\utils\hlmviewer\mxtk\src\win32\mxWidget.cpp" />
+    <ClCompile Include="..\..\utils\hlmviewer\mxtk\src\win32\mxWindow.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\utils\hlmviewer\mxtk\include\MX\MX.H" />
+    <ClInclude Include="..\..\utils\hlmviewer\mxtk\include\MX\mxAccelerator.h" />
+    <ClInclude Include="..\..\utils\hlmviewer\mxtk\include\MX\mxBmp.h" />
+    <ClInclude Include="..\..\utils\hlmviewer\mxtk\include\MX\mxButton.h" />
+    <ClInclude Include="..\..\utils\hlmviewer\mxtk\include\MX\mxCheckBox.h" />
+    <ClInclude Include="..\..\utils\hlmviewer\mxtk\include\MX\mxChoice.h" />
+    <ClInclude Include="..\..\utils\hlmviewer\mxtk\include\MX\mxChooseColor.h" />
+    <ClInclude Include="..\..\utils\hlmviewer\mxtk\include\MX\mxEvent.h" />
+    <ClInclude Include="..\..\utils\hlmviewer\mxtk\include\MX\mxFileDialog.h" />
+    <ClInclude Include="..\..\utils\hlmviewer\mxtk\include\MX\mxGlWindow.h" />
+    <ClInclude Include="..\..\utils\hlmviewer\mxtk\include\MX\mxGroupBox.h" />
+    <ClInclude Include="..\..\utils\hlmviewer\mxtk\include\MX\mxImage.h" />
+    <ClInclude Include="..\..\utils\hlmviewer\mxtk\include\MX\mxInit.h" />
+    <ClInclude Include="..\..\utils\hlmviewer\mxtk\include\MX\mxLabel.h" />
+    <ClInclude Include="..\..\utils\hlmviewer\mxtk\include\MX\mxLineEdit.h" />
+    <ClInclude Include="..\..\utils\hlmviewer\mxtk\include\MX\mxLinkedList.h" />
+    <ClInclude Include="..\..\utils\hlmviewer\mxtk\include\MX\mxListBox.h" />
+    <ClInclude Include="..\..\utils\hlmviewer\mxtk\include\MX\mxMenu.h" />
+    <ClInclude Include="..\..\utils\hlmviewer\mxtk\include\MX\mxMenuBar.h" />
+    <ClInclude Include="..\..\utils\hlmviewer\mxtk\include\MX\mxMessageBox.h" />
+    <ClInclude Include="..\..\utils\hlmviewer\mxtk\include\MX\mxMultiLineEdit.h" />
+    <ClInclude Include="..\..\utils\hlmviewer\mxtk\include\MX\MXPATH.H" />
+    <ClInclude Include="..\..\utils\hlmviewer\mxtk\include\MX\mxPcx.h" />
+    <ClInclude Include="..\..\utils\hlmviewer\mxtk\include\MX\mxPopupMenu.h" />
+    <ClInclude Include="..\..\utils\hlmviewer\mxtk\include\MX\mxProgressBar.h" />
+    <ClInclude Include="..\..\utils\hlmviewer\mxtk\include\MX\mxRadioButton.h" />
+    <ClInclude Include="..\..\utils\hlmviewer\mxtk\include\MX\mxSlider.h" />
+    <ClInclude Include="..\..\utils\hlmviewer\mxtk\include\MX\MXSTRING.H" />
+    <ClInclude Include="..\..\utils\hlmviewer\mxtk\include\MX\mxTab.h" />
+    <ClInclude Include="..\..\utils\hlmviewer\mxtk\include\MX\mxTga.h" />
+    <ClInclude Include="..\..\utils\hlmviewer\mxtk\include\MX\mxToggleButton.h" />
+    <ClInclude Include="..\..\utils\hlmviewer\mxtk\include\MX\mxToolTip.h" />
+    <ClInclude Include="..\..\utils\hlmviewer\mxtk\include\MX\mxTreeView.h" />
+    <ClInclude Include="..\..\utils\hlmviewer\mxtk\include\MX\mxWidget.h" />
+    <ClInclude Include="..\..\utils\hlmviewer\mxtk\include\MX\mxWindow.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

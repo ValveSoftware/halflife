@@ -40,4 +40,8 @@ typedef int (*pfnUserMsgHook)(const char *pszName, int iSize, void *pbuf);
 #include "../engine/cdll_int.h"
 #include "../dlls/cdll_dll.h"
 
+#ifndef USE_OLD_VALVE_MIN_MAX
+#include "vminmax.h"
+#endif
+
 extern cl_enginefunc_t gEngfuncs;

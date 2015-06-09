@@ -11,7 +11,11 @@
 #include <windows.h>
 #include <GL/gl.h>
 #include <GL/glu.h>
+#ifdef NO_LIB_GLAUX
+#include "GL/glut.h"
+#else
 #include <GL/glaux.h>
+#endif
 
 #include "bsp5.h"
 
@@ -51,10 +55,19 @@ void Draw_DrawFace (face_t *f)
 
 void InitWindow (void)
 {
-    auxInitDisplayMode (AUX_SINGLE | AUX_RGB);
-    auxInitPosition (0, 0, WIN_SIZE, WIN_SIZE);
-    auxInitWindow ("qbsp");
+#ifdef NO_LIB_GLAUX
+	glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
+	glutInitWindowPosition(0, 0);
+	glutInitWindowSize(WIN_SIZE, WIN_SIZE);
+	glutInitDisplayString("qbsp");
+#else
+	auxInitDisplayMode (AUX_SINGLE | AUX_RGB);
+	auxInitPosition (0, 0, WIN_SIZE, WIN_SIZE);
+	auxInitWindow ("qbsp");
+#endif
 }
+
+
 
 void Draw_ClearWindow (void)
 {

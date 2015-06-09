@@ -1,0 +1,72 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Source Files\utils">
+      <UniqueIdentifier>{d5586ccb-fc7d-4e19-8bde-8656f3036ed7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\utils">
+      <UniqueIdentifier>{23430839-825c-42f8-87f8-5ae8dbcbb612}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\utils\common">
+      <UniqueIdentifier>{b9529791-81ac-4e1b-86b7-e3ae05d40193}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\utils\common">
+      <UniqueIdentifier>{9e2cd4d4-3990-41a2-ae01-1cdcaeb123b2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\utils\qlumpy">
+      <UniqueIdentifier>{40830782-1c0d-42a8-85f0-09f7e3f4ff75}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\utils\qlumpy">
+      <UniqueIdentifier>{b2425109-9ba3-4a19-9a54-7451f3a87a23}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\utils\common\wadlib.c">
+      <Filter>Source Files\utils\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\utils\common\cmdlib.c">
+      <Filter>Source Files\utils\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\utils\common\lbmlib.c">
+      <Filter>Source Files\utils\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\utils\common\scriplib.c">
+      <Filter>Source Files\utils\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\utils\qlumpy\quakegrb.c">
+      <Filter>Source Files\utils\qlumpy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\utils\qlumpy\qlumpy.c">
+      <Filter>Source Files\utils\qlumpy</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\utils\qlumpy\qlumpy.h">
+      <Filter>Header Files\utils\qlumpy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\utils\common\wadlib.h">
+      <Filter>Header Files\utils\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\utils\common\cmdlib.h">
+      <Filter>Header Files\utils\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\utils\common\lbmlib.h">
+      <Filter>Header Files\utils\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\utils\common\scriplib.h">
+      <Filter>Header Files\utils\common</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

@@ -12,6 +12,10 @@
 
 #include "csg.h"
 
+#ifdef NO_LIB_GLAUX
+#include "GL/glut.h"
+#endif
+
 /*
 
 
@@ -830,6 +834,10 @@ int main (int argc, char **argv)
 		printf ("%5.0f seconds elapsed\n", end-start);
 		return 0;
 	}
+
+#ifdef NO_LIB_GLAUX
+	glutInit(&argc, argv);
+#endif
 
 	//
 	// start from scratch
