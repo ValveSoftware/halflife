@@ -13,7 +13,9 @@
 *
 ****/
 //
-// death notice
+// 
+// böcek atanı sikerim.
+//
 //
 #include "hud.h"
 #include "cl_util.h"
