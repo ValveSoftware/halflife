@@ -83,12 +83,12 @@ void CMonsterMaker :: KeyValue( KeyValueData *pkvd )
 	
 	if ( FStrEq(pkvd->szKeyName, "monstercount") )
 	{
-		m_cNumMonsters = atoi(pkvd->szValue);
+		m_cNumMonsters = Q_atoi(pkvd->szValue);
 		pkvd->fHandled = TRUE;
 	}
 	else if ( FStrEq(pkvd->szKeyName, "m_imaxlivechildren") )
 	{
-		m_iMaxLiveChildren = atoi(pkvd->szValue);
+		m_iMaxLiveChildren = Q_atoi(pkvd->szValue);
 		pkvd->fHandled = TRUE;
 	}
 	else if ( FStrEq(pkvd->szKeyName, "monstertype") )

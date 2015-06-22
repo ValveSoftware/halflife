@@ -197,47 +197,47 @@ void CBaseDoor::KeyValue( KeyValueData *pkvd )
 
 	if (FStrEq(pkvd->szKeyName, "skin"))//skin is used for content type
 	{
-		pev->skin = atof(pkvd->szValue);
+		pev->skin = Q_atof(pkvd->szValue);
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "movesnd"))
 	{
-		m_bMoveSnd = atof(pkvd->szValue);
+		m_bMoveSnd = Q_atof(pkvd->szValue);
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "stopsnd"))
 	{
-		m_bStopSnd = atof(pkvd->szValue);
+		m_bStopSnd = Q_atof(pkvd->szValue);
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "healthvalue"))
 	{
-		m_bHealthValue = atof(pkvd->szValue);
+		m_bHealthValue = Q_atof(pkvd->szValue);
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "locked_sound"))
 	{
-		m_bLockedSound = atof(pkvd->szValue);
+		m_bLockedSound = Q_atof(pkvd->szValue);
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "locked_sentence"))
 	{
-		m_bLockedSentence = atof(pkvd->szValue);
+		m_bLockedSentence = Q_atof(pkvd->szValue);
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "unlocked_sound"))
 	{
-		m_bUnlockedSound = atof(pkvd->szValue);
+		m_bUnlockedSound = Q_atof(pkvd->szValue);
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "unlocked_sentence"))
 	{
-		m_bUnlockedSentence = atof(pkvd->szValue);
+		m_bUnlockedSentence = Q_atof(pkvd->szValue);
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "WaveHeight"))
 	{
-		pev->scale = atof(pkvd->szValue) * (1.0/8.0);
+		pev->scale = Q_atof(pkvd->szValue) * (1.0/8.0);
 		pkvd->fHandled = TRUE;
 	}
 	else
@@ -303,7 +303,7 @@ void CBaseDoor::Spawn( )
 	
 	m_vecPosition1	= pev->origin;
 	// Subtract 2 from size because the engine expands bboxes by 1 in all directions making the size too big
-	m_vecPosition2	= m_vecPosition1 + (pev->movedir * (fabs( pev->movedir.x * (pev->size.x-2) ) + fabs( pev->movedir.y * (pev->size.y-2) ) + fabs( pev->movedir.z * (pev->size.z-2) ) - m_flLip));
+	m_vecPosition2	= m_vecPosition1 + (pev->movedir * (Q_fabs( pev->movedir.x * (pev->size.x-2) ) + Q_fabs( pev->movedir.y * (pev->size.y-2) ) + Q_fabs( pev->movedir.z * (pev->size.z-2) ) - m_flLip));
 	ASSERTSZ(m_vecPosition1 != m_vecPosition2, "door start/end positions are equal");
 	if ( FBitSet (pev->spawnflags, SF_DOOR_START_OPEN) )
 	{	// swap pos1 and pos2, put door at pos2
@@ -929,7 +929,7 @@ void CMomentaryDoor::Spawn( void )
 	
 	m_vecPosition1	= pev->origin;
 	// Subtract 2 from size because the engine expands bboxes by 1 in all directions making the size too big
-	m_vecPosition2	= m_vecPosition1 + (pev->movedir * (fabs( pev->movedir.x * (pev->size.x-2) ) + fabs( pev->movedir.y * (pev->size.y-2) ) + fabs( pev->movedir.z * (pev->size.z-2) ) - m_flLip));
+	m_vecPosition2	= m_vecPosition1 + (pev->movedir * (Q_fabs( pev->movedir.x * (pev->size.x-2) ) + Q_fabs( pev->movedir.y * (pev->size.y-2) ) + Q_fabs( pev->movedir.z * (pev->size.z-2) ) - m_flLip));
 	ASSERTSZ(m_vecPosition1 != m_vecPosition2, "door start/end positions are equal");
 
 	if ( FBitSet (pev->spawnflags, SF_DOOR_START_OPEN) )
@@ -995,7 +995,7 @@ void CMomentaryDoor::KeyValue( KeyValueData *pkvd )
 
 	if (FStrEq(pkvd->szKeyName, "movesnd"))
 	{
-		m_bMoveSnd = atof(pkvd->szValue);
+		m_bMoveSnd = Q_atof(pkvd->szValue);
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "stopsnd"))

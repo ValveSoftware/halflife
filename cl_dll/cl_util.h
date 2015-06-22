@@ -23,9 +23,13 @@
 #define FALSE 0
 #endif
 
+#include "vstdlib/warnings.h"
+
 #include <stdio.h> // for safe_sprintf()
 #include <stdarg.h>  // "
 #include <string.h> // for strncpy()
+
+#include "vstdlib/vstdlib.h"
 
 // Macros to hook function calls into the HUD object
 #define HOOK_MESSAGE(x) gEngfuncs.pfnHookUserMsg(#x, __MsgFunc_##x );
@@ -132,7 +136,8 @@ inline char *safe_strcpy( char *dst, const char *src, int len_dst)
 		return NULL; // this is bad
 	}
 
-	strncpy(dst,src,len_dst);
+	Q_strncpy(dst, src,len_dst);
+
 	dst[ len_dst - 1 ] = '\0';
 
 	return dst;
@@ -149,7 +154,7 @@ inline int safe_sprintf( char *dst, int len_dst, const char *format, ...)
 
     va_start(v, format);
 
-	_vsnprintf(dst,len_dst,format,v);
+	Q_vsnprintf(dst, len_dst,format,v);
 
 	va_end(v);
 
@@ -162,9 +167,9 @@ inline int safe_sprintf( char *dst, int len_dst, const char *format, ...)
 inline void PlaySound( char *szSound, float vol ) { gEngfuncs.pfnPlaySoundByName( szSound, vol ); }
 inline void PlaySound( int iSound, float vol ) { gEngfuncs.pfnPlaySoundByIndex( iSound, vol ); }
 
-#define max(a, b)  (((a) > (b)) ? (a) : (b))
-#define min(a, b)  (((a) < (b)) ? (a) : (b))
-#define fabs(x)	   ((x) > 0 ? (x) : 0 - (x))
+//#define max(a, b)  (((a) > (b)) ? (a) : (b))
+//#define min(a, b)  (((a) < (b)) ? (a) : (b))
+//#define fabs(x)	 ((x) > 0 ? (x) : 0 - (x))
 
 void ScaleColors( int &r, int &g, int &b, int a );
 

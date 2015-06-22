@@ -14,7 +14,7 @@
 
 #define DEFAULT_EXT		_T("smd")
 
-#define FStrEq(sz1, sz2) (strcmp((sz1), (sz2)) == 0)
+#define FStrEq(sz1, sz2) (Q_strcmp((sz1), (sz2)) == 0)
 
 
 //===================================================================

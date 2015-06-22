@@ -24,7 +24,7 @@ leaf_t		*leafs;
 int			c_portaltest, c_portalpass, c_portalcheck;
 
 
-qboolean		showgetleaf = true;
+qboolean		showgetleaf = qtrue;
 
 int		leafon;			// the next leaf to be given to a thread to process
 
@@ -68,8 +68,8 @@ winding_t *NewWinding (int points)
 		Error ("NewWinding: %i points", points);
 	
 	size = (int)((winding_t *)0)->points[points];
-	w = malloc (size);
-	memset (w, 0, size);
+	w = Q_malloc (size);
+	Q_memset (w, 0, size);
 	
 	return w;
 }
@@ -80,7 +80,7 @@ void pw(winding_t *w)
 {
 	int		i;
 	for (i=0 ; i<w->numpoints ; i++)
-		printf ("(%5.1f, %5.1f, %5.1f)\n",w->points[i][0], w->points[i][1],w->points[i][2]);
+		Q_printf ("(%5.1f, %5.1f, %5.1f)\n",w->points[i][0], w->points[i][1],w->points[i][2]);
 }
 
 void prl(leaf_t *l)
@@ -93,7 +93,7 @@ void prl(leaf_t *l)
 	{
 		p = l->portals[i];
 		pl = p->plane;
-		printf ("portal %4i to leaf %4i : %7.1f : (%4.1f, %4.1f, %4.1f)\n",(int)(p-portals),p->leaf,pl.dist, pl.normal[0], pl.normal[1], pl.normal[2]);
+		Q_printf ("portal %4i to leaf %4i : %7.1f : (%4.1f, %4.1f, %4.1f)\n",(int)(p-portals),p->leaf,pl.dist, pl.normal[0], pl.normal[1], pl.normal[2]);
 	}
 }
 
@@ -233,7 +233,7 @@ void LeafFlow (int leafnum)
 	}
 
 	if (outbuffer[leafnum>>3] & (1<<(leafnum&7)))
-		printf ("WARNING: Leaf portals saw into leaf");
+		Q_printf ("WARNING: Leaf portals saw into leaf");
 		
 	outbuffer[leafnum>>3] |= (1<<(leafnum&7));
 
@@ -250,7 +250,7 @@ void LeafFlow (int leafnum)
 
 #if 0	
 	i = (portalleafs+7)>>3;
-	memcpy (compressed, outbuffer, i);
+	Q_memcpy (compressed, outbuffer, i);
 #else
 	i = CompressRow (outbuffer, compressed);
 #endif
@@ -263,7 +263,7 @@ void LeafFlow (int leafnum)
 
 	dleafs[leafnum+1].visofs = dest-vismap;	// leaf 0 is a common solid
 
-	memcpy (dest, compressed, i);	
+	Q_memcpy (dest, compressed, i);	
 }
 
 
@@ -289,7 +289,7 @@ void CalcPortalVis (void)
 	
 	leafon = 0;
 	
-	RunThreadsOn (numportals*2, true, LeafThread);
+	RunThreadsOn (numportals*2, qtrue, LeafThread);
 
 	qprintf ("portalcheck: %i  portaltest: %i  portalpass: %i\n",c_portalcheck, c_portaltest, c_portalpass);
 	qprintf ("c_vistest: %i  c_mighttest: %i\n",c_vistest, c_mighttest);
@@ -305,7 +305,7 @@ void CalcVis (void)
 {
 	int		i;
 	
-	RunThreadsOn (numportals*2, true, BasePortalVis);
+	RunThreadsOn (numportals*2, qtrue, BasePortalVis);
 	
 	CalcPortalVis ();
 
@@ -315,7 +315,7 @@ void CalcVis (void)
 	for (i=0 ; i<portalleafs ; i++)
 		LeafFlow (i);
 		
-	printf ("average leafs visible: %i\n", totalvis / portalleafs);
+	Q_printf ("average leafs visible: %i\n", totalvis / portalleafs);
 }
 
 
@@ -336,36 +336,36 @@ void LoadPortals (char *name)
 	int			leafnums[2];
 	plane_t		plane;
 	
-	if (!strcmp(name,"-"))
+	if (!Q_strcmp(name,"-"))
 		f = stdin;
 	else
 	{
-		f = fopen(name, "r");
+		f = Q_fopen(name, "r");
 		if (!f)
 		{
-			printf ("LoadPortals: couldn't read %s\n",name);
-			printf ("No vising performed.\n");
-			exit (1);
+			Q_printf ("LoadPortals: couldn't read %s\n",name);
+			Q_printf ("No vising performed.\n");
+			Q_exit (1);
 		}
 	}
 
-	if (fscanf (f,"%79s\n%i\n%i\n",magic, &portalleafs, &numportals) != 3)
+	if (Q_fscanf (f,"%79s\n%i\n%i\n",magic, &portalleafs, &numportals) != 3)
 		Error ("LoadPortals: failed to read header");
-	if (strcmp(magic,PORTALFILE))
+	if (Q_strcmp(magic,PORTALFILE))
 		Error ("LoadPortals: not a portal file");
 
-	printf ("%4i portalleafs\n", portalleafs);
-	printf ("%4i numportals\n", numportals);
+	Q_printf ("%4i portalleafs\n", portalleafs);
+	Q_printf ("%4i numportals\n", numportals);
 
 	bitbytes = ((portalleafs+63)&~63)>>3;
 	bitlongs = bitbytes/sizeof(long);
 	
 // each file portal is split into two memory portals
-	portals = malloc(2*numportals*sizeof(portal_t));
-	memset (portals, 0, 2*numportals*sizeof(portal_t));
+	portals = Q_malloc(2*numportals*sizeof(portal_t));
+	Q_memset (portals, 0, 2*numportals*sizeof(portal_t));
 	
-	leafs = malloc(portalleafs*sizeof(leaf_t));
-	memset (leafs, 0, portalleafs*sizeof(leaf_t));
+	leafs = Q_malloc(portalleafs*sizeof(leaf_t));
+	Q_memset (leafs, 0, portalleafs*sizeof(leaf_t));
 
 	originalvismapsize = portalleafs*((portalleafs+7)/8);
 
@@ -374,17 +374,17 @@ void LoadPortals (char *name)
 		
 	for (i=0, p=portals ; i<numportals ; i++)
 	{
-		if (fscanf (f, "%i %i %i ", &numpoints, &leafnums[0], &leafnums[1])
+		if (Q_fscanf (f, "%i %i %i ", &numpoints, &leafnums[0], &leafnums[1])
 			!= 3)
 			Error ("LoadPortals: reading portal %i", i);
 		if (numpoints > MAX_POINTS_ON_WINDING)
 			Error ("LoadPortals: portal %i has too many points", i);
-		if ( (unsigned)leafnums[0] > portalleafs
-		|| (unsigned)leafnums[1] > portalleafs)
+		if ( leafnums[0] > portalleafs
+		|| leafnums[1] > portalleafs)
 			Error ("LoadPortals: reading portal %i", i);
 		
 		w = p->winding = NewWinding (numpoints);
-		w->original = true;
+		w->original = qtrue;
 		w->numpoints = numpoints;
 		
 		for (j=0 ; j<numpoints ; j++)
@@ -393,13 +393,13 @@ void LoadPortals (char *name)
 			int		k;
 
 			// scanf into double, then assign to vec_t
-			if (fscanf (f, "(%lf %lf %lf ) "
+			if (Q_fscanf (f, "(%lf %lf %lf ) "
 			, &v[0], &v[1], &v[2]) != 3)
 				Error ("LoadPortals: reading portal %i", i);
 			for (k=0 ; k<3 ; k++)
-				w->points[j][k] = v[k];
+				w->points[j][k] = (vec_t)v[k];
 		}
-		fscanf (f, "\n");
+		Q_fscanf (f, "\n");
 		
 	// calc plane
 		PlaneFromWinding (w, &plane);
@@ -437,7 +437,7 @@ void LoadPortals (char *name)
 
 	}
 	
-	fclose (f);
+	Q_fclose (f);
 }
 
 
@@ -453,26 +453,26 @@ int main (int argc, char **argv)
 	int		i;
 	double		start, end;
 		
-	printf ("vis.exe v1.3 (%s)\n", __DATE__);
-	printf ("---- vis ----\n");
+	Q_printf ("vis.exe v1.3 (%s)\n", __DATE__);
+	Q_printf ("---- vis ----\n");
 
-	verbose = false;
+	verbose = qfalse;
 	for (i=1 ; i<argc ; i++)
 	{
-		if (!strcmp(argv[i],"-threads"))
+		if (!Q_strcmp(argv[i],"-threads"))
 		{
-			numthreads = atoi (argv[i+1]);
+			numthreads = Q_atoi (argv[i+1]);
 			i++;
 		}
-		else if (!strcmp(argv[i], "-fast"))
+		else if (!Q_strcmp(argv[i], "-fast"))
 		{
-			printf ("fastvis = true\n");
-			fastvis = true;
+			Q_printf ("fastvis = true\n");
+			fastvis = qtrue;
 		}
-		else if (!strcmp(argv[i], "-v"))
+		else if (!Q_strcmp(argv[i], "-v"))
 		{
-			printf ("verbose = true\n");
-			verbose = true;
+			Q_printf ("verbose = true\n");
+			verbose = qtrue;
 		}
 		else if (argv[i][0] == '-')
 			Error ("Unknown option \"%s\"", argv[i]);
@@ -487,29 +487,29 @@ int main (int argc, char **argv)
 	
 	ThreadSetDefault ();
 
-	printf ("%i thread(s)\n", numthreads);
+	Q_printf ("%i thread(s)\n", numthreads);
 
-	strcpy (source, argv[i]);
+	Q_strcpy (source, argv[i]);
 	StripExtension (source);
 	DefaultExtension (source, ".bsp");
 
 	LoadBSPFile (source);
 	
-	strcpy (portalfile, argv[i]);
+	Q_strcpy (portalfile, argv[i]);
 	StripExtension (portalfile);
-	strcat (portalfile, ".prt");
+	Q_strcat (portalfile, ".prt");
 	
 	LoadPortals (portalfile);
 	
-	uncompressed = malloc(bitbytes*portalleafs);
-	memset (uncompressed, 0, bitbytes*portalleafs);
+	uncompressed = Q_malloc(bitbytes*portalleafs);
+	Q_memset (uncompressed, 0, bitbytes*portalleafs);
 
 	CalcVis ();
 
 	qprintf ("c_chains: %i\n",c_chains);
 	
 	visdatasize = vismap_p - dvisdata;	
-	printf ("visdatasize:%i  compressed from %i\n", visdatasize, originalvismapsize);
+	Q_printf ("visdatasize:%i  compressed from %i\n", visdatasize, originalvismapsize);
 	
 	CalcAmbientSounds ();
 
@@ -518,9 +518,9 @@ int main (int argc, char **argv)
 //	unlink (portalfile);
 
 	end = I_FloatTime ();
-	printf ("%5.1f seconds elapsed\n", end-start);
+	Q_printf ("%5.1f seconds elapsed\n", end-start);
 	
-	free(uncompressed);
+	Q_free(uncompressed);
 
 	return 0;
 }

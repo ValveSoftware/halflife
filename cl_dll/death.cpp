@@ -81,7 +81,7 @@ int CHudDeathNotice :: Init( void )
 
 void CHudDeathNotice :: InitHUDData( void )
 {
-	memset( rgDeathNoticeList, 0, sizeof(rgDeathNoticeList) );
+	Q_memset( rgDeathNoticeList, 0, sizeof(rgDeathNoticeList) );
 }
 
 
@@ -104,12 +104,12 @@ int CHudDeathNotice :: Draw( float flTime )
 		if ( rgDeathNoticeList[i].flDisplayTime < flTime )
 		{ // display time has expired
 			// remove the current item from the list
-			memmove( &rgDeathNoticeList[i], &rgDeathNoticeList[i+1], sizeof(DeathNoticeItem) * (MAX_DEATHNOTICES - i) );
+			Q_memmove( &rgDeathNoticeList[i], &rgDeathNoticeList[i+1], sizeof(DeathNoticeItem) * (MAX_DEATHNOTICES - i) );
 			i--;  // continue on the next item;  stop the counter getting incremented
 			continue;
 		}
 
-		rgDeathNoticeList[i].flDisplayTime = min( rgDeathNoticeList[i].flDisplayTime, gHUD.m_flTime + DEATHNOTICE_DISPLAY_TIME );
+		rgDeathNoticeList[i].flDisplayTime = Q_min( rgDeathNoticeList[i].flDisplayTime, gHUD.m_flTime + DEATHNOTICE_DISPLAY_TIME );
 
 		// Only draw if the viewport will let me
 		if ( gViewPort && gViewPort->AllowedToPrintText() )
@@ -166,8 +166,8 @@ int CHudDeathNotice :: MsgFunc_DeathMsg( const char *pszName, int iSize, void *p
 	int victim = READ_BYTE();
 
 	char killedwith[32];
-	strcpy( killedwith, "d_" );
-	strncat( killedwith, READ_STRING(), 32 );
+	Q_strcpy( killedwith, "d_" );
+	Q_strncat( killedwith, READ_STRING(), 32 );
 
 	if (gViewPort)
 		gViewPort->DeathMsg( killer, victim );
@@ -181,7 +181,7 @@ int CHudDeathNotice :: MsgFunc_DeathMsg( const char *pszName, int iSize, void *p
 	}
 	if ( i == MAX_DEATHNOTICES )
 	{ // move the rest of the list forward to make room for this item
-		memmove( rgDeathNoticeList, rgDeathNoticeList+1, sizeof(DeathNoticeItem) * MAX_DEATHNOTICES );
+		Q_memmove( rgDeathNoticeList, rgDeathNoticeList+1, sizeof(DeathNoticeItem) * MAX_DEATHNOTICES );
 		i = MAX_DEATHNOTICES - 1;
 	}
 
@@ -198,7 +198,7 @@ int CHudDeathNotice :: MsgFunc_DeathMsg( const char *pszName, int iSize, void *p
 	else
 	{
 		rgDeathNoticeList[i].KillerColor = GetClientColor( killer );
-		strncpy( rgDeathNoticeList[i].szKiller, killer_name, MAX_PLAYER_NAME_LENGTH );
+		Q_strncpy( rgDeathNoticeList[i].szKiller, killer_name, MAX_PLAYER_NAME_LENGTH );
 		rgDeathNoticeList[i].szKiller[MAX_PLAYER_NAME_LENGTH-1] = 0;
 	}
 
@@ -215,7 +215,7 @@ int CHudDeathNotice :: MsgFunc_DeathMsg( const char *pszName, int iSize, void *p
 	else
 	{
 		rgDeathNoticeList[i].VictimColor = GetClientColor( victim );
-		strncpy( rgDeathNoticeList[i].szVictim, victim_name, MAX_PLAYER_NAME_LENGTH );
+		Q_strncpy( rgDeathNoticeList[i].szVictim, victim_name, MAX_PLAYER_NAME_LENGTH );
 		rgDeathNoticeList[i].szVictim[MAX_PLAYER_NAME_LENGTH-1] = 0;
 	}
 
@@ -225,14 +225,14 @@ int CHudDeathNotice :: MsgFunc_DeathMsg( const char *pszName, int iSize, void *p
 		rgDeathNoticeList[i].iNonPlayerKill = TRUE;
 
 		// Store the object's name in the Victim slot (skip the d_ bit)
-		strcpy( rgDeathNoticeList[i].szVictim, killedwith+2 );
+		Q_strcpy( rgDeathNoticeList[i].szVictim, killedwith+2 );
 	}
 	else
 	{
 		if ( killer == victim || killer == 0 )
 			rgDeathNoticeList[i].iSuicide = TRUE;
 
-		if ( !strcmp( killedwith, "d_teammate" ) )
+		if ( !Q_strcmp( killedwith, "d_teammate" ) )
 			rgDeathNoticeList[i].iTeamKill = TRUE;
 	}
 
@@ -258,7 +258,7 @@ int CHudDeathNotice :: MsgFunc_DeathMsg( const char *pszName, int iSize, void *p
 		{
 			ConsolePrint( rgDeathNoticeList[i].szVictim );
 
-			if ( !strcmp( killedwith, "d_world" ) )
+			if ( !Q_strcmp( killedwith, "d_world" ) )
 			{
 				ConsolePrint( " died" );
 			}
@@ -280,15 +280,15 @@ int CHudDeathNotice :: MsgFunc_DeathMsg( const char *pszName, int iSize, void *p
 			ConsolePrint( rgDeathNoticeList[i].szVictim );
 		}
 
-		if ( killedwith && *killedwith && (*killedwith > 13 ) && strcmp( killedwith, "d_world" ) && !rgDeathNoticeList[i].iTeamKill )
+		if ( killedwith && *killedwith && (*killedwith > 13 ) && Q_strcmp( killedwith, "d_world" ) && !rgDeathNoticeList[i].iTeamKill )
 		{
 			ConsolePrint( " with " );
 
 			// replace the code names with the 'real' names
-			if ( !strcmp( killedwith+2, "egon" ) )
-				strcpy( killedwith, "d_gluon gun" );
-			if ( !strcmp( killedwith+2, "gauss" ) )
-				strcpy( killedwith, "d_tau cannon" );
+			if ( !Q_strcmp( killedwith+2, "egon" ) )
+				Q_strcpy( killedwith, "d_gluon gun" );
+			if ( !Q_strcmp( killedwith+2, "gauss" ) )
+				Q_strcpy( killedwith, "d_tau cannon" );
 
 			ConsolePrint( killedwith+2 ); // skip over the "d_" part
 		}

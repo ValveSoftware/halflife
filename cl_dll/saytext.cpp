@@ -67,9 +67,9 @@ int CHudSayText :: Init( void )
 
 void CHudSayText :: InitHUDData( void )
 {
-	memset( g_szLineBuffer, 0, sizeof g_szLineBuffer );
-	memset( g_pflNameColors, 0, sizeof g_pflNameColors );
-	memset( g_iNameLengths, 0, sizeof g_iNameLengths );
+	Q_memset( g_szLineBuffer, 0, sizeof g_szLineBuffer );
+	Q_memset( g_pflNameColors, 0, sizeof g_pflNameColors );
+	Q_memset( g_iNameLengths, 0, sizeof g_iNameLengths );
 }
 
 int CHudSayText :: VidInit( void )
@@ -82,9 +82,9 @@ int ScrollTextUp( void )
 {
 	ConsolePrint( g_szLineBuffer[0] ); // move the first line into the console buffer
 	g_szLineBuffer[MAX_LINES][0] = 0;
-	memmove( g_szLineBuffer[0], g_szLineBuffer[1], sizeof(g_szLineBuffer) - sizeof(g_szLineBuffer[0]) ); // overwrite the first line
-	memmove( &g_pflNameColors[0], &g_pflNameColors[1], sizeof(g_pflNameColors) - sizeof(g_pflNameColors[0]) );
-	memmove( &g_iNameLengths[0], &g_iNameLengths[1], sizeof(g_iNameLengths) - sizeof(g_iNameLengths[0]) );
+	Q_memmove( g_szLineBuffer[0], g_szLineBuffer[1], sizeof(g_szLineBuffer) - sizeof(g_szLineBuffer[0]) ); // overwrite the first line
+	Q_memmove( &g_pflNameColors[0], &g_pflNameColors[1], sizeof(g_pflNameColors) - sizeof(g_pflNameColors[0]) );
+	Q_memmove( &g_iNameLengths[0], &g_iNameLengths[1], sizeof(g_iNameLengths) - sizeof(g_iNameLengths[0]) );
 	g_szLineBuffer[MAX_LINES-1][0] = 0;
 
 	if ( g_szLineBuffer[0][0] == ' ' ) // also scroll up following lines
@@ -104,10 +104,10 @@ int CHudSayText :: Draw( float flTime )
 		return 1;
 
 	// make sure the scrolltime is within reasonable bounds,  to guard against the clock being reset
-	flScrollTime = min( flScrollTime, flTime + m_HUD_saytext_time->value );
+	flScrollTime = Q_min( flScrollTime, flTime + m_HUD_saytext_time->value );
 
 	// make sure the scrolltime is within reasonable bounds,  to guard against the clock being reset
-	flScrollTime = min( flScrollTime, flTime + m_HUD_saytext_time->value );
+	flScrollTime = Q_min( flScrollTime, flTime + m_HUD_saytext_time->value );
 
 	if ( flScrollTime <= flTime )
 	{
@@ -130,24 +130,28 @@ int CHudSayText :: Draw( float flTime )
 			if ( *g_szLineBuffer[i] == 2 && g_pflNameColors[i] )
 			{
 				// it's a saytext string
-				char *buf = static_cast<char *>( _alloca( strlen( g_szLineBuffer[i] ) ) );
+				char *buf = static_cast<char *>( _alloca( Q_strlen( g_szLineBuffer[i] ) ) );
+
 				if ( buf )
 				{
 					//char buf[MAX_PLAYER_NAME_LENGTH+32];
 
 					// draw the first x characters in the player color
-					strncpy( buf, g_szLineBuffer[i], min(g_iNameLengths[i], MAX_PLAYER_NAME_LENGTH+32) );
-					buf[ min(g_iNameLengths[i], MAX_PLAYER_NAME_LENGTH+31) ] = 0;
+					Q_strncpy( buf, g_szLineBuffer[i], Q_min(g_iNameLengths[i], MAX_PLAYER_NAME_LENGTH+32) );
+
+					buf[ Q_min(g_iNameLengths[i], MAX_PLAYER_NAME_LENGTH+31) ] = 0;
 					gEngfuncs.pfnDrawSetTextColor( g_pflNameColors[i][0], g_pflNameColors[i][1], g_pflNameColors[i][2] );
 					int x = DrawConsoleString( LINE_START, y, buf + 1 ); // don't draw the control code at the start
-					strncpy( buf, g_szLineBuffer[i] + g_iNameLengths[i], strlen( g_szLineBuffer[i] ));
-					buf[ strlen( g_szLineBuffer[i] + g_iNameLengths[i] ) - 1 ] = '\0';
+
+					Q_strncpy( buf, g_szLineBuffer[i] + g_iNameLengths[i], Q_strlen( g_szLineBuffer[i] ));
+
+					buf[ Q_strlen( g_szLineBuffer[i] + g_iNameLengths[i] ) - 1 ] = '\0';
 					// color is reset after each string draw
 					DrawConsoleString( x, y, buf ); 
 				}
 				else
 				{
-					assert( "Not able to alloca chat buffer!\n");
+					Q_assert( "Not able to alloca chat buffer!\n");
 				}
 			}
 			else
@@ -207,17 +211,17 @@ void CHudSayText :: SayTextPrint( const char *pszBuf, int iBufSize, int clientIn
 
 		if ( pName )
 		{
-			const char *nameInString = strstr( pszBuf, pName );
+			const char *nameInString = Q_strstr( pszBuf, pName );
 
 			if ( nameInString )
 			{
-				g_iNameLengths[i] = strlen( pName ) + (nameInString - pszBuf);
+				g_iNameLengths[i] = Q_strlen( pName ) + (nameInString - pszBuf);
 				g_pflNameColors[i] = GetClientColor( clientIndex );
 			}
 		}
 	}
 
-	strncpy( g_szLineBuffer[i], pszBuf, max(iBufSize , MAX_CHARS_PER_LINE) );
+	Q_strncpy( g_szLineBuffer[i], pszBuf, Q_max(iBufSize , MAX_CHARS_PER_LINE) );
 
 	// make sure the text fits in one line
 	EnsureTextFitsInOneLineAndWrapIfHaveTo( i );
@@ -301,18 +305,18 @@ void CHudSayText :: EnsureTextFitsInOneLineAndWrapIfHaveTo( int line )
 				// copy remaining string into next buffer,  making sure it starts with a space character
 				if ( (char)*last_break == (char)' ' )
 				{
-					int linelen = strlen(g_szLineBuffer[j]);
-					int remaininglen = strlen(last_break);
+					int linelen = Q_strlen(g_szLineBuffer[j]);
+					int remaininglen = Q_strlen(last_break);
 
 					if ( (linelen - remaininglen) <= MAX_CHARS_PER_LINE )
-						strcat( g_szLineBuffer[j], last_break );
+						Q_strcat( g_szLineBuffer[j], last_break );
 				}
 				else
 				{
-					if ( (strlen(g_szLineBuffer[j]) - strlen(last_break) - 2) < MAX_CHARS_PER_LINE )
+					if ( (Q_strlen(g_szLineBuffer[j]) - Q_strlen(last_break) - 2) < MAX_CHARS_PER_LINE )
 					{
-						strcat( g_szLineBuffer[j], " " );
-						strcat( g_szLineBuffer[j], last_break );
+						Q_strcat( g_szLineBuffer[j], " " );
+						Q_strcat( g_szLineBuffer[j], last_break );
 					}
 				}
 

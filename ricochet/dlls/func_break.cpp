@@ -65,9 +65,9 @@ void CBreakable::KeyValue( KeyValueData* pkvd )
 	// UNDONE_WC: explicitly ignoring these fields, but they shouldn't be in the map file!
 	if (FStrEq(pkvd->szKeyName, "explosion"))
 	{
-		if (!stricmp(pkvd->szValue, "directed"))
+		if (!Q_stricmp(pkvd->szValue, "directed"))
 			m_Explosion = expDirected;
-		else if (!stricmp(pkvd->szValue, "random"))
+		else if (!Q_stricmp(pkvd->szValue, "random"))
 			m_Explosion = expRandom;
 		else
 			m_Explosion = expRandom;
@@ -76,7 +76,7 @@ void CBreakable::KeyValue( KeyValueData* pkvd )
 	}
 	else if (FStrEq(pkvd->szKeyName, "material"))
 	{
-		int i = atoi( pkvd->szValue);
+		int i = Q_atoi( pkvd->szValue);
 
 		// 0:glass, 1:metal, 2:flesh, 3:wood
 
@@ -103,14 +103,14 @@ void CBreakable::KeyValue( KeyValueData* pkvd )
 	}
 	else if (FStrEq(pkvd->szKeyName, "spawnobject") )
 	{
-		int object = atoi( pkvd->szValue );
+		int object = Q_atoi( pkvd->szValue );
 		if ( object > 0 && object < ARRAYSIZE(pSpawnObjects) )
 			m_iszSpawnObject = MAKE_STRING( pSpawnObjects[object] );
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "explodemagnitude") )
 	{
-		ExplosionSetMagnitude( atoi( pkvd->szValue ) );
+		ExplosionSetMagnitude( Q_atoi( pkvd->szValue ) );
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "lip") )
@@ -590,7 +590,7 @@ void CBreakable::Die( void )
 	// The more negative pev->health, the louder
 	// the sound should be.
 
-	fvol = RANDOM_FLOAT(0.85, 1.0) + (abs(pev->health) / 100.0);
+	fvol = RANDOM_FLOAT(0.85, 1.0) + (Q_abs(pev->health) / 100.0);
 
 	if (fvol > 1.0)
 		fvol = 1.0;
@@ -852,7 +852,7 @@ void CPushable :: KeyValue( KeyValueData *pkvd )
 {
 	if ( FStrEq(pkvd->szKeyName, "size") )
 	{
-		int bbox = atoi(pkvd->szValue);
+		int bbox = Q_atoi(pkvd->szValue);
 		pkvd->fHandled = TRUE;
 
 		switch( bbox )
@@ -878,7 +878,7 @@ void CPushable :: KeyValue( KeyValueData *pkvd )
 	}
 	else if ( FStrEq(pkvd->szKeyName, "buoyancy") )
 	{
-		pev->skin = atof(pkvd->szValue);
+		pev->skin = Q_atof(pkvd->szValue);
 		pkvd->fHandled = TRUE;
 	}
 	else
@@ -953,7 +953,7 @@ void CPushable :: Move( CBaseEntity *pOther, int push )
 	pev->velocity.x += pevToucher->velocity.x * factor;
 	pev->velocity.y += pevToucher->velocity.y * factor;
 
-	float length = sqrt( pev->velocity.x * pev->velocity.x + pev->velocity.y * pev->velocity.y );
+	float length = Q_sqrt( pev->velocity.x * pev->velocity.x + pev->velocity.y * pev->velocity.y );
 	if ( push && (length > MaxSpeed()) )
 	{
 		pev->velocity.x = (pev->velocity.x * MaxSpeed() / length );

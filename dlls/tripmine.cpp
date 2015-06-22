@@ -282,7 +282,7 @@ void CTripmineGrenade :: BeamBreakThink( void  )
 			m_hOwner = CBaseEntity::Instance( tr.pHit );	// reset owner too
 	}
 
-	if (fabs( m_flBeamLength - tr.flFraction ) > 0.001)
+	if (Q_fabs( m_flBeamLength - tr.flFraction ) > 0.001)
 	{
 		bBlowup = 1;
 	}

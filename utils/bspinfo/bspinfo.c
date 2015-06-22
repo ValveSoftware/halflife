@@ -19,8 +19,8 @@ void main (int argc, char **argv)
 	int			size;
 	FILE		*f;
 
-	printf( "bspinfo.exe v2.1 (%s)\n", __DATE__ );
-	printf ("---- bspinfo ----\n" );
+	Q_printf( "bspinfo.exe v2.1 (%s)\n", __DATE__ );
+	Q_printf ("---- bspinfo ----\n" );
 
 
 	if (argc == 1)
@@ -28,21 +28,21 @@ void main (int argc, char **argv)
 		
 	for (i=1 ; i<argc ; i++)
 	{
-		printf ("---------------------\n");
-		strcpy (source, argv[i]);
+		Q_printf ("---------------------\n");
+		Q_strcpy (source, argv[i]);
 		DefaultExtension (source, ".bsp");
-		f = fopen (source, "rb");
+		f = Q_fopen (source, "rb");
 		if (f)
 		{
 			size = filelength (f);
-			fclose (f);
+			Q_fclose (f);
 		}
 		else
 			size = 0;
-		printf ("%s: %i\n", source, size);
+		Q_printf ("%s: %i\n", source, size);
 		
 		LoadBSPFile (source);		
 		PrintBSPFileSizes ();
-		printf ("---------------------\n");
+		Q_printf ("---------------------\n");
 	}
 }

@@ -43,8 +43,8 @@ typedef struct
 
 void PrintError( const char *pStr )
 {
-	puts( pStr );
-	exit( 5 );
+	Q_puts( pStr );
+	Q_exit( 5 );
 }
 
 
@@ -146,8 +146,8 @@ void ProcessMFRMBlock( HANDLE hf, movieblockheader_t *pHeader )
 	}
 
 	// Create the output file
-	sprintf( outfilename, "%s%04d.bmp", basename, framecnt++ );
-	printf( "Creating bitmap %s.\n", outfilename );
+	Q_sprintf( outfilename, "%s%04d.bmp", basename, framecnt++ );
+	Q_printf( "Creating bitmap %s.\n", outfilename );
 	hout = CreateFile( outfilename, GENERIC_READ | GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL );
 	if( hout == INVALID_HANDLE_VALUE )
 		PrintError( "Couldn't create bitmap file for frame." );
@@ -197,9 +197,9 @@ void ProcessMovieFile( const char *pFilename )
 	HANDLE hf;
 	DWORD bytesread;
 	movieblockheader_t header;
-	qboolean eof = false;
+	qboolean eof = qfalse;
 
-	printf( "Processing movie %s:\n", pFilename );
+	Q_printf( "Processing movie %s:\n", pFilename );
 
 	hf = CreateFile( pFilename, GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL );
 	if( hf == INVALID_HANDLE_VALUE )
@@ -212,7 +212,7 @@ void ProcessMovieFile( const char *pFilename )
 
 		// Check for end of file
 		if( !bytesread )
-			eof = true;
+			eof = qtrue;
 		else
 		{
 			switch( header.tag )
@@ -230,7 +230,7 @@ void ProcessMovieFile( const char *pFilename )
 	if( !CloseHandle( hf ) )
 		PrintError( "Error closing movie file.\n" );
 
-	printf( "Done processing movie.\n" );
+	Q_printf( "Done processing movie.\n" );
 }
 
 
@@ -239,7 +239,7 @@ void main( int argc, char *argv[] )
 {
 	int i;
 
-	printf( "mkmovie v%d.%d (%s) Copyright 1997, valve software L.L.C\n", MAJOR_VERSION, MINOR_VERSION, __DATE__ );
+	Q_printf( "mkmovie v%d.%d (%s) Copyright 1997, valve software L.L.C\n", MAJOR_VERSION, MINOR_VERSION, __DATE__ );
 	if( argc < 2 )
 		PrintError( formatStr );
 
@@ -249,7 +249,7 @@ void main( int argc, char *argv[] )
 	{
 		if( *argv[i] == '-' )
 		{
-			if( !strcmp( argv[i], "-basename" ) )
+			if( !Q_strcmp( argv[i], "-basename" ) )
 			{
 				if( i >= argc - 1 )
 					PrintError( formatStr );

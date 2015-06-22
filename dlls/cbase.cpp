@@ -106,7 +106,7 @@ extern "C" {
 		return FALSE;
 	}
 	
-	memcpy( pFunctionTable, &gFunctionTable, sizeof( DLL_FUNCTIONS ) );
+	Q_memcpy( pFunctionTable, &gFunctionTable, sizeof( DLL_FUNCTIONS ) );
 	return TRUE;
 }
 
@@ -119,7 +119,7 @@ int GetEntityAPI2( DLL_FUNCTIONS *pFunctionTable, int *interfaceVersion )
 		return FALSE;
 	}
 	
-	memcpy( pFunctionTable, &gFunctionTable, sizeof( DLL_FUNCTIONS ) );
+	Q_memcpy( pFunctionTable, &gFunctionTable, sizeof( DLL_FUNCTIONS ) );
 	return TRUE;
 }
 
@@ -636,10 +636,10 @@ void SetObjectCollisionBox( entvars_t *pev )
 		max = 0;
 		for (i=0 ; i<3 ; i++)
 		{
-			v = fabs( ((float *)pev->mins)[i]);
+			v = Q_fabs( ((float *)pev->mins)[i]);
 			if (v > max)
 				max = v;
-			v = fabs( ((float *)pev->maxs)[i]);
+			v = Q_fabs( ((float *)pev->maxs)[i]);
 			if (v > max)
 				max = v;
 		}

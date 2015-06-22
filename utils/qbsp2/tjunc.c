@@ -44,7 +44,7 @@ void PrintFace (face_t *f)
 	int		i;
 	
 	for (i=0 ; i<f->numpoints ; i++)
-		printf ("(%5.2f, %5.2f, %5.2f)\n", f->pts[i][0], f->pts[i][1], f->pts[i][2]);
+		Q_printf ("(%5.2f, %5.2f, %5.2f)\n", f->pts[i][0], f->pts[i][1], f->pts[i][2]);
 }
 
 //============================================================================
@@ -64,14 +64,14 @@ static	void InitHash (vec3_t mins, vec3_t maxs)
 	
 	VectorCopy (mins, hash_min);
 	VectorSubtract (maxs, mins, size);
-	memset (wedge_hash, 0, sizeof(wedge_hash));
+	Q_memset (wedge_hash, 0, sizeof(wedge_hash));
 	
 	volume = size[0]*size[1];
 	
-	scale = sqrt(volume / NUM_HASH);
+	scale = Q_sqrt(volume / NUM_HASH);
 
-	newsize[0] = size[0] / scale;
-	newsize[1] = size[1] / scale;
+	newsize[0] = (int)(size[0] / scale);
+	newsize[1] = (int)(size[1] / scale);
 
 	hash_scale[0] = newsize[0] / size[0];
 	hash_scale[1] = newsize[1] / size[1];
@@ -82,8 +82,8 @@ static	unsigned HashVec (vec3_t vec)
 {
 	unsigned	h;
 
-	h =	hash_scale[0] * (vec[0] - hash_min[0]) * hash_scale[2]
-		+ hash_scale[1] * (vec[1] - hash_min[1]);
+	h =	(unsigned)(hash_scale[0] * (vec[0] - hash_min[0]) * hash_scale[2]
+		+ hash_scale[1] * (vec[1] - hash_min[1]));
 	if ( h >= NUM_HASH)
 		return NUM_HASH - 1;
 	return h;
@@ -123,7 +123,7 @@ void CanonicalVector (vec3_t vec)
 	}
 	else
 		vec[2] = 0;
-	printf ("WARNING: CanonicalVector: degenerate\n");
+	Q_printf ("WARNING: CanonicalVector: degenerate\n");
 }
 
 wedge_t	*FindEdge (vec3_t p1, vec3_t p2, vec_t *t1, vec_t *t2)
@@ -208,7 +208,7 @@ void AddVert (wedge_t *w, vec_t t)
 	v = w->head.next;
 	do
 	{
-		if (fabs(v->t - t) < T_EPSILON)
+		if (Q_fabs(v->t - t) < T_EPSILON)
 			return;
 		if (v->t > t)
 			break;
@@ -493,10 +493,10 @@ void tjunc (node_t *headnode)
 // origin points won't allways be inside the map, so extend the hash area 
 	for (i=0 ; i<3 ; i++)
 	{
-		if ( fabs(headnode->maxs[i]) > fabs(headnode->mins[i]) )
-			maxs[i] = fabs(headnode->maxs[i]);
+		if ( Q_fabs(headnode->maxs[i]) > Q_fabs(headnode->mins[i]) )
+			maxs[i] = Q_fabs(headnode->maxs[i]);
 		else
-			maxs[i] = fabs(headnode->mins[i]);
+			maxs[i] = Q_fabs(headnode->mins[i]);
 	}
 	VectorSubtract (vec3_origin, maxs, mins);
 	

@@ -43,7 +43,7 @@ void Draw_ClearWindow (void)
 
 	if (!init)
 	{
-		init = true;
+		init = qtrue;
 		InitWindow ();
 	}
 

@@ -112,7 +112,7 @@ float MoveToward( float cur, float goal, float maxspeed )
 {
 	if( cur != goal )
 	{
-		if( abs( cur - goal ) > 180.0 )
+		if( Q_abs( cur - goal ) > 180.0 )
 		{
 			if( cur < goal )
 				cur += 360.0;
@@ -356,7 +356,7 @@ void EXPORT CAM_Think( void )
 			pnt[i] += -dist*camForward[i];
 
 		// check line from r_refdef.vieworg to pnt
-		memset ( &clip, 0, sizeof ( moveclip_t ) );
+		Q_memset ( &clip, 0, sizeof ( moveclip_t ) );
 		clip.trace = SV_ClipMoveToEntity( sv.edicts, r_refdef.vieworg, ext, ext, pnt );
 		if( clip.trace.fraction == 1.0 )
 		{
@@ -394,7 +394,7 @@ void EXPORT CAM_Think( void )
 		if( camAngles[ PITCH ] - viewangles[ PITCH ] != cam_idealpitch->value )
 			camAngles[ PITCH ] = MoveToward( camAngles[ PITCH ], cam_idealpitch->value + viewangles[ PITCH ], CAM_ANGLE_SPEED );
 
-		if( abs( camAngles[ 2 ] - cam_idealdist->value ) < 2.0 )
+		if( Q_abs( camAngles[ 2 ] - cam_idealdist->value ) < 2.0 )
 			camAngles[ 2 ] = cam_idealdist->value;
 		else
 			camAngles[ 2 ] += ( cam_idealdist->value - camAngles[ 2 ] ) / 4.0;
@@ -412,7 +412,7 @@ void EXPORT CAM_Think( void )
 			pnt[i] += -dist*camForward[i];
 
 		// check line from r_refdef.vieworg to pnt
-		memset ( &clip, 0, sizeof ( moveclip_t ) );
+		Q_memset ( &clip, 0, sizeof ( moveclip_t ) );
 		ext[0] = ext[1] = ext[2] = 0.0;
 		clip.trace = SV_ClipMoveToEntity( sv.edicts, r_refdef.vieworg, ext, ext, pnt );
 		if( clip.trace.fraction != 1.0 )

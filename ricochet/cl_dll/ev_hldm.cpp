@@ -127,15 +127,15 @@ void EV_TrainPitchAdjust( event_args_t *args )
 
 	switch ( noise )
 	{
-	case 1: strcpy( sz, "plats/ttrain1.wav"); break;
-	case 2: strcpy( sz, "plats/ttrain2.wav"); break;
-	case 3: strcpy( sz, "plats/ttrain3.wav"); break; 
-	case 4: strcpy( sz, "plats/ttrain4.wav"); break;
-	case 5: strcpy( sz, "plats/ttrain6.wav"); break;
-	case 6: strcpy( sz, "plats/ttrain7.wav"); break;
+	case 1: Q_strcpy( sz, "plats/ttrain1.wav"); break;
+	case 2: Q_strcpy( sz, "plats/ttrain2.wav"); break;
+	case 3: Q_strcpy( sz, "plats/ttrain3.wav"); break; 
+	case 4: Q_strcpy( sz, "plats/ttrain4.wav"); break;
+	case 5: Q_strcpy( sz, "plats/ttrain6.wav"); break;
+	case 6: Q_strcpy( sz, "plats/ttrain7.wav"); break;
 	default:
 		// no sound
-		strcpy( sz, "" );
+		Q_strcpy( sz, "" );
 		return;
 	}
 

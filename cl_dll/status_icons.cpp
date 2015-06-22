@@ -46,7 +46,7 @@ int CHudStatusIcons::VidInit( void )
 
 void CHudStatusIcons::Reset( void )
 {
-	memset( m_IconList, 0, sizeof m_IconList );
+	Q_memset( m_IconList, 0, sizeof m_IconList );
 	m_iFlags &= ~HUD_ACTIVE;
 }
 
@@ -110,7 +110,7 @@ void CHudStatusIcons::EnableIcon( char *pszIconName, unsigned char red, unsigned
 	// check to see if the sprite is in the current list
 	for ( i = 0; i < MAX_ICONSPRITES; i++ )
 	{
-		if ( !stricmp( m_IconList[i].szSpriteName, pszIconName ) )
+		if ( !Q_stricmp( m_IconList[i].szSpriteName, pszIconName ) )
 			break;
 	}
 
@@ -138,10 +138,10 @@ void CHudStatusIcons::EnableIcon( char *pszIconName, unsigned char red, unsigned
 	m_IconList[i].r = red;
 	m_IconList[i].g = green;
 	m_IconList[i].b = blue;
-	strcpy( m_IconList[i].szSpriteName, pszIconName );
+	Q_strcpy( m_IconList[i].szSpriteName, pszIconName );
 
 	// Hack: Play Timer sound when a grenade icon is played (in 0.8 seconds)
-	if ( strstr(m_IconList[i].szSpriteName, "grenade") )
+	if ( Q_strstr(m_IconList[i].szSpriteName, "grenade") )
 	{
 		cl_entity_t *pthisplayer = gEngfuncs.GetLocalPlayer();
 		gEngfuncs.pEventAPI->EV_PlaySound( pthisplayer->index, pthisplayer->origin, CHAN_STATIC, "weapons/timer.wav", 1.0, ATTN_NORM, 0, PITCH_NORM );
@@ -153,10 +153,10 @@ void CHudStatusIcons::DisableIcon( char *pszIconName )
 	// find the sprite is in the current list
 	for ( int i = 0; i < MAX_ICONSPRITES; i++ )
 	{
-		if ( !stricmp( m_IconList[i].szSpriteName, pszIconName ) )
+		if ( !Q_stricmp( m_IconList[i].szSpriteName, pszIconName ) )
 		{
 			// clear the item from the list
-			memset( &m_IconList[i], 0, sizeof(icon_sprite_t) );
+			Q_memset( &m_IconList[i], 0, sizeof(icon_sprite_t) );
 			return;
 		}
 	}

@@ -10,6 +10,8 @@
 
 #include "csg.h"
 
+extern int	BrushContents (brush_t *);
+
 int			nummapbrushes;
 brush_t		mapbrushes[MAX_MAP_BRUSHES];
 
@@ -66,12 +68,12 @@ ParseBrush
 void ParseBrush (entity_t *mapent)
 {
 	brush_t		*b;
-	bface_t		*f, *f2;
-	int			planepts[3][3];
-	vec3_t			t1, t2, t3;
+	//bface_t		*f, *f2;
+	//int			planepts[3][3];
+	//vec3_t			t1, t2, t3;
 	int			i,j;
-	vec_t		d;
-	int			planenum;
+	//vec_t		d;
+	//int			planenum;
 	side_t		*side;
 	int			contents;
 
@@ -88,9 +90,9 @@ void ParseBrush (entity_t *mapent)
 		
 	do
 	{
-		if (!GetToken (true))
+		if (!GetToken (qtrue))
 			break;
-		if (!strcmp (token, "}") )
+		if (!Q_strcmp (token, "}") )
 			break;
 		
 		if (numbrushsides == MAX_MAP_SIDES)
@@ -104,91 +106,91 @@ void ParseBrush (entity_t *mapent)
 		for (i=0 ; i<3 ; i++)
 		{
 			if (i != 0)
-				GetToken (true);
-			if (strcmp (token, "(") )
+				GetToken (qtrue);
+			if (Q_strcmp (token, "(") )
 				Error ("parsing brush");
 			
 			for (j=0 ; j<3 ; j++)
 			{
-				GetToken (false);
-				side->planepts[i][j] = atoi(token);
+				GetToken (qfalse);
+				side->planepts[i][j] = Q_atoi(token);
 			}
 			
-			GetToken (false);
-			if (strcmp (token, ")") )
+			GetToken (qfalse);
+			if (Q_strcmp (token, ")") )
 				Error ("parsing brush");
 				
 		}
 
 		// read the texturedef
-		GetToken (false);
-		strcpy (side->td.name, token);
+		GetToken (qfalse);
+		Q_strcpy (side->td.name, token);
 
 		if (g_nMapFileVersion < 220)
 		{
-			GetToken (false);
-			side->td.shift[0] = atof(token);
-			GetToken (false);
-			side->td.shift[1] = atof(token);
-			GetToken (false);
-			side->td.rotate = atof(token);
+			GetToken (qfalse);
+			side->td.shift[0] = Q_atof(token);
+			GetToken (qfalse);
+			side->td.shift[1] = Q_atof(token);
+			GetToken (qfalse);
+			side->td.rotate = Q_atof(token);
 		}
 		else
 		{
 			// texture U axis
-			GetToken (false);
-			if (strcmp (token, "["))
+			GetToken (qfalse);
+			if (Q_strcmp (token, "["))
 			{
 				Error("missing '[ in texturedef");
 			}
 
-			GetToken (false);
-			side->td.UAxis[0] = atof(token);
-			GetToken (false);
-			side->td.UAxis[1] = atof(token);
-			GetToken (false);
-			side->td.UAxis[2] = atof(token);
-			GetToken (false);
-			side->td.shift[0] = atof(token);
+			GetToken (qfalse);
+			side->td.UAxis[0] = Q_atof(token);
+			GetToken (qfalse);
+			side->td.UAxis[1] = Q_atof(token);
+			GetToken (qfalse);
+			side->td.UAxis[2] = Q_atof(token);
+			GetToken (qfalse);
+			side->td.shift[0] = Q_atof(token);
 
-			GetToken (false);
-			if (strcmp (token, "]"))
+			GetToken (qfalse);
+			if (Q_strcmp (token, "]"))
 			{
 				Error("missing ']' in texturedef");
 			}
 
 			// texture V axis
-			GetToken (false);
-			if (strcmp (token, "["))
+			GetToken (qfalse);
+			if (Q_strcmp (token, "["))
 			{
 				Error("missing '[ in texturedef");
 			}
 
-			GetToken (false);
-			side->td.VAxis[0] = atof(token);
-			GetToken (false);
-			side->td.VAxis[1] = atof(token);
-			GetToken (false);
-			side->td.VAxis[2] = atof(token);
-			GetToken (false);
-			side->td.shift[1] = atof(token);
+			GetToken (qfalse);
+			side->td.VAxis[0] = Q_atof(token);
+			GetToken (qfalse);
+			side->td.VAxis[1] = Q_atof(token);
+			GetToken (qfalse);
+			side->td.VAxis[2] = Q_atof(token);
+			GetToken (qfalse);
+			side->td.shift[1] = Q_atof(token);
 
-			GetToken (false);
-			if (strcmp (token, "]"))
+			GetToken (qfalse);
+			if (Q_strcmp (token, "]"))
 			{
 				Error("missing ']' in texturedef");
 			}
 
 			// Texture rotation is implicit in U/V axes.
-			GetToken(false);
+			GetToken(qfalse);
 			side->td.rotate = 0;
 		}
 
 		// texure scale
-		GetToken (false);
-		side->td.scale[0] = atof(token);
-		GetToken (false);
-		side->td.scale[1] = atof(token);
+		GetToken (qfalse);
+		side->td.scale[0] = Q_atof(token);
+		GetToken (qfalse);
+		side->td.scale[1] = Q_atof(token);
 
 	} while (1);
 
@@ -214,14 +216,14 @@ void ParseBrush (entity_t *mapent)
 
 		if (b->entitynum == 0)
 		{
-			printf ("Entity %i, Brush %i: origin brushes not allowed in world"
+			Q_printf ("Entity %i, Brush %i: origin brushes not allowed in world"
 				, b->entitynum, b->brushnum);
 			return;
 		}
 		VectorAdd (b->hulls[0].mins, b->hulls[0].maxs, origin);
 		VectorScale (origin, 0.5, origin);
 
-		sprintf (string, "%i %i %i", (int)origin[0], (int)origin[1], (int)origin[2]);
+		Q_sprintf (string, "%i %i %i", (int)origin[0], (int)origin[1], (int)origin[2]);
 		SetKeyValue (&entities[b->entitynum], "origin", string);
 	}
 
@@ -237,10 +239,10 @@ qboolean	ParseMapEntity (void)
 	entity_t	*mapent;
 	epair_t		*e;
 
-	if (!GetToken (true))
-		return false;
+	if (!GetToken (qtrue))
+		return qfalse;
 
-	if (strcmp (token, "{") )
+	if (Q_strcmp (token, "{") )
 		Error ("ParseEntity: { not found");
 	
 	if (num_entities == MAX_MAP_ENTITIES)
@@ -253,19 +255,19 @@ qboolean	ParseMapEntity (void)
 
 	do
 	{
-		if (!GetToken (true))
+		if (!GetToken (qtrue))
 			Error ("ParseEntity: EOF without closing brace");
-		if (!strcmp (token, "}") )
+		if (!Q_strcmp (token, "}") )
 			break;
-		if (!strcmp (token, "{") )
+		if (!Q_strcmp (token, "{") )
 			ParseBrush (mapent);
 		else
 		{
 			e = ParseEpair ();
 
-			if (!strcmp(e->key, "mapversion"))
+			if (!Q_strcmp(e->key, "mapversion"))
 			{
-				g_nMapFileVersion = atoi(e->value);
+				g_nMapFileVersion = Q_atoi(e->value);
 			}
 
 			e->next = mapent->epairs;
@@ -284,7 +286,7 @@ qboolean	ParseMapEntity (void)
 
 	// group entities are just for editor convenience
 	// toss all brushes into the world entity
-	if ( !onlyents && !strcmp ("func_group", ValueForKey (mapent, "classname")))
+	if ( !onlyents && !Q_strcmp ("func_group", ValueForKey (mapent, "classname")))
 	{
 		// this is pretty gross, because the brushes are expected to be
 		// in linear order for each entity
@@ -296,30 +298,30 @@ qboolean	ParseMapEntity (void)
 		newbrushes = mapent->numbrushes;
 		worldbrushes = entities[0].numbrushes;
 
-		temp = malloc(newbrushes*sizeof(brush_t));
-		memcpy (temp, mapbrushes + mapent->firstbrush, newbrushes*sizeof(brush_t));
+		temp = Q_malloc(newbrushes*sizeof(brush_t));
+		Q_memcpy (temp, mapbrushes + mapent->firstbrush, newbrushes*sizeof(brush_t));
 
 		for (i=0 ; i<newbrushes ; i++)
 			temp[i].entitynum = 0;
 		
 		// make space to move the brushes (overlapped copy)
-		memmove (mapbrushes + worldbrushes + newbrushes,
+		Q_memmove (mapbrushes + worldbrushes + newbrushes,
 			mapbrushes + worldbrushes,
 			sizeof(brush_t) * (nummapbrushes - worldbrushes - newbrushes) );
 
 		// copy the new brushes down
-		memcpy (mapbrushes + worldbrushes, temp, sizeof(brush_t) * newbrushes);
+		Q_memcpy (mapbrushes + worldbrushes, temp, sizeof(brush_t) * newbrushes);
 
 		// fix up indexes
 		num_entities--;
 		entities[0].numbrushes += newbrushes;
 		for (i=1 ; i<num_entities ; i++)
 			entities[i].firstbrush += newbrushes;
-		memset (mapent,0, sizeof(*mapent));
-		free (temp);
+		Q_memset (mapent,0, sizeof(*mapent));
+		Q_free (temp);
 	}
 
-	return true;
+	return qtrue;
 }
 
 /*

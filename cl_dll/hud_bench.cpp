@@ -100,7 +100,7 @@ int Bench_GetStage( void )
 
 float Bench_GetSwitchTime( void )
 {
-	return g_benchSwitchTimes[ min( Bench_GetStage(), LAST_STAGE ) ];
+	return g_benchSwitchTimes[ Q_min( Bench_GetStage(), LAST_STAGE ) ];
 }
 
 int Bench_InStage( int stage )
@@ -146,8 +146,8 @@ int CHudBenchmark::MsgFunc_Bench(const char *pszName, int iSize, void *pbuf)
 	m_fReceiveTime = gHUD.m_flTime;
 	m_StoredLatency = ( m_fReceiveTime - m_fSendTime );
 
-	m_StoredLatency = min( 1.0, m_StoredLatency );
-	m_StoredLatency = max( 0.0, m_StoredLatency );
+	m_StoredLatency = Q_min( 1.0, m_StoredLatency );
+	m_StoredLatency = Q_max( 0.0, m_StoredLatency );
 
 	m_StoredPacketLoss = 0.0;
 
@@ -162,7 +162,7 @@ int CHudBenchmark::MsgFunc_Bench(const char *pszName, int iSize, void *pbuf)
 		{
 			adr = status.remote_address;
 
-			sprintf( sz, "%i.%i.%i.%i",
+			Q_sprintf( sz, "%i.%i.%i.%i",
 				adr.ip[ 0 ], adr.ip[ 1 ], adr.ip[ 2 ], adr.ip[ 3 ] );
 
 			if ( adr.type == NA_IP )
@@ -235,7 +235,7 @@ void Bench_CheckStart( void )
 	if ( !started && !Bench_Active() )
 	{
 		level = gEngfuncs.pfnGetLevelName();
-		if ( level && level[0] && !stricmp( level, "maps/ppdemo.bsp" ) )
+		if ( level && level[0] && !Q_stricmp( level, "maps/ppdemo.bsp" ) )
 		{
 			started = 1;
 			EngineClientCmd( "ppdemostart\n" );
@@ -286,8 +286,8 @@ void CHudBenchmark::Think( void )
 			float switch_time;
 			float total_time;
 			
-			latency = max( 0.0, latency );
-			latency = min( 1.0, latency );
+			latency = Q_max( 0.0, latency );
+			latency = Q_min( 1.0, latency );
 
 			total_time = Bench_GetSwitchTime();
 			total_time -= 2.0;
@@ -341,8 +341,8 @@ void CHudBenchmark::Think( void )
 
 			// Only takes 1/2 time to get up to maximum speed
 			frac *= 2.0;
-			frac = max( 0.0, frac );
-			frac = min( 1.0, frac );
+			frac = Q_max( 0.0, frac );
+			frac = Q_min( 1.0, frac );
 
 			m_nObjects = (int)(NUM_BENCH_OBJ * frac);
 		}
@@ -420,8 +420,8 @@ int CHudBenchmark::Bench_ScoreForValue( int stage, float raw )
 	{
 	case 1:  // ping
 		score = 100.0 * ( m_StoredLatency );
-		score = max( score, 0 );
-		score = min( score, 100 );
+		score = Q_max( score, 0 );
+		score = Q_min( score, 100 );
 
 		// score is inverted
 		score = 100 - score;
@@ -429,8 +429,8 @@ int CHudBenchmark::Bench_ScoreForValue( int stage, float raw )
 		break;
 	case 2:  // framerate/performance
 		score = (int)( 100 * m_fAvgFrameRate ) / 72;
-		score = min( score, 100 );
-		score = max( score, 0 );
+		score = Q_min( score, 100 );
+		score = Q_max( score, 0 );
 
 		score *= BENCH_RANGE/100.0;
 		if ( power_play )
@@ -440,8 +440,8 @@ int CHudBenchmark::Bench_ScoreForValue( int stage, float raw )
 		break;
 	case 3:  // tracking
 		score = (100 * m_fAvgScore) / 40;
-		score = max( score, 0 );
-		score = min( score, 100 );
+		score = Q_max( score, 0 );
+		score = Q_min( score, 100 );
 
 		// score is inverted
 		score = 100 - score;
@@ -465,8 +465,8 @@ void CHudBenchmark::SetCompositeScore( void )
 
 	int composite = ( ping_score * weights[ 0 ] + frame_score * weights[ 1 ] + tracking_score * weights[ 2 ] );
 	
-	composite = min( 100, composite );
-	composite = max( 0, composite );
+	composite = Q_min( 100, composite );
+	composite = Q_max( 0, composite );
 
 	m_nCompositeScore = composite;
 }
@@ -485,7 +485,7 @@ int CHudBenchmark::Draw( float flTime )
 	x = 10;
 	y = 25; //480 - 150;
 
-	sprintf( sz, "%s: %s", g_title , pp_strings[ Bench_GetPowerPlay() ? 0 : 1]);
+	Q_sprintf( sz, "%s: %s", g_title , pp_strings[ Bench_GetPowerPlay() ? 0 : 1]);
 
 	gHUD.DrawHudString( x, y, 320, sz, 251, 237, 7);// , 200, 200); //255, 255, 255 );
 
@@ -502,11 +502,11 @@ int CHudBenchmark::Draw( float flTime )
 	{
 		if ( m_fReceiveTime && m_nSentFinish )
 		{
-			sprintf( sz, g_stage1[1], Bench_ScoreForValue( FIRST_STAGE, m_StoredLatency ));
+			Q_sprintf( sz, g_stage1[1], Bench_ScoreForValue( FIRST_STAGE, m_StoredLatency ));
 		}
 		else
 		{
-			sprintf( sz, g_stage1[0] );
+			Q_sprintf( sz, g_stage1[0] );
 		}
 		gHUD.DrawHudString( x, y, 320, sz, 255, 255, 255 );
 
@@ -527,11 +527,11 @@ int CHudBenchmark::Draw( float flTime )
 
 		if ( m_nSentFinish /* Bench_InStage( THIRD_STAGE ) */|| Bench_InStage( FOURTH_STAGE ) )
 		{
-			sprintf( sz, g_stage2[1], Bench_ScoreForValue( SECOND_STAGE, m_fAvgFrameRate ) );
+			Q_sprintf( sz, g_stage2[1], Bench_ScoreForValue( SECOND_STAGE, m_fAvgFrameRate ) );
 		}
 		else
 		{
-			sprintf( sz, g_stage2[0] );
+			Q_sprintf( sz, g_stage2[0] );
 		}
 		gHUD.DrawHudString( x, y, 320, sz, 255, 255, 255 );
 		y += 20;
@@ -542,11 +542,11 @@ int CHudBenchmark::Draw( float flTime )
 	{
 		if ( m_nSentFinish || Bench_InStage( FOURTH_STAGE ) )
 		{
-			sprintf( sz, g_stage3[1], Bench_ScoreForValue( THIRD_STAGE, m_fAvgScore ) );
+			Q_sprintf( sz, g_stage3[1], Bench_ScoreForValue( THIRD_STAGE, m_fAvgScore ) );
 		}
 		else
 		{
-			sprintf( sz, g_stage3[0] );
+			Q_sprintf( sz, g_stage3[0] );
 		}
 
 		gHUD.DrawHudString( x, y, 320, sz, 255, 255, 255 );
@@ -556,7 +556,8 @@ int CHudBenchmark::Draw( float flTime )
 
 	if ( Bench_InStage( FOURTH_STAGE ) )
 	{
-		sprintf( sz, g_stage4, m_nCompositeScore );
+		Q_sprintf( sz, g_stage4, m_nCompositeScore );
+
 		gHUD.DrawHudString( x, y, 320, sz, 31, 200, 200 );
 	}
 
@@ -622,7 +623,7 @@ float g_fZAdjust = 0.0;
 
 void Bench_CheckEntity( int type, struct cl_entity_s *ent, const char *modelname )
 {
-	if ( Bench_InStage( THIRD_STAGE ) && !stricmp( modelname, "*3" ) )
+	if ( Bench_InStage( THIRD_STAGE ) && !Q_stricmp( modelname, "*3" ) )
 	{
 		model_t *pmod;
 		vec3_t v;
@@ -634,7 +635,7 @@ void Bench_CheckEntity( int type, struct cl_entity_s *ent, const char *modelname
 		VectorAdd( v, ent->origin, g_aimorg );
 	}
 
-	if ( Bench_InStage( THIRD_STAGE ) && strstr( modelname, "ppdemodot" ) )
+	if ( Bench_InStage( THIRD_STAGE ) && Q_strstr( modelname, "ppdemodot" ) )
 	{
 		Bench_SetDotAdded( 1 );
 		VectorCopy( ent->origin, g_dotorg );
@@ -652,8 +653,8 @@ void Bench_CheckEntity( int type, struct cl_entity_s *ent, const char *modelname
 			if ( dt > 0.0 && dt < 1.0 )
 			{
 				fZAdjust += gEngfuncs.pfnRandomFloat( -fRate, fRate );
-				fZAdjust = min( fBounds, fZAdjust );
-				fZAdjust = max( -fBounds, fZAdjust );
+				fZAdjust = Q_min( fBounds, fZAdjust );
+				fZAdjust = Q_max( -fBounds, fZAdjust );
 
 				ent->origin[2] += fZAdjust;
 
@@ -900,8 +901,8 @@ void HUD_CreateBenchObjects( vec3_t origin )
 		AngleVectors ( ang, forward, right, up );
 
 		// Get a far point for ray trace
-		farpoint = centerspot + ( BENCH_RADIUS + ofs_radius * sin( BENCH_SWEEP * offset + frac2 * 2 * M_PI ) ) * forward;
-		farpoint[2] += 10 * cos( BENCH_SWEEP * offset + frac2 * 2 * M_PI );
+		farpoint = centerspot + ( BENCH_RADIUS + ofs_radius * Q_sin( BENCH_SWEEP * offset + frac2 * 2 * M_PI ) ) * forward;
+		farpoint[2] += 10 * Q_cos( BENCH_SWEEP * offset + frac2 * 2 * M_PI );
 
 		gEngfuncs.pEventAPI->EV_PlayerTrace( (float *)&centerspot, (float *)&farpoint, PM_NORMAL, -1, &tr );
 
@@ -993,7 +994,7 @@ void HUD_CreateBenchObjects( vec3_t origin )
 			else
 			{
 				bench[i].curstate.renderamt += BLEND_IN_SPEED * frametime;
-				bench[i].curstate.renderamt = min( 255, bench[i].curstate.renderamt );
+				bench[i].curstate.renderamt = Q_min( 255, bench[i].curstate.renderamt );
 				bench[i].curstate.rendermode = kRenderTransAlpha;
 			}
 
@@ -1115,7 +1116,7 @@ void Bench_SetViewOrigin( float *vieworigin, float frametime )
 	frac = dt / BENCH_VIEW_CYCLE_TIME;
 	frac *= 2 * M_PI;
 
-	drift = sin( frac ) * offset_amt;
+	drift = Q_sin( frac ) * offset_amt;
 	
 	ang = vec3_origin;
 

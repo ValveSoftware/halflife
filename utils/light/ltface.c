@@ -34,7 +34,7 @@ vec_t CastRay (vec3_t p1, vec3_t p2)
 		
 	if (t == 0)
 		t = 1;		// don't blow up...
-	return sqrt(t);
+	return (vec_t)Q_sqrt(t);
 }
 
 /*
@@ -132,7 +132,7 @@ void CalcFaceVectors (lightinfo_t *l)
 
 	for (i=0 ; i<2 ; i++)
 	{
-		len = VectorLength (l->worldtotex[i]);
+		len = (vec_t)VectorLength (l->worldtotex[i]);
 		dist = DotProduct (l->worldtotex[i], l->facenormal);
 		dist *= distscale;
 		VectorMA (l->worldtotex[i], -dist, texnormal, l->textoworld[i]);
@@ -200,11 +200,11 @@ void CalcFaceExtents (lightinfo_t *l)
 		l->exactmins[i] = mins[i];
 		l->exactmaxs[i] = maxs[i];
 		
-		mins[i] = floor(mins[i]/16);
-		maxs[i] = ceil(maxs[i]/16);
+		mins[i] = (vec_t)Q_floor(mins[i]/16);
+		maxs[i] = (vec_t)Q_ceil(maxs[i]/16);
 
-		l->texmins[i] = mins[i];
-		l->texsize[i] = maxs[i] - mins[i];
+		l->texmins[i] = (int)mins[i];
+		l->texsize[i] = (int)(maxs[i] - mins[i]);
 		if (l->texsize[i] > 17)
 			Error ("Bad surface extents");
 	}
@@ -245,16 +245,16 @@ void CalcPoints (lightinfo_t *l)
 	{	// extra filtering
 		h = (l->texsize[1]+1)*2;
 		w = (l->texsize[0]+1)*2;
-		starts = (l->texmins[0]-0.5)*16;
-		startt = (l->texmins[1]-0.5)*16;
+		starts = (vec_t)(l->texmins[0]-0.5)*16;
+		startt = (vec_t)(l->texmins[1]-0.5)*16;
 		step = 8;
 	}
 	else
 	{
 		h = l->texsize[1]+1;
 		w = l->texsize[0]+1;
-		starts = l->texmins[0]*16;
-		startt = l->texmins[1]*16;
+		starts = (vec_t)l->texmins[0]*16;
+		startt = (vec_t)l->texmins[1]*16;
 		step = 16;
 	}
 
@@ -360,7 +360,7 @@ void SingleLightFace (lightentity_t *light, lightinfo_t *l)
 		return;
 		
 // don't bother with light too far away
-	intensity = ( light->light[ 0 ] + light->light[ 1 ] + light->light[ 2 ] ) / 3.0;
+	intensity = (float)(( light->light[ 0 ] + light->light[ 1 ] + light->light[ 2 ] ) / 3.0);
 	if( dist > intensity )
 	{
 		c_culldistplane++;
@@ -372,9 +372,9 @@ void SingleLightFace (lightentity_t *light, lightinfo_t *l)
 		VectorSubtract (light->targetorigin, light->origin, spotvec);
 		VectorNormalize (spotvec);
 		if (!light->angle)
-			falloff = -cos(20*Q_PI/180);	
+			falloff = (vec_t)-Q_cos(20*Q_PI/180);	
 		else
-			falloff = -cos(light->angle/2*Q_PI/180);
+			falloff = (vec_t)-Q_cos(light->angle/2*Q_PI/180);
 	}
 	else
 		falloff = 0;	// shut up compiler warnings
@@ -388,7 +388,7 @@ void SingleLightFace (lightentity_t *light, lightinfo_t *l)
 	{	// init a new light map
 		if (mapnum == MAXLIGHTMAPS)
 		{
-			printf ("WARNING: Too many light styles on a face\n");
+			Q_printf ("WARNING: Too many light styles on a face\n");
 			return;
 		}
 		size = (l->texsize[1]+1)*(l->texsize[0]+1);
@@ -403,7 +403,7 @@ void SingleLightFace (lightentity_t *light, lightinfo_t *l)
 //
 // check it for real
 //
-	hit = false;
+	hit = qfalse;
 	c_proper++;
 	
 	surf = l->surfpt[0];
@@ -422,7 +422,7 @@ void SingleLightFace (lightentity_t *light, lightinfo_t *l)
 				continue;
 		}
 
-		angle = (1.0-scalecos) + scalecos*angle;
+		angle = (vec_t)(1.0-scalecos) + scalecos*angle;
 		for( i=0; i<3; i++ )
 		{
 			add = light->light[i] - dist;
@@ -434,9 +434,9 @@ void SingleLightFace (lightentity_t *light, lightinfo_t *l)
 		}
 		
 		// check intensity
-		intensity = ( lightsamp[ c ][ 0 ] + lightsamp[ c ][ 1 ] + lightsamp[ c ][ 2 ] ) / 3.0;
+		intensity = (float)(( lightsamp[ c ][ 0 ] + lightsamp[ c ][ 1 ] + lightsamp[ c ][ 2 ] ) / 3.0);
 		if( intensity > 1 )		// ignore real tiny lights
-			hit = true;
+			hit = qtrue;
 	}
 		
 	if (mapnum == l->numlightstyles && hit)
@@ -486,7 +486,7 @@ void FixMinlight (lightinfo_t *l)
 	{
 		for (j=0 ; j<l->numsurfpt ; j++)
 		{
-			float intensity = ( l->lightmaps[i][j][0] + l->lightmaps[i][j][1] + l->lightmaps[i][j][2] ) / 3.0;
+			float intensity = (float)(( l->lightmaps[i][j][0] + l->lightmaps[i][j][1] + l->lightmaps[i][j][2] ) / 3.0);
 
 			if ( intensity < minlight )
 			{
@@ -539,7 +539,7 @@ void LightFace (int surfnum)
 		return;
 	}
 
-	memset (&l, 0, sizeof(l));
+	Q_memset (&l, 0, sizeof(l));
 	l.surfnum = surfnum;
 	l.face = f;
 
@@ -646,9 +646,9 @@ void LightFace (int surfnum)
 #endif
 					if ( divisor > 1.0 )
 						VectorScale( total, 1/divisor, total );
-					total[0] = max(total[0],0.0);
-					total[1] = max(total[1],0.0);
-					total[2] = max(total[2],0.0);
+					total[0] = (vec_t)Q_max(total[0],0.0);
+					total[1] = (vec_t)Q_max(total[1],0.0);
+					total[2] = (vec_t)Q_max(total[2],0.0);
 				}
 				else
 					VectorCopy( light[ c ], total );
@@ -664,7 +664,7 @@ void LightFace (int surfnum)
 						total[ j ] *= clampfactor;
 
 						if( total[j] > clamp)
-							total[j] = clamp;
+							total[j] = (vec_t)clamp;
 						else if (total[j] < 0)
 							Error ("light < 0");
 
@@ -673,7 +673,7 @@ void LightFace (int surfnum)
 				}
 				else
 				{
-					int intensity = total[ 0 ] + total[ 1 ] + total[ 2 ];
+					int intensity = (int)(total[ 0 ] + total[ 1 ] + total[ 2 ]);
 					if( intensity > 255 )
 						intensity = 255;
 					else if( intensity < 0 )

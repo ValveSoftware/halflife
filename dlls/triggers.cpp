@@ -91,7 +91,7 @@ void CFrictionModifier :: KeyValue( KeyValueData *pkvd )
 {
 	if (FStrEq(pkvd->szKeyName, "modifier"))
 	{
-		m_frictionFraction = atof(pkvd->szValue) / 100.0;
+		m_frictionFraction = Q_atof(pkvd->szValue) / 100.0;
 		pkvd->fHandled = TRUE;
 	}
 	else
@@ -141,7 +141,7 @@ void CAutoTrigger::KeyValue( KeyValueData *pkvd )
 	}
 	else if (FStrEq(pkvd->szKeyName, "triggerstate"))
 	{
-		int type = atoi( pkvd->szValue );
+		int type = Q_atoi( pkvd->szValue );
 		switch( type )
 		{
 		case 0:
@@ -216,7 +216,7 @@ void CTriggerRelay::KeyValue( KeyValueData *pkvd )
 {
 	if (FStrEq(pkvd->szKeyName, "triggerstate"))
 	{
-		int type = atoi( pkvd->szValue );
+		int type = Q_atoi( pkvd->szValue );
 		switch( type )
 		{
 		case 0:
@@ -321,7 +321,7 @@ void CMultiManager :: KeyValue( KeyValueData *pkvd )
 
 	if (FStrEq(pkvd->szKeyName, "wait"))
 	{
-		m_flWait = atof(pkvd->szValue);
+		m_flWait = Q_atof(pkvd->szValue);
 		pkvd->fHandled = TRUE;
 	}
 	else // add this field to the target list
@@ -333,7 +333,7 @@ void CMultiManager :: KeyValue( KeyValueData *pkvd )
 
 			UTIL_StripToken( pkvd->szKeyName, tmp );
 			m_iTargetName [ m_cTargets ] = ALLOC_STRING( tmp );
-			m_flTargetDelay [ m_cTargets ] = atof (pkvd->szValue);
+			m_flTargetDelay [ m_cTargets ] = Q_atof (pkvd->szValue);
 			m_cTargets++;
 			pkvd->fHandled = TRUE;
 		}
@@ -414,13 +414,13 @@ CMultiManager *CMultiManager::Clone( void )
 	CMultiManager *pMulti = GetClassPtr( (CMultiManager *)NULL );
 
 	edict_t *pEdict = pMulti->pev->pContainingEntity;
-	memcpy( pMulti->pev, pev, sizeof(*pev) );
+	Q_memcpy( pMulti->pev, pev, sizeof(*pev) );
 	pMulti->pev->pContainingEntity = pEdict;
 
 	pMulti->pev->spawnflags |= SF_MULTIMAN_CLONE;
 	pMulti->m_cTargets = m_cTargets;
-	memcpy( pMulti->m_iTargetName, m_iTargetName, sizeof( m_iTargetName ) );
-	memcpy( pMulti->m_flTargetDelay, m_flTargetDelay, sizeof( m_flTargetDelay ) );
+	Q_memcpy( pMulti->m_iTargetName, m_iTargetName, sizeof( m_iTargetName ) );
+	Q_memcpy( pMulti->m_flTargetDelay, m_flTargetDelay, sizeof( m_flTargetDelay ) );
 
 	return pMulti;
 }
@@ -564,17 +564,17 @@ void CBaseTrigger :: KeyValue( KeyValueData *pkvd )
 {
 	if (FStrEq(pkvd->szKeyName, "damage"))
 	{
-		pev->dmg = atof(pkvd->szValue);
+		pev->dmg = Q_atof(pkvd->szValue);
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "count"))
 	{
-		m_cTriggersLeft = (int) atof(pkvd->szValue);
+		m_cTriggersLeft = (int) Q_atof(pkvd->szValue);
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "damagetype"))
 	{
-		m_bitsDamageInflict = atoi(pkvd->szValue);
+		m_bitsDamageInflict = Q_atoi(pkvd->szValue);
 		pkvd->fHandled = TRUE;
 	}
 	else
@@ -718,7 +718,7 @@ void PlayCDTrack( int iTrack )
 	{
 		char string [ 64 ];
 
-		sprintf( string, "cd play %3d\n", iTrack );
+		Q_sprintf( string, "cd play %3d\n", iTrack );
 		CLIENT_COMMAND ( pClient, string);
 	}
 }
@@ -752,7 +752,7 @@ void CTargetCDAudio :: KeyValue( KeyValueData *pkvd )
 {
 	if (FStrEq(pkvd->szKeyName, "radius"))
 	{
-		pev->scale = atof(pkvd->szValue);
+		pev->scale = Q_atof(pkvd->szValue);
 		pkvd->fHandled = TRUE;
 	}
 	else
@@ -1370,16 +1370,16 @@ void CChangeLevel :: KeyValue( KeyValueData *pkvd )
 {
 	if (FStrEq(pkvd->szKeyName, "map"))
 	{
-		if (strlen(pkvd->szValue) >= cchMapNameMost)
+		if (Q_strlen(pkvd->szValue) >= cchMapNameMost)
 			ALERT( at_error, "Map name '%s' too long (32 chars)\n", pkvd->szValue );
-		strcpy(m_szMapName, pkvd->szValue);
+		Q_strcpy(m_szMapName, pkvd->szValue);
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "landmark"))
 	{
-		if (strlen(pkvd->szValue) >= cchMapNameMost)
+		if (Q_strlen(pkvd->szValue) >= cchMapNameMost)
 			ALERT( at_error, "Landmark name '%s' too long (32 chars)\n", pkvd->szValue );
-		strcpy(m_szLandmarkName, pkvd->szValue);
+		Q_strcpy(m_szLandmarkName, pkvd->szValue);
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "changetarget"))
@@ -1389,7 +1389,7 @@ void CChangeLevel :: KeyValue( KeyValueData *pkvd )
 	}
 	else if (FStrEq(pkvd->szKeyName, "changedelay"))
 	{
-		m_changeTargetDelay = atof( pkvd->szValue );
+		m_changeTargetDelay = Q_atof( pkvd->szValue );
 		pkvd->fHandled = TRUE;
 	}
 	else
@@ -1503,7 +1503,7 @@ void CChangeLevel :: ChangeLevelNow( CBaseEntity *pActivator )
 		}
 	}
 	// This object will get removed in the call to CHANGE_LEVEL, copy the params into "safe" memory
-	strcpy(st_szNextMap, m_szMapName);
+	Q_strcpy(st_szNextMap, m_szMapName);
 
 	m_hActivator = pActivator;
 	SUB_UseTargets( pActivator, USE_TOGGLE, 0 );
@@ -1513,7 +1513,7 @@ void CChangeLevel :: ChangeLevelNow( CBaseEntity *pActivator )
 	pentLandmark = FindLandmark( m_szLandmarkName );
 	if ( !FNullEnt( pentLandmark ) )
 	{
-		strcpy(st_szNextSpot, m_szLandmarkName);
+		Q_strcpy(st_szNextSpot, m_szLandmarkName);
 		gpGlobals->vecLandmarkOffset = VARS(pentLandmark)->origin;
 	}
 //	ALERT( at_console, "Level touches %d levels\n", ChangeList( levels, 16 ) );
@@ -1544,11 +1544,11 @@ int CChangeLevel::AddTransitionToList( LEVELLIST *pLevelList, int listCount, con
 
 	for ( i = 0; i < listCount; i++ )
 	{
-		if ( pLevelList[i].pentLandmark == pentLandmark && strcmp( pLevelList[i].mapName, pMapName ) == 0 )
+		if ( pLevelList[i].pentLandmark == pentLandmark && Q_strcmp( pLevelList[i].mapName, pMapName ) == 0 )
 			return 0;
 	}
-	strcpy( pLevelList[listCount].mapName, pMapName );
-	strcpy( pLevelList[listCount].landmarkName, pLandmarkName );
+	Q_strcpy( pLevelList[listCount].mapName, pMapName );
+	Q_strcpy( pLevelList[listCount].landmarkName, pLandmarkName );
 	pLevelList[listCount].pentLandmark = pentLandmark;
 	pLevelList[listCount].vecLandmarkOrigin = VARS(pentLandmark)->origin;
 
@@ -1722,12 +1722,12 @@ void NextLevel( void )
 	{
 		gpGlobals->mapname = ALLOC_STRING("start");
 		pChange = GetClassPtr( (CChangeLevel *)NULL );
-		strcpy(pChange->m_szMapName, "start");
+		Q_strcpy(pChange->m_szMapName, "start");
 	}
 	else
 		pChange = GetClassPtr( (CChangeLevel *)VARS(pent));
 	
-	strcpy(st_szNextMap, pChange->m_szMapName);
+	Q_strcpy(st_szNextMap, pChange->m_szMapName);
 	g_fGameOver = TRUE;
 	
 	if (pChange->pev->nextthink < gpGlobals->time)
@@ -2212,7 +2212,7 @@ void CTriggerCamera :: KeyValue( KeyValueData *pkvd )
 {
 	if (FStrEq(pkvd->szKeyName, "wait"))
 	{
-		m_flWait = atof(pkvd->szValue);
+		m_flWait = Q_atof(pkvd->szValue);
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "moveto"))
@@ -2222,12 +2222,12 @@ void CTriggerCamera :: KeyValue( KeyValueData *pkvd )
 	}
 	else if (FStrEq(pkvd->szKeyName, "acceleration"))
 	{
-		m_acceleration = atof( pkvd->szValue );
+		m_acceleration = Q_atof( pkvd->szValue );
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "deceleration"))
 	{
-		m_deceleration = atof( pkvd->szValue );
+		m_deceleration = Q_atof( pkvd->szValue );
 		pkvd->fHandled = TRUE;
 	}
 	else

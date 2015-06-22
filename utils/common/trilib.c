@@ -73,25 +73,25 @@ void LoadTriangleList (char *filename, triangle_t **pptri, int *numtriangles)
 	*((unsigned char *)&exitpattern + 2) = *((unsigned char *)&t + 1);
 	*((unsigned char *)&exitpattern + 3) = *((unsigned char *)&t + 0);
 
-	if ((input = fopen(filename, "rb")) == 0) {
-		fprintf(stderr,"reader: could not open file '%s'\n", filename);
-		exit(0);
+	if ((input = Q_fopen(filename, "rb")) == 0) {
+		Q_fprintf(stderr,"reader: could not open file '%s'\n", filename);
+		Q_exit(0);
 	}
 
 	iLevel = 0;
 
-	fread(&magic, sizeof(int), 1, input);
+	Q_fread(&magic, sizeof(int), 1, input);
 	if (BigLong(magic) != MAGIC) {
-		fprintf(stderr,"File is not a Alias object separated triangle file, magic number is wrong.\n");
-		exit(0);
+		Q_fprintf(stderr,"File is not a Alias object separated triangle file, magic number is wrong.\n");
+		Q_exit(0);
 	}
 
-	ptri = malloc (MAXTRIANGLES * sizeof(triangle_t));
+	ptri = Q_malloc (MAXTRIANGLES * sizeof(triangle_t));
 
 	*pptri = ptri;
 
-	while (feof(input) == 0) {
-		fread(&start,  sizeof(float), 1, input);
+	while (Q_feof(input) == 0) {
+		Q_fread(&start,  sizeof(float), 1, input);
 		*(int *)&start = BigLong(*(int *)&start);
 		if (*(int *)&start != exitpattern)
 		{
@@ -103,12 +103,12 @@ void LoadTriangleList (char *filename, triangle_t **pptri, int *numtriangles)
 					/* a file, but this does allow you to do error checking */
 					/* (which I'm not doing) on a per character basis.      */
 					++i;
-					fread( &(name[i]), sizeof( char ), 1, input);
+					Q_fread( &(name[i]), sizeof( char ), 1, input);
 				} while( name[i] != '\0' );
 	
 	//			indent();
 	//			fprintf(stdout,"OBJECT START: %s\n",name);
-				fread( &count, sizeof(int), 1, input);
+				Q_fread( &count, sizeof(int), 1, input);
 				count = BigLong(count);
 				++iLevel;
 				if (count != 0) {
@@ -119,7 +119,7 @@ void LoadTriangleList (char *filename, triangle_t **pptri, int *numtriangles)
 					i = -1;
 					do {
 						++i;
-						fread( &(tex[i]), sizeof( char ), 1, input);
+						Q_fread( &(tex[i]), sizeof( char ), 1, input);
 					} while( tex[i] != '\0' );
 	
 	//				indent();
@@ -139,7 +139,7 @@ void LoadTriangleList (char *filename, triangle_t **pptri, int *numtriangles)
 				i = -1;
 				do {
 					++i;
-					fread( &(name[i]), sizeof( char ), 1, input);
+					Q_fread( &(name[i]), sizeof( char ), 1, input);
 				} while( name[i] != '\0' );
 	
 	//			indent();
@@ -154,7 +154,7 @@ void LoadTriangleList (char *filename, triangle_t **pptri, int *numtriangles)
 		for (i = 0; i < count; ++i) {
 			int		j;
 
-			fread( &tri, sizeof(tf_triangle), 1, input );
+			Q_fread( &tri, sizeof(tf_triangle), 1, input );
 			ByteSwapTri (&tri);
 			for (j=0 ; j<3 ; j++)
 			{
@@ -175,6 +175,6 @@ void LoadTriangleList (char *filename, triangle_t **pptri, int *numtriangles)
 
 	*numtriangles = ptri - *pptri;
 
-	fclose (input);
+	Q_fclose (input);
 }
 

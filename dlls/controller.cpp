@@ -288,9 +288,9 @@ void CController :: HandleAnimEvent( MonsterEvent_t *pEvent )
 			MESSAGE_END();
 
 			m_iBall[0] = 192;
-			m_iBallTime[0] = gpGlobals->time + atoi( pEvent->options ) / 15.0;
+			m_iBallTime[0] = gpGlobals->time + Q_atoi( pEvent->options ) / 15.0;
 			m_iBall[1] = 255;
-			m_iBallTime[1] = gpGlobals->time + atoi( pEvent->options ) / 15.0;
+			m_iBallTime[1] = gpGlobals->time + Q_atoi( pEvent->options ) / 15.0;
 
 		}
 		break;
@@ -329,23 +329,23 @@ void CController :: HandleAnimEvent( MonsterEvent_t *pEvent )
 		{
 			AttackSound( );
 			m_flShootTime = gpGlobals->time;
-			m_flShootEnd = m_flShootTime + atoi( pEvent->options ) / 15.0;
+			m_flShootEnd = m_flShootTime + Q_atoi( pEvent->options ) / 15.0;
 		}
 		break;
 		case CONTROLLER_AE_POWERUP_FULL:
 		{
 			m_iBall[0] = 255;
-			m_iBallTime[0] = gpGlobals->time + atoi( pEvent->options ) / 15.0;
+			m_iBallTime[0] = gpGlobals->time + Q_atoi( pEvent->options ) / 15.0;
 			m_iBall[1] = 255;
-			m_iBallTime[1] = gpGlobals->time + atoi( pEvent->options ) / 15.0;
+			m_iBallTime[1] = gpGlobals->time + Q_atoi( pEvent->options ) / 15.0;
 		}
 		break;
 		case CONTROLLER_AE_POWERUP_HALF:
 		{
 			m_iBall[0] = 192;
-			m_iBallTime[0] = gpGlobals->time + atoi( pEvent->options ) / 15.0;
+			m_iBallTime[0] = gpGlobals->time + Q_atoi( pEvent->options ) / 15.0;
 			m_iBall[1] = 192;
-			m_iBallTime[1] = gpGlobals->time + atoi( pEvent->options ) / 15.0;
+			m_iBallTime[1] = gpGlobals->time + Q_atoi( pEvent->options ) / 15.0;
 		}
 		break;
 		default:
@@ -564,7 +564,7 @@ Vector Intersect( Vector vecSrc, Vector vecDst, Vector vecMove, float flSpeed )
 	else
 	{
 		t = b * b - 4 * a * c;
-		t = sqrt( t ) / (2.0 * a);
+		t = Q_sqrt( t ) / (2.0 * a);
 		float t1 = -b +t;
 		float t2 = -b -t;
 
@@ -598,14 +598,14 @@ int CController::LookupFloat( )
 	float y = DotProduct( gpGlobals->v_right, m_velocity );
 	float z = DotProduct( gpGlobals->v_up, m_velocity );
 
-	if (fabs(x) > fabs(y) && fabs(x) > fabs(z))
+	if (Q_fabs(x) > Q_fabs(y) && Q_fabs(x) > Q_fabs(z))
 	{
 		if (x > 0)
 			return LookupSequence( "forward");
 		else
 			return LookupSequence( "backward");
 	}
-	else if (fabs(y) > fabs(z))
+	else if (Q_fabs(y) > Q_fabs(z))
 	{
 		if (y > 0)
 			return LookupSequence( "right");

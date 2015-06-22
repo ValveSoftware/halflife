@@ -284,8 +284,8 @@ void CGameStudioModelRenderer::StudioEstimateGait( entity_state_t *pplayer )
 	vec3_t est_velocity;
 
 	dt = (m_clTime - m_clOldTime);
-	dt = max( 0.0, dt );
-	dt = min( 1.0, dt );
+	dt = Q_max( 0.0, dt );
+	dt = Q_min( 1.0, dt );
 
 	if (dt == 0 || m_pPlayerInfo->renderframe == m_nFrameCount)
 	{
@@ -333,7 +333,7 @@ void CGameStudioModelRenderer::StudioEstimateGait( entity_state_t *pplayer )
 	}
 	else
 	{
-		m_pPlayerInfo->gaityaw = (atan2(est_velocity[1], est_velocity[0]) * 180 / M_PI);
+		m_pPlayerInfo->gaityaw = (Q_atan2(est_velocity[1], est_velocity[0]) * 180 / M_PI);
 		if (m_pPlayerInfo->gaityaw > 180)
 			m_pPlayerInfo->gaityaw = 180;
 		if (m_pPlayerInfo->gaityaw < -180)
@@ -360,15 +360,15 @@ void CGameStudioModelRenderer::StudioProcessGait( entity_state_t *pplayer )
 	m_pCurrentEntity->latched.prevangles[PITCH] = m_pCurrentEntity->angles[PITCH];
 
 	dt = (m_clTime - m_clOldTime);
-	dt = max( 0.0, dt );
-	dt = min( 1.0, dt );
+	dt = Q_max( 0.0, dt );
+	dt = Q_min( 1.0, dt );
 
 	StudioEstimateGait( pplayer );
 
 	// calc side to side turning
 	flYaw = m_pCurrentEntity->angles[YAW] - m_pPlayerInfo->gaityaw;
 
-	flYaw = fmod( flYaw, 360.0f );
+	flYaw = Q_fmod( flYaw, 360.0f );
 
 	if (flYaw < -180)
 	{
@@ -395,8 +395,8 @@ void CGameStudioModelRenderer::StudioProcessGait( entity_state_t *pplayer )
 	}
 
 	float blend_yaw = ( flYaw / 90.0 ) * 128.0 + 127.0;
-	blend_yaw = min( 255.0, blend_yaw );
-	blend_yaw = max( 0.0, blend_yaw );
+	blend_yaw = Q_min( 255.0, blend_yaw );
+	blend_yaw = Q_max( 0.0, blend_yaw );
 	
 	blend_yaw = 255.0 - blend_yaw;
 
@@ -443,7 +443,7 @@ void CGameStudioModelRenderer::SavePlayerState( entity_state_t *pplayer )
 {
 	client_anim_state_t *st;
 	cl_entity_t *ent = IEngineStudio.GetCurrentEntity();
-	assert( ent );
+	Q_assert( ent );
 	if ( !ent )
 		return;
 
@@ -459,8 +459,8 @@ void CGameStudioModelRenderer::SavePlayerState( entity_state_t *pplayer )
 	st->animtime	= ent->curstate.animtime;
 	st->frame		= ent->curstate.frame;
 	st->framerate	= ent->curstate.framerate;
-	memcpy( st->blending, ent->curstate.blending, 2 );
-	memcpy( st->controller, ent->curstate.controller, 4 );
+	Q_memcpy( st->blending, ent->curstate.blending, 2 );
+	Q_memcpy( st->controller, ent->curstate.controller, 4 );
 
 	st->lv = ent->latched;
 }
@@ -487,7 +487,7 @@ void GetSequenceInfo( void *pmodel, client_anim_state_t *pev, float *pflFrameRat
 	if (pseqdesc->numframes > 1)
 	{
 		*pflFrameRate = 256 * pseqdesc->fps / (pseqdesc->numframes - 1);
-		*pflGroundSpeed = sqrt( pseqdesc->linearmovement[0]*pseqdesc->linearmovement[0]+ pseqdesc->linearmovement[1]*pseqdesc->linearmovement[1]+ pseqdesc->linearmovement[2]*pseqdesc->linearmovement[2] );
+		*pflGroundSpeed = Q_sqrt( pseqdesc->linearmovement[0]*pseqdesc->linearmovement[0]+ pseqdesc->linearmovement[1]*pseqdesc->linearmovement[1]+ pseqdesc->linearmovement[2]*pseqdesc->linearmovement[2] );
 		*pflGroundSpeed = *pflGroundSpeed * pseqdesc->fps / (pseqdesc->numframes - 1);
 	}
 	else
@@ -556,13 +556,13 @@ void CGameStudioModelRenderer::SetupClientAnimation( entity_state_t *pplayer )
 	float fr, gs;
 
 	cl_entity_t *ent = IEngineStudio.GetCurrentEntity();
-	assert( ent );
+	Q_assert( ent );
 	if ( !ent )
 		return;
 
 	curtime = gEngfuncs.GetClientTime();
 	dt = curtime - oldtime;
-	dt = min( 1.0, max( 0.0, dt ) );
+	dt = Q_min( 1.0, Q_max( 0.0, dt ) );
 
 	oldtime = curtime;
 	st = &g_clientstate;
@@ -580,8 +580,8 @@ void CGameStudioModelRenderer::SetupClientAnimation( entity_state_t *pplayer )
 		st->lv.prevsequence = oldseq;
 		st->lv.sequencetime = st->animtime;
 
-		memcpy( st->lv.prevseqblending, st->blending, 2 );
-		memcpy( st->lv.prevcontroller, st->controller, 4 );
+		Q_memcpy( st->lv.prevseqblending, st->blending, 2 );
+		Q_memcpy( st->lv.prevcontroller, st->controller, 4 );
 	}
 
 	void *pmodel = (studiohdr_t *)IEngineStudio.Mod_Extradata( ent->model );
@@ -599,8 +599,8 @@ void CGameStudioModelRenderer::SetupClientAnimation( entity_state_t *pplayer )
 	ent->curstate.animtime	= st->animtime;
 	ent->curstate.frame		= st->frame;
 	ent->curstate.framerate	= st->framerate;
-	memcpy( ent->curstate.blending, st->blending, 2 );
-	memcpy( ent->curstate.controller, st->controller, 4 );
+	Q_memcpy( ent->curstate.blending, st->blending, 2 );
+	Q_memcpy( ent->curstate.controller, st->controller, 4 );
 
 	ent->latched = st->lv;
 }
@@ -616,7 +616,7 @@ void CGameStudioModelRenderer::RestorePlayerState( entity_state_t *pplayer )
 {
 	client_anim_state_t *st;
 	cl_entity_t *ent = IEngineStudio.GetCurrentEntity();
-	assert( ent );
+	Q_assert( ent );
 	if ( !ent )
 		return;
 
@@ -631,8 +631,8 @@ void CGameStudioModelRenderer::RestorePlayerState( entity_state_t *pplayer )
 	st->animtime	= ent->curstate.animtime;
 	st->frame		= ent->curstate.frame;
 	st->framerate	= ent->curstate.framerate;
-	memcpy( st->blending, ent->curstate.blending, 2 );
-	memcpy( st->controller, ent->curstate.controller, 4 );
+	Q_memcpy( st->blending, ent->curstate.blending, 2 );
+	Q_memcpy( st->controller, ent->curstate.controller, 4 );
 
 	st->lv = ent->latched;
 
@@ -647,8 +647,8 @@ void CGameStudioModelRenderer::RestorePlayerState( entity_state_t *pplayer )
 	ent->curstate.animtime	= st->animtime;
 	ent->curstate.frame		= st->frame;
 	ent->curstate.framerate	= st->framerate;
-	memcpy( ent->curstate.blending, st->blending, 2 );
-	memcpy( ent->curstate.controller, st->controller, 4 );
+	Q_memcpy( ent->curstate.blending, st->blending, 2 );
+	Q_memcpy( ent->curstate.controller, st->controller, 4 );
 
 	ent->latched = st->lv;
 }
@@ -783,7 +783,7 @@ int CGameStudioModelRenderer::_StudioDrawPlayer( int flags, entity_state_t *ppla
 		{
 			cl_entity_t *ent = gEngfuncs.GetEntityByIndex( m_pCurrentEntity->index );
 
-			memcpy( ent->attachment, m_pCurrentEntity->attachment, sizeof( vec3_t ) * 4 );
+			Q_memcpy( ent->attachment, m_pCurrentEntity->attachment, sizeof( vec3_t ) * 4 );
 		}
 	}
 
@@ -971,7 +971,7 @@ extern "C" int EXPORT HUD_GetStudioModelInterface( int version, struct r_studio_
 	*ppinterface = &studio;
 
 	// Copy in engine helper functions
-	memcpy( &IEngineStudio, pstudio, sizeof( IEngineStudio ) );
+	Q_memcpy( &IEngineStudio, pstudio, sizeof( IEngineStudio ) );
 
 	// Initialize local variables, etc.
 	R_StudioInit();

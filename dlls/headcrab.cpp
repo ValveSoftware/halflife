@@ -233,7 +233,7 @@ void CHeadCrab :: HandleAnimEvent( MonsterEvent_t *pEvent )
 				float height = (m_hEnemy->pev->origin.z + m_hEnemy->pev->view_ofs.z - pev->origin.z);
 				if (height < 16)
 					height = 16;
-				float speed = sqrt( 2 * gravity * height );
+				float speed = Q_sqrt( 2 * gravity * height );
 				float time = speed / gravity;
 
 				// Scale the sideways velocity to get there at the right time

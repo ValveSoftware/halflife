@@ -57,7 +57,7 @@ void PvsForOrigin (vec3_t org, byte *pvs)
 
 	if (!visdatasize)
 	{
-		memset (pvs, 255, (numleafs+7)/8 );
+		Q_memset (pvs, 255, (numleafs+7)/8 );
 		return;
 	}
 
@@ -136,7 +136,7 @@ void BuildVisRow (int patchnum, byte *pvs, int head, unsigned bitpos)
 
 	patch = &patches[patchnum];
 
-	memset (face_tested, 0, numfaces);
+	Q_memset (face_tested, 0, numfaces);
 
 	// leaf 0 is the solid leaf (skipped)
 	for (j=1, leaf=dleafs+1 ; j<numleafs ; j++, leaf++)
@@ -190,7 +190,7 @@ void BuildVisLeafs (int threadnum)
 		DecompressVis (&dvisdata[srcleaf->visofs], pvs);
 #if 0
 	// is this valid multithreaded???
-		memset (nodehit, 0, numnodes);
+		Q_memset (nodehit, 0, numnodes);
 		for (j=1, leaf=dleafs+1 ; j<numleafs ; j++, leaf++)
 		{
 			if ( !( pvs[(j-1)>>3] & (1<<((j-1)&7)) ) )
@@ -256,7 +256,7 @@ getfiletime(char *filename)
 	struct _stat	filestat;
 
 	if ( _stat(filename, &filestat) == 0 )
-		filetime = max( filestat.st_mtime, filestat.st_ctime );
+		filetime = Q_max( filestat.st_mtime, filestat.st_ctime );
 
 	return filetime;
 }
@@ -291,26 +291,26 @@ getfiledata(char *filename, char *buffer, int buffersize)
 	long			size = 0;
 	int				handle;
 	long			start,end;
-	time(&start);
+	Q_time((time_t*)&start);
 
 	if ( (handle = _open( filename, _O_RDONLY | _O_BINARY )) != -1 )
 	{
 		int			bytesread;
-		printf("%-20s Restoring [%-13s - ", "BuildVisMatrix:", filename );
-		while( ( bytesread = _read( handle, buffer, min( 32*1024, buffersize - size ) ) ) > 0 )
+		Q_printf("%-20s Restoring [%-13s - ", "BuildVisMatrix:", filename );
+		while( ( bytesread = _read( handle, buffer, Q_min( 32*1024, buffersize - size ) ) ) > 0 )
 		{
 			size += bytesread;
 			buffer += bytesread;
 		}
 		_close( handle );
-		time(&end);
-		printf("%10.3fMB] (%d)\n",size/(1024.0*1024.0), end-start);
+		Q_time((time_t*)&end);
+		Q_printf("%10.3fMB] (%d)\n",size/(1024.0*1024.0), end-start);
 	}
 
 	if (buffersize != size)
 	{
-		printf( "Invalid file [%s] found.  File will be rebuilt!\n", filename );
-		unlink(filename);
+		Q_printf( "Invalid file [%s] found.  File will be rebuilt!\n", filename );
+		Q_unlink(filename);
 	}
 
 	return size;
@@ -330,7 +330,7 @@ getfreespace(char *filename)
 	struct _diskfree_t	df;
 
 	if ( filename[0] && filename[1] == ':' )
-		drive = toupper(filename[0]) - 'A' + 1;
+		drive = Q_toupper(filename[0]) - 'A' + 1;
 	else
 		drive = _getdrive();
 
@@ -363,7 +363,7 @@ putfiledata(char *filename, char *buffer, int buffersize)
 		{
 			int			byteswritten;
 			qprintf("Writing [%s] with new saved qrad data", filename );
-			while( ( byteswritten = _write( handle, buffer, min( 32*1024, buffersize - size ) ) ) > 0 )
+			while( ( byteswritten = _write( handle, buffer, Q_min( 32*1024, buffersize - size ) ) ) > 0 )
 			{
 				size += byteswritten;
 				buffer += byteswritten;
@@ -376,7 +376,7 @@ putfiledata(char *filename, char *buffer, int buffersize)
 		}
 	}
 	else
-		printf("Insufficient disk space(%ld) for 'incremental QRAD save file'!\n",
+		Q_printf("Insufficient disk space(%ld) for 'incremental QRAD save file'!\n",
 				buffersize - getfilesize(filename) );
 
 	return size;
@@ -391,7 +391,7 @@ IsIncremental
 qboolean
 IsIncremental(char *filename)
 {
-	qboolean		status = false;
+	qboolean		status = qfalse;
 	int				sum;
 	int				handle;
 
@@ -410,7 +410,7 @@ IsIncremental(char *filename)
 		  && _read( handle, &sum, sizeof(sum) ) == sizeof(sum) && sum == dedges_checksum
 		  && _read( handle, &sum, sizeof(sum) ) == sizeof(sum) && sum == dtexdata_checksum
 		  && _read( handle, &sum, sizeof(sum) ) == sizeof(sum) && sum == dvisdata_checksum )
-			status = true;
+			status = qtrue;
 		_close( handle );
 	}
 
@@ -460,7 +460,7 @@ SaveIncremental(char *filename)
 		}
 	}
 	else
-		printf("Insufficient disk space(%ld) for incremental file[%s]'!\n",
+		Q_printf("Insufficient disk space(%ld) for incremental file[%s]'!\n",
 				expected_size, filename );
 
 	return size;
@@ -489,7 +489,7 @@ void BuildVisMatrix (void)
 	else
 		Error ("vismatrix too big");
 	
-	strcpy(vismatfile, source);
+	Q_strcpy(vismatfile, source);
 	StripExtension (vismatfile);
 	DefaultExtension(vismatfile, ".r1");
 
@@ -499,10 +499,10 @@ void BuildVisMatrix (void)
 	  || getfiledata(vismatfile,vismatrix, c) != c )
 	{
 		// memset (vismatrix, 0, c);
-		RunThreadsOn (numleafs-1, true, BuildVisLeafs);
+		RunThreadsOn (numleafs-1, qtrue, BuildVisLeafs);
 	}
 	// Get rid of any old _bogus_ r1 files; we never read them!
-	unlink(vismatfile);
+	Q_unlink(vismatfile);
 }
 
 void FreeVisMatrix (void)
@@ -562,8 +562,8 @@ qboolean CheckVisBit (int p1, int p2)
 #endif
 
 	if (vismatrix[bitpos>>3] & (1<<(bitpos&7)))
-		return true;
-	return false;
+		return qtrue;
+	return qfalse;
 }
 
 

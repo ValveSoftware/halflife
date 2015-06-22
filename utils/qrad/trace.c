@@ -75,7 +75,7 @@ Loads the node structure out of a .bsp file to be used for light occlusion
 void MakeTnodes (dmodel_t *bm)
 {
 	// 32 byte align the structs
-	tnodes = calloc( (numnodes+1), sizeof(tnode_t));
+	tnodes = Q_calloc( (numnodes+1), sizeof(tnode_t));
 	tnodes = (tnode_t *)(((int)tnodes + 31)&~31);
 	tnode_p = tnodes;
 
@@ -237,7 +237,7 @@ qboolean _TestLine (vec3_t start, vec3_t stop)
 
 			if (d1*d1 + d2*d2 + d3*d3 > 1)
 #endif
-				return false;	// DONE!
+				return qfalse;	// DONE!
 		}
 		
 		while (node < 0)
@@ -245,7 +245,7 @@ qboolean _TestLine (vec3_t start, vec3_t stop)
 		// pop up the stack for a back side
 			tstack_p--;
 			if (tstack_p < tracestack)
-				return true;
+				return qtrue;
 			node = tstack_p->node;
 			
 		// set the hit point for this plane

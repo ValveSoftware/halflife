@@ -179,7 +179,7 @@ void CFuncConveyor :: Spawn( void )
 void CFuncConveyor :: UpdateSpeed( float speed )
 {
 	// Encode it as an integer with 4 fractional bits
-	int speedCode = (int)(fabs(speed) * 16.0);
+	int speedCode = (int)(Q_fabs(speed) * 16.0);
 
 	if ( speed < 0 )
 		pev->rendercolor.x = 1;
@@ -220,7 +220,7 @@ void CFuncIllusionary :: KeyValue( KeyValueData *pkvd )
 {
 	if (FStrEq(pkvd->szKeyName, "skin"))//skin is used for content type
 	{
-		pev->skin = atof(pkvd->szValue);
+		pev->skin = Q_atof(pkvd->szValue);
 		pkvd->fHandled = TRUE;
 	}
 	else
@@ -316,12 +316,12 @@ void CFuncRotating :: KeyValue( KeyValueData* pkvd)
 {
 	if (FStrEq(pkvd->szKeyName, "fanfriction"))
 	{
-		m_flFanFriction = atof(pkvd->szValue)/100;
+		m_flFanFriction = Q_atof(pkvd->szValue)/100;
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "Volume"))
 	{
-		m_flVolume = atof(pkvd->szValue)/10.0;
+		m_flVolume = Q_atof(pkvd->szValue)/10.0;
 
 		if (m_flVolume > 1.0)
 			m_flVolume = 1.0;
@@ -338,7 +338,7 @@ void CFuncRotating :: KeyValue( KeyValueData* pkvd)
 	}
 	else if (FStrEq(pkvd->szKeyName, "sounds"))
 	{
-		m_sounds = atoi(pkvd->szValue);
+		m_sounds = Q_atoi(pkvd->szValue);
 		pkvd->fHandled = TRUE;
 	}
 	else 
@@ -450,7 +450,7 @@ void CFuncRotating :: Precache( void )
 
 	// set up fan sounds
 
-	if (!FStringNull( pev->message ) && strlen( szSoundFile ) > 0)
+	if (!FStringNull( pev->message ) && Q_strlen( szSoundFile ) > 0)
 	{
 		// if a path is set for a wave, use it
 
@@ -485,7 +485,7 @@ void CFuncRotating :: Precache( void )
 
 		case 0:
 		default:
-			if (!FStringNull( pev->message ) && strlen( szSoundFile ) > 0)
+			if (!FStringNull( pev->message ) && Q_strlen( szSoundFile ) > 0)
 			{
 				PRECACHE_SOUND(szSoundFile);
 				
@@ -550,13 +550,13 @@ void CFuncRotating :: RampPitchVol (int fUp)
 	
 	// get current angular velocity
 
-	vecCur = abs(vecAVel.x != 0 ? vecAVel.x : (vecAVel.y != 0 ? vecAVel.y : vecAVel.z));
+	vecCur = Q_abs(vecAVel.x != 0 ? vecAVel.x : (vecAVel.y != 0 ? vecAVel.y : vecAVel.z));
 	
 	// get target angular velocity
 
 	vecFinal = (pev->movedir.x != 0 ? pev->movedir.x : (pev->movedir.y != 0 ? pev->movedir.y : pev->movedir.z));
 	vecFinal *= pev->speed;
-	vecFinal = abs(vecFinal);
+	vecFinal = Q_abs(vecFinal);
 
 	// calc volume and pitch as % of final vol and pitch
 
@@ -592,9 +592,9 @@ void CFuncRotating :: SpinUp( void )
 	vecAVel = pev->avelocity;// cache entity's rotational velocity
 
 	// if we've met or exceeded target speed, set target speed and stop thinking
-	if (	abs(vecAVel.x) >= abs(pev->movedir.x * pev->speed)	&&
-			abs(vecAVel.y) >= abs(pev->movedir.y * pev->speed)	&&
-			abs(vecAVel.z) >= abs(pev->movedir.z * pev->speed) )
+	if (	Q_abs(vecAVel.x) >= Q_abs(pev->movedir.x * pev->speed)	&&
+			Q_abs(vecAVel.y) >= Q_abs(pev->movedir.y * pev->speed)	&&
+			Q_abs(vecAVel.z) >= Q_abs(pev->movedir.z * pev->speed) )
 	{
 		pev->avelocity = pev->movedir * pev->speed;// set speed in case we overshot
 		EMIT_SOUND_DYN(ENT(pev), CHAN_STATIC, (char *)STRING(pev->noiseRunning), 
@@ -773,12 +773,12 @@ void CPendulum :: KeyValue( KeyValueData *pkvd )
 {
 	if (FStrEq(pkvd->szKeyName, "distance"))
 	{
-		m_distance = atof(pkvd->szValue);
+		m_distance = Q_atof(pkvd->szValue);
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "damp"))
 	{
-		m_damp = atof(pkvd->szValue) * 0.001;
+		m_damp = Q_atof(pkvd->szValue) * 0.001;
 		pkvd->fHandled = TRUE;
 	}
 	else 
@@ -805,7 +805,7 @@ void CPendulum :: Spawn( void )
 	if (pev->speed == 0)
 		pev->speed = 100;
 
-	m_accel = (pev->speed * pev->speed) / (2 * fabs(m_distance));	// Calculate constant acceleration from speed and distance
+	m_accel = (pev->speed * pev->speed) / (2 * Q_fabs(m_distance));	// Calculate constant acceleration from speed and distance
 	m_maxSpeed = pev->speed;
 	m_start = pev->angles;
 	m_center = pev->angles + (m_distance * 0.5) * pev->movedir;

@@ -1,7 +1,12 @@
+
+#include "vstdlib/warnings.h"
+
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include "interface.h"
+
+#include "vstdlib/vstdlib.h"
 
 #if !defined ( _WIN32 )
 // Linux doesn't have this function so this emulates its functionality
@@ -59,7 +64,7 @@ EXPORT_FUNCTION IBaseInterface *CreateInterface( const char *pName, int *pReturn
 	
 	for(pCur=InterfaceReg::s_pInterfaceRegs; pCur; pCur=pCur->m_pNext)
 	{
-		if(strcmp(pCur->m_pName, pName) == 0)
+		if(Q_strcmp(pCur->m_pName, pName) == 0)
 		{
 			if ( pReturnCode )
 			{
@@ -83,7 +88,7 @@ static IBaseInterface *CreateInterfaceLocal( const char *pName, int *pReturnCode
 	
 	for(pCur=InterfaceReg::s_pInterfaceRegs; pCur; pCur=pCur->m_pNext)
 	{
-		if(strcmp(pCur->m_pName, pName) == 0)
+		if(Q_strcmp(pCur->m_pName, pName) == 0)
 		{
 			if ( pReturnCode )
 			{
@@ -151,16 +156,16 @@ CSysModule	*Sys_LoadModule( const char *pModuleName )
 		char szAbsoluteModuleName[1024];
 
 		getcwd( szCwd, sizeof( szCwd ) );
-		if ( szCwd[ strlen( szCwd ) - 1 ] == '/' )
-			szCwd[ strlen( szCwd ) - 1 ] = 0;
+		if ( szCwd[ Q_strlen( szCwd ) - 1 ] == '/' )
+			szCwd[ Q_strlen( szCwd ) - 1 ] = 0;
 
-		_snprintf( szAbsoluteModuleName, sizeof(szAbsoluteModuleName), "%s/%s", szCwd, pModuleName );
+		Q_snprintf( szAbsoluteModuleName, sizeof(szAbsoluteModuleName), "%s/%s", szCwd, pModuleName );
 
 		hDLL = dlopen( szAbsoluteModuleName, RTLD_NOW );
 	}
 	else
 	{
-		_snprintf( szAbsoluteModuleName, sizeof(szAbsoluteModuleName), "%s", pModuleName );
+		Q_snprintf( szAbsoluteModuleName, sizeof(szAbsoluteModuleName), "%s", pModuleName );
 		 hDLL = dlopen( pModuleName, RTLD_NOW );
 	}
 #endif
@@ -169,15 +174,15 @@ CSysModule	*Sys_LoadModule( const char *pModuleName )
 	{
 		char str[512];
 #if defined ( _WIN32 )
-		_snprintf( str, sizeof(str), "%s.dll", pModuleName );
+		Q_snprintf( str, sizeof(str), "%s.dll", pModuleName );
 		hDLL = LoadLibrary( str );
 #elif defined(OSX)
-		printf("Error:%s\n",dlerror());
-		_snprintf( str, sizeof(str), "%s.dylib", szAbsoluteModuleName );
+		Q_printf("Error:%s\n",dlerror());
+		Q_snprintf( str, sizeof(str), "%s.dylib", szAbsoluteModuleName );
 		hDLL = dlopen(str, RTLD_NOW);		
 #else
-		printf("Error:%s\n",dlerror());
-		_snprintf( str, sizeof(str), "%s.so", szAbsoluteModuleName );
+		Q_printf("Error:%s\n",dlerror());
+		Q_snprintf( str, sizeof(str), "%s.so", szAbsoluteModuleName );
 		hDLL = dlopen(str, RTLD_NOW);
 #endif
 	}

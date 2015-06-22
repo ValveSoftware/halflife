@@ -131,7 +131,7 @@ public:
 		address = gEngfuncs.pNetAPI->ValueForKey( info, "address" );
 		//gEngfuncs.Con_Printf( "Connecting to %s\n", address );
 
-		sprintf( sz, "connect %s\n", address );
+		Q_sprintf( sz, "connect %s\n", address );
 
 		EngineClientCmd( sz );
 
@@ -154,7 +154,7 @@ public:
 
 		// Space for buttons
 		height -= YRES(20);
-		height = max( 0, height );
+		height = Q_max( 0, height );
 
 		rowcount = height / CELL_HEIGHT;
 
@@ -195,7 +195,8 @@ public:
 				val = gEngfuncs.pNetAPI->ValueForKey( info, "address" );
 				if ( val )
 				{
-					strncpy( sz, val, 31 );
+					Q_strncpy( sz, val, 31 );
+
 					sz[ 31 ] = '\0';
 					// Server Name;
 					m_pLabel->setText( sz );
@@ -205,7 +206,8 @@ public:
 				val = gEngfuncs.pNetAPI->ValueForKey( info, "hostname" );
 				if ( val )
 				{
-					strncpy( sz, val, 31 );
+					Q_strncpy( sz, val, 31 );
+
 					sz[ 31 ] = '\0';
 					// Server Map;
 					m_pLabel->setText( sz );
@@ -215,7 +217,8 @@ public:
 				val = gEngfuncs.pNetAPI->ValueForKey( info, "map" );
 				if ( val )
 				{
-					strncpy( sz, val, 31 );
+					Q_strncpy( sz, val, 31 );
+
 					sz[ 31 ] = '\0';
 					// Server Name;
 					m_pLabel->setText( sz );
@@ -226,7 +229,8 @@ public:
 				val2 = gEngfuncs.pNetAPI->ValueForKey( info, "max" );
 				if ( val && val2 )
 				{
-					sprintf( sz, "%s/%s", val, val2 );
+					Q_sprintf( sz, "%s/%s", val, val2 );
+
 					sz[ 31 ] = '\0';
 					// Server Map;
 					m_pLabel->setText( sz );
@@ -236,7 +240,8 @@ public:
 				val = gEngfuncs.pNetAPI->ValueForKey( info, "ping" );
 				if ( val )
 				{
-					strncpy( sz, val, 31 );
+					Q_strncpy( sz, val, 31 );
+
 					sz[ 31 ] = '\0';
 					// Server Name;
 					m_pLabel->setText( sz );
@@ -406,7 +411,7 @@ public:
 	LabelSortInputHandler( ServerBrowserTablePanel *pBrowser, char *name )
 	{
 		m_pBrowser = pBrowser;
-		strcpy( m_szSortKey, name );
+		Q_strcpy( m_szSortKey, name );
 	}
 
 	virtual void cursorMoved(int x,int y,Panel* panel) {};
@@ -443,7 +448,7 @@ public:
 	{
 		m_pBrowser = NULL;
 
-		strcpy( m_szSortKey, sortkey );
+		Q_strcpy( m_szSortKey, sortkey );
 
 		int label_bg_r = 120,
 			label_bg_g = 75,

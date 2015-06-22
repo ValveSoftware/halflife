@@ -5,9 +5,13 @@
 // $NoKeywords: $
 //=============================================================================
 
+#include "../public/vstdlib/warnings.h"
+
 #include <string.h>
 #include <stdio.h>
 #include "voice_banmgr.h"
+
+#include "../public/vstdlib/vstdlib.h"
 
 
 #define BANMGR_FILEVERSION	1
@@ -45,29 +49,29 @@ bool CVoiceBanMgr::Init(char const *pGameDir)
 	Term();
 
 	char filename[512];
-	_snprintf(filename, sizeof(filename), "%s/%s", pGameDir, g_pBanMgrFilename);
+	Q_snprintf(filename, sizeof(filename), "%s/%s", pGameDir, g_pBanMgrFilename);
 
 	// Load in the squelch file.
-	FILE *fp = fopen(filename, "rb");
+	FILE *fp = Q_fopen(filename, "rb");
 	if(fp)
 	{
 		int version;
-		fread(&version, 1, sizeof(version), fp);
+		Q_fread(&version, 1, sizeof(version), fp);
 		if(version == BANMGR_FILEVERSION)
 		{
-			fseek(fp, 0, SEEK_END);
-			int nIDs = (ftell(fp) - sizeof(version)) / 16;
-			fseek(fp, sizeof(version), SEEK_SET);
+			Q_fseek(fp, 0, SEEK_END);
+			int nIDs = (Q_ftell(fp) - sizeof(version)) / 16;
+			Q_fseek(fp, sizeof(version), SEEK_SET);
 
 			for(int i=0; i < nIDs; i++)
 			{
 				char playerID[16];
-				fread(playerID, 1, 16, fp);
+				Q_fread(playerID, 1, 16, fp);
 				AddBannedPlayer(playerID);
 			}			
 		}
 
-		fclose(fp);
+		Q_fclose(fp);
 	}
 
 	return true;
@@ -96,24 +100,24 @@ void CVoiceBanMgr::SaveState(char const *pGameDir)
 {
 	// Save the file out.
 	char filename[512];
-	_snprintf(filename, sizeof(filename), "%s/%s", pGameDir, g_pBanMgrFilename);
+	Q_snprintf(filename, sizeof(filename), "%s/%s", pGameDir, g_pBanMgrFilename);
 
-	FILE *fp = fopen(filename, "wb");
+	FILE *fp = Q_fopen(filename, "wb");
 	if(fp)
 	{
 		int version = BANMGR_FILEVERSION;
-		fwrite(&version, 1, sizeof(version), fp);
+		Q_fwrite(&version, 1, sizeof(version), fp);
 
 		for(int i=0; i < 256; i++)
 		{
 			BannedPlayer *pListHead = &m_PlayerHash[i];
 			for(BannedPlayer *pCur=pListHead->m_pNext; pCur != pListHead; pCur=pCur->m_pNext)
 			{
-				fwrite(pCur->m_PlayerID, 1, 16, fp);
+				Q_fwrite(pCur->m_PlayerID, 1, 16, fp);
 			}
 		}
 
-		fclose(fp);
+		Q_fclose(fp);
 	}
 }
 
@@ -173,7 +177,7 @@ CVoiceBanMgr::BannedPlayer* CVoiceBanMgr::InternalFindPlayerSquelch(char const p
 	BannedPlayer *pListHead = &m_PlayerHash[index];
 	for(BannedPlayer *pCur=pListHead->m_pNext; pCur != pListHead; pCur=pCur->m_pNext)
 	{
-		if(memcmp(playerID, pCur->m_PlayerID, 16) == 0)
+		if(Q_memcmp(playerID, pCur->m_PlayerID, 16) == 0)
 			return pCur;
 	}
 
@@ -188,7 +192,7 @@ CVoiceBanMgr::BannedPlayer* CVoiceBanMgr::AddBannedPlayer(char const playerID[16
 		return NULL;
 
 	int index = HashPlayerID(playerID);
-	memcpy(pNew->m_PlayerID, playerID, 16);
+	Q_memcpy(pNew->m_PlayerID, playerID, 16);
 	pNew->m_pNext = &m_PlayerHash[index];
 	pNew->m_pPrev = m_PlayerHash[index].m_pPrev;
 	pNew->m_pPrev->m_pNext = pNew->m_pNext->m_pPrev = pNew;

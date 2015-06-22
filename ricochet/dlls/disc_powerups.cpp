@@ -194,7 +194,7 @@ void CBasePlayer::GivePowerup( int iPowerupType )
 	m_iPowerups |= iPowerupType;
 
 	if ( m_iPowerups & POW_HARD )
-		strcpy( m_szAnimExtention, "models/p_disc_hard.mdl" );
+		Q_strcpy( m_szAnimExtention, "models/p_disc_hard.mdl" );
 
 	MESSAGE_BEGIN( MSG_ONE, gmsgPowerup, NULL, pev );
 		WRITE_BYTE( m_iPowerups );
@@ -206,7 +206,7 @@ void CBasePlayer::GivePowerup( int iPowerupType )
 void CBasePlayer::RemovePowerup( int iPowerupType )
 {
 	if ( iPowerupType & POW_HARD )
-		strcpy( m_szAnimExtention, "models/p_disc.mdl" );
+		Q_strcpy( m_szAnimExtention, "models/p_disc.mdl" );
 
 	m_iPowerups &= ~iPowerupType;
 

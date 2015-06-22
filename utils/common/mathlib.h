@@ -37,6 +37,9 @@ typedef vec_t vec4_t[4];	// x,y,z,w
 extern vec3_t vec3_origin;
 
 // Use this definition globally
+#ifdef ON_EPSILON
+#undef ON_EPSILON
+#endif
 #define	ON_EPSILON		0.01
 #define	EQUAL_EPSILON	0.001
 
@@ -49,6 +52,10 @@ int VectorCompare (vec3_t v1, vec3_t v2);
 #define VectorAdd(a,b,c) {(c)[0]=(a)[0]+(b)[0];(c)[1]=(a)[1]+(b)[1];(c)[2]=(a)[2]+(b)[2];}
 #define VectorCopy(a,b) {(b)[0]=(a)[0];(b)[1]=(a)[1];(b)[2]=(a)[2];}
 #define VectorScale(a,b,c) {(c)[0]=(b)*(a)[0];(c)[1]=(b)*(a)[1];(c)[2]=(b)*(a)[2];}
+
+#define VectorSubtractT(a,b,c,t) {(c)[0]=(t)((a)[0]-(b)[0]);(c)[1]=(t)((a)[1]-(b)[1]);(c)[2]=(t)((a)[2]-(b)[2]);}
+#define VectorAddT(a,b,c,t) {(c)[0]=(t)((a)[0]+(b)[0]);(c)[1]=(t)((a)[1]+(b)[1]);(c)[2]=(t)((a)[2]+(b)[2]);}
+#define VectorCopyT(a,b,t) {(b)[0]=(t)(a)[0];(b)[1]=(t)(a)[1];(b)[2]=(t)(a)[2];}
 
 vec_t Q_rint (vec_t in);
 vec_t _DotProduct (vec3_t v1, vec3_t v2);

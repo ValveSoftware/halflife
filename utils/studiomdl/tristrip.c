@@ -71,9 +71,9 @@ void	FindNeighbor (int starttri, int startv)
 			continue;
 		for (k=0 ; k<3 ; k++)
 		{
-			if (memcmp(&check[k],&m1,sizeof(m1)))
+			if (Q_memcmp(&check[k],&m1,sizeof(m1)))
 				continue;
-			if (memcmp(&check[ (k+1)%3 ],&m2,sizeof(m2)))
+			if (Q_memcmp(&check[ (k+1)%3 ],&m2,sizeof(m2)))
 				continue;
 
 			neighbortri[starttri][startv] = j;
@@ -223,7 +223,7 @@ int BuildTris (s_trianglevert_t (*x)[3], s_mesh_t *y, byte **ppdata )
 	pmesh = y;
 
 
-	t = time( NULL );
+	t = Q_time( NULL );
 
 	for (i=0 ; i<pmesh->numtris ; i++)
 	{
@@ -251,7 +251,7 @@ int BuildTris (s_trianglevert_t (*x)[3], s_mesh_t *y, byte **ppdata )
 	//
 	numcommandnodes = 0;
 	numcommands = 0;
-	memset (used, 0, sizeof(used));
+	Q_memset (used, 0, sizeof(used));
 
 	for (i=0 ; i<pmesh->numtris ;)
 	{
@@ -336,10 +336,10 @@ int BuildTris (s_trianglevert_t (*x)[3], s_mesh_t *y, byte **ppdata )
 		// printf("%d ", bestlen - 2 );
 		numcommandnodes++;
 
-		if (t != time(NULL))
+		if (t != Q_time(NULL))
 		{
-			printf("%2d%%\r", (total * 100) / pmesh->numtris );
-			t = time(NULL);
+			Q_printf("%2d%%\r", (total * 100) / pmesh->numtris );
+			t = Q_time(NULL);
 		}
 	}
 

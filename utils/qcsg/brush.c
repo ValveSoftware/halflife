@@ -30,14 +30,14 @@ void FindGCD (int *v)
 	int		val[3];
 
 	for (i=0 ; i<3 ; i++)
-		val[i] = abs(v[i]);
+		val[i] = Q_abs(v[i]);
 
 	while (1)
 	{
 		smallest = 1<<30;
 		for (i=0 ; i<3 ; i++)
 		{
-			j = abs(val[i]);
+			j = Q_abs(val[i]);
 			if (j && j<smallest)
 				smallest = j;
 		}
@@ -69,9 +69,9 @@ int	PlaneTypeForNormal (vec3_t normal)
 	if (normal[2] == 1.0 || normal[2] == -1.0)
 		return PLANE_Z;
 		
-	ax = fabs(normal[0]);
-	ay = fabs(normal[1]);
-	az = fabs(normal[2]);
+	ax = Q_fabs(normal[0]);
+	ay = Q_fabs(normal[1]);
+	az = Q_fabs(normal[2]);
 	
 	if (ax >= ay && ax >= az)
 		return PLANE_ANYX;
@@ -99,7 +99,7 @@ int		FindIntPlane (int *inormal, int *iorigin)
 	FindGCD (inormal);
 
 	p = mapplanes;
-	locked = false;
+	locked = qfalse;
 	i = 0;
 
 	while (1)
@@ -108,7 +108,7 @@ int		FindIntPlane (int *inormal, int *iorigin)
 		{
 			if (!locked)
 			{
-				locked = true;
+				locked = qtrue;
 				ThreadLock ();	// make sure we don't race
 			}
 			if (i == nummapplanes)
@@ -227,8 +227,8 @@ void ScaleUpIVector (int *iv, int min)
 	largest = 0;
 	for (i=0 ; i<3 ; i++)
 	{
-		if (abs(iv[i]) > largest)
-			largest = abs(iv[i]);
+		if (Q_abs(iv[i]) > largest)
+			largest = Q_abs(iv[i]);
 	}
 
 	scale = (min + largest - 1)/largest;
@@ -243,29 +243,29 @@ BaseWindingForIPlane
 */
 winding_t *BaseWindingForIPlane (plane_t *p)
 {
-	int		i, x;
-	vec_t	max, v;
+	//int		i, x;
+	//vec_t		max, v;
 	winding_t	*w;
 	int		org[3], vup[3], vright[3];
 
-	VectorCopy (p->iorigin, org);
+	VectorCopyT (p->iorigin, org , int);
 
-	VectorCopy (vec3_origin, vup);
-	VectorCopy (vec3_origin, vright);
+	VectorCopyT (vec3_origin, vup, int);
+	VectorCopyT (vec3_origin, vright, int);
 	if (!p->inormal[1] && !p->inormal[2])
 	{
 		vup[2] = 8192;
-		vright[1] = 8192*p->normal[0];
+		vright[1] = (int)(8192*p->normal[0]);
 	}
 	else if (!p->inormal[0] && !p->inormal[2])
 	{
 		vup[2] = 8192;
-		vright[0] = -8192*p->normal[1];
+		vright[0] = (int)(-8192*p->normal[1]);
 	}
 	else if (!p->inormal[0] && !p->inormal[1])
 	{
 		vup[1] = 8192;
-		vright[0] = 8192*p->normal[2];
+		vright[0] = (int)(8192*p->normal[2]);
 	}
 	else
 	{
@@ -361,22 +361,22 @@ qboolean	IPlaneEquiv (plane_t *p1, plane_t *p2)
 	for (j=0 ; j<3 ; j++)
 		t += (p2->iorigin[j] - p1->iorigin[j]) * p2->inormal[j];
 	if (t)
-		return false;
+		return qfalse;
 
 	// see if the normal is forward, backwards, or off
 	for (j=0 ; j<3 ; j++)
 		if (p2->inormal[j] != p1->inormal[j])
 			break;
 	if (j == 3)
-		return true;
+		return qtrue;
 
 	for (j=0 ; j<3 ; j++)
 		if (p2->inormal[j] != -p1->inormal[j])
 			break;
 	if (j == 3)
-		return true;
+		return qtrue;
 
-	return false;
+	return qfalse;
 }
 
 
@@ -387,7 +387,7 @@ AddBrushPlane
 */
 void AddBrushPlane (expand_t *ex, plane_t *plane)
 {
-	int		i;
+	//int		i;
 	plane_t	*pl;
 	bface_t	*f, *nf;
 	brushhull_t	*h;
@@ -401,8 +401,8 @@ void AddBrushPlane (expand_t *ex, plane_t *plane)
 			return;
 	}
 
-	nf = malloc(sizeof(*nf));
-	memset (nf, 0, sizeof(*nf));
+	nf = Q_malloc(sizeof(*nf));
+	Q_memset (nf, 0, sizeof(*nf));
 	nf->planenum = FindIntPlane (plane->inormal, plane->iorigin);
 	nf->plane = &mapplanes[nf->planenum];
 	nf->next = h->faces;
@@ -423,10 +423,10 @@ vertexes can be put on the front side
 void TestAddPlane (expand_t *ex, plane_t *plane)
 {
 	int		i, j, c, t;
-	vec_t	d;
+	//vec_t	d;
 	vec_t	*corner;
 	plane_t	flip;
-	vec3_t	inv;
+	//vec3_t	inv;
 	int		counts[3];
 	plane_t	*pl;
 	bface_t	*f, *nf;
@@ -450,7 +450,7 @@ void TestAddPlane (expand_t *ex, plane_t *plane)
 	{
 		t = 0;
 		for (j=0 ; j<3 ; j++)
-			t += (corner[j] - plane->iorigin[j]) * plane->inormal[j];
+			t += (int)((corner[j] - plane->iorigin[j]) * plane->inormal[j]);
 		if (t < 0)
 		{
 			if (counts[0])
@@ -471,14 +471,14 @@ void TestAddPlane (expand_t *ex, plane_t *plane)
 
 	if (counts[0])
 	{
-		VectorSubtract (vec3_origin, plane->inormal, flip.inormal);
+		VectorSubtractT (vec3_origin, plane->inormal, flip.inormal, int);
 		VectorCopy (plane->iorigin, flip.iorigin);
 		plane = &flip;
 	}
 
 	
-	nf = malloc(sizeof(*nf));
-	memset (nf, 0, sizeof(*nf));
+	nf = Q_malloc(sizeof(*nf));
+	Q_memset (nf, 0, sizeof(*nf));
 	nf->planenum = FindIntPlane (plane->inormal, plane->iorigin);
 	nf->plane = &mapplanes[nf->planenum];
 	nf->next = h->faces;
@@ -502,7 +502,7 @@ int AddHullPoint (expand_t *ex, vec3_t p)
 	vec3_t	r;
 	
 	for (i=0 ; i<3 ; i++)
-		r[i] = floor (p[i]+0.5);
+		r[i] = Q_floor (p[i]+0.5);
 
 	for (i=0 ; i<ex->num_hull_points ; i++)
 	{
@@ -551,9 +551,9 @@ void AddHullEdge (expand_t *ex, vec3_t p1, vec3_t p2)
 	int		pt1, pt2;
 	int		i;
 	int		a, b, c, d, e;
-	vec3_t	edgevec, planeorg, planevec;
+	vec3_t	edgevec, /*planeorg,*/ planevec;
 	plane_t	plane;
-	vec_t	l;
+	//vec_t	l;
 	
 	pt1 = AddHullPoint (ex, p1);
 	pt2 = AddHullPoint (ex, p2);
@@ -584,16 +584,16 @@ void AddHullEdge (expand_t *ex, vec3_t p1, vec3_t p2)
 		for (d=0 ; d<=1 ; d++)
 			for (e=0 ; e<=1 ; e++)
 			{
-				VectorCopy (p1, plane.iorigin);
-				plane.iorigin[b] += hull_size[ex->hullnum][d][b];
-				plane.iorigin[c] += hull_size[ex->hullnum][e][c];
+				VectorCopyT (p1, plane.iorigin, int);
+				plane.iorigin[b] += (int)hull_size[ex->hullnum][d][b];
+				plane.iorigin[c] += (int)hull_size[ex->hullnum][e][c];
 				
 				VectorCopy (vec3_origin, planevec);
 				planevec[a] = 1;
 				
-				plane.inormal[0] = planevec[1]*edgevec[2] - planevec[2]*edgevec[1];
-				plane.inormal[1] = planevec[2]*edgevec[0] - planevec[0]*edgevec[2];
-				plane.inormal[2] = planevec[0]*edgevec[1] - planevec[1]*edgevec[0];
+				plane.inormal[0] = (int)(planevec[1]*edgevec[2] - planevec[2]*edgevec[1]);
+				plane.inormal[1] = (int)(planevec[2]*edgevec[0] - planevec[0]*edgevec[2]);
+				plane.inormal[2] = (int)(planevec[0]*edgevec[1] - planevec[1]*edgevec[0]);
 
 				if (!plane.inormal[0] && !plane.inormal[1] && !plane.inormal[2])
 					continue;	// degenerate
@@ -612,7 +612,7 @@ ExpandBrush
 */
 void ExpandBrush (brush_t *b, int hullnum)
 {
-	int		i, x, s;
+	int		/*i, */x, s;
 	int		corner;
 	bface_t	*brush_faces, *f, *nf;
 	plane_t	*p, plane;
@@ -630,12 +630,12 @@ void ExpandBrush (brush_t *b, int hullnum)
 	ex.num_hull_edges = 0;
 
 // expand all of the planes
-	axial = true;
+	axial = qtrue;
 	for (f=brush_faces ; f ; f=f->next)
 	{
 		p = f->plane;
 		if (p->type > PLANE_Z)
-			axial = false;	// not an xyz axial plane
+			axial = qfalse;	// not an xyz axial plane
 
 		VectorCopy (p->iorigin, iorigin);
 		VectorCopy (p->inormal, inormal);
@@ -643,15 +643,15 @@ void ExpandBrush (brush_t *b, int hullnum)
 		for (x=0 ; x<3 ; x++)
 		{
 			if (p->normal[x] > 0)
-				corner = hull_size[hullnum][1][x];
+				corner = (int)hull_size[hullnum][1][x];
 			else if (p->normal[x] < 0)
-				corner = - hull_size[hullnum][0][x];
+				corner = (int)- hull_size[hullnum][0][x];
 			else
 				corner = 0;
-			iorigin[x] += p->normal[x]*corner;
+			iorigin[x] += (int)(p->normal[x]*corner);
 		}
-		nf = malloc(sizeof(*nf));
-		memset (nf, 0, sizeof(*nf));
+		nf = Q_malloc(sizeof(*nf));
+		Q_memset (nf, 0, sizeof(*nf));
 
 		nf->planenum = FindIntPlane (inormal, iorigin);
 		nf->plane = &mapplanes[nf->planenum];
@@ -671,15 +671,15 @@ void ExpandBrush (brush_t *b, int hullnum)
 		for (s=-1 ; s<=1 ; s+=2)
 		{
 		// add the plane
-			VectorCopy (vec3_origin, plane.inormal);
+			VectorCopyT (vec3_origin, plane.inormal, int);
 			plane.inormal[x] = s;
 			if (s == -1)
 			{
-				VectorAdd (b->hulls[0].mins, hull_size[hullnum][0], plane.iorigin);
+				VectorAddT (b->hulls[0].mins, hull_size[hullnum][0], plane.iorigin, int);
 			}
 			else
 			{
-				VectorAdd (b->hulls[0].maxs, hull_size[hullnum][1], plane.iorigin);
+				VectorAddT (b->hulls[0].maxs, hull_size[hullnum][1], plane.iorigin, int);
 			}
 			AddBrushPlane (&ex, &plane);
 		}
@@ -721,7 +721,7 @@ restart:
 	for (f = h->faces ; f ; f=f->next)
 	{
 //		w = BaseWindingForIPlane (f->plane);
-		w = BaseWindingForPlane (f->plane->normal, f->plane->dist);
+		w = BaseWindingForPlane (f->plane->normal, (float)f->plane->dist);
 		for (f2 = h->faces ; f2 && w ; f2=f2->next)
 		{
 			if (f == f2)
@@ -779,9 +779,9 @@ restart:
 				GetVectorForKey( e, "origin", eorigin );
 			}
 			
-			printf( "Entity %i, Brush %i: A '%s' @(%.0f,%.0f,%.0f)\n",
+			Q_printf( "Entity %i, Brush %i: A '%s' @(%.0f,%.0f,%.0f)\n",
 					b->entitynum, b->brushnum, pszClass, eorigin[0], eorigin[1], eorigin[2] );
-			printf( "\toutside world(+/-%d): (%.0f, %.0f, %.0f)-(%.0f,%.0f,%.0f)\n",
+			Q_printf( "\toutside world(+/-%d): (%.0f, %.0f, %.0f)-(%.0f,%.0f,%.0f)\n",
 					BOGUS_RANGE/2, h->mins[0], h->mins[1], h->mins[2], h->maxs[0], h->maxs[1], h->maxs[2] );
 			break;
 		}
@@ -798,7 +798,7 @@ qboolean MakeBrushPlanes (brush_t *b)
 	int		i, j;
 	int		planenum;
 	side_t	*s;
-	int		contents;
+	//int		contents;
 	bface_t	*f;
 	vec3_t	origin;
 
@@ -815,12 +815,12 @@ qboolean MakeBrushPlanes (brush_t *b)
 		s = &brushsides[b->firstside + i];
 		for (j=0 ; j<3 ; j++)
 		{
-			VectorSubtract (s->planepts[j], origin, s->planepts[j]);
+			VectorSubtractT (s->planepts[j], origin, s->planepts[j], int);
 		}
 		planenum = PlaneFromPoints (s->planepts[0], s->planepts[1], s->planepts[2]);
 		if (planenum == -1)
 		{
-			printf ("Entity %i, Brush %i: plane with no normal\n"
+			Q_printf ("Entity %i, Brush %i: plane with no normal\n"
 				, b->entitynum, b->brushnum);
 			continue;
 		}
@@ -839,14 +839,14 @@ qboolean MakeBrushPlanes (brush_t *b)
 					pszClass = ValueForKey(e, "classname" );
 				}
 				
-				printf( "Entity %i, Brush %i: A '%s' @(%.0f,%.0f,%.0f) has a coplanar plane at (%.0f, %.0f, %.0f), texture %s\n",
+				Q_printf( "Entity %i, Brush %i: A '%s' @(%.0f,%.0f,%.0f) has a coplanar plane at (%.0f, %.0f, %.0f), texture %s\n",
 						b->entitynum, b->brushnum, pszClass, origin[0], origin[1], origin[2], s->planepts[0][0]+origin[0], s->planepts[0][1]+origin[1], s->planepts[0][2]+origin[2], s->td.name );
-				return false;
+				return qfalse;
 			}
 		}
 
-		f = malloc(sizeof(*f));
-		memset (f, 0, sizeof(*f));
+		f = Q_malloc(sizeof(*f));
+		Q_memset (f, 0, sizeof(*f));
 
 		f->planenum = planenum;
 		f->plane = &mapplanes[planenum];
@@ -855,7 +855,7 @@ qboolean MakeBrushPlanes (brush_t *b)
 		f->texinfo = onlyents ? 0 : TexinfoForBrushTexture (f->plane, &s->td, origin);
 	}
 
-	return true;
+	return qtrue;
 }
 
 /*
@@ -912,9 +912,9 @@ BrushContents
 */
 int	BrushContents (brush_t *b)
 {
-	char		*name;
+	//char		*name;
 	int			contents;
-	bface_t		*f;
+	//bface_t		*f;
 	side_t		*s;
 	int			i;
 
@@ -924,7 +924,7 @@ int	BrushContents (brush_t *b)
 	{
 		if (TextureContents(s->td.name) != contents)
 		{
-			printf ("Entity %i, Brush %i: mixed face contents"
+			Q_printf ("Entity %i, Brush %i: mixed face contents"
 				, b->entitynum, b->brushnum);
 			break;
 		}

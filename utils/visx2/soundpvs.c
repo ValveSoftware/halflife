@@ -145,11 +145,11 @@ void CalcAmbientSounds (void)
 				vol = 1.0;
 			else
 			{
-				vol = 1.0 - dists[2]*0.002;
+				vol = (float)(1.0 - dists[2]*0.002);
 				if (vol < 0)
 					vol = 0;
 			}
-			leaf->ambient_level[j] = vol*255;
+			leaf->ambient_level[j] = (byte)(vol*255);
 		}
 	}
 }

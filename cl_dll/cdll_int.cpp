@@ -151,7 +151,7 @@ int CL_DLLEXPORT Initialize( cl_enginefunc_t *pEnginefuncs, int iVersion )
 	if (iVersion != CLDLL_INTERFACE_VERSION)
 		return 0;
 
-	memcpy(&gEngfuncs, pEnginefuncs, sizeof(cl_enginefunc_t));
+	Q_memcpy(&gEngfuncs, pEnginefuncs, sizeof(cl_enginefunc_t));
 
 	EV_HookEvents();
 	CL_LoadParticleMan();

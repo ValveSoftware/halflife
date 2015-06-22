@@ -123,17 +123,17 @@ void CBubbling::KeyValue( KeyValueData *pkvd )
 {
 	if (FStrEq(pkvd->szKeyName, "density"))
 	{
-		m_density = atoi(pkvd->szValue);
+		m_density = Q_atoi(pkvd->szValue);
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "frequency"))
 	{
-		m_frequency = atoi(pkvd->szValue);
+		m_frequency = Q_atoi(pkvd->szValue);
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "current"))
 	{
-		pev->speed = atoi(pkvd->szValue);
+		pev->speed = Q_atoi(pkvd->szValue);
 		pkvd->fHandled = TRUE;
 	}
 	else
@@ -294,12 +294,12 @@ void CBeam::RelinkBeam( void )
 {
 	const Vector &startPos = GetStartPos(), &endPos = GetEndPos();
 
-	pev->mins.x = min( startPos.x, endPos.x );
-	pev->mins.y = min( startPos.y, endPos.y );
-	pev->mins.z = min( startPos.z, endPos.z );
-	pev->maxs.x = max( startPos.x, endPos.x );
-	pev->maxs.y = max( startPos.y, endPos.y );
-	pev->maxs.z = max( startPos.z, endPos.z );
+	pev->mins.x = Q_min( startPos.x, endPos.x );
+	pev->mins.y = Q_min( startPos.y, endPos.y );
+	pev->mins.z = Q_min( startPos.z, endPos.z );
+	pev->maxs.x = Q_max( startPos.x, endPos.x );
+	pev->maxs.y = Q_max( startPos.y, endPos.y );
+	pev->maxs.z = Q_max( startPos.z, endPos.z );
 	pev->mins = pev->mins - pev->origin;
 	pev->maxs = pev->maxs - pev->origin;
 
@@ -312,12 +312,12 @@ void CBeam::SetObjectCollisionBox( void )
 {
 	const Vector &startPos = GetStartPos(), &endPos = GetEndPos();
 
-	pev->absmin.x = min( startPos.x, endPos.x );
-	pev->absmin.y = min( startPos.y, endPos.y );
-	pev->absmin.z = min( startPos.z, endPos.z );
-	pev->absmax.x = max( startPos.x, endPos.x );
-	pev->absmax.y = max( startPos.y, endPos.y );
-	pev->absmax.z = max( startPos.z, endPos.z );
+	pev->absmin.x = Q_min( startPos.x, endPos.x );
+	pev->absmin.y = Q_min( startPos.y, endPos.y );
+	pev->absmin.z = Q_min( startPos.z, endPos.z );
+	pev->absmax.x = Q_max( startPos.x, endPos.x );
+	pev->absmax.y = Q_max( startPos.y, endPos.y );
+	pev->absmax.z = Q_max( startPos.z, endPos.z );
 }
 #endif
 
@@ -532,27 +532,27 @@ void CLightning::KeyValue( KeyValueData *pkvd )
 	}
 	else if (FStrEq(pkvd->szKeyName, "life"))
 	{
-		m_life = atof(pkvd->szValue);
+		m_life = Q_atof(pkvd->szValue);
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "BoltWidth"))
 	{
-		m_boltWidth = atoi(pkvd->szValue);
+		m_boltWidth = Q_atoi(pkvd->szValue);
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "NoiseAmplitude"))
 	{
-		m_noiseAmplitude = atoi(pkvd->szValue);
+		m_noiseAmplitude = Q_atoi(pkvd->szValue);
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "TextureScroll"))
 	{
-		m_speed = atoi(pkvd->szValue);
+		m_speed = Q_atoi(pkvd->szValue);
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "StrikeTime"))
 	{
-		m_restrike = atof(pkvd->szValue);
+		m_restrike = Q_atof(pkvd->szValue);
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "texture"))
@@ -562,17 +562,17 @@ void CLightning::KeyValue( KeyValueData *pkvd )
 	}
 	else if (FStrEq(pkvd->szKeyName, "framestart"))
 	{
-		m_frameStart = atoi(pkvd->szValue);
+		m_frameStart = Q_atoi(pkvd->szValue);
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "Radius"))
 	{
-		m_radius = atof( pkvd->szValue );
+		m_radius = Q_atof( pkvd->szValue );
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "damage"))
 	{
-		pev->dmg = atof(pkvd->szValue);
+		pev->dmg = Q_atof(pkvd->szValue);
 		pkvd->fHandled = TRUE;
 	}
 	else
@@ -1003,17 +1003,17 @@ void CLaser::KeyValue( KeyValueData *pkvd )
 	}
 	else if (FStrEq(pkvd->szKeyName, "width"))
 	{
-		SetWidth( atof(pkvd->szValue) );
+		SetWidth( Q_atof(pkvd->szValue) );
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "NoiseAmplitude"))
 	{
-		SetNoise( atoi(pkvd->szValue) );
+		SetNoise( Q_atoi(pkvd->szValue) );
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "TextureScroll"))
 	{
-		SetScrollRate( atoi(pkvd->szValue) );
+		SetScrollRate( Q_atoi(pkvd->szValue) );
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "texture"))
@@ -1028,12 +1028,12 @@ void CLaser::KeyValue( KeyValueData *pkvd )
 	}
 	else if (FStrEq(pkvd->szKeyName, "framestart"))
 	{
-		pev->frame = atoi(pkvd->szValue);
+		pev->frame = Q_atoi(pkvd->szValue);
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "damage"))
 	{
-		pev->dmg = atof(pkvd->szValue);
+		pev->dmg = Q_atof(pkvd->szValue);
 		pkvd->fHandled = TRUE;
 	}
 	else
@@ -1165,7 +1165,7 @@ void CGlow::Think( void )
 void CGlow::Animate( float frames )
 { 
 	if ( m_maxFrame > 0 )
-		pev->frame = fmod( pev->frame + frames, m_maxFrame );
+		pev->frame = Q_fmod( pev->frame + frames, m_maxFrame );
 }
 
 
@@ -1301,7 +1301,7 @@ void CSprite::Animate( float frames )
 		else
 		{
 			if ( m_maxFrame > 0 )
-				pev->frame = fmod( pev->frame, m_maxFrame );
+				pev->frame = Q_fmod( pev->frame, m_maxFrame );
 		}
 	}
 }
@@ -1400,22 +1400,22 @@ void CGibShooter::KeyValue( KeyValueData *pkvd )
 {
 	if (FStrEq(pkvd->szKeyName, "m_iGibs"))
 	{
-		m_iGibs = m_iGibCapacity = atoi(pkvd->szValue);
+		m_iGibs = m_iGibCapacity = Q_atoi(pkvd->szValue);
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "m_flVelocity"))
 	{
-		m_flGibVelocity = atof(pkvd->szValue);
+		m_flGibVelocity = Q_atof(pkvd->szValue);
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "m_flVariance"))
 	{
-		m_flVariance = atof(pkvd->szValue);
+		m_flVariance = Q_atof(pkvd->szValue);
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "m_flGibLife"))
 	{
-		m_flGibLife = atof(pkvd->szValue);
+		m_flGibLife = Q_atof(pkvd->szValue);
 		pkvd->fHandled = TRUE;
 	}
 	else
@@ -1542,7 +1542,7 @@ void CEnvShooter :: KeyValue( KeyValueData *pkvd )
 	}
 	else if (FStrEq(pkvd->szKeyName, "shootsounds"))
 	{
-		int iNoise = atoi(pkvd->szValue);
+		int iNoise = Q_atoi(pkvd->szValue);
 		pkvd->fHandled = TRUE;
 		switch( iNoise )
 		{
@@ -1758,7 +1758,7 @@ void CBlood::KeyValue( KeyValueData *pkvd )
 {
 	if (FStrEq(pkvd->szKeyName, "color"))
 	{
-		int color = atoi(pkvd->szValue);
+		int color = Q_atoi(pkvd->szValue);
 		switch( color )
 		{
 		case 1:
@@ -1773,7 +1773,7 @@ void CBlood::KeyValue( KeyValueData *pkvd )
 	}
 	else if (FStrEq(pkvd->szKeyName, "amount"))
 	{
-		SetBloodAmount( atof(pkvd->szValue) );
+		SetBloodAmount( Q_atof(pkvd->szValue) );
 		pkvd->fHandled = TRUE;
 	}
 	else
@@ -1881,22 +1881,22 @@ void CShake::KeyValue( KeyValueData *pkvd )
 {
 	if (FStrEq(pkvd->szKeyName, "amplitude"))
 	{
-		SetAmplitude( atof(pkvd->szValue) );
+		SetAmplitude( Q_atof(pkvd->szValue) );
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "frequency"))
 	{
-		SetFrequency( atof(pkvd->szValue) );
+		SetFrequency( Q_atof(pkvd->szValue) );
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "duration"))
 	{
-		SetDuration( atof(pkvd->szValue) );
+		SetDuration( Q_atof(pkvd->szValue) );
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "radius"))
 	{
-		SetRadius( atof(pkvd->szValue) );
+		SetRadius( Q_atof(pkvd->szValue) );
 		pkvd->fHandled = TRUE;
 	}
 	else
@@ -1946,12 +1946,12 @@ void CFade::KeyValue( KeyValueData *pkvd )
 {
 	if (FStrEq(pkvd->szKeyName, "duration"))
 	{
-		SetDuration( atof(pkvd->szValue) );
+		SetDuration( Q_atof(pkvd->szValue) );
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "holdtime"))
 	{
-		SetHoldTime( atof(pkvd->szValue) );
+		SetHoldTime( Q_atof(pkvd->szValue) );
 		pkvd->fHandled = TRUE;
 	}
 	else
@@ -2046,12 +2046,12 @@ void CMessage::KeyValue( KeyValueData *pkvd )
 	}
 	else if (FStrEq(pkvd->szKeyName, "messagevolume"))
 	{
-		pev->scale = atof(pkvd->szValue) * 0.1;
+		pev->scale = Q_atof(pkvd->szValue) * 0.1;
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "messageattenuation"))
 	{
-		pev->impulse = atoi(pkvd->szValue);
+		pev->impulse = Q_atoi(pkvd->szValue);
 		pkvd->fHandled = TRUE;
 	}
 	else

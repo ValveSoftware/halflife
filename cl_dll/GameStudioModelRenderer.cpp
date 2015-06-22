@@ -111,7 +111,7 @@ int CL_DLLEXPORT HUD_GetStudioModelInterface( int version, struct r_studio_inter
 	*ppinterface = &studio;
 
 	// Copy in engine helper functions
-	memcpy( &IEngineStudio, pstudio, sizeof( IEngineStudio ) );
+	Q_memcpy( &IEngineStudio, pstudio, sizeof( IEngineStudio ) );
 
 	// Initialize local variables, etc.
 	R_StudioInit();

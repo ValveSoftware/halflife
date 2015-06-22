@@ -42,7 +42,7 @@ void Sys_Error (char *error, ...) {};
 
 void clip_rotations( vec3_t rot );
 
-#define strcpyn( a, b ) strncpy( a, b, sizeof( a ) )
+#define strcpyn( a, b ) Q_strncpy( a, b, sizeof( a ) )
 
 /*
 =================
@@ -55,13 +55,13 @@ void *kalloc( int num, int size )
 	// printf( "calloc( %d, %d )\n", num, size );
 	// printf( "%d ", num * size );
 	k_memtotal += num * size;
-	return calloc( num, size );
+	return Q_calloc( num, size );
 }
 
 void kmemset( void *ptr, int value, int size )
 {
 	// printf( "kmemset( %x, %d, %d )\n", ptr, value, size );
-	memset( ptr, value, size );
+	Q_memset( ptr, value, size );
 	return;
 }
 
@@ -268,13 +268,13 @@ void OptimizeAnimations(void)
 		{
 			if (sequence[i].event[j].frame < sequence[i].panim[0]->startframe)
 			{
-				printf( "sequence %s has event (%d) before first frame (%d)\n", sequence[i].name, sequence[i].event[j].frame, sequence[i].panim[0]->startframe );
+				Q_printf( "sequence %s has event (%d) before first frame (%d)\n", sequence[i].name, sequence[i].event[j].frame, sequence[i].panim[0]->startframe );
 				sequence[i].event[j].frame = sequence[i].panim[0]->startframe;
 				iError++;
 			}
 			if (sequence[i].event[j].frame > sequence[i].panim[0]->endframe)
 			{
-				printf( "sequence %s has event (%d) after last frame (%d)\n", sequence[i].name, sequence[i].event[j].frame, sequence[i].panim[0]->endframe );
+				Q_printf( "sequence %s has event (%d) after last frame (%d)\n", sequence[i].name, sequence[i].event[j].frame, sequence[i].panim[0]->endframe );
 				sequence[i].event[j].frame = sequence[i].panim[0]->endframe;
 				iError++;
 			}
@@ -295,7 +295,7 @@ int findNode( char *name )
 
 	for (k = 0; k < numbones; k++)
 	{
-		if (strcmp( bonetable[k].name, name ) == 0)
+		if (Q_strcmp( bonetable[k].name, name ) == 0)
 		{
 			return k;
 		}
@@ -369,7 +369,7 @@ void MakeTransitions( )
 		{
 			for (j = 1; j <= numxnodes; j++)
 			{
-				xnode[i-1][j-1] = abs( xnode[i-1][j-1] );
+				xnode[i-1][j-1] = Q_abs( xnode[i-1][j-1] );
 			}
 		}
 	}
@@ -423,9 +423,9 @@ void SimplifyModel (void)
 		{
 			for (k = 0; k < numrenamedbones; k++)
 			{
-				if (!strcmp( model[i]->node[j].name, renamedbone[k].from))
+				if (!Q_strcmp( model[i]->node[j].name, renamedbone[k].from))
 				{
-					strcpy( model[i]->node[j].name, renamedbone[k].to );
+					Q_strcpy( model[i]->node[j].name, renamedbone[k].to );
 					break;
 				}
 			}
@@ -458,8 +458,8 @@ void SimplifyModel (void)
 					bonetable[k].bonecontroller	= 0;
 					bonetable[k].flags		= 0;
 					// set defaults
-					defaultpos[k] = kalloc( MAXSTUDIOANIMATIONS, sizeof( vec3_t ) );
-					defaultrot[k] = kalloc( MAXSTUDIOANIMATIONS, sizeof( vec3_t ) );
+					defaultpos[k] = (vec3_t*)kalloc( MAXSTUDIOANIMATIONS, sizeof( vec3_t ) );
+					defaultrot[k] = (vec3_t*)kalloc( MAXSTUDIOANIMATIONS, sizeof( vec3_t ) );
 					for (n = 0; n < MAXSTUDIOANIMATIONS; n++)
 					{
 						VectorCopy( model[i]->skeleton[j].pos, defaultpos[k][n] );
@@ -479,7 +479,7 @@ void SimplifyModel (void)
 
 					if (n != m)
 					{
-						printf("illegal parent bone replacement in model \"%s\"\n\t\"%s\" has \"%s\", previously was \"%s\"\n", 
+						Q_printf("illegal parent bone replacement in model \"%s\"\n\t\"%s\" has \"%s\", previously was \"%s\"\n", 
 							model[i]->name, 
 							model[i]->node[j].name, 
 							(n != -1) ? bonetable[n].name : "ROOT",
@@ -495,7 +495,7 @@ void SimplifyModel (void)
 
 	if (iError && !(ignore_warnings))
 	{
-		exit( 1 );
+		Q_exit( 1 );
 	}
 
 	if (numbones >= MAXSTUDIOBONES)
@@ -510,9 +510,9 @@ void SimplifyModel (void)
 		{
 			for (k = 0; k < numrenamedbones; k++)
 			{
-				if (!strcmp( sequence[i].panim[0]->node[j].name, renamedbone[k].from))
+				if (!Q_strcmp( sequence[i].panim[0]->node[j].name, renamedbone[k].from))
 				{
-					strcpy( sequence[i].panim[0]->node[j].name, renamedbone[k].to );
+					Q_strcpy( sequence[i].panim[0]->node[j].name, renamedbone[k].to );
 					break;
 				}
 			}
@@ -547,9 +547,9 @@ void SimplifyModel (void)
 				if (bonetable[k].parent != -1)
 					szNode = bonetable[bonetable[k].parent].name;
 
-				if (strcmp(szAnim, szNode))
+				if (Q_strcmp(szAnim, szNode))
 				{
-					printf("illegal parent bone replacement in sequence \"%s\"\n\t\"%s\" has \"%s\", reference has \"%s\"\n", 
+					Q_printf("illegal parent bone replacement in sequence \"%s\"\n\t\"%s\" has \"%s\", reference has \"%s\"\n", 
 						sequence[i].name, 
 						sequence[i].panim[0]->node[j].name, 
 						szAnim,
@@ -565,7 +565,7 @@ void SimplifyModel (void)
 	}
 	if (iError && !(ignore_warnings))
 	{
-		exit( 1 );
+		Q_exit( 1 );
 	}
 
 	// link bonecontrollers
@@ -573,7 +573,7 @@ void SimplifyModel (void)
 	{
 		for (j = 0; j < numbones; j++)
 		{
-			if (stricmp( bonecontroller[i].name, bonetable[j].name) == 0)
+			if (Q_stricmp( bonecontroller[i].name, bonetable[j].name) == 0)
 				break;
 		}
 		if (j >= numbones)
@@ -588,7 +588,7 @@ void SimplifyModel (void)
 	{
 		for (j = 0; j < numbones; j++)
 		{
-			if (stricmp( attachment[i].bonename, bonetable[j].name) == 0)
+			if (Q_stricmp( attachment[i].bonename, bonetable[j].name) == 0)
 				break;
 		}
 		if (j >= numbones)
@@ -620,7 +620,7 @@ void SimplifyModel (void)
 	{
 		for (k = 0; k < numbones; k++)
 		{
-			if (strcmpi( bonetable[k].name, hitgroup[j].name) == 0)
+			if (Q_strcmpi( bonetable[k].name, hitgroup[j].name) == 0)
 			{
 				bonetable[k].group = hitgroup[j].group;
 				break;
@@ -695,7 +695,7 @@ void SimplifyModel (void)
 
 				if (dump_hboxes)
 				{
-					printf("$hbox %d \"%s\" %.2f %.2f %.2f  %.2f %.2f %.2f\n",
+					Q_printf("$hbox %d \"%s\" %.2f %.2f %.2f  %.2f %.2f %.2f\n",
 						hitbox[numhitboxes].group,
 						bonetable[hitbox[numhitboxes].bone].name, 
 						hitbox[numhitboxes].bmin[0], hitbox[numhitboxes].bmin[1], hitbox[numhitboxes].bmin[2],
@@ -712,7 +712,7 @@ void SimplifyModel (void)
 		{
 			for (k = 0; k < numbones; k++)
 			{
-				if (strcmpi( bonetable[k].name, hitbox[j].name) == 0)
+				if (Q_strcmpi( bonetable[k].name, hitbox[j].name) == 0)
 				{
 					hitbox[j].bone = k;
 					break;
@@ -959,7 +959,7 @@ void SimplifyModel (void)
 
 						sequence[i].panim[q]->numanim[j][k] = 0;
 
-						memset( data, 0, sizeof( data ) ); 
+						Q_memset( data, 0, sizeof( data ) ); 
 						pcount = data; 
 						pvalue = pcount + 1;
 
@@ -970,7 +970,7 @@ void SimplifyModel (void)
 
 						for (m = 1, p = 0; m < n; m++)
 						{
-							if (abs(value[p] - value[m]) > 1600)
+							if (Q_abs(value[p] - value[m]) > 1600)
 							{
 								changes++;
 								p = m;
@@ -1017,8 +1017,8 @@ void SimplifyModel (void)
 						}
 						else
 						{
-							sequence[i].panim[q]->anim[j][k] = kalloc( pvalue - data, sizeof( mstudioanimvalue_t ) );
-							memmove( sequence[i].panim[q]->anim[j][k], data, (pvalue - data) * sizeof( mstudioanimvalue_t ) );
+							sequence[i].panim[q]->anim[j][k] = (mstudioanimvalue_t*)kalloc( pvalue - data, sizeof( mstudioanimvalue_t ) );
+							Q_memmove( sequence[i].panim[q]->anim[j][k], data, (pvalue - data) * sizeof( mstudioanimvalue_t ) );
 						}
 						// printf("%d(%d) ", sequence[i].panim[q]->numanim[j][k], n );
 					}
@@ -1088,21 +1088,21 @@ void SimplifyModel (void)
 
 int lookupControl( char *string )
 {
-	if (stricmp(string,"X")==0) return STUDIO_X;
-	if (stricmp(string,"Y")==0) return STUDIO_Y;
-	if (stricmp(string,"Z")==0) return STUDIO_Z;
-	if (stricmp(string,"XR")==0) return STUDIO_XR;
-	if (stricmp(string,"YR")==0) return STUDIO_YR;
-	if (stricmp(string,"ZR")==0) return STUDIO_ZR;
-	if (stricmp(string,"LX")==0) return STUDIO_LX;
-	if (stricmp(string,"LY")==0) return STUDIO_LY;
-	if (stricmp(string,"LZ")==0) return STUDIO_LZ;
-	if (stricmp(string,"AX")==0) return STUDIO_AX;
-	if (stricmp(string,"AY")==0) return STUDIO_AY;
-	if (stricmp(string,"AZ")==0) return STUDIO_AZ;
-	if (stricmp(string,"AXR")==0) return STUDIO_AXR;
-	if (stricmp(string,"AYR")==0) return STUDIO_AYR;
-	if (stricmp(string,"AZR")==0) return STUDIO_AZR;
+	if (Q_stricmp(string,"X")==0) return STUDIO_X;
+	if (Q_stricmp(string,"Y")==0) return STUDIO_Y;
+	if (Q_stricmp(string,"Z")==0) return STUDIO_Z;
+	if (Q_stricmp(string,"XR")==0) return STUDIO_XR;
+	if (Q_stricmp(string,"YR")==0) return STUDIO_YR;
+	if (Q_stricmp(string,"ZR")==0) return STUDIO_ZR;
+	if (Q_stricmp(string,"LX")==0) return STUDIO_LX;
+	if (Q_stricmp(string,"LY")==0) return STUDIO_LY;
+	if (Q_stricmp(string,"LZ")==0) return STUDIO_LZ;
+	if (Q_stricmp(string,"AX")==0) return STUDIO_AX;
+	if (Q_stricmp(string,"AY")==0) return STUDIO_AY;
+	if (Q_stricmp(string,"AZ")==0) return STUDIO_AZ;
+	if (Q_stricmp(string,"AXR")==0) return STUDIO_AXR;
+	if (Q_stricmp(string,"AYR")==0) return STUDIO_AYR;
+	if (Q_stricmp(string,"AZR")==0) return STUDIO_AZR;
 	return -1;
 }
 
@@ -1111,13 +1111,13 @@ int lookupControl( char *string )
 char *stristr( const char *string, const char *string2 )
 {
 	int c, len;
-	c = tolower( *string2 );
-	len = strlen( string2 );
+	c = Q_tolower( *string2 );
+	len = Q_strlen( string2 );
 
 	while (string) {
-		for (; *string && tolower( *string ) != c; string++);
+		for (; *string && Q_tolower( *string ) != c; string++);
 		if (*string) {
-			if (strnicmp( string, string2, len ) == 0) {
+			if (Q_strnicmp( string, string2, len ) == 0) {
 				break;
 			}
 			string++;
@@ -1140,7 +1140,7 @@ int lookup_texture( char *texturename )
 	int i;
 
 	for (i = 0; i < numtextures; i++) {
-		if (stricmp( texture[i].name, texturename ) == 0) {
+		if (Q_stricmp( texture[i].name, texturename ) == 0) {
 			return i;
 		}
 	}
@@ -1191,7 +1191,7 @@ s_trianglevert_t *lookup_triangle( s_mesh_t *pmesh, int index )
 		int start = pmesh->alloctris;
 		pmesh->alloctris = index + 256;
 		if (pmesh->triangle) {
-			pmesh->triangle = realloc( pmesh->triangle, pmesh->alloctris * sizeof( *pmesh->triangle ) );
+			pmesh->triangle = Q_realloc( pmesh->triangle, pmesh->alloctris * sizeof( *pmesh->triangle ) );
 			kmemset( &pmesh->triangle[start], 0, (pmesh->alloctris - start) * sizeof( *pmesh->triangle ) );
 		} 
 		else {
@@ -1330,8 +1330,8 @@ void TextureCoordRanges( s_mesh_t *pmesh, s_texture_t *ptexture  )
 			for (i=0 ; i<pmesh->numtris ; i++) 
 			{
 				float local_min, local_max;
-				local_min = min( pmesh->triangle[i][0].u, min( pmesh->triangle[i][1].u, pmesh->triangle[i][2].u ));
-				local_max = max( pmesh->triangle[i][0].u, max( pmesh->triangle[i][1].u, pmesh->triangle[i][2].u ));
+				local_min = Q_min( pmesh->triangle[i][0].u, Q_min( pmesh->triangle[i][1].u, pmesh->triangle[i][2].u ));
+				local_max = Q_max( pmesh->triangle[i][0].u, Q_max( pmesh->triangle[i][1].u, pmesh->triangle[i][2].u ));
 				if (local_min < min_u) { min_u = local_min; k = i; k_max_u = local_max; }
 				if (local_max > max_u) { max_u = local_max; n = i; n_min_u = local_min; }
 			}
@@ -1363,8 +1363,8 @@ void TextureCoordRanges( s_mesh_t *pmesh, s_texture_t *ptexture  )
 			for (i=0 ; i<pmesh->numtris ; i++) 
 			{
 				float local_min, local_max;
-				local_min = min( pmesh->triangle[i][0].v, min( pmesh->triangle[i][1].v, pmesh->triangle[i][2].v ));
-				local_max = max( pmesh->triangle[i][0].v, max( pmesh->triangle[i][1].v, pmesh->triangle[i][2].v ));
+				local_min = Q_min( pmesh->triangle[i][0].v, Q_min( pmesh->triangle[i][1].v, pmesh->triangle[i][2].v ));
+				local_max = Q_max( pmesh->triangle[i][0].v, Q_max( pmesh->triangle[i][1].v, pmesh->triangle[i][2].v ));
 				if (local_min < min_v) { min_v = local_min; k = i; k_max_v = local_max; }
 				if (local_max > max_v) { max_v = local_max; n = i; n_min_v = local_min; }
 			}
@@ -1414,10 +1414,10 @@ void TextureCoordRanges( s_mesh_t *pmesh, s_texture_t *ptexture  )
 	{
 		for (i=0 ; i<pmesh->numtris ; i++) {
 			for (j = 0; j < 3; j++) {
-				ptexture->max_s = max( pmesh->triangle[i][j].s, ptexture->max_s );
-				ptexture->min_s = min( pmesh->triangle[i][j].s, ptexture->min_s );
-				ptexture->max_t = max( pmesh->triangle[i][j].t, ptexture->max_t );
-				ptexture->min_t = min( pmesh->triangle[i][j].t, ptexture->min_t );
+				ptexture->max_s = Q_max( pmesh->triangle[i][j].s, ptexture->max_s );
+				ptexture->min_s = Q_min( pmesh->triangle[i][j].s, ptexture->min_s );
+				ptexture->max_t = Q_max( pmesh->triangle[i][j].t, ptexture->max_t );
+				ptexture->min_t = Q_min( pmesh->triangle[i][j].t, ptexture->min_t );
 			}
 		}
 	}
@@ -1530,16 +1530,16 @@ void ResizeTexture( s_texture_t *ptexture )
 
 	ptexture->size = ptexture->skinwidth * ptexture->skinheight + 256 * 3;
 
-	printf ("BMP %s [%d %d] (%.0f%%)  %6d bytes\n", ptexture->name,  ptexture->skinwidth, ptexture->skinheight, 
+	Q_printf ("BMP %s [%d %d] (%.0f%%)  %6d bytes\n", ptexture->name,  ptexture->skinwidth, ptexture->skinheight, 
 		((ptexture->skinwidth * ptexture->skinheight) / (float)(ptexture->srcwidth * ptexture->srcheight)) * 100.0,
 		ptexture->size );
 	
 	if (ptexture->size > 640 * 480)
 	{
-		printf("%.0f %.0f %.0f %.0f\n", ptexture->min_s, ptexture->max_s, ptexture->min_t, ptexture->max_t );
+		Q_printf("%.0f %.0f %.0f %.0f\n", ptexture->min_s, ptexture->max_s, ptexture->min_t, ptexture->max_t );
 		Error("texture too large\n");
 	}
-	pdest = malloc( ptexture->size );
+	pdest = Q_malloc( ptexture->size );
 	ptexture->pdata = pdest;
 
 	// data is saved as a multiple of 4
@@ -1565,16 +1565,16 @@ void ResizeTexture( s_texture_t *ptexture )
 		g = gamma / 1.8;
 		for (i = 0; i < 768; i++)
 		{
-			pdest[i] = pow( psrc[i] / 255.0, g ) * 255;
+			pdest[i] = Q_pow( psrc[i] / 255.0f, g ) * 255;
 		}
 	}
 	else
 	{
-		memcpy( pdest, ptexture->ppal, 256 * sizeof( rgb_t ) );
+		Q_memcpy( pdest, ptexture->ppal, 256 * sizeof( rgb_t ) );
 	}
 
-	free( ptexture->ppicture );
-	free( ptexture->ppal );
+	Q_free( ptexture->ppicture );
+	Q_free( ptexture->ppal );
 }
 
 
@@ -1583,7 +1583,7 @@ void Grab_Skin ( s_texture_t *ptexture )
 	char	file1[1024];
 	int		time1;
 
-	sprintf (file1, "%s/%s", cdpartial, ptexture->name);
+	Q_sprintf (file1, "%s/%s", cdpartial, ptexture->name);
 	ExpandPathAndArchive (file1);
 
 	if (cdtextureset)
@@ -1591,7 +1591,7 @@ void Grab_Skin ( s_texture_t *ptexture )
 		int i;
 		for (i = 0; i < cdtextureset; i++)
 		{
-			sprintf (file1, "%s/%s", cdtexture[i], ptexture->name);
+			Q_sprintf (file1, "%s/%s", cdtexture[i], ptexture->name);
 			time1 = FileTime (file1);
 			if (time1 != -1)
 				break;
@@ -1601,10 +1601,10 @@ void Grab_Skin ( s_texture_t *ptexture )
 	}
 	else
 	{
-		sprintf (file1, "%s/%s", cddir, ptexture->name);
+		Q_sprintf (file1, "%s/%s", cddir, ptexture->name);
 	}
 	
-	if (stricmp( ".bmp", &file1[strlen(file1)-4]) == 0) {
+	if (Q_stricmp( ".bmp", &file1[Q_strlen(file1)-4]) == 0) {
 		Grab_BMP( file1, ptexture );
 	}
 	else {
@@ -1779,7 +1779,7 @@ void Grab_Triangles( s_model_t *pmodel )
 //
 	while (1) 
 	{
-		if (fgets( line, sizeof( line ), input ) != NULL) 
+		if (Q_fgets( line, sizeof( line ), input ) != NULL) 
 		{
 			s_mesh_t *pmesh;
 			char texturename[64];
@@ -1792,12 +1792,12 @@ void Grab_Triangles( s_model_t *pmodel )
 			linecount++;
 
 			// check for end
-			if (strcmp( "end\n", line ) == 0) 
+			if (Q_strcmp( "end\n", line ) == 0) 
 				return;
 
 			// strip off trailing smag
-			strcpy( texturename, line );
-			for (i = strlen( texturename ) - 1; i >= 0 && ! isgraph( texturename[i] ); i--) ;
+			Q_strcpy( texturename, line );
+			for (i = Q_strlen( texturename ) - 1; i >= 0 && ! Q_isgraph( texturename[i] ); i--) ;
 			texturename[i + 1] = '\0';
 
 			// funky texture overrides
@@ -1805,12 +1805,12 @@ void Grab_Triangles( s_model_t *pmodel )
 			{
 				if (sourcetexture[i][0] == '\0') 
 				{
-					strcpy( texturename, defaulttexture[i] );
+					Q_strcpy( texturename, defaulttexture[i] );
 					break;
 				}
-				if (stricmp( texturename, sourcetexture[i]) == 0) 
+				if (Q_stricmp( texturename, sourcetexture[i]) == 0) 
 				{
-					strcpy( texturename, defaulttexture[i] );
+					Q_strcpy( texturename, defaulttexture[i] );
 					break;
 				}
 			}
@@ -1818,9 +1818,9 @@ void Grab_Triangles( s_model_t *pmodel )
 			if (texturename[0] == '\0')
 			{
 				// weird model problem, skip them
-				fgets( line, sizeof( line ), input );
-				fgets( line, sizeof( line ), input );
-				fgets( line, sizeof( line ), input );
+				Q_fgets( line, sizeof( line ), input );
+				Q_fgets( line, sizeof( line ), input );
+				Q_fgets( line, sizeof( line ), input );
 				linecount += 3;
 				continue;
 			}
@@ -1835,14 +1835,14 @@ void Grab_Triangles( s_model_t *pmodel )
 				else
 					ptriv = lookup_triangle( pmesh, pmesh->numtris ) + j;
 
-				if (fgets( line, sizeof( line ), input ) != NULL) 
+				if (Q_fgets( line, sizeof( line ), input ) != NULL) 
 				{
 					s_vertex_t p;
 					vec3_t tmp;
 					s_normal_t normal;
 
 					linecount++;
-					if (sscanf( line, "%d %f %f %f %f %f %f %f %f",
+					if (Q_sscanf( line, "%d %f %f %f %f %f %f %f %f",
 						&bone, 
 						&p.org[0], &p.org[1], &p.org[2], 
 						&normal.org[0], &normal.org[1], &normal.org[2], 
@@ -1850,9 +1850,9 @@ void Grab_Triangles( s_model_t *pmodel )
 					{
 						if (bone < 0 || bone >= pmodel->numbones) 
 						{
-							fprintf( stderr, "bogus bone index\n" );
-							fprintf(stderr, "%d %s :\n%s", linecount, filename, line );
-							exit(1);
+							Q_fprintf( stderr, "bogus bone index\n" );
+							Q_fprintf(stderr, "%d %s :\n%s", linecount, filename, line );
+							Q_exit(1);
 						}
 
 						/*
@@ -1938,7 +1938,7 @@ void Grab_Triangles( s_model_t *pmodel )
 							// steal the triangle and make it white
 							s_trianglevert_t *ptriv2;
 
-							printf("triangle reversed (%f %f %f)\n",
+							Q_printf("triangle reversed (%f %f %f)\n",
 								DotProduct( norm[0], norm[1] ),
 								DotProduct( norm[1], norm[2] ),
 								DotProduct( norm[2], norm[0] ) );
@@ -1964,11 +1964,11 @@ void Grab_Triangles( s_model_t *pmodel )
 	}
 
 	
-	if (ncount) printf("%d triangles with misdirected normals\n", ncount );
+	if (ncount) Q_printf("%d triangles with misdirected normals\n", ncount );
 
 	if (vmin[2] != 0.0) 
 	{
-		printf("lowest vector at %f\n", vmin[2] );
+		Q_printf("lowest vector at %f\n", vmin[2] );
 	}
 }
 
@@ -1979,10 +1979,10 @@ void Grab_Skeleton( s_node_t *pnodes, s_bone_t *pbones )
 	char cmd[1024];
 	int index;
 
-	while (fgets( line, sizeof( line ), input ) != NULL) 
+	while (Q_fgets( line, sizeof( line ), input ) != NULL) 
 	{
 		linecount++;
-		if (sscanf( line, "%d %f %f %f %f %f %f", &index, &x, &y, &z, &xr, &yr, &zr ) == 7)
+		if (Q_sscanf( line, "%d %f %f %f %f %f %f", &index, &x, &y, &z, &xr, &yr, &zr ) == 7)
 		{
 			pbones[index].pos[0] = x;
 			pbones[index].pos[1] = y;
@@ -1999,13 +1999,13 @@ void Grab_Skeleton( s_node_t *pnodes, s_bone_t *pbones )
 
 			clip_rotations( pbones[index].rot ); 
 		}
-		else if (sscanf( line, "%s %d", cmd, &index ))
+		else if (Q_sscanf( line, "%s %d", cmd, &index ))
 		{
-			if (strcmp( cmd, "time" ) == 0) 
+			if (Q_strcmp( cmd, "time" ) == 0) 
 			{
 				// pbones = pnode->bones[index] = kalloc(1, sizeof( s_bones_t ));
 			}
-			else if (strcmp( cmd, "end") == 0) 
+			else if (Q_strcmp( cmd, "end") == 0) 
 			{
 				return;
 			}
@@ -2022,10 +2022,10 @@ int Grab_Nodes( s_node_t *pnodes )
 	int numbones = 0;
 	int i;
 
-	while (fgets( line, sizeof( line ), input ) != NULL) 
+	while (Q_fgets( line, sizeof( line ), input ) != NULL) 
 	{
 		linecount++;
-		if (sscanf( line, "%d \"%[^\"]\" %d", &index, name, &parent ) == 3)
+		if (Q_sscanf( line, "%d \"%[^\"]\" %d", &index, name, &parent ) == 3)
 		{
 			// check for duplicated bones
 			/*
@@ -2041,7 +2041,7 @@ int Grab_Nodes( s_node_t *pnodes )
 			// check for mirrored bones;
 			for (i = 0; i < nummirrored; i++)
 			{
-				if (strcmp( name, mirrored[i] ) == 0)
+				if (Q_strcmp( name, mirrored[i] ) == 0)
 					pnodes[index].mirrored = 1;
 			}
 			if ((! pnodes[index].mirrored) && parent != -1)
@@ -2066,41 +2066,41 @@ void Grab_Studio ( s_model_t *pmodel )
 	char	cmd[1024];
 	int		option;
 
-	sprintf (filename, "%s/%s.smd", cddir, pmodel->name);
+	Q_sprintf (filename, "%s/%s.smd", cddir, pmodel->name);
 	time1 = FileTime (filename);
 	if (time1 == -1)
 		Error ("%s doesn't exist", filename);
 
-	printf ("grabbing %s\n", filename);
+	Q_printf ("grabbing %s\n", filename);
 
-	if ((input = fopen(filename, "r")) == 0) {
-		fprintf(stderr,"reader: could not open file '%s'\n", filename);
+	if ((input = Q_fopen(filename, "r")) == 0) {
+		Q_fprintf(stderr,"reader: could not open file '%s'\n", filename);
 	}
 	linecount = 0;
 
-	while (fgets( line, sizeof( line ), input ) != NULL) {
+	while (Q_fgets( line, sizeof( line ), input ) != NULL) {
 		linecount++;
-		sscanf( line, "%s %d", cmd, &option );
-		if (strcmp( cmd, "version" ) == 0) {
+		Q_sscanf( line, "%s %d", cmd, &option );
+		if (Q_strcmp( cmd, "version" ) == 0) {
 			if (option != 1) {
 				Error("bad version\n");
 			}
 		}
-		else if (strcmp( cmd, "nodes" ) == 0) {
+		else if (Q_strcmp( cmd, "nodes" ) == 0) {
 			pmodel->numbones = Grab_Nodes( pmodel->node );
 		}
-		else if (strcmp( cmd, "skeleton" ) == 0) {
+		else if (Q_strcmp( cmd, "skeleton" ) == 0) {
 			Grab_Skeleton( pmodel->node, pmodel->skeleton );
 		}
-		else if (strcmp( cmd, "triangles" ) == 0) {
+		else if (Q_strcmp( cmd, "triangles" ) == 0) {
 			Grab_Triangles( pmodel );
 		}
 		else 
 		{
-			printf("unknown studio command\n" );
+			Q_printf("unknown studio command\n" );
 		}
 	}
-	fclose( input );
+	Q_fclose( input );
 }
 
 
@@ -2135,14 +2135,14 @@ void Cmd_Eyeposition (void)
 {
 // rotate points into frame of reference so model points down the positive x
 // axis
-	GetToken (false);
-	eyeposition[1] = atof (token);
+	GetToken (qfalse);
+	eyeposition[1] = Q_atof (token);
 
-	GetToken (false);
-	eyeposition[0] = -atof (token);
+	GetToken (qfalse);
+	eyeposition[0] = -Q_atof (token);
 
-	GetToken (false);
-	eyeposition[2] = atof (token);
+	GetToken (qfalse);
+	eyeposition[2] = Q_atof (token);
 }
 
 
@@ -2153,8 +2153,8 @@ Cmd_Flags
 */
 void Cmd_Flags (void)
 {
-	GetToken (false);
-	gflags = atoi (token);
+	GetToken (qfalse);
+	gflags = Q_atoi (token);
 }
 
 
@@ -2165,7 +2165,7 @@ Cmd_Modelname
 */
 void Cmd_Modelname (void)
 {
-	GetToken (false);
+	GetToken (qfalse);
 	strcpyn (outname, token);
 }
 
@@ -2178,7 +2178,7 @@ void Cmd_Modelname (void)
 
 void Option_Studio( )
 {
-	if (!GetToken (false)) return;
+	if (!GetToken (qfalse)) return;
 
 	model[nummodels] = kalloc( 1, sizeof( s_model_t ) );
 	bodypart[numbodyparts].pmodel[bodypart[numbodyparts].nummodels] = model[nummodels];
@@ -2191,15 +2191,15 @@ void Option_Studio( )
 
 	while (TokenAvailable())
 	{
-		GetToken(false);
-		if (stricmp( "reverse", token ) == 0)
+		GetToken(qfalse);
+		if (Q_stricmp( "reverse", token ) == 0)
 		{
 			flip_triangles = 0;
 		}
-		else if (stricmp( "scale", token ) == 0)
+		else if (Q_stricmp( "scale", token ) == 0)
 		{
-			GetToken(false);
-			scale_up = atof( token );
+			GetToken(qfalse);
+			scale_up = Q_atof( token );
 		}
 	}
 
@@ -2229,7 +2229,7 @@ void Cmd_Bodygroup( )
 {
 	int is_started = 0;
 
-	if (!GetToken(false)) return;
+	if (!GetToken(qfalse)) return;
 
 	if (numbodyparts == 0) {
 		bodypart[numbodyparts].base = 1;
@@ -2241,16 +2241,16 @@ void Cmd_Bodygroup( )
 
 	do
 	{
-		GetToken (true);
+		GetToken (qtrue);
 		if (endofscript)
 			return;
 		else if (token[0] == '{')
 			is_started = 1;
 		else if (token[0] == '}')
 			break;
-		else if (stricmp("studio", token ) == 0)
+		else if (Q_stricmp("studio", token ) == 0)
 			Option_Studio( );
-		else if (stricmp("blank", token ) == 0)
+		else if (Q_stricmp("blank", token ) == 0)
 			Option_Blank( );
 	} while (1);
 
@@ -2263,7 +2263,7 @@ void Cmd_Body( )
 {
 	int is_started = 0;
 
-	if (!GetToken(false)) return;
+	if (!GetToken(qfalse)) return;
 
 	if (numbodyparts == 0) {
 		bodypart[numbodyparts].base = 1;
@@ -2302,13 +2302,13 @@ void Grab_Animation( s_animation_t *panim)
 		panim->rot[index] = kalloc( MAXSTUDIOANIMATIONS, sizeof( vec3_t ) );
 	}
 
-	cz = cos( zrotation );
-	sz = sin( zrotation );
+	cz = Q_cos( zrotation );
+	sz = Q_sin( zrotation );
 
-	while (fgets( line, sizeof( line ), input ) != NULL) 
+	while (Q_fgets( line, sizeof( line ), input ) != NULL) 
 	{
 		linecount++;
-		if (sscanf( line, "%d %f %f %f %f %f %f", &index, &pos[0], &pos[1], &pos[2], &rot[0], &rot[1], &rot[2] ) == 7)
+		if (Q_sscanf( line, "%d %f %f %f %f %f %f", &index, &pos[0], &pos[1], &pos[2], &rot[0], &rot[1], &rot[2] ) == 7)
 		{
 			if (t >= panim->startframe && t <= panim->endframe)
 			{
@@ -2339,13 +2339,13 @@ void Grab_Animation( s_animation_t *panim)
 				VectorCopy( rot, panim->rot[index][t] );
 			}
 		}
-		else if (sscanf( line, "%s %d", cmd, &index ))
+		else if (Q_sscanf( line, "%s %d", cmd, &index ))
 		{
-			if (strcmp( cmd, "time" ) == 0) 
+			if (Q_strcmp( cmd, "time" ) == 0) 
 			{
 				t = index;
 			}
-			else if (strcmp( cmd, "end") == 0) 
+			else if (Q_strcmp( cmd, "end") == 0) 
 			{
 				panim->startframe = start;
 				panim->endframe = end;
@@ -2384,11 +2384,11 @@ void Shift_Animation( s_animation_t *panim)
 		ppos = kalloc( 1, size );
 		prot = kalloc( 1, size );
 
-		memmove( ppos, &panim->pos[j][panim->startframe], size );
-		memmove( prot, &panim->rot[j][panim->startframe], size );
+		Q_memmove( ppos, &panim->pos[j][panim->startframe], size );
+		Q_memmove( prot, &panim->rot[j][panim->startframe], size );
 
-		free( panim->pos[j] );
-		free( panim->rot[j] );
+		Q_free( panim->pos[j] );
+		Q_free( panim->rot[j] );
 
 		panim->pos[j] = ppos;
 		panim->rot[j] = prot;
@@ -2405,45 +2405,45 @@ void Option_Animation ( char *name, s_animation_t *panim )
 
 	strcpyn( panim->name, name );
 
-	sprintf (filename, "%s/%s.smd", cddir, panim->name);
+	Q_sprintf (filename, "%s/%s.smd", cddir, panim->name);
 	time1 = FileTime (filename);
 	if (time1 == -1)
 		Error ("%s doesn't exist", filename);
 
-	printf ("grabbing %s\n", filename);
+	Q_printf ("grabbing %s\n", filename);
 
-	if ((input = fopen(filename, "r")) == 0) {
-		fprintf(stderr,"reader: could not open file '%s'\n", filename);
+	if ((input = Q_fopen(filename, "r")) == 0) {
+		Q_fprintf(stderr,"reader: could not open file '%s'\n", filename);
 		Error(0);
 	}
 	linecount = 0;
 
-	while (fgets( line, sizeof( line ), input ) != NULL) {
+	while (Q_fgets( line, sizeof( line ), input ) != NULL) {
 		linecount++;
-		sscanf( line, "%s %d", cmd, &option );
-		if (strcmp( cmd, "version" ) == 0) {
+		Q_sscanf( line, "%s %d", cmd, &option );
+		if (Q_strcmp( cmd, "version" ) == 0) {
 			if (option != 1) {
 				Error("bad version\n");
 			}
 		}
-		else if (strcmp( cmd, "nodes" ) == 0) {
+		else if (Q_strcmp( cmd, "nodes" ) == 0) {
 			panim->numbones = Grab_Nodes( panim->node );
 		}
-		else if (strcmp( cmd, "skeleton" ) == 0) {
+		else if (Q_strcmp( cmd, "skeleton" ) == 0) {
 			Grab_Animation( panim );
 			Shift_Animation( panim );
 		}
 		else 
 		{
-			printf("unknown studio command : %s\n", cmd );
-			while (fgets( line, sizeof( line ), input ) != NULL) {
+			Q_printf("unknown studio command : %s\n", cmd );
+			while (Q_fgets( line, sizeof( line ), input ) != NULL) {
 				linecount++;
-				if (strncmp(line,"end",3)==0)
+				if (Q_strncmp(line,"end",3)==0)
 					break;
 			}
 		}
 	}
-	fclose( input );
+	Q_fclose( input );
 }
 
 
@@ -2465,7 +2465,7 @@ int Option_Motion ( s_sequence_t *psequence )
 {
 	while (TokenAvailable())
 	{
-		GetToken (false);
+		GetToken (qfalse);
 		psequence->motiontype |= lookupControl( token );
 	}
 	return 0;
@@ -2478,27 +2478,27 @@ int Option_Event ( s_sequence_t *psequence )
 
 	if (psequence->numevents + 1 >= MAXSTUDIOEVENTS)
 	{
-		printf("too many events\n");
-		exit(0);
+		Q_printf("too many events\n");
+		Q_exit(0);
 	}
 
-	GetToken (false);
-	event = atoi( token );
+	GetToken (qfalse);
+	event = Q_atoi( token );
 	psequence->event[psequence->numevents].event = event;
 
-	GetToken( false );
-	psequence->event[psequence->numevents].frame = atoi( token );
+	GetToken( qfalse );
+	psequence->event[psequence->numevents].frame = Q_atoi( token );
 
 	psequence->numevents++;
 
 	// option token
 	if (TokenAvailable())
 	{
-		GetToken( false );
+		GetToken( qfalse );
 		if (token[0] == '}') // opps, hit the end
 			return 1;
 		// found an option
-		strcpy( psequence->event[psequence->numevents-1].options, token );
+		Q_strcpy( psequence->event[psequence->numevents-1].options, token );
 	}
 
 	return 0;
@@ -2507,9 +2507,9 @@ int Option_Event ( s_sequence_t *psequence )
 
 int Option_Fps ( s_sequence_t *psequence )
 {
-	GetToken (false);
+	GetToken (qfalse);
 
-	psequence->fps = atof( token );
+	psequence->fps = Q_atof( token );
 
 	return 0;
 }
@@ -2518,19 +2518,19 @@ int Option_AddPivot ( s_sequence_t *psequence )
 {
 	if (psequence->numpivots + 1 >= MAXSTUDIOPIVOTS)
 	{
-		printf("too many pivot points\n");
-		exit(0);
+		Q_printf("too many pivot points\n");
+		Q_exit(0);
 	}
 
 	
-	GetToken (false);
-	psequence->pivot[psequence->numpivots].index = atoi( token );
+	GetToken (qfalse);
+	psequence->pivot[psequence->numpivots].index = Q_atoi( token );
 
-	GetToken (false);
-	psequence->pivot[psequence->numpivots].start = atoi( token );
+	GetToken (qfalse);
+	psequence->pivot[psequence->numpivots].start = Q_atoi( token );
 
-	GetToken (false);
-	psequence->pivot[psequence->numpivots].end = atoi( token );
+	GetToken (qfalse);
+	psequence->pivot[psequence->numpivots].end = Q_atoi( token );
 
 	psequence->numpivots++;
 
@@ -2546,38 +2546,38 @@ Option_Origin
 */
 void Cmd_Origin (void)
 {
-	GetToken (false);
-	defaultadjust[0] = atof (token);
+	GetToken (qfalse);
+	defaultadjust[0] = Q_atof (token);
 
-	GetToken (false);
-	defaultadjust[1] = atof (token);
+	GetToken (qfalse);
+	defaultadjust[1] = Q_atof (token);
 
-	GetToken (false);
-	defaultadjust[2] = atof (token);
+	GetToken (qfalse);
+	defaultadjust[2] = Q_atof (token);
 
 	if (TokenAvailable()) {
-		GetToken (false);
-		defaultzrotation = (atof( token ) + 90) * (Q_PI / 180.0);
+		GetToken (qfalse);
+		defaultzrotation = (Q_atof( token ) + 90) * (Q_PI / 180.0);
 	}
 }
 
 
 void Option_Origin (void)
 {
-	GetToken (false);
-	adjust[0] = atof (token);
+	GetToken (qfalse);
+	adjust[0] = Q_atof (token);
 
-	GetToken (false);
-	adjust[1] = atof (token);
+	GetToken (qfalse);
+	adjust[1] = Q_atof (token);
 
-	GetToken (false);
-	adjust[2] = atof (token);
+	GetToken (qfalse);
+	adjust[2] = Q_atof (token);
 }
 
 void Option_Rotate(void )
 {
-	GetToken (false);
-	zrotation = (atof( token ) + 90) * (Q_PI / 180.0);
+	GetToken (qfalse);
+	zrotation = (Q_atof( token ) + 90) * (Q_PI / 180.0);
 }
 
 /*
@@ -2587,15 +2587,15 @@ void Option_Rotate(void )
 void Cmd_ScaleUp (void)
 {
 
-	GetToken (false);
-	default_scale = scale_up = atof (token);
+	GetToken (qfalse);
+	default_scale = scale_up = Q_atof (token);
 }
 
 void Option_ScaleUp (void)
 {
 
-	GetToken (false);
-	scale_up = atof (token);
+	GetToken (qfalse);
+	scale_up = Q_atof (token);
 }
 
 
@@ -2606,7 +2606,7 @@ void Option_ScaleUp (void)
 
 int Cmd_SequenceGroup( )
 {
-	GetToken (false);
+	GetToken (qfalse);
 	strcpyn( sequencegroup[numseqgroups].label, token );
 	numseqgroups++;
 
@@ -2616,8 +2616,8 @@ int Cmd_SequenceGroup( )
 
 int Cmd_SequenceGroupSize( )
 {
-	GetToken (false);
-	maxseqgroupsize = 1024 * atoi( token );
+	GetToken (qfalse);
+	maxseqgroupsize = 1024 * Q_atoi( token );
 	return 0;
 }
 
@@ -2627,13 +2627,13 @@ int lookupActivity( char *szActivity )
 
 	for (i = 0; activity_map[i].name; i++)
 	{
-		if (stricmp( szActivity, activity_map[i].name ) == 0)
+		if (Q_stricmp( szActivity, activity_map[i].name ) == 0)
 			return activity_map[i].type;
 	}
 	// match ACT_#
-	if (strnicmp( szActivity, "ACT_", 4 ) == 0)
+	if (Q_strnicmp( szActivity, "ACT_", 4 ) == 0)
 	{
-		return atoi( &szActivity[4] );
+		return Q_atoi( &szActivity[4] );
 	}
 	return 0;
 }
@@ -2648,7 +2648,7 @@ int Cmd_Sequence( )
 	int start = 0;
 	int end = MAXSTUDIOANIMATIONS - 1;
 
-	if (!GetToken(false)) return 0;
+	if (!GetToken(qfalse)) return 0;
 
 	strcpyn( sequence[numseq].name, token );
 
@@ -2665,7 +2665,7 @@ int Cmd_Sequence( )
 	{
 		if (depth > 0)
 		{
-			if(!GetToken(true)) 
+			if(!GetToken(qtrue)) 
 			{
 				break;
 			}
@@ -2678,7 +2678,7 @@ int Cmd_Sequence( )
 			}
 			else 
 			{
-				GetToken (false);
+				GetToken (qfalse);
 			}
 		}
 
@@ -2686,101 +2686,101 @@ int Cmd_Sequence( )
 		{
 			if (depth != 0)
 			{
-				printf("missing }\n" );
-				exit(1);
+				Q_printf("missing }\n" );
+				Q_exit(1);
 			}
 			return 1;
 		}
-		if (stricmp("{", token ) == 0)
+		if (Q_stricmp("{", token ) == 0)
 		{
 			depth++;
 		}
-		else if (stricmp("}", token ) == 0)
+		else if (Q_stricmp("}", token ) == 0)
 		{
 			depth--;
 		}
-		else if (stricmp("deform", token ) == 0)
+		else if (Q_stricmp("deform", token ) == 0)
 		{
 			Option_Deform( &sequence[numseq] );
 		}
-		else if (stricmp("event", token ) == 0)
+		else if (Q_stricmp("event", token ) == 0)
 		{
 			depth -= Option_Event( &sequence[numseq] );
 		}
-		else if (stricmp("pivot", token ) == 0)
+		else if (Q_stricmp("pivot", token ) == 0)
 		{
 			Option_AddPivot( &sequence[numseq] );
 		}
-		else if (stricmp("fps", token ) == 0)
+		else if (Q_stricmp("fps", token ) == 0)
 		{
 			Option_Fps( &sequence[numseq] );
 		}
-		else if (stricmp("origin", token ) == 0)
+		else if (Q_stricmp("origin", token ) == 0)
 		{
 			Option_Origin( );
 		}
-		else if (stricmp("rotate", token ) == 0)
+		else if (Q_stricmp("rotate", token ) == 0)
 		{
 			Option_Rotate( );
 		}
-		else if (stricmp("scale", token ) == 0)
+		else if (Q_stricmp("scale", token ) == 0)
 		{
 			Option_ScaleUp( );
 		}
-		else if (strnicmp("loop", token, 4 ) == 0)
+		else if (Q_strnicmp("loop", token, 4 ) == 0)
 		{
 			sequence[numseq].flags |= STUDIO_LOOPING;
 		}
-		else if (strnicmp("frame", token, 5 ) == 0)
+		else if (Q_strnicmp("frame", token, 5 ) == 0)
 		{
-			GetToken( false );
-			start = atoi( token );
-			GetToken( false );
-			end = atoi( token );
+			GetToken( qfalse );
+			start = Q_atoi( token );
+			GetToken( qfalse );
+			end = Q_atoi( token );
 		}
-		else if (strnicmp("blend", token, 5 ) == 0)
+		else if (Q_strnicmp("blend", token, 5 ) == 0)
 		{
-			GetToken( false );
+			GetToken( qfalse );
 			sequence[numseq].blendtype[0] = lookupControl( token );
-			GetToken( false );
-			sequence[numseq].blendstart[0] = atof( token );
-			GetToken( false );
-			sequence[numseq].blendend[0] = atof( token );
+			GetToken( qfalse );
+			sequence[numseq].blendstart[0] = Q_atof( token );
+			GetToken( qfalse );
+			sequence[numseq].blendend[0] = Q_atof( token );
 		}
-		else if (strnicmp("node", token, 4 ) == 0)
+		else if (Q_strnicmp("node", token, 4 ) == 0)
 		{
-			GetToken( false );
-			sequence[numseq].entrynode = sequence[numseq].exitnode = atoi( token );
+			GetToken( qfalse );
+			sequence[numseq].entrynode = sequence[numseq].exitnode = Q_atoi( token );
 		}
-		else if (strnicmp("transition", token, 4 ) == 0)
+		else if (Q_strnicmp("transition", token, 4 ) == 0)
 		{
-			GetToken( false );
-			sequence[numseq].entrynode = atoi( token );
-			GetToken( false );
-			sequence[numseq].exitnode = atoi( token );
+			GetToken( qfalse );
+			sequence[numseq].entrynode = Q_atoi( token );
+			GetToken( qfalse );
+			sequence[numseq].exitnode = Q_atoi( token );
 		}
-		else if (strnicmp("rtransition", token, 4 ) == 0)
+		else if (Q_strnicmp("rtransition", token, 4 ) == 0)
 		{
-			GetToken( false );
-			sequence[numseq].entrynode = atoi( token );
-			GetToken( false );
-			sequence[numseq].exitnode = atoi( token );
+			GetToken( qfalse );
+			sequence[numseq].entrynode = Q_atoi( token );
+			GetToken( qfalse );
+			sequence[numseq].exitnode = Q_atoi( token );
 			sequence[numseq].nodeflags |= 1;
 		}
 		else if (lookupControl( token ) != -1)
 		{
 			sequence[numseq].motiontype |= lookupControl( token );
 		}
-		else if (stricmp("animation", token ) == 0)
+		else if (Q_stricmp("animation", token ) == 0)
 		{
-			GetToken(false);
+			GetToken(qfalse);
 			strcpyn( smdfilename[numblends++], token );
 		}
 		else if ((i = lookupActivity( token )) != 0)
 		{
 			sequence[numseq].activity = i;
-			GetToken( false );
-			sequence[numseq].actweight = atoi( token );
+			GetToken( qfalse );
+			sequence[numseq].actweight = Q_atoi( token );
 		}
 		else
 		{
@@ -2789,15 +2789,15 @@ int Cmd_Sequence( )
 
 		if (depth < 0)
 		{
-			printf("missing {\n");
-			exit(1);
+			Q_printf("missing {\n");
+			Q_exit(1);
 		}
 	};
 
 	if (numblends == 0)
 	{
-		printf("no animations found\n");
-		exit(1);
+		Q_printf("no animations found\n");
+		Q_exit(1);
 	}
 	for (i = 0; i < numblends; i++)
 	{
@@ -2827,7 +2827,7 @@ int Cmd_Sequence( )
 */
 int Cmd_Root (void)
 {
-	if (GetToken (false))
+	if (GetToken (qfalse))
 	{
 		strcpyn( pivotname[0], token );
 		return 0;
@@ -2837,10 +2837,10 @@ int Cmd_Root (void)
 
 int Cmd_Pivot (void)
 {
-	if (GetToken (false))
+	if (GetToken (qfalse))
 	{
-		int index = atoi(token);
-		if (GetToken(false))
+		int index = Q_atoi(token);
+		if (GetToken(qfalse))
 		{
 			strcpyn( pivotname[index], token );
 			return 0;
@@ -2852,29 +2852,29 @@ int Cmd_Pivot (void)
 
 int Cmd_Controller (void)
 {
-	if (GetToken (false))
+	if (GetToken (qfalse))
 	{
-		if (!strcmpi("mouth",token))
+		if (!Q_strcmpi("mouth",token))
 		{
 			bonecontroller[numbonecontrollers].index = 4;
 		}
 		else
 		{
-			bonecontroller[numbonecontrollers].index = atoi(token);
+			bonecontroller[numbonecontrollers].index = Q_atoi(token);
 		}
-		if (GetToken(false))
+		if (GetToken(qfalse))
 		{
 			strcpyn( bonecontroller[numbonecontrollers].name, token );
-			GetToken(false);
+			GetToken(qfalse);
 			if ((bonecontroller[numbonecontrollers].type = lookupControl(token)) == -1) 
 			{
-				printf("unknown bonecontroller type '%s'\n", token );
+				Q_printf("unknown bonecontroller type '%s'\n", token );
 				return 0;
 			}
-			GetToken(false);
-			bonecontroller[numbonecontrollers].start = atof( token );
-			GetToken(false);
-			bonecontroller[numbonecontrollers].end = atof( token );
+			GetToken(qfalse);
+			bonecontroller[numbonecontrollers].start = Q_atof( token );
+			GetToken(qfalse);
+			bonecontroller[numbonecontrollers].end = Q_atof( token );
 
 			if (bonecontroller[numbonecontrollers].type & (STUDIO_XR | STUDIO_YR | STUDIO_ZR))
 			{
@@ -2896,23 +2896,23 @@ int Cmd_Controller (void)
 */
 void Cmd_BBox (void)
 {
-	GetToken (false);
-	bbox[0][0] = atof( token );
+	GetToken (qfalse);
+	bbox[0][0] = Q_atof( token );
 
-	GetToken (false);
-	bbox[0][1] = atof( token );
+	GetToken (qfalse);
+	bbox[0][1] = Q_atof( token );
 
-	GetToken (false);
-	bbox[0][2] = atof( token );
+	GetToken (qfalse);
+	bbox[0][2] = Q_atof( token );
 
-	GetToken (false);
-	bbox[1][0] = atof( token );
+	GetToken (qfalse);
+	bbox[1][0] = Q_atof( token );
 
-	GetToken (false);
-	bbox[1][1] = atof( token );
+	GetToken (qfalse);
+	bbox[1][1] = Q_atof( token );
 
-	GetToken (false);
-	bbox[1][2] = atof( token );
+	GetToken (qfalse);
+	bbox[1][2] = Q_atof( token );
 }
 
 /*
@@ -2921,23 +2921,23 @@ void Cmd_BBox (void)
 */
 void Cmd_CBox (void)
 {
-	GetToken (false);
-	cbox[0][0] = atof( token );
+	GetToken (qfalse);
+	cbox[0][0] = Q_atof( token );
 
-	GetToken (false);
-	cbox[0][1] = atof( token );
+	GetToken (qfalse);
+	cbox[0][1] = Q_atof( token );
 
-	GetToken (false);
-	cbox[0][2] = atof( token );
+	GetToken (qfalse);
+	cbox[0][2] = Q_atof( token );
 
-	GetToken (false);
-	cbox[1][0] = atof( token );
+	GetToken (qfalse);
+	cbox[1][0] = Q_atof( token );
 
-	GetToken (false);
-	cbox[1][1] = atof( token );
+	GetToken (qfalse);
+	cbox[1][1] = Q_atof( token );
 
-	GetToken (false);
-	cbox[1][2] = atof( token );
+	GetToken (qfalse);
+	cbox[1][2] = Q_atof( token );
 }
 
 
@@ -2947,7 +2947,7 @@ void Cmd_CBox (void)
 */
 void Cmd_Mirror (void)
 {
-	GetToken (false);
+	GetToken (qfalse);
 	strcpyn( mirrored[nummirrored++], token );
 }
 
@@ -2957,8 +2957,8 @@ void Cmd_Mirror (void)
 */
 void Cmd_Gamma (void)
 {
-	GetToken (false);
-	gamma = atof( token );
+	GetToken (qfalse);
+	gamma = Q_atof( token );
 }
 
 
@@ -2979,14 +2979,14 @@ int Cmd_TextureGroup( )
 	if (numtextures == 0)
 		Error( "texturegroups must follow model loading\n");
 
-	if (!GetToken(false)) return 0;
+	if (!GetToken(qfalse)) return 0;
 
 	if (numskinref == 0)
 		numskinref = numtextures;
 
 	while (1)
 	{
-		if(!GetToken(true)) 
+		if(!GetToken(qtrue)) 
 		{
 			break;
 		}
@@ -3036,9 +3036,9 @@ int Cmd_TextureGroup( )
 */
 int Cmd_Hitgroup( )
 {
-	GetToken (false);
-	hitgroup[numhitgroups].group = atoi( token );
-	GetToken (false);
+	GetToken (qfalse);
+	hitgroup[numhitgroups].group = Q_atoi( token );
+	GetToken (qfalse);
 	strcpyn( hitgroup[numhitgroups].name, token );
 	numhitgroups++;
 
@@ -3048,22 +3048,22 @@ int Cmd_Hitgroup( )
 
 int Cmd_Hitbox( )
 {
-	GetToken (false);
-	hitbox[numhitboxes].group = atoi( token );
-	GetToken (false);
+	GetToken (qfalse);
+	hitbox[numhitboxes].group = Q_atoi( token );
+	GetToken (qfalse);
 	strcpyn( hitbox[numhitboxes].name, token );
-	GetToken (false);
-	hitbox[numhitboxes].bmin[0] = atof( token );
-	GetToken (false);
-	hitbox[numhitboxes].bmin[1] = atof( token );
-	GetToken (false);
-	hitbox[numhitboxes].bmin[2] = atof( token );
-	GetToken (false);
-	hitbox[numhitboxes].bmax[0] = atof( token );
-	GetToken (false);
-	hitbox[numhitboxes].bmax[1] = atof( token );
-	GetToken (false);
-	hitbox[numhitboxes].bmax[2] = atof( token );
+	GetToken (qfalse);
+	hitbox[numhitboxes].bmin[0] = Q_atof( token );
+	GetToken (qfalse);
+	hitbox[numhitboxes].bmin[1] = Q_atof( token );
+	GetToken (qfalse);
+	hitbox[numhitboxes].bmin[2] = Q_atof( token );
+	GetToken (qfalse);
+	hitbox[numhitboxes].bmax[0] = Q_atof( token );
+	GetToken (qfalse);
+	hitbox[numhitboxes].bmax[1] = Q_atof( token );
+	GetToken (qfalse);
+	hitbox[numhitboxes].bmax[2] = Q_atof( token );
 
 	numhitboxes++;
 
@@ -3078,26 +3078,26 @@ int Cmd_Hitbox( )
 int Cmd_Attachment( )
 {
 	// index
-	GetToken (false);
-	attachment[numattachments].index = atoi( token );
+	GetToken (qfalse);
+	attachment[numattachments].index = Q_atoi( token );
 
 	// bone name
-	GetToken (false);
+	GetToken (qfalse);
 	strcpyn( attachment[numattachments].bonename, token );
 
 	// position
-	GetToken (false);
-	attachment[numattachments].org[0] = atof( token );
-	GetToken (false);
-	attachment[numattachments].org[1] = atof( token );
-	GetToken (false);
-	attachment[numattachments].org[2] = atof( token );
+	GetToken (qfalse);
+	attachment[numattachments].org[0] = Q_atof( token );
+	GetToken (qfalse);
+	attachment[numattachments].org[1] = Q_atof( token );
+	GetToken (qfalse);
+	attachment[numattachments].org[2] = Q_atof( token );
 
 	if (TokenAvailable())
-		GetToken (false);
+		GetToken (qfalse);
 
 	if (TokenAvailable())
-		GetToken (false);
+		GetToken (qfalse);
 
 	numattachments++;
 	return 0;
@@ -3112,12 +3112,12 @@ int Cmd_Attachment( )
 void Cmd_Renamebone( )
 {
 	// from
-	GetToken (false);
-	strcpy( renamedbone[numrenamedbones].from, token );
+	GetToken (qfalse);
+	Q_strcpy( renamedbone[numrenamedbones].from, token );
 
 	// to
-	GetToken (false);
-	strcpy( renamedbone[numrenamedbones].to, token );
+	GetToken (qfalse);
+	Q_strcpy( renamedbone[numrenamedbones].to, token );
 
 	numrenamedbones++;
 }
@@ -3141,39 +3141,39 @@ void Cmd_SetTextureRendermode( void )
 
 	if(!TokenAvailable())
 	{
-  		printf("*********ERROR!!!*************");
-  		printf("\nmissing texturename after $texrendermode\n");
-  		exit(1);
+  		Q_printf("*********ERROR!!!*************");
+  		Q_printf("\nmissing texturename after $texrendermode\n");
+  		Q_exit(1);
 	}
 
-	GetToken(false);
+	GetToken(qfalse);
 
 	iTextureIndex = lookup_texture(token);
 
 	if(!TokenAvailable())
 	{
-  		printf("\n*********ERROR!!!*************\n");
-  		printf("\nmissing rendermode at $texrendermode\n");
-  		exit(1);
+  		Q_printf("\n*********ERROR!!!*************\n");
+  		Q_printf("\nmissing rendermode at $texrendermode\n");
+  		Q_exit(1);
 	}
 
-	GetToken(false);
+	GetToken(qfalse);
 
-	if(!strcmp(token, "additive"))
+	if(!Q_strcmp(token, "additive"))
 	{
 		texture[iTextureIndex].flags |= STUDIO_NF_ADDITIVE;
 		return;
 	}
-	else if(!strcmp(token, "masked"))
+	else if(!Q_strcmp(token, "masked"))
 	{
   		texture[iTextureIndex].flags |= STUDIO_NF_MASKED;
   		return;
 	}
 	else
 	{
-  		printf("\n*********ERROR!!!*************\n");
-  		printf("\ninvalid rendermode at $texrendermode, choices are :\nadditive\nmasked\n");
-  		exit(1);
+  		Q_printf("\n*********ERROR!!!*************\n");
+  		Q_printf("\ninvalid rendermode at $texrendermode, choices are :\nadditive\nmasked\n");
+  		Q_exit(1);
 	}
 }
 
@@ -3189,142 +3189,142 @@ void ParseScript (void)
 	{
 		do
 		{	// look for a line starting with a $ command
-			GetToken (true);
+			GetToken (qtrue);
 			if (endofscript)
 				return;
 			if (token[0] == '$')
 				break;
 			while (TokenAvailable())
-				GetToken (false);
+				GetToken (qfalse);
 		} while (1);
 	
-		if (!strcmp (token, "$modelname"))
+		if (!Q_strcmp (token, "$modelname"))
 		{
 			Cmd_Modelname ();
 		}
-		else if (!strcmp (token, "$cd"))
+		else if (!Q_strcmp (token, "$cd"))
 		{
 			if (cdset)
 				Error ("Two $cd in one model");
-			cdset = true;
-			GetToken (false);
-			strcpy (cdpartial, token);
-			strcpy (cddir, ExpandPath(token));
+			cdset = qtrue;
+			GetToken (qfalse);
+			Q_strcpy (cdpartial, token);
+			Q_strcpy (cddir, ExpandPath(token));
 		}
-		else if (!strcmp (token, "$cdtexture"))
+		else if (!Q_strcmp (token, "$cdtexture"))
 		{
 			while (TokenAvailable())
 			{
-				GetToken (false);
-				strcpy (cdtexture[cdtextureset], ExpandPath(token));
+				GetToken (qfalse);
+				Q_strcpy (cdtexture[cdtextureset], ExpandPath(token));
 				cdtextureset++;
 			}
 		}
 
-		else if (!strcmp (token, "$scale"))
+		else if (!Q_strcmp (token, "$scale"))
 		{
 			Cmd_ScaleUp ();
 		}
 
-		else if (!strcmp (token, "$root"))
+		else if (!Q_strcmp (token, "$root"))
 		{
 			Cmd_Root ();
 		}
-		else if (!strcmp (token, "$pivot"))
+		else if (!Q_strcmp (token, "$pivot"))
 		{
 			Cmd_Pivot ();
 		}
-		else if (!strcmp (token, "$controller"))
+		else if (!Q_strcmp (token, "$controller"))
 		{
 			Cmd_Controller ();
 		}
 
 
-		else if (!strcmp (token, "$body"))
+		else if (!Q_strcmp (token, "$body"))
 		{
 			Cmd_Body();
 		}
 
-		else if (!strcmp (token, "$bodygroup"))
+		else if (!Q_strcmp (token, "$bodygroup"))
 		{
 			Cmd_Bodygroup();
 		}
 
-		else if (!strcmp (token, "$sequence"))
+		else if (!Q_strcmp (token, "$sequence"))
 		{
 			Cmd_Sequence ();
 		}
 
-		else if (!strcmp (token, "$sequencegroup"))
+		else if (!Q_strcmp (token, "$sequencegroup"))
 		{
 			Cmd_SequenceGroup ();
 		}
 
-		else if (!strcmp (token, "$sequencegroupsize"))
+		else if (!Q_strcmp (token, "$sequencegroupsize"))
 		{
 			Cmd_SequenceGroupSize ();
 		}
 
-		else if (!strcmp (token, "$eyeposition"))
+		else if (!Q_strcmp (token, "$eyeposition"))
 		{
 			Cmd_Eyeposition ();
 		}
 
-		else if (!strcmp (token, "$origin"))
+		else if (!Q_strcmp (token, "$origin"))
 		{
 			Cmd_Origin ();
 		}
 
-		else if (!strcmp (token, "$bbox"))
+		else if (!Q_strcmp (token, "$bbox"))
 		{
 			Cmd_BBox ();
 		}
-		else if (!strcmp (token, "$cbox"))
+		else if (!Q_strcmp (token, "$cbox"))
 		{
 			Cmd_CBox ();
 		}
-		else if (!strcmp (token, "$mirrorbone"))
+		else if (!Q_strcmp (token, "$mirrorbone"))
 		{
 			Cmd_Mirror ();
 		}
-		else if (!strcmp (token, "$gamma"))
+		else if (!Q_strcmp (token, "$gamma"))
 		{
 			Cmd_Gamma ();
 		}
-		else if (!strcmp (token, "$flags"))
+		else if (!Q_strcmp (token, "$flags"))
 		{
 			Cmd_Flags ();
 		}
-		else if (!strcmp (token, "$texturegroup"))
+		else if (!Q_strcmp (token, "$texturegroup"))
 		{
 			Cmd_TextureGroup ();
 		}
 
-		else if (!strcmp (token, "$hgroup"))
+		else if (!Q_strcmp (token, "$hgroup"))
 		{
 			Cmd_Hitgroup ();
 		}
-		else if (!strcmp (token, "$hbox"))
+		else if (!Q_strcmp (token, "$hbox"))
 		{
 			Cmd_Hitbox ();
 		}
-		else if (!strcmp (token, "$attachment"))
+		else if (!Q_strcmp (token, "$attachment"))
 		{
 			Cmd_Attachment ();
 		}
-		else if (!strcmp (token, "$externaltextures"))
+		else if (!Q_strcmp (token, "$externaltextures"))
 		{
 			split_textures = 1;
 		}
-		else if (!strcmp (token, "$cliptotextures"))
+		else if (!Q_strcmp (token, "$cliptotextures"))
 		{
 			clip_texcoords = 0;
 		}
-		else if (!strcmp (token, "$renamebone"))
+		else if (!Q_strcmp (token, "$renamebone"))
 		{
 			Cmd_Renamebone ();
 		}
-  		else if (!strcmp (token, "$texrendermode"))
+  		else if (!Q_strcmp (token, "$texrendermode"))
   		{
 			Cmd_SetTextureRendermode();
   		}
@@ -3355,7 +3355,7 @@ int main (int argc, char **argv)
 	flip_triangles = 1;
 	maxseqgroupsize = 1024 * 1024;
 
-	normal_blend = cos( 2.0 * (Q_PI / 180.0));
+	normal_blend = Q_cos( 2.0 * (Q_PI / 180.0));
 
 	gamma = 1.8;
 
@@ -3367,13 +3367,13 @@ int main (int argc, char **argv)
 			switch( argv[i][1] ) {
 			case 't':
 				i++;
-				strcpy ( defaulttexture[numrep], argv[i]);
+				Q_strcpy ( defaulttexture[numrep], argv[i]);
 				if (i < argc - 2 && argv[i + 1][0] != '-') {
 					i++;
-					strcpy ( sourcetexture[numrep], argv[i]);
-					printf ("Replaceing %s with %s\n", sourcetexture[numrep], defaulttexture[numrep] );
+					Q_strcpy ( sourcetexture[numrep], argv[i]);
+					Q_printf ("Replaceing %s with %s\n", sourcetexture[numrep], defaulttexture[numrep] );
 				}
-				printf ("Using default texture: %s\n", defaulttexture);
+				Q_printf ("Using default texture: %s\n", defaulttexture);
 				numrep++;
 				break;
 			case 'r':
@@ -3387,14 +3387,14 @@ int main (int argc, char **argv)
 				break;
 			case 'a':
 				i++;
-				normal_blend = cos( atof( argv[i] ) * (Q_PI / 180.0));
+				normal_blend = Q_cos( Q_atof( argv[i] ) * (Q_PI / 180.0));
 				break;
 			case 'h':
 				dump_hboxes = 1;
 				break;
 			case 'g':
 				i++;
-				maxseqgroupsize = 1024 * atoi( argv[i] );
+				maxseqgroupsize = 1024 * Q_atoi( argv[i] );
 				break;
 			case 'p':
 			case '2':
@@ -3407,13 +3407,13 @@ int main (int argc, char **argv)
 		}
 	}	
 
-	strcpy( sequencegroup[numseqgroups].label, "default" );
+	Q_strcpy( sequencegroup[numseqgroups].label, "default" );
 	numseqgroups = 1;
 
 //
 // load the script
 //
-	strcpy (path, argv[i]);
+	Q_strcpy (path, argv[i]);
 	DefaultExtension (path, ".qc");
 	// SetQdirFromPath (path);
 	LoadScriptFile (path);
@@ -3423,7 +3423,7 @@ int main (int argc, char **argv)
 //
 
 	ClearModel ();
-	strcpy (outname, argv[i]);
+	Q_strcpy (outname, argv[i]);
 
 	ParseScript ();
 	SetSkinValues ();

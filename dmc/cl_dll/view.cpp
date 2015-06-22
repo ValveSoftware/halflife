@@ -198,10 +198,10 @@ float V_CalcBob ( struct ref_params_s *pparams )
 	VectorCopy( pparams->simvel, vel );
 	vel[2] = 0;
 
-	bob = sqrt( vel[0] * vel[0] + vel[1] * vel[1] ) * cl_bob->value;
-	bob = bob * 0.3 + bob * 0.7 * sin(cycle);
-	bob = min( bob, 4 );
-	bob = max( bob, -7 );
+	bob = Q_sqrt( vel[0] * vel[0] + vel[1] * vel[1] ) * cl_bob->value;
+	bob = bob * 0.3 + bob * 0.7 * Q_sin(cycle);
+	bob = Q_min( bob, 4 );
+	bob = Q_max( bob, -7 );
 	return bob;
 	
 }
@@ -223,7 +223,7 @@ float V_CalcRoll (vec3_t angles, vec3_t velocity, float rollangle, float rollspe
     
 	side = DotProduct (velocity, right);
     sign = side < 0 ? -1 : 1;
-    side = fabs( side );
+    side = Q_fabs( side );
     
 	value = rollangle;
     if (side < rollspeed)
@@ -297,7 +297,7 @@ void V_DriftPitch ( struct ref_params_s *pparams )
 	// don't count small mouse motion
 	if (pd.nodrift)
 	{
-		if ( fabs( pparams->cmd->forwardmove ) < cl_forwardspeed->value )
+		if ( Q_fabs( pparams->cmd->forwardmove ) < cl_forwardspeed->value )
 			pd.driftmove = 0;
 		else
 			pd.driftmove += pparams->frametime;
@@ -363,11 +363,11 @@ void V_CalcGunAngle ( struct ref_params_s *pparams )
 
 	viewent->angles[YAW]   =  pparams->viewangles[YAW]   + pparams->crosshairangle[YAW];
 	viewent->angles[PITCH] = -pparams->viewangles[PITCH] + pparams->crosshairangle[PITCH] * 0.25;
-	viewent->angles[ROLL]  -= v_idlescale * sin(pparams->time*v_iroll_cycle.value) * v_iroll_level.value;
+	viewent->angles[ROLL]  -= v_idlescale * Q_sin(pparams->time*v_iroll_cycle.value) * v_iroll_level.value;
 	
 	// don't apply all of the v_ipitch to prevent normally unseen parts of viewmodel from coming into view.
-	viewent->angles[PITCH] -= v_idlescale * sin(pparams->time*v_ipitch_cycle.value) * (v_ipitch_level.value * 0.5);
-	viewent->angles[YAW]   -= v_idlescale * sin(pparams->time*v_iyaw_cycle.value) * v_iyaw_level.value;
+	viewent->angles[PITCH] -= v_idlescale * Q_sin(pparams->time*v_ipitch_cycle.value) * (v_ipitch_level.value * 0.5);
+	viewent->angles[YAW]   -= v_idlescale * Q_sin(pparams->time*v_iyaw_cycle.value) * v_iyaw_level.value;
 
 	VectorCopy( viewent->angles, viewent->curstate.angles );
 	VectorCopy( viewent->angles, viewent->latched.prevangles );
@@ -382,9 +382,9 @@ Idle swaying
 */
 void V_AddIdle ( struct ref_params_s *pparams )
 {
-	pparams->viewangles[ROLL] += v_idlescale * sin(pparams->time*v_iroll_cycle.value) * v_iroll_level.value;
-	pparams->viewangles[PITCH] += v_idlescale * sin(pparams->time*v_ipitch_cycle.value) * v_ipitch_level.value;
-	pparams->viewangles[YAW] += v_idlescale * sin(pparams->time*v_iyaw_cycle.value) * v_iyaw_level.value;
+	pparams->viewangles[ROLL] += v_idlescale * Q_sin(pparams->time*v_iroll_cycle.value) * v_iroll_level.value;
+	pparams->viewangles[PITCH] += v_idlescale * Q_sin(pparams->time*v_ipitch_cycle.value) * v_ipitch_level.value;
+	pparams->viewangles[YAW] += v_idlescale * Q_sin(pparams->time*v_iyaw_cycle.value) * v_iyaw_level.value;
 }
 
 
@@ -781,7 +781,7 @@ void V_CalcNormalRefdef ( struct ref_params_s *pparams )
 			if ( dt > 0.0 )
 			{
 				frac = ( t - ViewInterp.OriginTime[ foundidx & ORIGIN_MASK] ) / dt;
-				frac = min( 1.0, frac );
+				frac = Q_min( 1.0, frac );
 				VectorSubtract( ViewInterp.Origins[ ( foundidx + 1 ) & ORIGIN_MASK ], ViewInterp.Origins[ foundidx & ORIGIN_MASK ], delta );
 				VectorMA( ViewInterp.Origins[ foundidx & ORIGIN_MASK ], frac, delta, neworg );
 
@@ -842,7 +842,7 @@ void V_SmoothInterpolateAngles( float * startAngle, float * endAngle, float * fi
 			d += 360.0f;
 		}
 
-		float absd = fabs(d);
+		float absd = Q_fabs(d);
 
 		if ( absd > 0.1f )
 		{
@@ -1192,12 +1192,12 @@ int V_FindViewModelByWeaponModel(int weaponindex)
 
 	if ( weaponModel )
 	{
-		int len = strlen( weaponModel->name );
+		int len = Q_strlen( weaponModel->name );
 		int i = 0;
 
 		while ( *modelmap[i] != NULL )
 		{
-			if ( !strnicmp( weaponModel->name, modelmap[i][0], len ) )
+			if ( !Q_strnicmp( weaponModel->name, modelmap[i][0], len ) )
 			{
 				return gEngfuncs.pEventAPI->EV_FindModelIndex( modelmap[i][1] );
 			}
@@ -1368,7 +1368,7 @@ void V_CalcSpectatorRefdef ( struct ref_params_s * pparams )
 					double frac;
 
 					frac = ( t - ViewInterp.AngleTime[ foundidx & ORIGIN_MASK] ) / dt;
-					frac = min( 1.0, frac );
+					frac = Q_min( 1.0, frac );
 
 					// interpolate angles
 					InterpolateAngles( ViewInterp.Angles[ foundidx & ORIGIN_MASK ], ViewInterp.Angles[ (foundidx + 1) & ORIGIN_MASK ], v_angles, frac );
@@ -1417,7 +1417,7 @@ void V_CalcSpectatorRefdef ( struct ref_params_s * pparams )
 				if ( dt > 0.0 )
 				{
 					frac = ( t - ViewInterp.OriginTime[ foundidx & ORIGIN_MASK] ) / dt;
-					frac = min( 1.0, frac );
+					frac = Q_min( 1.0, frac );
 					VectorSubtract( ViewInterp.Origins[ ( foundidx + 1 ) & ORIGIN_MASK ], ViewInterp.Origins[ foundidx & ORIGIN_MASK ], delta );
 					VectorMA( ViewInterp.Origins[ foundidx & ORIGIN_MASK ], frac, delta, neworg );
 
@@ -1554,7 +1554,7 @@ void V_DropPunchAngle ( float frametime, float *ev_punchangle )
 	
 	len = VectorNormalize ( ev_punchangle );
 	len -= (10.0 + len * 0.5) * frametime;
-	len = max( len, 0.0 );
+	len = Q_max( len, 0.0 );
 	VectorScale ( ev_punchangle, len, ev_punchangle );
 }
 
@@ -1611,9 +1611,9 @@ float CalcFov (float fov_x, float width, float height)
 	if (fov_x < 1 || fov_x > 179)
 		fov_x = 90;	// error, set to 90
 
-	x = width/tan(fov_x/360*M_PI);
+	x = width/Q_tan(fov_x/360*M_PI);
 
-	a = atan (height/x);
+	a = Q_atan (height/x);
 
 	a = a*360/M_PI;
 

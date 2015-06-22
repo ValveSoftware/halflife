@@ -121,8 +121,8 @@ Vector VecCheckToss ( entvars_t *pev, const Vector &vecSpot1, Vector vecSpot2, f
 	float distance2 = (vecMidPoint.z - vecSpot2.z);
 
 	// How long will it take for the grenade to travel this distance
-	float time1 = sqrt( distance1 / (0.5 * flGravity) );
-	float time2 = sqrt( distance2 / (0.5 * flGravity) );
+	float time1 = Q_sqrt( distance1 / (0.5 * flGravity) );
+	float time2 = Q_sqrt( distance2 / (0.5 * flGravity) );
 
 	if (time1 < 0.1)
 	{

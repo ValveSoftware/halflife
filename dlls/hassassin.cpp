@@ -640,7 +640,7 @@ BOOL CHAssassin :: CheckMeleeAttack1 ( float flDot, float flDist )
 
 		float flGravity = g_psv_gravity->value;
 
-		float time = sqrt( 160 / (0.5 * flGravity));
+		float time = Q_sqrt( 160 / (0.5 * flGravity));
 		float speed = flGravity * time / 160;
 		m_vecJumpVelocity = (vecDest - pev->origin) * speed;
 
@@ -728,12 +728,12 @@ void CHAssassin :: RunAI( void )
 			EMIT_SOUND (ENT(pev), CHAN_BODY, "debris/beamstart1.wav", 0.2, ATTN_NORM );
 		}
 
-		pev->renderamt = max( pev->renderamt - 50, m_iTargetRanderamt );
+		pev->renderamt = Q_max( pev->renderamt - 50, m_iTargetRanderamt );
 		pev->rendermode = kRenderTransTexture;
 	}
 	else if (pev->renderamt < m_iTargetRanderamt)
 	{
-		pev->renderamt = min( pev->renderamt + 50, m_iTargetRanderamt );
+		pev->renderamt = Q_min( pev->renderamt + 50, m_iTargetRanderamt );
 		if (pev->renderamt == 255)
 			pev->rendermode = kRenderNormal;
 	}

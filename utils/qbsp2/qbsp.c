@@ -12,6 +12,8 @@
 
 #include "bsp5.h"
 
+extern void FreePortals (node_t *);
+
 //
 // command line flags
 //
@@ -44,8 +46,8 @@ BaseWindingForPlane
 */
 winding_t *BaseWindingForPlane (dplane_t *p)
 {
-	int		i, x;
-	vec_t	max, v;
+	//int		i, x;
+	//vec_t	max, v;
 	vec3_t	org, vright, vup;
 	winding_t	*w;
 	vec3_t	temp;
@@ -57,7 +59,7 @@ winding_t *BaseWindingForPlane (dplane_t *p)
 	x = -1;
 	for (i=0 ; i<3; i++)
 	{
-		v = fabs(p->normal[i]);
+		v = Q_fabs(p->normal[i]);
 		if (v > max)
 		{
 			x = i;
@@ -158,8 +160,8 @@ winding_t	*CopyWinding (winding_t *w)
 	winding_t	*c;
 	
 	size = (int)((winding_t *)0)->points[w->numpoints];
-	c = malloc (size);
-	memcpy (c, w, size);
+	c = Q_malloc (size);
+	Q_memcpy (c, w, size);
 	return c;
 }
 
@@ -549,10 +551,10 @@ int			c_activeportals, c_peakportals;
 
 void PrintMemory (void)
 {
-	printf ("faces   : %6i (%6i)\n", c_activefaces, c_peakfaces);
-	printf ("surfaces: %6i (%6i)\n", c_activesurfaces, c_peaksurfaces);
-	printf ("windings: %6i (%6i)\n", c_activewindings, c_peakwindings);
-	printf ("portals : %6i (%6i)\n", c_activeportals, c_peakportals);
+	Q_printf ("faces   : %6i (%6i)\n", c_activefaces, c_peakfaces);
+	Q_printf ("surfaces: %6i (%6i)\n", c_activesurfaces, c_peaksurfaces);
+	Q_printf ("windings: %6i (%6i)\n", c_activewindings, c_peakwindings);
+	Q_printf ("portals : %6i (%6i)\n", c_activeportals, c_peakportals);
 }
 
 /*
@@ -573,8 +575,8 @@ winding_t *NewWinding (int points)
 		c_peakwindings = c_activewindings;
 
 	size = (int)((winding_t *)0)->points[points];
-	w = malloc (size);
-	memset (w, 0, size);
+	w = Q_malloc (size);
+	Q_memset (w, 0, size);
 	
 	return w;
 }
@@ -583,7 +585,7 @@ winding_t *NewWinding (int points)
 void FreeWinding (winding_t *w)
 {
 	c_activewindings--;
-	free (w);
+	Q_free (w);
 }
 
 
@@ -601,8 +603,8 @@ face_t *AllocFace (void)
 	if (c_activefaces > c_peakfaces)
 		c_peakfaces = c_activefaces;
 		
-	f = malloc (sizeof(face_t));
-	memset (f, 0, sizeof(face_t));
+	f = Q_malloc (sizeof(face_t));
+	Q_memset (f, 0, sizeof(face_t));
 	f->planenum = -1;
 
 	return f;
@@ -612,7 +614,7 @@ face_t *AllocFace (void)
 void FreeFace (face_t *f)
 {
 	c_activefaces--;
-	free (f);
+	Q_free (f);
 }
 
 
@@ -625,8 +627,8 @@ surface_t *AllocSurface (void)
 {
 	surface_t	*s;
 	
-	s = malloc (sizeof(surface_t));
-	memset (s, 0, sizeof(surface_t));
+	s = Q_malloc (sizeof(surface_t));
+	Q_memset (s, 0, sizeof(surface_t));
 	
 	c_activesurfaces++;
 	if (c_activesurfaces > c_peaksurfaces)
@@ -638,7 +640,7 @@ surface_t *AllocSurface (void)
 void FreeSurface (surface_t *s)
 {
 	c_activesurfaces--;
-	free (s);
+	Q_free (s);
 }
 
 /*
@@ -654,8 +656,8 @@ portal_t *AllocPortal (void)
 	if (c_activeportals > c_peakportals)
 		c_peakportals = c_activeportals;
 	
-	p = malloc (sizeof(portal_t));
-	memset (p, 0, sizeof(portal_t));
+	p = Q_malloc (sizeof(portal_t));
+	Q_memset (p, 0, sizeof(portal_t));
 	
 	return p;
 }
@@ -663,7 +665,7 @@ portal_t *AllocPortal (void)
 void FreePortal (portal_t *p)
 {
 	c_activeportals--;
-	free (p);
+	Q_free (p);
 }
 
 
@@ -676,8 +678,8 @@ node_t *AllocNode (void)
 {
 	node_t	*n;
 	
-	n = malloc (sizeof(node_t));
-	memset (n, 0, sizeof(node_t));
+	n = Q_malloc (sizeof(node_t));
+	Q_memset (n, 0, sizeof(node_t));
 	
 	return n;
 }
@@ -710,7 +712,7 @@ surfchain_t *SurflistFromValidFaces (void)
 	face_t		*f, *next;
 	surfchain_t	*sc;
 
-	sc = malloc(sizeof(*sc));
+	sc = Q_malloc(sizeof(*sc));
 	ClearBounds (sc->mins, sc->maxs);
 	sc->surfaces = NULL;	
 
@@ -763,7 +765,7 @@ ReadSurfs
 */
 surfchain_t	*ReadSurfs (FILE *file)
 {
-	int		nump;
+	//int		nump;
 	int		r;
 	int		planenum, texinfo, contents, numpoints;
 	face_t	*f;
@@ -773,7 +775,7 @@ surfchain_t	*ReadSurfs (FILE *file)
 	// read in the polygons
 	while (1)
 	{
-		r = fscanf (file, "%i %i %i %i\n", &planenum, &texinfo, &contents, &numpoints);
+		r = Q_fscanf (file, "%i %i %i %i\n", &planenum, &texinfo, &contents, &numpoints);
 		if (r == 0 || r == -1)
 			return NULL;
 		if (planenum == -1)	// end of model
@@ -798,10 +800,10 @@ surfchain_t	*ReadSurfs (FILE *file)
 
 		for (i=0 ; i<f->numpoints ; i++)
 		{
-			r = fscanf (file, "%lf %lf %lf\n", &v[0], &v[1], &v[2]);
+			r = Q_fscanf (file, "%lf %lf %lf\n", &v[0], &v[1], &v[2]);
 			VectorCopy (v, f->pts[i]);
 		}
-		fscanf (file, "\n");
+		Q_fscanf (file, "\n");
 	}
 
 	return SurflistFromValidFaces ();
@@ -815,17 +817,17 @@ ProcessModel
 */
 qboolean ProcessModel (void)
 {
-	char	mod[80];
+	//char	mod[80];
 	surfchain_t	*surfs;
 	node_t		*nodes;
 	dmodel_t	*model;
-	int			i;
+	//int			i;
 	int			startleafs;
 
 	surfs = ReadSurfs (polyfiles[0]);
 
 	if (!surfs)
-		return false;		// all models are done
+		return qfalse;		// all models are done
 
 	VectorCopy (surfs->mins, draw_mins);
 	VectorCopy (surfs->maxs, draw_maxs);
@@ -837,8 +839,8 @@ qboolean ProcessModel (void)
 	model = &dmodels[nummodels];
 	nummodels++;
 
-	VectorCopy (surfs->mins, model->mins);
-	VectorCopy (surfs->maxs, model->maxs);
+	VectorCopyT (surfs->mins, model->mins, float);
+	VectorCopyT (surfs->maxs, model->maxs, float);
 
 //
 // SolidBSP generates a node tree
@@ -850,7 +852,7 @@ qboolean ProcessModel (void)
 // some portals are solid polygons, and some are paths to other leafs
 //
 	if (nummodels == 1 && !nofill)	// assume non-world bmodels are simple
-		nodes = FillOutside (nodes, true);	// make a leakfile if bad
+		nodes = FillOutside (nodes, qtrue);	// make a leakfile if bad
 
 	FreePortals (nodes);
 
@@ -867,7 +869,7 @@ qboolean ProcessModel (void)
 	model->visleafs = numleafs - startleafs;
 
 	if (noclip)
-		return true;
+		return qtrue;
 
 	//
 	// the clipping hulls are simpler
@@ -877,13 +879,13 @@ qboolean ProcessModel (void)
 		surfs = ReadSurfs (polyfiles[hullnum]);
 		nodes = SolidBSP (surfs);
 		if (nummodels == 1 && !nofill)	// assume non-world bmodels are simple
-			nodes = FillOutside (nodes, false);
+			nodes = FillOutside (nodes, qfalse);
 		FreePortals (nodes);
 		model->headnode[hullnum] = numclipnodes;
 		WriteClipNodes (nodes);
 	}
 
-	return true;
+	return qtrue;
 }
 
 /*
@@ -898,23 +900,23 @@ void ProcessFile (char *bspfilename)
 	char	name[1024];
 
 // create filenames
-	sprintf (portfilename, "%s.prt", bspfilename);
-	remove (portfilename);
+	Q_sprintf (portfilename, "%s.prt", bspfilename);
+	Q_remove (portfilename);
 
-	sprintf (pointfilename, "%s.pts", bspfilename);
-	remove (pointfilename);
+	Q_sprintf (pointfilename, "%s.pts", bspfilename);
+	Q_remove (pointfilename);
 
 	// open the polygon files
 	for (i=0 ; i<NUM_HULLS ; i++)
 	{
-		sprintf (name, "%s.p%i", bspfilename, i);
-		polyfiles[i] = fopen (name, "r");
+		Q_sprintf (name, "%s.p%i", bspfilename, i);
+		polyfiles[i] = Q_fopen (name, "r");
 		if (!polyfiles[i])
 			Error ("Can't open %s", name);
 	}
 
 	// load the output of qcsg
-	strcat (bspfilename, ".bsp");
+	Q_strcat (bspfilename, ".bsp");
 	LoadBSPFile (bspfilename);
 	ParseEntities ();
 
@@ -943,8 +945,8 @@ int main (int argc, char **argv)
 	int			i;
 	double		start, end;
 
-	printf( "qbsp2.exe v2.2 (%s)\n", __DATE__ );
-	printf ("---- qbsp2 ----\n" );
+	Q_printf( "qbsp2.exe v2.2 (%s)\n", __DATE__ );
+	Q_printf ("---- qbsp2 ----\n" );
 
 //
 // check command line flags
@@ -953,40 +955,40 @@ int main (int argc, char **argv)
 	{
 		if (argv[i][0] != '-')
 			break;
-		if (!strcmp(argv[i],"-threads"))
+		if (!Q_strcmp(argv[i],"-threads"))
 		{
-			numthreads = atoi (argv[i+1]);
+			numthreads = Q_atoi (argv[i+1]);
 			i++;
 		}
-		else if (!strcmp(argv[i], "-v"))
+		else if (!Q_strcmp(argv[i], "-v"))
 		{
-			printf ("verbose = true\n");
-			verbose = true;
+			Q_printf ("verbose = true\n");
+			verbose = qtrue;
 		}
-		else if (!strcmp (argv[i],"-notjunc"))
-			notjunc = true;
-		else if (!strcmp (argv[i],"-draw"))
-			drawflag = true;
-		else if (!strcmp (argv[i],"-watervis"))
-			watervis = true;
-		else if (!strcmp (argv[i],"-noclip"))
-			noclip = true;
-		else if (!strcmp (argv[i],"-nofill"))
-			nofill = true;
-		else if (!strcmp (argv[i],"-verbose"))
-			allverbose = true;
-		else if (!strcmp (argv[i],"-leakonly"))
-			leakonly = true;
-		else if (!strcmp (argv[i],"-nogfx"))
-			nogfx = true;
-		else if( !strcmp( argv[ i ], "-proj" ) )
+		else if (!Q_strcmp (argv[i],"-notjunc"))
+			notjunc = qtrue;
+		else if (!Q_strcmp (argv[i],"-draw"))
+			drawflag = qtrue;
+		else if (!Q_strcmp (argv[i],"-watervis"))
+			watervis = qtrue;
+		else if (!Q_strcmp (argv[i],"-noclip"))
+			noclip = qtrue;
+		else if (!Q_strcmp (argv[i],"-nofill"))
+			nofill = qtrue;
+		else if (!Q_strcmp (argv[i],"-verbose"))
+			allverbose = qtrue;
+		else if (!Q_strcmp (argv[i],"-leakonly"))
+			leakonly = qtrue;
+		else if (!Q_strcmp (argv[i],"-nogfx"))
+			nogfx = qtrue;
+		else if( !Q_strcmp( argv[ i ], "-proj" ) )
 		{
-			strcpy( qproject, argv[ i + 1 ] );
+			Q_strcpy( qproject, argv[ i + 1 ] );
 			i++;
 		}
-		else if (!strcmp (argv[i],"-subdivide"))
+		else if (!Q_strcmp (argv[i],"-subdivide"))
 		{
-			subdivide_size = atoi(argv[i+1]);
+			subdivide_size = Q_atoi(argv[i+1]);
 			i++;
 		}
 		else
@@ -999,7 +1001,7 @@ int main (int argc, char **argv)
 	ThreadSetDefault ();
 
 	SetQdirFromPath (argv[i]);	
-	strcpy (bspfilename, ExpandArg(argv[i]));
+	Q_strcpy (bspfilename, ExpandArg(argv[i]));
 	StripExtension (bspfilename);
 
 //
@@ -1010,7 +1012,7 @@ int main (int argc, char **argv)
 	ProcessFile (bspfilename);
 
 	end = I_FloatTime ();
-	printf ("%5.0f seconds elapsed\n", end-start);
+	Q_printf ("%5.0f seconds elapsed\n", end-start);
 
 	return 0;
 }

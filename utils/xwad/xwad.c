@@ -35,20 +35,20 @@ int main (int argc, char **argv)
 	char filename[1024];
 
 	if (argc < 2) {
-		printf("%s <wadfile> [image names]\n", argv[0] );
-		exit(1);
+		Q_printf("%s <wadfile> [image names]\n", argv[0] );
+		Q_exit(1);
 	}
 
 	W_OpenWad( argv[1] );
 
 	for (i = 0; i < numlumps; i++) {
 		for (j = 2; j < argc; j++) {
-			if (stricmp( lumpinfo[i].name, argv[j] ) == 0)
+			if (Q_stricmp( lumpinfo[i].name, argv[j] ) == 0)
 				break;
 		}
 		if (argc == 2 || j < argc) {
-			printf("extracting %s @ %d  size %d\n", lumpinfo[i].name, lumpinfo[i].filepos, lumpinfo[i].size );
-			fseek( wadhandle, lumpinfo[i].filepos, SEEK_SET );
+			Q_printf("extracting %s @ %d  size %d\n", lumpinfo[i].name, lumpinfo[i].filepos, lumpinfo[i].size );
+			Q_fseek( wadhandle, lumpinfo[i].filepos, SEEK_SET );
 			SafeRead ( wadhandle, inbuffer, lumpinfo[i].size );
 
 			qtex = (miptex_t *)inbuffer;
@@ -57,37 +57,37 @@ int main (int argc, char **argv)
 
 			// make a composite image
 			width2 = width + width / 2;
-			memset( outbuffer, 0, height * width2 );
+			Q_memset( outbuffer, 0, height * width2 );
 			
 			// copy in 0 image
 			psrc = inbuffer + LittleLong( qtex->offsets[0] );
 			pdest = outbuffer;
 			for (t = 0; t < height; t++) {
-				memcpy( pdest + t * width2, psrc + t * width, width );
+				Q_memcpy( pdest + t * width2, psrc + t * width, width );
 			}
 
 			// copy in 1 image
 			psrc = inbuffer + LittleLong( qtex->offsets[1] );
 			pdest = outbuffer + width;
 			for (t = 0; t < height / 2; t++) {
-				memcpy( pdest + t * width2, psrc + t * width / 2, width  / 2);
+				Q_memcpy( pdest + t * width2, psrc + t * width / 2, width  / 2);
 			}
 
 			// copy in 2 image
 			psrc = inbuffer + LittleLong( qtex->offsets[2] );
 			pdest = outbuffer + (height / 2 ) * width2 + width;
 			for (t = 0; t < height / 4; t++) {
-				memcpy( pdest + t * width2, psrc + t * width / 4, width  / 4);
+				Q_memcpy( pdest + t * width2, psrc + t * width / 4, width  / 4);
 			}
 
 			// copy in 3 image
 			psrc = inbuffer + LittleLong( qtex->offsets[3] );
 			pdest = outbuffer + (height / 2 ) * width2 + width + width / 4;
 			for (t = 0; t < height / 8; t++) {
-				memcpy( pdest + t * width2, psrc + t * width / 8, width  / 8);
+				Q_memcpy( pdest + t * width2, psrc + t * width / 8, width  / 8);
 			}
 
-			sprintf( filename, "%s.bmp", qtex->name );
+			Q_sprintf( filename, "%s.bmp", qtex->name );
 
 			WriteBMPfile( filename, outbuffer, width2, height, inbuffer + LittleLong( qtex->offsets[3] ) + width * height / 64 + 2 );
 		}

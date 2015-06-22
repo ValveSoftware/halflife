@@ -1,11 +1,15 @@
 // ServerCtrlDlg.cpp : implementation file
 //
 
+#include "../../public/vstdlib/warnings.h"
+
 #include "stdafx.h"
 #include <afxpriv.h>
 #include <mmsystem.h>
 #include "ServerCtrl.h"
 #include "ServerCtrlDlg.h"
+
+#include "../../public/vstdlib/vstdlib.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -39,7 +43,7 @@ CServerCtrlDlg::CServerCtrlDlg(CWnd* pParent /*=NULL*/)
 	//}}AFX_DATA_INIT
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 
-	memset( &PI, 0, sizeof( PI ) );
+	Q_memset( &PI, 0, sizeof( PI ) );
 
 	m_nPendingRequest	= 0;
 	m_nPendingLines		= 0;
@@ -357,13 +361,13 @@ int CServerCtrlDlg::ProcessMappedResponse( void )
 					// Skip first int32 result code
 					// Lines are assumed to be 80 characters wide
 					psz = (char *)( pBuffer + 1 ) + 80 * i;
-					strncpy( line, psz, 80 );
+					Q_strncpy( line, psz, 80 );
 					line[ 79 ] = '\0';
 
-					strcat( szwindow, line );
+					Q_strcat( szwindow, line );
 					if ( i != ( m_nPendingLines ) - 1 )
 					{
-						strcat( szwindow, "\r\n" );
+						Q_strcat( szwindow, "\r\n" );
 					}
 				}
 
@@ -433,7 +437,7 @@ void CServerCtrlDlg::OnBtnStart( void )
 			}
 			else
 			{
-				memset( &PI, 0, sizeof( PI ) );
+				Q_memset( &PI, 0, sizeof( PI ) );
 				CloseHandles();
 			}
 		}
@@ -445,7 +449,7 @@ void CServerCtrlDlg::OnBtnStart( void )
 
 	// Startup dedicated server
 	SECURITY_ATTRIBUTES SA;
-	memset( &SA, 0, sizeof( SA ) );
+	Q_memset( &SA, 0, sizeof( SA ) );
 	SA.nLength = sizeof( SA );
 
 	// HLDS must be able to inherit the handles we pass via command line so we need to mark the handle as inheritable
@@ -464,18 +468,18 @@ void CServerCtrlDlg::OnBtnStart( void )
 	m_hSend		= CreateEvent( &SA, FALSE, FALSE, NULL );
 	m_hReceive	= CreateEvent( &SA, FALSE, FALSE, NULL );
 
-	memset( &SI, 0, sizeof( SI ) );
+	Q_memset( &SI, 0, sizeof( SI ) );
 	SI.cb = sizeof( SI );
 
-	memset( &PI, 0, sizeof( PI ) );
+	Q_memset( &PI, 0, sizeof( PI ) );
 
 	char sz[ 256 ];
 	char szdir[ 256 ];
 
 	// FIXME:  You'll want to fill in your executable path here, of course.
 	// The key thing is to invoke the engine using the three HANDLES that were just created
-	sprintf( szdir, "d:\\quiver" );
-	sprintf( sz, "%s\\hlds.exe +sv_lan 1 -HFILE %i -HPARENT %i -HCHILD %i", szdir, (int)m_hMappedFile, (int)m_hSend, (int)m_hReceive );
+	Q_sprintf( szdir, "d:\\quiver" );
+	Q_sprintf( sz, "%s\\hlds.exe +sv_lan 1 -HFILE %i -HPARENT %i -HCHILD %i", szdir, (int)m_hMappedFile, (int)m_hSend, (int)m_hReceive );
 
 	// Run it
 	if ( !CreateProcess( NULL, sz, &SA, NULL, TRUE, 0, NULL, szdir, &SI, &PI ) )
@@ -497,7 +501,7 @@ CServerCtrlDlg::~CServerCtrlDlg( void )
 	{
 		// Kill process
 		TerminateProcess( PI.hProcess, 0 );
-		memset( &PI, 0, sizeof( PI ) );
+		Q_memset( &PI, 0, sizeof( PI ) );
 	}
 
 	// Close remaining handles.
@@ -531,7 +535,7 @@ void CServerCtrlDlg::OnBtnExecute( void )
 			*(int *)&sz[ 0 ] = ENGINE_ISSUE_COMMANDS;
 
 			// Write rest of line, including a return character ( necessary? )
-			sprintf( sz + sizeof( int ), "%s\n", (char *)(LPCSTR)cmds );
+			Q_sprintf( sz + sizeof( int ), "%s\n", (char *)(LPCSTR)cmds );
 
 			// Release the buffer
 			ReleaseMappedBuffer( sz );

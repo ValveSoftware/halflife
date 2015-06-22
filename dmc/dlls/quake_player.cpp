@@ -46,7 +46,7 @@ void CBasePlayer::InitStatusBar()
 void CBasePlayer::UpdateStatusBar()
 {
 	int newSBarState[ SBAR_END ];
-	memset( newSBarState, 0, sizeof(newSBarState) );
+	Q_memset( newSBarState, 0, sizeof(newSBarState) );
 
 	// Find an ID Target
 	TraceResult tr;
@@ -142,7 +142,7 @@ int CBasePlayer::TakeDamage( entvars_t *pevInflictor, entvars_t *pevAttacker, fl
 
 
 	// save damage based on the target's armor level
-	float flSave = ceil(pev->armortype * flDamage);
+	float flSave = Q_ceil(pev->armortype * flDamage);
 	if (flSave >= pev->armorvalue)
 	{
 		flSave = pev->armorvalue;
@@ -150,7 +150,7 @@ int CBasePlayer::TakeDamage( entvars_t *pevInflictor, entvars_t *pevAttacker, fl
 		m_iQuakeItems &= ~(IT_ARMOR1 | IT_ARMOR2 | IT_ARMOR3);
 	}
 	pev->armorvalue -= flSave;
-	float flTake = ceil(flDamage - flSave);
+	float flTake = Q_ceil(flDamage - flSave);
 
 	// add to the damage total for clients, which will be sent as a single message at the end of the frame
 	pev->dmg_take = pev->dmg_take + flTake;

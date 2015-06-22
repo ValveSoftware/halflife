@@ -60,12 +60,12 @@ void CLight :: KeyValue( KeyValueData* pkvd)
 {
 	if (FStrEq(pkvd->szKeyName, "style"))
 	{
-		m_iStyle = atoi(pkvd->szValue);
+		m_iStyle = Q_atoi(pkvd->szValue);
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "pitch"))
 	{
-		pev->angles.x = atof(pkvd->szValue);
+		pev->angles.x = Q_atof(pkvd->szValue);
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "pattern"))
@@ -151,7 +151,7 @@ void CEnvLight::KeyValue( KeyValueData* pkvd )
 	{
 		int r, g, b, v, j;
 		char szColor[64];
-		j = sscanf( pkvd->szValue, "%d %d %d %d\n", &r, &g, &b, &v );
+		j = Q_sscanf( pkvd->szValue, "%d %d %d %d\n", &r, &g, &b, &v );
 		if (j == 1)
 		{
 			g = b = r;
@@ -164,16 +164,16 @@ void CEnvLight::KeyValue( KeyValueData* pkvd )
 		}
 
 		// simulate qrad direct, ambient,and gamma adjustments, as well as engine scaling
-		r = pow( r / 114.0, 0.6 ) * 264;
-		g = pow( g / 114.0, 0.6 ) * 264;
-		b = pow( b / 114.0, 0.6 ) * 264;
+		r = Q_pow( r / 114.0, 0.6 ) * 264;
+		g = Q_pow( g / 114.0, 0.6 ) * 264;
+		b = Q_pow( b / 114.0, 0.6 ) * 264;
 
 		pkvd->fHandled = TRUE;
-		sprintf( szColor, "%d", r );
+		Q_sprintf( szColor, "%d", r );
 		CVAR_SET_STRING( "sv_skycolor_r", szColor );
-		sprintf( szColor, "%d", g );
+		Q_sprintf( szColor, "%d", g );
 		CVAR_SET_STRING( "sv_skycolor_g", szColor );
-		sprintf( szColor, "%d", b );
+		Q_sprintf( szColor, "%d", b );
 		CVAR_SET_STRING( "sv_skycolor_b", szColor );
 	}
 	else
@@ -188,11 +188,11 @@ void CEnvLight :: Spawn( void )
 	char szVector[64];
 	UTIL_MakeAimVectors( pev->angles );
 
-	sprintf( szVector, "%f", gpGlobals->v_forward.x );
+	Q_sprintf( szVector, "%f", gpGlobals->v_forward.x );
 	CVAR_SET_STRING( "sv_skyvec_x", szVector );
-	sprintf( szVector, "%f", gpGlobals->v_forward.y );
+	Q_sprintf( szVector, "%f", gpGlobals->v_forward.y );
 	CVAR_SET_STRING( "sv_skyvec_y", szVector );
-	sprintf( szVector, "%f", gpGlobals->v_forward.z );
+	Q_sprintf( szVector, "%f", gpGlobals->v_forward.z );
 	CVAR_SET_STRING( "sv_skyvec_z", szVector );
 
 	CLight::Spawn( );

@@ -155,7 +155,7 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;VALVE_DLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;VALVE_DLL;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>..\..\ricochet\dlls;..\..\engine;..\..\common;..\..\public;..\..\game_shared;..\..\ricochet\pm_shared;..\..\ricochet;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
@@ -165,8 +165,9 @@
       <ModuleDefinitionFile>$(ProjectDir)..\..\ricochet\dlls\mp.def</ModuleDefinitionFile>
     </Link>
     <PostBuildEvent>
-      <Command>call ..\..\filecopy.bat $(TargetPath) ..\..\..\game\mod\dlls\$(TargetName).dll
-call ..\..\filecopy.bat $(TargetDir)\$(TargetName).pdb ..\..\..\game\mod\dlls\$(TargetName).pdb</Command>
+      <Command>if not exist "..\..\..\game\mod_ricochet\dlls" mkdir "..\..\..\game\mod_ricochet\dlls"
+copy "$(TargetPath)" "..\..\..\game\mod_ricochet\dlls\$(TargetName).dll"
+copy "$(TargetDir)\$(TargetName).pdb" "..\..\..\game\mod_ricochet\dlls\$(TargetName).pdb"</Command>
     </PostBuildEvent>
     <PostBuildEvent>
       <Message>Performing Post-Build Event</Message>
@@ -180,7 +181,7 @@ call ..\..\filecopy.bat $(TargetDir)\$(TargetName).pdb ..\..\..\game\mod\dlls\$(
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;VALVE_DLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;VALVE_DLL;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>..\..\ricochet\dlls;..\..\engine;..\..\common;..\..\public;..\..\game_shared;..\..\ricochet\pm_shared;..\..\ricochet;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
@@ -192,8 +193,9 @@ call ..\..\filecopy.bat $(TargetDir)\$(TargetName).pdb ..\..\..\game\mod\dlls\$(
       <ModuleDefinitionFile>$(ProjectDir)..\..\ricochet\dlls\mp.def</ModuleDefinitionFile>
     </Link>
     <PostBuildEvent>
-      <Command>call ..\..\filecopy.bat $(TargetPath) ..\..\..\game\mod\dlls\$(TargetName).dll
-call ..\..\filecopy.bat $(TargetDir)\$(TargetName).pdb ..\..\..\game\mod\dlls\$(TargetName).pdb</Command>
+      <Command>if not exist "..\..\..\game\mod_ricochet\dlls" mkdir "..\..\..\game\mod_ricochet\dlls"
+copy "$(TargetPath)" "..\..\..\game\mod_ricochet\dlls\$(TargetName).dll"
+copy "$(TargetDir)\$(TargetName).pdb" "..\..\..\game\mod_ricochet\dlls\$(TargetName).pdb"</Command>
     </PostBuildEvent>
     <PostBuildEvent>
       <Message>Performing Post-Build Event</Message>

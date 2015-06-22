@@ -239,7 +239,7 @@ void CBasePlayer::W_SetCurrentAmmo( int sendanim /* = 1 */ )
 	pev->viewmodel = iszViewModel;
 
 	pev->weaponmodel = iszWeaponModel;
-	strcpy( m_szAnimExtention, szAnimExt );
+	Q_strcpy( m_szAnimExtention, szAnimExt );
 
 #else
 	{
@@ -890,7 +890,7 @@ void CBasePlayer::W_FireLightning( int iQuadSound )
 	{
 		if ( (gpGlobals->deathmatch > 3) && (RANDOM_FLOAT(0, 1) <= 0.5) )
 		{
-			strcpy( gszQ_DeathType, "selfwater" );
+			Q_strcpy( gszQ_DeathType, "selfwater" );
 			TakeDamage( pev, pev, 4000, DMG_GENERIC );
 		}
 		else

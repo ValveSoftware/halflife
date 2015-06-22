@@ -38,7 +38,7 @@ float Length(const float *v)
 	length = 0;
 	for (i=0 ; i< 3 ; i++)
 		length += v[i]*v[i];
-	length = sqrt (length);		// FIXME
+	length = Q_sqrt (length);		// FIXME
 
 	return length;
 }
@@ -48,7 +48,7 @@ float VectorNormalize (float *v)
 	float	length, ilength;
 
 	length = v[0]*v[0] + v[1]*v[1] + v[2]*v[2];
-	length = sqrt (length);		// FIXME
+	length = Q_sqrt (length);		// FIXME
 
 	if (length)
 	{
@@ -94,7 +94,7 @@ HSPRITE LoadSprite(const char *pszName)
 	else
 		i = 640;
 
-	sprintf(sz, pszName, i);
+	Q_sprintf(sz, pszName, i);
 
 	return SPR_Load(sz);
 }

@@ -119,7 +119,7 @@ void CStudioModelRenderer::StudioCalcBoneAdj( float dadt, float *adj, const byte
 			// check for 360% wrapping
 			if (pbonecontroller[j].type & STUDIO_RLOOP)
 			{
-				if (abs(pcontroller1[i] - pcontroller2[i]) > 128)
+				if (Q_abs(pcontroller1[i] - pcontroller2[i]) > 128)
 				{
 					int a, b;
 					a = (pcontroller1[j] + 128) % 256;
@@ -436,11 +436,11 @@ void CStudioModelRenderer::StudioSetUpTransform (int trivial_accept)
 	
 	//Adrian - Have the model rotate ( weapon world models, powerups and armor. )
 	//Yeah, we're too lazy to animate them!.
-	if ( strstr( m_pCurrentEntity->model->name, "g_" ) || strstr( m_pCurrentEntity->model->name, "pow_" ) || strstr( m_pCurrentEntity->model->name, "armour" ) )
+	if ( Q_strstr( m_pCurrentEntity->model->name, "g_" ) || Q_strstr( m_pCurrentEntity->model->name, "pow_" ) || Q_strstr( m_pCurrentEntity->model->name, "armour" ) )
 	{
 		float timemod;
 
-		timemod = fmod( gEngfuncs.GetClientTime(), 2.0f );
+		timemod = Q_fmod( gEngfuncs.GetClientTime(), 2.0f );
 
 		m_pCurrentEntity->angles[0] = 0;
 		m_pCurrentEntity->angles[YAW] = timemod * 180.0 - 90.0;
@@ -906,10 +906,10 @@ void CStudioModelRenderer::StudioSetupBones ( void )
 
 		for (i = 0; i < m_pStudioHeader->numbones; i++)
 		{
-			if (strcmp( pbones[i].name, "Bip01 Spine") == 0)
+			if (Q_strcmp( pbones[i].name, "Bip01 Spine") == 0)
 				break;
-			memcpy( pos[i], pos2[i], sizeof( pos[i] ));
-			memcpy( q[i], q2[i], sizeof( q[i] ));
+			Q_memcpy( pos[i], pos2[i], sizeof( pos[i] ));
+			Q_memcpy( q[i], q2[i], sizeof( q[i] ));
 		}
 	}
 
@@ -972,7 +972,7 @@ void CStudioModelRenderer::StudioSaveBones( void )
 
 	for (i = 0; i < m_pStudioHeader->numbones; i++) 
 	{
-		strcpy( m_nCachedBoneNames[i], pbones[i].name );
+		Q_strcpy( m_nCachedBoneNames[i], pbones[i].name );
 		MatrixCopy( (*m_pbonetransform)[i], m_rgCachedBoneTransform[i] );
 		MatrixCopy( (*m_plighttransform)[i], m_rgCachedLightTransform[i] );
 	}
@@ -1023,7 +1023,7 @@ void CStudioModelRenderer::StudioMergeBones ( model_t *m_pSubModel )
 	{
 		for (j = 0; j < m_nCachedBones; j++)
 		{
-			if (stricmp(pbones[i].name, m_nCachedBoneNames[j]) == 0)
+			if (Q_stricmp(pbones[i].name, m_nCachedBoneNames[j]) == 0)
 			{
 				MatrixCopy( m_rgCachedBoneTransform[j], (*m_pbonetransform)[i] );
 				MatrixCopy( m_rgCachedLightTransform[j], (*m_plighttransform)[i] );
@@ -1152,7 +1152,7 @@ int CStudioModelRenderer::StudioDrawModel( int flags )
 		{
 			cl_entity_t *ent = gEngfuncs.GetEntityByIndex( m_pCurrentEntity->index );
 
-			memcpy( ent->attachment, m_pCurrentEntity->attachment, sizeof( vec3_t ) * 4 );
+			Q_memcpy( ent->attachment, m_pCurrentEntity->attachment, sizeof( vec3_t ) * 4 );
 		}
 	}
 
@@ -1164,7 +1164,7 @@ int CStudioModelRenderer::StudioDrawModel( int flags )
 		IEngineStudio.StudioEntityLight( &lighting );
 
 		//Scale the spike model lighting by a factor of 30 ( H4X!! )
-		if ( strstr ( m_pCurrentEntity->model->name, "spike.mdl" ) )
+		if ( Q_strstr ( m_pCurrentEntity->model->name, "spike.mdl" ) )
 			lighting.ambientlight *= 30; 
 		
 		// model and frame independant
@@ -1245,7 +1245,7 @@ void CStudioModelRenderer::StudioEstimateGait( entity_state_t *pplayer )
 	}
 	else
 	{
-		m_pPlayerInfo->gaityaw = (atan2(est_velocity[1], est_velocity[0]) * 180 / M_PI);
+		m_pPlayerInfo->gaityaw = (Q_atan2(est_velocity[1], est_velocity[0]) * 180 / M_PI);
 		if (m_pPlayerInfo->gaityaw > 180)
 			m_pPlayerInfo->gaityaw = 180;
 		if (m_pPlayerInfo->gaityaw < -180)
@@ -1439,7 +1439,7 @@ int CStudioModelRenderer::StudioDrawPlayer( int flags, entity_state_t *pplayer )
 		{
 			cl_entity_t *ent = gEngfuncs.GetEntityByIndex( m_pCurrentEntity->index );
 
-			memcpy( ent->attachment, m_pCurrentEntity->attachment, sizeof( vec3_t ) * 4 );
+			Q_memcpy( ent->attachment, m_pCurrentEntity->attachment, sizeof( vec3_t ) * 4 );
 		}
 	}
 
@@ -1496,7 +1496,7 @@ int CStudioModelRenderer::StudioDrawPlayer( int flags, entity_state_t *pplayer )
 			IEngineStudio.StudioSetHeader( m_pStudioHeader );
 
 			//Animate p_ model.
-			if ( strstr ( pweaponmodel->name, "p_nail2.mdl" ) )
+			if ( Q_strstr ( pweaponmodel->name, "p_nail2.mdl" ) )
 			{
 				if ( m_pCurrentEntity->curstate.sequence == 50 )
 			         m_pCurrentEntity->curstate.sequence = 1;
@@ -1505,7 +1505,7 @@ int CStudioModelRenderer::StudioDrawPlayer( int flags, entity_state_t *pplayer )
 
 				StudioSetupBones( );
 			}
-			else if ( strstr ( pweaponmodel->name, "p_rock.mdl" ) )
+			else if ( Q_strstr ( pweaponmodel->name, "p_rock.mdl" ) )
 			{
 				if ( m_pCurrentEntity->curstate.sequence == 46 )
 			         m_pCurrentEntity->curstate.sequence = 1;
@@ -1544,7 +1544,7 @@ void CStudioModelRenderer::StudioCalcAttachments( void )
 	if ( m_pStudioHeader->numattachments > 4 )
 	{
 		gEngfuncs.Con_DPrintf( "Too many attachments on %s\n", m_pCurrentEntity->model->name );
-		exit( -1 );
+		Q_exit( -1 );
 	}
 
 	// calculate attachment points
@@ -1568,7 +1568,7 @@ void CStudioModelRenderer::StudioRenderModel( void )
 
 	if ( m_pCurrentEntity->curstate.renderfx == kRenderFxGlowShell )
 	{
-		if ( strstr ( m_pCurrentEntity->model->name, "v_" ) )
+		if ( Q_strstr ( m_pCurrentEntity->model->name, "v_" ) )
 		{
 			if ( m_pCurrentEntity->curstate.renderamt != 5 )
 			{

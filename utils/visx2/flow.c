@@ -10,6 +10,8 @@
 
 #include "vis.h"
 
+extern int GetThreadWork (void);
+
 int		c_fullskip;
 int		c_chains;
 int		c_portalskip, c_leafskip;
@@ -79,7 +81,7 @@ winding_t	*ChopWinding (winding_t *in, pstack_t *stack, plane_t *split)
 	vec_t	*p1, *p2;
 	vec3_t	mid;
 	winding_t	*neww;
-	int		maxpts;
+	//int		maxpts;
 
 	counts[0] = counts[1] = counts[2] = 0;
 
@@ -231,7 +233,7 @@ InTheBallpark( winding_t *start, winding_t *clip, winding_t *end )
 		csize[d] = (cmax[d] - cmin[d]); // Optimized out /2;
 
 		// Are the centers further apart than the distance to the edges
-		if ( fabs(bcenter[d]-ccenter[d]) > bsize[d]+csize[d]+ON_EPSILON )
+		if ( Q_fabs(bcenter[d]-ccenter[d]) > bsize[d]+csize[d]+ON_EPSILON )
 			return 0;
 	}
 	return 1;
@@ -289,7 +291,7 @@ winding_t	*ClipToSeperators (winding_t *source, winding_t *pass, winding_t *targ
 			if (length < ON_EPSILON)
 				continue;
 
-			length = 1/sqrt(length);
+			length = (vec_t)(1/Q_sqrt(length));
 			
 			plane.normal[0] *= length;
 			plane.normal[1] *= length;
@@ -302,7 +304,7 @@ winding_t	*ClipToSeperators (winding_t *source, winding_t *pass, winding_t *targ
 		// source portal
 		//
 #if 1
-			fliptest = false;
+			fliptest = qfalse;
 			for (k=0 ; k<source->numpoints ; k++)
 			{
 				if (k == i || k == l)
@@ -311,13 +313,13 @@ winding_t	*ClipToSeperators (winding_t *source, winding_t *pass, winding_t *targ
 				if (d < -ON_EPSILON)
 				{	// source is on the negative side, so we want all
 					// pass and target on the positive side
-					fliptest = false;
+					fliptest = qfalse;
 					break;
 				}
 				else if (d > ON_EPSILON)
 				{	// source is on the positive side, so we want all
 					// pass and target on the negative side
-					fliptest = true;
+					fliptest = qtrue;
 					break;
 				}
 			}
@@ -406,7 +408,7 @@ void RecursiveLeafFlow (int leafnum, threaddata_t *thread, pstack_t *prevstack)
 	leaf_t 		*leaf;
 	int			i, j;
 	long		*test, *might, *vis, more;
-	int			pnum;
+	//int			pnum;
 
 	c_chains++;
 
@@ -516,11 +518,11 @@ void RecursiveLeafFlow (int leafnum, threaddata_t *thread, pstack_t *prevstack)
 			continue;
 		}
 #endif
-		stack.pass = ClipToSeperators (stack.source, prevstack->pass, stack.pass, false, &stack);
+		stack.pass = ClipToSeperators (stack.source, prevstack->pass, stack.pass, qfalse, &stack);
 		if (!stack.pass)
 			continue;
 		
-		stack.pass = ClipToSeperators (prevstack->pass, stack.source, stack.pass, true, &stack);
+		stack.pass = ClipToSeperators (prevstack->pass, stack.source, stack.pass, qtrue, &stack);
 		if (!stack.pass)
 			continue;
 
@@ -556,10 +558,10 @@ void PortalFlow (portal_t *p)
 		Error ("PortalFlow: reflowed");
 	p->status = stat_working;
 	
-	p->visbits = malloc (bitbytes);
-	memset (p->visbits, 0, bitbytes);
+	p->visbits = Q_malloc (bitbytes);
+	Q_memset (p->visbits, 0, bitbytes);
 
-	memset (&data, 0, sizeof(data));
+	Q_memset (&data, 0, sizeof(data));
 	data.leafvis = p->visbits;
 	data.base = p;
 	
@@ -619,7 +621,6 @@ void BasePortalVis (int threadnum)
 	winding_t	*w;
 	byte	portalsee[MAX_PORTALS];
 	int		c_leafsee;
-
 	
 	while (1)
 	{
@@ -628,10 +629,10 @@ void BasePortalVis (int threadnum)
 			break;
 		p = portals+i;
 
-		p->mightsee = malloc (bitbytes);
-		memset (p->mightsee, 0, bitbytes);
+		p->mightsee = Q_malloc (bitbytes);
+		Q_memset (p->mightsee, 0, bitbytes);
 		
-		memset (portalsee, 0, numportals*2);
+		Q_memset (portalsee, 0, numportals*2);
 
 		for (j=0, tp = portals ; j<numportals*2 ; j++, tp++)
 		{

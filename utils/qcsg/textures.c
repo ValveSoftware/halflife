@@ -11,6 +11,9 @@
 
 #include "csg.h"
 
+extern int	FindMiptex (char *);
+extern void TextureAxisFromPlane(plane_t *, vec3_t, vec3_t);
+
 typedef struct
 {
 	char		identification[4];		// should be WAD2/WAD3
@@ -55,7 +58,7 @@ void CleanupName (char *in, char *out)
 		if (!in[i])
 			break;
 			
-		out[i] = toupper(in[i]);
+		out[i] = Q_toupper(in[i]);
 	}
 	
 	for ( ; i< 16 ; i++ )
@@ -74,7 +77,7 @@ lump_sorter_by_wad_and_name( const void *lump1, const void *lump2 )
 	lumpinfo_t	*plump1 = (lumpinfo_t *)lump1;
 	lumpinfo_t	*plump2 = (lumpinfo_t *)lump2;
 	if ( plump1->iTexFile == plump2->iTexFile )
-		return strcmp( plump1->name, plump2->name );
+		return Q_strcmp( plump1->name, plump2->name );
 	else
 		return plump1->iTexFile - plump2->iTexFile;
 }
@@ -84,7 +87,7 @@ lump_sorter_by_name( const void *lump1, const void *lump2 )
 {
 	lumpinfo_t	*plump1 = (lumpinfo_t *)lump1;
 	lumpinfo_t	*plump2 = (lumpinfo_t *)lump2;
-	return strcmp( plump1->name, plump2->name );
+	return Q_strcmp( plump1->name, plump2->name );
 }
 
 /*
@@ -99,35 +102,35 @@ qboolean	TEX_InitFromWad (char *path)
 	char		szTmpPath[512];
 	char		*pszWadFile;
 
-	strcpy(szTmpPath, path);
+	Q_strcpy(szTmpPath, path);
 
 	// temporary kludge so we don't have to deal with no occurances of a semicolon
 	//  in the path name ..
-	if(strchr(szTmpPath, ';') == NULL)
-		strcat(szTmpPath, ";");
+	if(Q_strchr(szTmpPath, ';') == NULL)
+		Q_strcat(szTmpPath, ";");
 
-	pszWadFile = strtok(szTmpPath, ";");
+	pszWadFile = Q_strtok(szTmpPath, ";");
 
 	while(pszWadFile)
 	{
 		FILE *texfile;	// temporary used in this loop
 
-		texfiles[nTexFiles] = fopen(pszWadFile, "rb");
+		texfiles[nTexFiles] = Q_fopen(pszWadFile, "rb");
 		if (!texfiles[nTexFiles])
 		{
 			// maybe this wad file has a hard code drive
 			if (pszWadFile[1] == ':')
 			{
 				pszWadFile += 2; // skip past the file
-				texfiles[nTexFiles] = fopen (pszWadFile, "rb");
+				texfiles[nTexFiles] = Q_fopen (pszWadFile, "rb");
 			}
 		}
 
 
 		if (!texfiles[nTexFiles])
 		{
-			printf ("WARNING: couldn't open %s\n", pszWadFile);
-			return false;
+			Q_printf ("WARNING: couldn't open %s\n", pszWadFile);
+			return qfalse;
 		}
 
 		++nTexFiles;
@@ -135,25 +138,25 @@ qboolean	TEX_InitFromWad (char *path)
 		// look and see if we're supposed to include the textures from this WAD in the bsp.
 		for (i = 0; i < nWadInclude; i++)
 		{
-			if (stricmp( pszWadInclude[i], pszWadFile ) == 0)
+			if (Q_stricmp( pszWadInclude[i], pszWadFile ) == 0)
 			{
-				wadInclude[nTexFiles-1] = true;
+				wadInclude[nTexFiles-1] = qtrue;
 			}
 		}
 
 		// temp assignment to make things cleaner:
 		texfile = texfiles[nTexFiles-1];
 
-		printf ("Using WAD File: %s\n", pszWadFile);
+		Q_printf ("Using WAD File: %s\n", pszWadFile);
 
 		SafeRead(texfile, &wadinfo, sizeof(wadinfo));
-		if (strncmp (wadinfo.identification, "WAD2", 4) &&
-			strncmp (wadinfo.identification, "WAD3", 4))
+		if (Q_strncmp (wadinfo.identification, "WAD2", 4) &&
+			Q_strncmp (wadinfo.identification, "WAD3", 4))
 			Error ("TEX_InitFromWad: %s isn't a wadfile",pszWadFile);
 		wadinfo.numlumps = LittleLong(wadinfo.numlumps);
 		wadinfo.infotableofs = LittleLong(wadinfo.infotableofs);
-		fseek (texfile, wadinfo.infotableofs, SEEK_SET);
-		lumpinfo = realloc(lumpinfo, (nTexLumps + wadinfo.numlumps) 
+		Q_fseek (texfile, wadinfo.infotableofs, SEEK_SET);
+		lumpinfo = Q_realloc(lumpinfo, (nTexLumps + wadinfo.numlumps) 
 			* sizeof(lumpinfo_t));
 
 		for(i = 0; i < wadinfo.numlumps; i++)
@@ -169,12 +172,12 @@ qboolean	TEX_InitFromWad (char *path)
 		}
 
 		// next wad file
-		pszWadFile = strtok(NULL, ";");
+		pszWadFile = Q_strtok(NULL, ";");
 	}
 
-	qsort( (void *)lumpinfo, (size_t)nTexLumps, sizeof(lumpinfo[0]), lump_sorter_by_name );
+	Q_qsort( (void *)lumpinfo, (size_t)nTexLumps, sizeof(lumpinfo[0]), lump_sorter_by_name );
 
-	return true;
+	return qtrue;
 }
 
 /*
@@ -187,8 +190,8 @@ lumpinfo_t *
 FindTexture (lumpinfo_t *source )
 {
 	lumpinfo_t *found = NULL;
-	if ( !( found = bsearch( source, (void *)lumpinfo, (size_t)nTexLumps, sizeof(lumpinfo[0]), lump_sorter_by_name ) ) )
-		printf ("WARNING: texture %s not found in BSP's wad file list!\n", source->name);
+	if ( !( found = Q_bsearch( source, (void *)lumpinfo, (size_t)nTexLumps, sizeof(lumpinfo[0]), lump_sorter_by_name ) ) )
+		Q_printf ("WARNING: texture %s not found in BSP's wad file list!\n", source->name);
 
 	return found;
 }
@@ -203,7 +206,7 @@ int LoadLump (lumpinfo_t *source, byte *dest, int *texsize)
 	*texsize = 0;
 	if ( source->filepos )
 	{
-		fseek (texfiles[source->iTexFile], source->filepos, SEEK_SET);
+		Q_fseek (texfiles[source->iTexFile], source->filepos, SEEK_SET);
 		*texsize = source->disksize;
 		
 		// Should we just load the texture header w/o the palette & bitmap?
@@ -226,7 +229,7 @@ int LoadLump (lumpinfo_t *source, byte *dest, int *texsize)
 		}
 	}
 
-	printf ("WARNING: texture %s not found in BSP's wad file list!\n", source->name);
+	Q_printf ("WARNING: texture %s not found in BSP's wad file list!\n", source->name);
 	return 0;
 }
 
@@ -248,7 +251,7 @@ void AddAnimatingTextures (void)
 	{
 		if (miptex[i].name[0] != '+' && miptex[i].name[0] != '-')
 			continue;
-		strcpy (name, miptex[i].name);
+		Q_strcpy (name, miptex[i].name);
 
 		for (j=0 ; j<20 ; j++)
 		{
@@ -260,7 +263,7 @@ void AddAnimatingTextures (void)
 
 		// see if this name exists in the wadfile
 			for (k=0 ; k < nTexLumps; k++)
-				if (!strcmp(name, lumpinfo[k].name))
+				if (!Q_strcmp(name, lumpinfo[k].name))
 				{
 					FindMiptex (name);	// add to the miptex list
 					break;
@@ -269,7 +272,7 @@ void AddAnimatingTextures (void)
 	}
 	
 	if ( nummiptex - base )
-		printf ("added %i additional animating textures.\n", nummiptex - base);
+		Q_printf ("added %i additional animating textures.\n", nummiptex - base);
 }
 
 /*
@@ -294,12 +297,12 @@ void WriteMiptex(void)
 		path = ValueForKey (&entities[0], "wad");
 		if (!path || !path[0])
 		{
-			printf ("WARNING: no wadfile specified\n");
+			Q_printf ("WARNING: no wadfile specified\n");
 			return;
 		}
 	}
 	
-	strcpy(fullpath, path);
+	Q_strcpy(fullpath, path);
 
 	start = GetTickCount();
 	{
@@ -326,11 +329,11 @@ void WriteMiptex(void)
 
 	start = GetTickCount();
 	{
-		int			final_miptex, i;
+		int			/*final_miptex,*/ i;
 		texinfo_t	*tx = texinfo;
 
 		// Sort them FIRST by wadfile and THEN by name for most efficient loading in the engine.
-		qsort( (void *)miptex, (size_t)nummiptex, sizeof(miptex[0]), lump_sorter_by_wad_and_name );
+		Q_qsort( (void *)miptex, (size_t)nummiptex, sizeof(miptex[0]), lump_sorter_by_wad_and_name );
 
 		// Sleazy Hack 104 Pt 2 - After sorting the miptex array, reset the texinfos to point to the right miptexs
 		for(i=0; i<numtexinfo; i++, tx++)
@@ -339,7 +342,7 @@ void WriteMiptex(void)
 			tx->miptex = FindMiptex( miptex_name );
 
 			// Free up the originally strdup()'ed miptex_name
-			free( miptex_name );
+			Q_free( miptex_name );
 		}
 	}
 	qprintf( "qsort(miptex) elapsed time = %ldms\n", GetTickCount()-start );
@@ -387,7 +390,7 @@ int	FindMiptex (char *name)
 		}
 	if (nummiptex == MAX_MAP_TEXTURES)
 		Error ("Exceeded MAX_MAP_TEXTURES");
-	strcpy (miptex[i].name, name);
+	Q_strcpy (miptex[i].name, name);
 	nummiptex++;
 	ThreadUnlock ();
 	return i;
@@ -402,13 +405,13 @@ int TexinfoForBrushTexture (plane_t *plane, brush_texture_t *bt, vec3_t origin)
 	texinfo_t	tx, *tc;
 	int		i, j, k;
 
-	memset (&tx, 0, sizeof(tx));
+	Q_memset (&tx, 0, sizeof(tx));
 	tx.miptex = FindMiptex (bt->name);
 	// Note: FindMiptex() still needs to be called here to add it to the global miptex array
 
 	// Very Sleazy Hack 104 - since the tx.miptex index will be bogus after we sort the miptex array later
 	// Put the string name of the miptex in this "index" until after we are done sorting it in WriteMiptex().
-	tx.miptex = (int)strdup(bt->name);
+	tx.miptex = (int)Q_strdup(bt->name);
 
 	// set the special flag
 	if (bt->name[0] == '*' 
@@ -442,8 +445,8 @@ int TexinfoForBrushTexture (plane_t *plane, brush_texture_t *bt, vec3_t origin)
 		else
 		{	
 			ang = bt->rotate / 180 * Q_PI;
-			sinv = sin(ang);
-			cosv = cos(ang);
+			sinv = Q_sin(ang);
+			cosv = Q_cos(ang);
 		}
 
 		if (vecs[0][0])
@@ -470,21 +473,21 @@ int TexinfoForBrushTexture (plane_t *plane, brush_texture_t *bt, vec3_t origin)
 
 		for (i=0 ; i<2 ; i++)
 			for (j=0 ; j<3 ; j++)
-				tx.vecs[i][j] = vecs[i][j] / bt->scale[i];
+				tx.vecs[i][j] = (float)(vecs[i][j] / bt->scale[i]);
 	}
 	else
 	{
-		tx.vecs[0][0] = bt->UAxis[0] / bt->scale[0];
-		tx.vecs[0][1] = bt->UAxis[1] / bt->scale[0];
-		tx.vecs[0][2] = bt->UAxis[2] / bt->scale[0];
+		tx.vecs[0][0] = (float)(bt->UAxis[0] / bt->scale[0]);
+		tx.vecs[0][1] = (float)(bt->UAxis[1] / bt->scale[0]);
+		tx.vecs[0][2] = (float)(bt->UAxis[2] / bt->scale[0]);
 
-		tx.vecs[1][0] = bt->VAxis[0] / bt->scale[1];
-		tx.vecs[1][1] = bt->VAxis[1] / bt->scale[1];
-		tx.vecs[1][2] = bt->VAxis[2] / bt->scale[1];
+		tx.vecs[1][0] = (float)(bt->VAxis[0] / bt->scale[1]);
+		tx.vecs[1][1] = (float)(bt->VAxis[1] / bt->scale[1]);
+		tx.vecs[1][2] = (float)(bt->VAxis[2] / bt->scale[1]);
 	}
 
-	tx.vecs[0][3] = bt->shift[0] + DotProduct( origin, tx.vecs[0] );
-	tx.vecs[1][3] = bt->shift[1] + DotProduct( origin, tx.vecs[1] );
+	tx.vecs[0][3] = (float)(bt->shift[0] + DotProduct( origin, tx.vecs[0] ));
+	tx.vecs[1][3] = (float)(bt->shift[1] + DotProduct( origin, tx.vecs[1] ));
 
 	//
 	// find the texinfo
@@ -494,7 +497,7 @@ int TexinfoForBrushTexture (plane_t *plane, brush_texture_t *bt, vec3_t origin)
 	for (i=0 ; i<numtexinfo ; i++, tc++)
 	{
 		// Sleazy hack 104, Pt 3 - Use strcmp on names to avoid dups
-		if ( strcmp( (char *)(tc->miptex), (char *)(tx.miptex)) != 0 )
+		if ( Q_strcmp( (char *)(tc->miptex), (char *)(tx.miptex)) != 0 )
 			continue;
 		if (tc->flags != tx.flags)
 			continue;

@@ -90,9 +90,9 @@ face_t *TryMerge (face_t *f1, face_t *f2)
 			p4 = f2->pts[(j+1)%f2->numpoints];
 			for (k=0 ; k<3 ; k++)
 			{
-				if (fabs(p1[k] - p4[k]) > EQUAL_EPSILON)
+				if (Q_fabs(p1[k] - p4[k]) > EQUAL_EPSILON)
 					break;
-				if (fabs(p2[k] - p3[k]) > EQUAL_EPSILON)
+				if (Q_fabs(p2[k] - p3[k]) > EQUAL_EPSILON)
 					break;
 			}
 			if (k==3)

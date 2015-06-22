@@ -6,6 +6,8 @@
 // updates:
 // 1-4-98	fixed initialization
 
+#include "../../public/vstdlib/warnings.h"
+
 #include <stdio.h>
 
 #include <windows.h>
@@ -19,6 +21,7 @@
 #include "..\..\engine\studio.h"
 #include "mdlviewer.h"
 
+#include "../../public/vstdlib/vstdlib.h"
 
 #pragma warning( disable : 4244 ) // conversion from 'double ' to 'float ', possible loss of data
 #pragma warning( disable : 4305 ) // truncation from 'const double ' to 'float '
@@ -170,8 +173,8 @@ void mouse(int button, int state, int x, int y)
 
 void help(void) 
 {
-    printf("left mouse     - pan\n");
-    printf("right mouse    - rotate\n");
+    Q_printf("left mouse     - pan\n");
+    Q_printf("right mouse    - rotate\n");
 }
 
 void init( char *arg ) 
@@ -228,11 +231,11 @@ void key(unsigned char key, int x, int y)
 		break;
 
 		case 'p':
-			printf("Translation: %f, %f %f\n", transx, transy, transz );
+			Q_printf("Translation: %f, %f %f\n", transx, transy, transz );
 		break;
 
 		case '\033':	// Escape
-			exit(EXIT_SUCCESS); 
+			Q_exit(EXIT_SUCCESS); 
 		break;
 
 		case ' ':
@@ -249,8 +252,8 @@ int main(int argc, char** argv)
 {
 	if (argc != 2)
 	{
-		printf("usage : %s <filename>\n", argv[0] );
-		exit(1);
+		Q_printf("usage : %s <filename>\n", argv[0] );
+		Q_exit(1);
 	}
 
     glutInitWindowSize(512, 512);

@@ -267,10 +267,10 @@ void CBaseAnimating :: SetSequenceBox( void )
 		float yaw = pev->angles.y * (M_PI / 180.0);
 		
 		Vector xvector, yvector;
-		xvector.x = cos(yaw);
-		xvector.y = sin(yaw);
-		yvector.x = -sin(yaw);
-		yvector.y = cos(yaw);
+		xvector.x = Q_cos(yaw);
+		xvector.y = Q_sin(yaw);
+		yvector.x = -Q_sin(yaw);
+		yvector.y = Q_cos(yaw);
 		Vector bounds[2];
 
 		bounds[0] = mins;

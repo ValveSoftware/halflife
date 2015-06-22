@@ -28,7 +28,7 @@ double VectorLength(vec3_t v)
 	length = 0;
 	for (i=0 ; i< 3 ; i++)
 		length += v[i]*v[i];
-	length = sqrt (length);		// FIXME
+	length = Q_sqrt (length);		// FIXME
 
 	return length;
 }
@@ -39,15 +39,15 @@ int VectorCompare (vec3_t v1, vec3_t v2)
 	int		i;
 	
 	for (i=0 ; i<3 ; i++)
-		if (fabs(v1[i]-v2[i]) > EQUAL_EPSILON)
-			return false;
+		if (Q_fabs(v1[i]-v2[i]) > EQUAL_EPSILON)
+			return qfalse;
 			
-	return true;
+	return qtrue;
 }
 
 vec_t Q_rint (vec_t in)
 {
-	return floor (in + 0.5);
+	return Q_floor (in + 0.5);
 }
 
 void VectorMA (vec3_t va, double scale, vec3_t vb, vec3_t vc)
@@ -102,13 +102,13 @@ vec_t VectorNormalize (vec3_t v)
 	int		i;
 	double	length;
 
-if ( fabs(v[1] - 0.000215956) < 0.0001)
+if ( Q_fabs(v[1] - 0.000215956) < 0.0001)
 i=1;
 
 	length = 0;
 	for (i=0 ; i< 3 ; i++)
 		length += v[i]*v[i];
-	length = sqrt (length);
+	length = Q_sqrt (length);
 	if (length == 0)
 		return 0;
 		
@@ -152,14 +152,14 @@ void AngleMatrix (const vec3_t angles, float (*matrix)[4] )
 	float		sr, sp, sy, cr, cp, cy;
 	
 	angle = angles[2] * (Q_PI*2 / 360);
-	sy = sin(angle);
-	cy = cos(angle);
+	sy = Q_sin(angle);
+	cy = Q_cos(angle);
 	angle = angles[1] * (Q_PI*2 / 360);
-	sp = sin(angle);
-	cp = cos(angle);
+	sp = Q_sin(angle);
+	cp = Q_cos(angle);
 	angle = angles[0] * (Q_PI*2 / 360);
-	sr = sin(angle);
-	cr = cos(angle);
+	sr = Q_sin(angle);
+	cr = Q_cos(angle);
 
 	// matrix = (Z * Y) * X
 	matrix[0][0] = cp*cy;
@@ -182,14 +182,14 @@ void AngleIMatrix (const vec3_t angles, float matrix[3][4] )
 	float		sr, sp, sy, cr, cp, cy;
 	
 	angle = angles[2] * (Q_PI*2 / 360);
-	sy = sin(angle);
-	cy = cos(angle);
+	sy = Q_sin(angle);
+	cy = Q_cos(angle);
 	angle = angles[1] * (Q_PI*2 / 360);
-	sp = sin(angle);
-	cp = cos(angle);
+	sp = Q_sin(angle);
+	cp = Q_cos(angle);
 	angle = angles[0] * (Q_PI*2 / 360);
-	sr = sin(angle);
-	cr = cos(angle);
+	sr = Q_sin(angle);
+	cr = Q_cos(angle);
 
 	// matrix = (Z * Y) * X
 	matrix[0][0] = cp*cy;
@@ -269,14 +269,14 @@ void AngleQuaternion( const vec3_t angles, vec4_t quaternion )
 
 	// FIXME: rescale the inputs to 1/2 angle
 	angle = angles[2] * 0.5;
-	sy = sin(angle);
-	cy = cos(angle);
+	sy = Q_sin(angle);
+	cy = Q_cos(angle);
 	angle = angles[1] * 0.5;
-	sp = sin(angle);
-	cp = cos(angle);
+	sp = Q_sin(angle);
+	cp = Q_cos(angle);
 	angle = angles[0] * 0.5;
-	sr = sin(angle);
-	cr = cos(angle);
+	sr = Q_sin(angle);
+	cr = Q_cos(angle);
 
 	quaternion[0] = sr*cp*cy-cr*sp*sy; // X
 	quaternion[1] = cr*sp*cy+sr*cp*sy; // Y
@@ -322,10 +322,10 @@ void QuaternionSlerp( const vec4_t p, vec4_t q, float t, vec4_t qt )
 
 	if ((1.0 + cosom) > 0.00000001) {
 		if ((1.0 - cosom) > 0.00000001) {
-			omega = acos( cosom );
-			sinom = sin( omega );
-			sclp = sin( (1.0 - t)*omega) / sinom;
-			sclq = sin( t*omega ) / sinom;
+			omega = Q_acos( cosom );
+			sinom = Q_sin( omega );
+			sclp = Q_sin( (1.0 - t)*omega) / sinom;
+			sclq = Q_sin( t*omega ) / sinom;
 		}
 		else {
 			sclp = 1.0 - t;
@@ -340,8 +340,8 @@ void QuaternionSlerp( const vec4_t p, vec4_t q, float t, vec4_t qt )
 		qt[1] = p[0];
 		qt[2] = -p[3];
 		qt[3] = p[2];
-		sclp = sin( (1.0 - t) * 0.5 * Q_PI);
-		sclq = sin( t * 0.5 * Q_PI);
+		sclp = Q_sin( (1.0 - t) * 0.5 * Q_PI);
+		sclq = Q_sin( t * 0.5 * Q_PI);
 		for (i = 0; i < 3; i++) {
 			qt[i] = sclp * p[i] + sclq * qt[i];
 		}

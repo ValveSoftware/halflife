@@ -131,7 +131,7 @@ void LoadScreen (char *name)
 
 	expanded = ExpandPathAndArchive (name);
 
-	printf ("grabbing from %s...\n",expanded);
+	Q_printf ("grabbing from %s...\n",expanded);
 	LoadLBM (expanded, &byteimage, &lbmpalette);
 
 	byteimagewidth = bmhd.w;
@@ -151,7 +151,7 @@ void LoadScreenBMP(char *pszName)
 	
 	pszExpanded = ExpandPathAndArchive(pszName);
 
-	printf("grabbing from %s...\n", pszExpanded);
+	Q_printf("grabbing from %s...\n", pszExpanded);
 	if (LoadBMP(pszExpanded, &byteimage, &lbmpalette))
 		Error ("Failed to load!", pszExpanded);
 
@@ -162,7 +162,7 @@ void LoadScreenBMP(char *pszName)
 
 	ExtractFileBase (token, basename);		// Files that start with '$' have color (0,0,255) transparent,
 	if ( basename[0] == '{' ) {				// move to last palette entry.
-		fTransparent255 = true;
+		fTransparent255 = qtrue;
 		TransparentByteImage();
 	}
 }
@@ -175,11 +175,11 @@ CreateOutput
 */
 void CreateOutput (void)
 {
-	outputcreated = true;
+	outputcreated = qtrue;
 //
 // create the output wadfile file
 //
-	NewWad (destfile, false);	// create a new wadfile
+	NewWad (destfile, qfalse);	// create a new wadfile
 }
 
 /*
@@ -222,9 +222,9 @@ void WriteFile (void)
 	char	filename[1024];
 	char	*exp;
 
-	sprintf (filename,"%s/%s.lmp", destfile, lumpname);
+	Q_sprintf (filename,"%s/%s.lmp", destfile, lumpname);
 	exp = ExpandPath(filename);
-	printf ("saved %s\n", exp);
+	Q_printf ("saved %s\n", exp);
 	SaveFile (exp, lumpbuffer, lump_p-lumpbuffer);		
 }
 
@@ -238,42 +238,42 @@ void ParseScript (void)
 	int			cmd;
 	int			size;
 
-	fTransparent255 = false;
+	fTransparent255 = qfalse;
 	do
 	{
 		//
 		// get a command / lump name
 		//
-		GetToken (true);
+		GetToken (qtrue);
 		if (endofscript)
 			break;
 		if (!Q_strcasecmp (token,"$LOAD"))
 		{
-			GetToken (false);
+			GetToken (qfalse);
 			LoadScreen (token);
 			continue;
 		}
 
 		if (!Q_strcasecmp (token,"$DEST"))
 		{
-			GetToken (false);
-			strcpy (destfile, token);
+			GetToken (qfalse);
+			Q_strcpy (destfile, token);
 			continue;
 		}
 
 		if (!Q_strcasecmp (token,"$SINGLEDEST"))
 		{
-			GetToken (false);
-			strcpy (destfile, token);
-			savesingle = true;
+			GetToken (qfalse);
+			Q_strcpy (destfile, token);
+			savesingle = qtrue;
 			continue;
 		}
 
 
 		if (!Q_strcasecmp (token,"$LOADBMP"))
 		{
-			GetToken (false);
-			fTransparent255 = false;
+			GetToken (qfalse);
+			fTransparent255 = qfalse;
 			LoadScreenBMP (token);
 			continue;
 		}
@@ -281,19 +281,19 @@ void ParseScript (void)
 		//
 		// new lump
 		//
-		if (strlen(token) >= sizeof(lumpname) )
+		if (Q_strlen(token) >= sizeof(lumpname) )
 			Error ("\"%s\" is too long to be a lump name",token);
-		memset (lumpname,0,sizeof(lumpname));			
-		strcpy (lumpname, token);
+		Q_memset (lumpname,0,sizeof(lumpname));			
+		Q_strcpy (lumpname, token);
 		for (size=0 ; size<sizeof(lumpname) ; size++)
-			lumpname[size] = tolower(lumpname[size]);
+			lumpname[size] = Q_tolower(lumpname[size]);
 
 		//
 		// get the grab command
 		//
 		lump_p = lumpbuffer;
 
-		GetToken (false);
+		GetToken (qfalse);
 
 		//
 		// call a routine to grab some data and put it in lumpbuffer
@@ -330,41 +330,41 @@ void ProcessLumpyScript (char *basename)
 {
 	char            script[256];
 
-	printf ("qlumpy script: %s\n",basename);
+	Q_printf ("qlumpy script: %s\n",basename);
 	
 //
 // create default destination directory
 //
-	strcpy (destfile, ExpandPath(basename));
+	Q_strcpy (destfile, ExpandPath(basename));
 	StripExtension (destfile);
-	strcat (destfile,".wad");		// unless the script overrides, save in cwd
+	Q_strcat (destfile,".wad");		// unless the script overrides, save in cwd
 
 //
 // save in a wadfile by default
 //
-	savesingle = false;
+	savesingle = qfalse;
 	grabbed = 0;
-	outputcreated = false;
+	outputcreated = qfalse;
 	
 	
 //
 // read in the script file
 //
-	strcpy (script, basename);
+	Q_strcpy (script, basename);
 	DefaultExtension (script, ".ls");
 	LoadScriptFile (script);
 	
-	strcpy (basepath, basename);
+	Q_strcpy (basepath, basename);
 	
 	ParseScript ();				// execute load / grab commands
 	
 	if (!savesingle)
 	{
 		WriteWad (do16bit);				// write out the wad directory
-		printf ("%i lumps grabbed in a wad file\n",grabbed);
+		Q_printf ("%i lumps grabbed in a wad file\n",grabbed);
 	}
 	else
-		printf ("%i lumps written seperately\n",grabbed);
+		Q_printf ("%i lumps written seperately\n",grabbed);
 }
 
 
@@ -377,32 +377,32 @@ int main (int argc, char **argv)
 {
 	int		i;
 	
-	printf ("\nqlumpy "VERSION" by John Carmack, copyright (c) 1994 Id Software.\n");
-	printf ("Portions copyright (c) 1998 Valve LLC (%s)\n", __DATE__ );
+	Q_printf ("\nqlumpy "VERSION" by John Carmack, copyright (c) 1994 Id Software.\n");
+	Q_printf ("Portions copyright (c) 1998 Valve LLC (%s)\n", __DATE__ );
 
 	if (argc == 1)
 		Error ("qlumpy [-archive directory] [-8bit] [-proj <project>] scriptfile [scriptfile ...]");
 
-	lumpbuffer = malloc (MAXLUMP);
-	do16bit = true;
+	lumpbuffer = Q_malloc (MAXLUMP);
+	do16bit = qtrue;
 
 	for( i=1; i<argc; i++ )
 	{
 		if( *argv[ i ] == '-' )
 		{
-			if( !strcmp( argv[ i ], "-archive" ) )
+			if( !Q_strcmp( argv[ i ], "-archive" ) )
 			{
-				archive = true;
-				strcpy (archivedir, argv[2]);
-				printf ("Archiving source to: %s\n", archivedir);
+				archive = qtrue;
+				Q_strcpy (archivedir, argv[2]);
+				Q_printf ("Archiving source to: %s\n", archivedir);
 			}
-			else if( !strcmp( argv[ i ], "-proj" ) )
+			else if( !Q_strcmp( argv[ i ], "-proj" ) )
 			{
-				strcpy( qproject, argv[ i + 1 ] );
+				Q_strcpy( qproject, argv[ i + 1 ] );
 				i++;
 			}
-			else if( !strcmp( argv[ i ], "-8bit" ) )
-				do16bit = false;
+			else if( !Q_strcmp( argv[ i ], "-8bit" ) )
+				do16bit = qfalse;
 		}
 		else
 			break;
@@ -419,7 +419,7 @@ int main (int argc, char **argv)
 		if (!(pszPath[0] == '/' || pszPath[0] == '\\' || pszPath[1] == ':'))
 		{	// path is partial
 			Q_getwd (szTemp);
-			strcat (szTemp, pszPath);
+			Q_strcat (szTemp, pszPath);
 			pszPath = szTemp;
 		}
 		SetQdirFromPath(pszPath);

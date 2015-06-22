@@ -62,7 +62,7 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>../../common;../../utils/common</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
@@ -71,7 +71,8 @@
       <AdditionalDependencies>winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy $(TargetPath) ..\..\..\valve /r /i</Command>
+      <Command>if not exist "../../../valve" mkdir "../../../valve"
+copy "$(TargetPath)" "../../../valve/$(TargetFileName)"</Command>
     </PostBuildEvent>
     <PostBuildEvent>
       <Message>Copyint  to  valve\ </Message>
@@ -85,7 +86,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>../../common;../../utils/common</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
@@ -96,7 +97,8 @@
       <AdditionalDependencies>winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy $(TargetPath) ..\..\..\valve /r /i</Command>
+      <Command>if not exist "../../../valve" mkdir "../../../valve"
+copy "$(TargetPath)" "../../../valve/$(TargetFileName)"</Command>
     </PostBuildEvent>
     <PostBuildEvent>
       <Message>Copyint  to  valve\ </Message>

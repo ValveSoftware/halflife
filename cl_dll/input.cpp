@@ -150,7 +150,7 @@ int KB_ConvertString( char *in, char **ppout )
 		if ( *p == '+' )
 		{
 			pEnd = binding;
-			while ( *p && ( isalnum( *p ) || ( pEnd == binding ) ) && ( ( pEnd - binding ) < 63 ) )
+			while ( *p && ( Q_isalnum( *p ) || ( pEnd == binding ) ) && ( ( pEnd - binding ) < 63 ) )
 			{
 				*pEnd++ = *p++;
 			}
@@ -158,7 +158,7 @@ int KB_ConvertString( char *in, char **ppout )
 			*pEnd =  '\0';
 
 			pBinding = NULL;
-			if ( strlen( binding + 1 ) > 0 )
+			if ( Q_strlen( binding + 1 ) > 0 )
 			{
 				// See if there is a binding for binding?
 				pBinding = gEngfuncs.Key_LookupBinding( binding + 1 );
@@ -192,8 +192,9 @@ int KB_ConvertString( char *in, char **ppout )
 
 	*pOut = '\0';
 
-	pOut = ( char * )malloc( strlen( sz ) + 1 );
-	strcpy( pOut, sz );
+	pOut = ( char * )Q_malloc( Q_strlen( sz ) + 1 );
+	Q_strcpy( pOut, sz );
+
 	*ppout = pOut;
 
 	return 1;
@@ -214,7 +215,7 @@ struct kbutton_s CL_DLLEXPORT *KB_Find( const char *name )
 	p = g_kbkeys;
 	while ( p )
 	{
-		if ( !stricmp( name, p->name ) )
+		if ( !Q_stricmp( name, p->name ) )
 			return p->pkey;
 
 		p = p->next;
@@ -239,10 +240,11 @@ void KB_Add( const char *name, kbutton_t *pkb )
 	if ( kb )
 		return;
 
-	p = ( kblist_t * )malloc( sizeof( kblist_t ) );
-	memset( p, 0, sizeof( *p ) );
+	p = ( kblist_t * )Q_malloc( sizeof( kblist_t ) );
+	Q_memset( p, 0, sizeof( *p ) );
 
-	strcpy( p->name, name );
+	Q_strcpy( p->name, name );
+
 	p->pkey = pkb;
 
 	p->next = g_kbkeys;
@@ -279,7 +281,7 @@ void KB_Shutdown( void )
 	while ( p )
 	{
 		n = p->next;
-		free( p );
+		Q_free( p );
 		p = n;
 	}
 	g_kbkeys = NULL;
@@ -297,7 +299,7 @@ void KeyDown (kbutton_t *b)
 
 	c = gEngfuncs.Cmd_Argv(1);
 	if (c[0])
-		k = atoi(c);
+		k = Q_atoi(c);
 	else
 		k = -1;		// typed manually at the console for continuous down
 
@@ -331,7 +333,7 @@ void KeyUp (kbutton_t *b)
 	
 	c = gEngfuncs.Cmd_Argv(1);
 	if (c[0])
-		k = atoi(c);
+		k = Q_atoi(c);
 	else
 	{ // typed manually at the console, assume for unsticking, so clear all
 		b->down[0] = b->down[1] = 0;
@@ -508,7 +510,7 @@ void IN_Cancel(void)
 
 void IN_Impulse (void)
 {
-	in_impulse = atoi( gEngfuncs.Cmd_Argv(1) );
+	in_impulse = Q_atoi( gEngfuncs.Cmd_Argv(1) );
 }
 
 void IN_ScoreDown(void)
@@ -673,7 +675,7 @@ void CL_DLLEXPORT CL_CreateMove ( float frametime, struct usercmd_s *cmd, int ac
 
 		CL_AdjustAngles ( frametime, viewangles );
 
-		memset (cmd, 0, sizeof(*cmd));
+		Q_memset (cmd, 0, sizeof(*cmd));
 		
 		gEngfuncs.SetViewAngles( (float *)viewangles );
 
@@ -708,7 +710,7 @@ void CL_DLLEXPORT CL_CreateMove ( float frametime, struct usercmd_s *cmd, int ac
 		if ( spd != 0.0 )
 		{
 			// scale the 3 speeds so that the total velocity is not > cl.maxspeed
-			float fmov = sqrt( (cmd->forwardmove*cmd->forwardmove) + (cmd->sidemove*cmd->sidemove) + (cmd->upmove*cmd->upmove) );
+			float fmov = Q_sqrt( (cmd->forwardmove*cmd->forwardmove) + (cmd->sidemove*cmd->sidemove) + (cmd->upmove*cmd->upmove) );
 
 			if ( fmov > spd )
 			{

@@ -84,7 +84,7 @@ void PrintPortal (portal_t *p)
 	
 	w = p->winding;
 	for (i=0 ; i<w->numpoints ; i++)
-		printf ("(%5.0f,%5.0f,%5.0f)\n",w->points[i][0]
+		Q_printf ("(%5.0f,%5.0f,%5.0f)\n",w->points[i][0]
 		, w->points[i][1], w->points[i][2]);
 }
 
@@ -123,16 +123,16 @@ void MakeHeadnodePortals (node_t *node, vec3_t mins, vec3_t maxs)
 			portals[n] = p;
 			
 			pl = &bplanes[n];
-			memset (pl, 0, sizeof(*pl));
+			Q_memset (pl, 0, sizeof(*pl));
 			if (j)
 			{
-				pl->normal[i] = -1;
-				pl->dist = -bounds[j][i];
+				pl->normal[i] = -1.f;
+				pl->dist = (float)-bounds[j][i];
 			}
 			else
 			{
-				pl->normal[i] = 1;
-				pl->dist = bounds[j][i];
+				pl->normal[i] = 1.f;
+				pl->dist = (float)bounds[j][i];
 			}
 			p->plane = *pl;
 			p->winding = BaseWindingForPlane (pl);
@@ -146,7 +146,7 @@ void MakeHeadnodePortals (node_t *node, vec3_t mins, vec3_t maxs)
 		{
 			if (j == i)
 				continue;
-			portals[i]->winding = ClipWinding (portals[i]->winding, &bplanes[j], true);
+			portals[i]->winding = ClipWinding (portals[i]->winding, &bplanes[j], qtrue);
 		}
 	}
 }
@@ -163,7 +163,7 @@ void CheckWindingInNode (winding_t *w, node_t *node)
 			if (w->points[i][j] < node->mins[j] - 1
 			|| w->points[i][j] > node->maxs[j] + 1)
 			{
-				printf ("WARNING: CheckWindingInNode: outside\n");
+				Q_printf ("WARNING: CheckWindingInNode: outside\n");
 				return;
 			}
 	}
@@ -181,11 +181,11 @@ void CheckWindingArea (winding_t *w)
 		VectorSubtract (w->points[i], w->points[0], v1);
 		VectorSubtract (w->points[i+1], w->points[0], v2);
 		CrossProduct (v1, v2, cross);
-		add = VectorLength (cross);
-		total += add*0.5;
+		add = (float)VectorLength (cross);
+		total += add*0.5f;
 	}
 	if (total < 16)
-		printf ("WARNING: winding area %f\n", total);
+		Q_printf ("WARNING: winding area %f\n", total);
 }
 
 
@@ -200,8 +200,8 @@ void PlaneFromWinding (winding_t *w, dplane_t *plane)
 
 	CrossProduct (v2, v1, plane_normal);
 	VectorNormalize (plane_normal);
-	VectorCopy (plane_normal, plane->normal);	// change from vec_t
-	plane->dist = DotProduct (w->points[0], plane->normal);
+	VectorCopyT (plane_normal, plane->normal, float);	// change from vec_t
+	plane->dist = (float)(DotProduct (w->points[0], plane->normal));
 }
 
 void CheckLeafPortalConsistancy (node_t *node)
@@ -241,10 +241,10 @@ void CheckLeafPortalConsistancy (node_t *node)
 			w = p2->winding;
 			for (i=0 ; i<w->numpoints ; i++)
 			{
-				dist = DotProduct (w->points[i], plane.normal) - plane.dist;
+				dist = (float)(DotProduct (w->points[i], plane.normal) - plane.dist);
 				if ( (side == 0 && dist < -1) || (side == 1 && dist > 1) )
 				{
-					printf ("WARNING: portal siding direction is wrong\n");
+					Q_printf ("WARNING: portal siding direction is wrong\n");
 					return;
 				}
 			}
@@ -270,10 +270,10 @@ int		num_visportals;
 
 void WriteFloat (FILE *f, vec_t v)
 {
-	if ( fabs(v - Q_rint(v)) < ON_EPSILON )
-		fprintf (f,"%i ",(int)Q_rint(v));
+	if ( Q_fabs(v - Q_rint(v)) < ON_EPSILON )
+		Q_fprintf (f,"%i ",(int)Q_rint(v));
 	else
-		fprintf (f,"%f ",v);
+		Q_fprintf (f,"%f ",v);
 }
 
 void WritePortalFile_r (node_t *node)
@@ -281,7 +281,7 @@ void WritePortalFile_r (node_t *node)
 	int		i;	
 	portal_t	*p;
 	winding_t	*w;
-	dplane_t		*pl, plane2;
+	dplane_t		/**pl,*/ plane2;
 
 	if (!node->contents)
 	{
@@ -309,19 +309,19 @@ void WritePortalFile_r (node_t *node)
 				PlaneFromWinding (w, &plane2);
 				if ( DotProduct (p->plane.normal, plane2.normal) < 1.0-ON_EPSILON )
 				{	// backwards...
-					fprintf (pf,"%i %i %i ",w->numpoints, p->nodes[1]->visleafnum, p->nodes[0]->visleafnum);
+					Q_fprintf (pf,"%i %i %i ",w->numpoints, p->nodes[1]->visleafnum, p->nodes[0]->visleafnum);
 				}
 				else
-					fprintf (pf,"%i %i %i ",w->numpoints, p->nodes[0]->visleafnum, p->nodes[1]->visleafnum);
+					Q_fprintf (pf,"%i %i %i ",w->numpoints, p->nodes[0]->visleafnum, p->nodes[1]->visleafnum);
 				for (i=0 ; i<w->numpoints ; i++)
 				{
-					fprintf (pf,"(");
+					Q_fprintf (pf,"(");
 					WriteFloat (pf, w->points[i][0]);
 					WriteFloat (pf, w->points[i][1]);
 					WriteFloat (pf, w->points[i][2]);
-					fprintf (pf,") ");
+					Q_fprintf (pf,") ");
 				}
-				fprintf (pf,"\n");
+				Q_fprintf (pf,"\n");
 			}
 		}
 
@@ -390,18 +390,18 @@ void WritePortalfile (node_t *headnode)
 	NumberLeafs_r (headnode);
 	
 // write the file
-	printf ("writing %s\n", portfilename);
-	pf = fopen (portfilename, "w");
+	Q_printf ("writing %s\n", portfilename);
+	pf = Q_fopen (portfilename, "w");
 	if (!pf)
 		Error ("Error opening %s", portfilename);
 		
-	fprintf (pf, "%s\n", PORTALFILE);
-	fprintf (pf, "%i\n", num_visleafs);
-	fprintf (pf, "%i\n", num_visportals);
+	Q_fprintf (pf, "%s\n", PORTALFILE);
+	Q_fprintf (pf, "%i\n", num_visleafs);
+	Q_fprintf (pf, "%i\n", num_visportals);
 	
 	WritePortalFile_r (headnode);
 	
-	fclose (pf);
+	Q_fclose (pf);
 }
 
 

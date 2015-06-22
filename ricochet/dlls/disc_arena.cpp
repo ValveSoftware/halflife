@@ -104,7 +104,7 @@ void CDiscArena::Reset( void )
 	m_flTimeLimitOver = 0;
 	m_bShownTimeWarning = FALSE;
 	m_iArenaState = ARENA_WAITING_FOR_PLAYERS;
-	memset( m_hCombatants, 0, sizeof( m_hCombatants ) );
+	Q_memset( m_hCombatants, 0, sizeof( m_hCombatants ) );
 
 	SetThink( NULL );
 	pev->nextthink = 0;
@@ -158,7 +158,7 @@ void CDiscArena::StartBattle( void )
 		pCurr->pev->iuser4 = pCurr->pev->team;
 
 		char sz[128];
-		sprintf(sz, "Arena %d", pev->groupinfo );
+		Q_sprintf(sz, "Arena %d", pev->groupinfo );
 		MESSAGE_BEGIN( MSG_ALL, gmsgTeamInfo );
 			WRITE_BYTE( pCurr->entindex() );
 			WRITE_STRING( sz );

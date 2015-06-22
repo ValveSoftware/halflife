@@ -71,13 +71,13 @@ byte  *LBMRLEDecompress (byte *source,byte *unpacked, int bpwidth)
 		{
 			rept = (rept^0xff)+2;
 			b = *source++;
-			memset(unpacked,b,rept);
+			Q_memset(unpacked,b,rept);
 			unpacked += rept;
 		}
 		else if (rept < 0x80)
 		{
 			rept++;
-			memcpy(unpacked,source,rept);
+			Q_memcpy(unpacked,source,rept);
 			unpacked += rept;
 			source += rept;
 		}
@@ -254,14 +254,14 @@ int LoadBMP (const char* szFile, BYTE** ppbBits, BYTE** ppbPalette)
 
 	// Bogus parameter check
 	if (!(ppbPalette != NULL && ppbBits != NULL))
-		{ fprintf(stderr, "invalid BMP file\n"); rc = -1000; goto GetOut; }
+		{ Q_fprintf(stderr, "invalid BMP file\n"); rc = -1000; goto GetOut; }
 
 	// File exists?
-	if ((pfile = fopen(szFile, "rb")) == NULL)
-		{ fprintf(stderr, "unable to open BMP file\n"); rc = -1; goto GetOut; }
+	if ((pfile = Q_fopen(szFile, "rb")) == NULL)
+		{ Q_fprintf(stderr, "unable to open BMP file\n"); rc = -1; goto GetOut; }
 	
 	// Read file header
-	if (fread(&bmfh, sizeof bmfh, 1/*count*/, pfile) != 1)
+	if (Q_fread(&bmfh, sizeof bmfh, 1/*count*/, pfile) != 1)
 		{ rc = -2; goto GetOut; }
 
 	// Bogus file header check
@@ -269,20 +269,20 @@ int LoadBMP (const char* szFile, BYTE** ppbBits, BYTE** ppbPalette)
 		{ rc = -2000; goto GetOut; }
 
 	// Read info header
-	if (fread(&bmih, sizeof bmih, 1/*count*/, pfile) != 1)
+	if (Q_fread(&bmih, sizeof bmih, 1/*count*/, pfile) != 1)
 		{ rc = -3; goto GetOut; }
 
 	// Bogus info header check
 	if (!(bmih.biSize == sizeof bmih && bmih.biPlanes == 1))
-		{ fprintf(stderr, "invalid BMP file header\n");  rc = -3000; goto GetOut; }
+		{ Q_fprintf(stderr, "invalid BMP file header\n");  rc = -3000; goto GetOut; }
 
 	// Bogus bit depth?  Only 8-bit supported.
 	if (bmih.biBitCount != 8)
-		{ fprintf(stderr, "BMP file not 8 bit\n");  rc = -4; goto GetOut; }
+		{ Q_fprintf(stderr, "BMP file not 8 bit\n");  rc = -4; goto GetOut; }
 	
 	// Bogus compression?  Only non-compressed supported.
 	if (bmih.biCompression != BI_RGB)
-		{ fprintf(stderr, "invalid BMP compression type\n"); rc = -5; goto GetOut; }
+		{ Q_fprintf(stderr, "invalid BMP compression type\n"); rc = -5; goto GetOut; }
 
 	// Figure out how many entires are actually in the table
 	if (bmih.biClrUsed == 0)
@@ -296,11 +296,11 @@ int LoadBMP (const char* szFile, BYTE** ppbBits, BYTE** ppbPalette)
 		}
 
 	// Read palette (bmih.biClrUsed entries)
-	if (fread(rgrgbPalette, cbPalBytes, 1/*count*/, pfile) != 1)
+	if (Q_fread(rgrgbPalette, cbPalBytes, 1/*count*/, pfile) != 1)
 		{ rc = -6; goto GetOut; }
 
 	// convert to a packed 768 byte palette
-	pbPal = malloc(768);
+	pbPal = Q_malloc(768);
 	if (pbPal == NULL)
 		{ rc = -7; goto GetOut; }
 
@@ -323,12 +323,12 @@ int LoadBMP (const char* szFile, BYTE** ppbBits, BYTE** ppbPalette)
 	}
 
 	// Read bitmap bits (remainder of file)
-	cbBmpBits = bmfh.bfSize - ftell(pfile);
-	pb = malloc(cbBmpBits);
-	if (fread(pb, cbBmpBits, 1/*count*/, pfile) != 1)
+	cbBmpBits = bmfh.bfSize - Q_ftell(pfile);
+	pb = Q_malloc(cbBmpBits);
+	if (Q_fread(pb, cbBmpBits, 1/*count*/, pfile) != 1)
 		{ rc = -7; goto GetOut; }
 
-	pbBmpBits = malloc(cbBmpBits);
+	pbBmpBits = Q_malloc(cbBmpBits);
 
 	// data is actually stored with the width being rounded up to a multiple of 4
 	biTrueWidth = (bmih.biWidth + 3) & ~3;
@@ -337,12 +337,12 @@ int LoadBMP (const char* szFile, BYTE** ppbBits, BYTE** ppbPalette)
 	pb += (bmih.biHeight - 1) * biTrueWidth;
 	for(i = 0; i < bmih.biHeight; i++)
 	{
-		memmove(&pbBmpBits[biTrueWidth * i], pb, biTrueWidth);
+		Q_memmove(&pbBmpBits[biTrueWidth * i], pb, biTrueWidth);
 		pb -= biTrueWidth;
 	}
 
 	pb += biTrueWidth;
-	free(pb);
+	Q_free(pb);
 
 	bmhd.w = (WORD)bmih.biWidth;
 	bmhd.h = (WORD)bmih.biHeight;
@@ -352,7 +352,7 @@ int LoadBMP (const char* szFile, BYTE** ppbBits, BYTE** ppbPalette)
 
 GetOut:
 	if (pfile) 
-		fclose(pfile);
+		Q_fclose(pfile);
 
 	return rc;
 }
@@ -376,7 +376,7 @@ int WriteBMPfile (char *szFile, byte *pbBits, int width, int height, byte *pbPal
 		{ rc = -1000; goto GetOut; }
 
 	// File exists?
-	if ((pfile = fopen(szFile, "wb")) == NULL)
+	if ((pfile = Q_fopen(szFile, "wb")) == NULL)
 		{ rc = -1; goto GetOut; }
 
 	biTrueWidth = ((width + 3) & ~3);
@@ -391,7 +391,7 @@ int WriteBMPfile (char *szFile, byte *pbBits, int width, int height, byte *pbPal
 	bmfh.bfOffBits = sizeof bmfh + sizeof bmih + cbPalBytes;
 
 	// Write file header
-	if (fwrite(&bmfh, sizeof bmfh, 1/*count*/, pfile) != 1)
+	if (Q_fwrite(&bmfh, sizeof bmfh, 1/*count*/, pfile) != 1)
 		{ rc = -2; goto GetOut; }
 
 	// Size of structure
@@ -417,7 +417,7 @@ int WriteBMPfile (char *szFile, byte *pbBits, int width, int height, byte *pbPal
 	bmih.biClrImportant = 0;
 	
 	// Write info header
-	if (fwrite(&bmih, sizeof bmih, 1/*count*/, pfile) != 1)
+	if (Q_fwrite(&bmih, sizeof bmih, 1/*count*/, pfile) != 1)
 		{ rc = -3; goto GetOut; }
 	
 
@@ -435,30 +435,30 @@ int WriteBMPfile (char *szFile, byte *pbBits, int width, int height, byte *pbPal
 
 	// Write palette (bmih.biClrUsed entries)
 	cbPalBytes = bmih.biClrUsed * sizeof( RGBQUAD );
-	if (fwrite(rgrgbPalette, cbPalBytes, 1/*count*/, pfile) != 1)
+	if (Q_fwrite(rgrgbPalette, cbPalBytes, 1/*count*/, pfile) != 1)
 		{ rc = -6; goto GetOut; }
 
 
-	pbBmpBits = malloc(cbBmpBits);
+	pbBmpBits = Q_malloc(cbBmpBits);
 
 	pb = pbBits;
 	// reverse the order of the data.
 	pb += (height - 1) * width;
 	for(i = 0; i < bmih.biHeight; i++)
 	{
-		memmove(&pbBmpBits[biTrueWidth * i], pb, width);
+		Q_memmove(&pbBmpBits[biTrueWidth * i], pb, width);
 		pb -= width;
 	}
 
 	// Write bitmap bits (remainder of file)
-	if (fwrite(pbBmpBits, cbBmpBits, 1/*count*/, pfile) != 1)
+	if (Q_fwrite(pbBmpBits, cbBmpBits, 1/*count*/, pfile) != 1)
 		{ rc = -7; goto GetOut; }
 
-	free(pbBmpBits);
+	Q_free(pbBmpBits);
 
 GetOut:
 	if (pfile) 
-		fclose(pfile);
+		Q_fclose(pfile);
 
 	return rc;
 }
@@ -528,7 +528,7 @@ void LoadLBM (char *filename, byte **picture, byte **palette)
 		switch ( chunktype )
 		{
 		case BMHDID:
-			memcpy (&bmhd,LBM_P,sizeof(bmhd));
+			Q_memcpy (&bmhd,LBM_P,sizeof(bmhd));
 			bmhd.w = BigShort(bmhd.w);
 			bmhd.h = BigShort(bmhd.h);
 			bmhd.x = BigShort(bmhd.x);
@@ -538,15 +538,15 @@ void LoadLBM (char *filename, byte **picture, byte **palette)
 			break;
 
 		case CMAPID:
-			cmapbuffer = malloc (768);
-			memset (cmapbuffer, 0, 768);
-			memcpy (cmapbuffer, LBM_P, chunklength);
+			cmapbuffer = Q_malloc (768);
+			Q_memset (cmapbuffer, 0, 768);
+			Q_memcpy (cmapbuffer, LBM_P, chunklength);
 			break;
 
 		case BODYID:
 			body_p = LBM_P;
 
-			pic_p = picbuffer = malloc (bmhd.w*bmhd.h);
+			pic_p = picbuffer = Q_malloc (bmhd.w*bmhd.h);
 			if (formtype == PBMID)
 			{
 			//
@@ -559,7 +559,7 @@ void LoadLBM (char *filename, byte **picture, byte **palette)
 						, pic_p , bmhd.w);
 					else if (bmhd.compression == cm_none)
 					{
-						memcpy (pic_p,body_p,bmhd.w);
+						Q_memcpy (pic_p,body_p,bmhd.w);
 						body_p += Align(bmhd.w);
 					}
 				}
@@ -600,7 +600,7 @@ void LoadLBM (char *filename, byte **picture, byte **palette)
 							, bitplanes[p] , rowsize);
 						else if (bmhd.compression == cm_none)
 						{
-							memcpy (bitplanes[p],body_p,rowsize);
+							Q_memcpy (bitplanes[p],body_p,rowsize);
 							body_p += rowsize;
 						}
 
@@ -613,7 +613,7 @@ void LoadLBM (char *filename, byte **picture, byte **palette)
 		LBM_P += Align(chunklength);
 	}
 
-	free (LBMbuffer);
+	Q_free (LBMbuffer);
 
 	*picture = picbuffer;
 	*palette = cmapbuffer;
@@ -643,7 +643,7 @@ void WriteLBMfile (char *filename, byte *data, int width, int height, byte *pale
 	int    length;
 	bmhd_t  basebmhd;
 
-	lbm = lbmptr = malloc (width*height+1000);
+	lbm = lbmptr = Q_malloc (width*height+1000);
 
 //
 // start FORM
@@ -672,7 +672,7 @@ void WriteLBMfile (char *filename, byte *data, int width, int height, byte *pale
 	bmhdlength = (int *)lbmptr;
 	lbmptr+=4;                      // leave space for length
 
-	memset (&basebmhd,0,sizeof(basebmhd));
+	Q_memset (&basebmhd,0,sizeof(basebmhd));
 	basebmhd.w = BigShort((short)width);
 	basebmhd.h = BigShort((short)height);
 	basebmhd.nPlanes = (BYTE)BigShort(8);
@@ -681,7 +681,7 @@ void WriteLBMfile (char *filename, byte *data, int width, int height, byte *pale
 	basebmhd.pageWidth = BigShort((short)width);
 	basebmhd.pageHeight = BigShort((short)height);
 
-	memcpy (lbmptr,&basebmhd,sizeof(basebmhd));
+	Q_memcpy (lbmptr,&basebmhd,sizeof(basebmhd));
 	lbmptr += sizeof(basebmhd);
 
 	length = lbmptr-(byte *)bmhdlength-4;
@@ -700,7 +700,7 @@ void WriteLBMfile (char *filename, byte *data, int width, int height, byte *pale
 	cmaplength = (int *)lbmptr;
 	lbmptr+=4;                      // leave space for length
 
-	memcpy (lbmptr,palette,768);
+	Q_memcpy (lbmptr,palette,768);
 	lbmptr += 768;
 
 	length = lbmptr-(byte *)cmaplength-4;
@@ -719,7 +719,7 @@ void WriteLBMfile (char *filename, byte *data, int width, int height, byte *pale
 	bodylength = (int *)lbmptr;
 	lbmptr+=4;                      // leave space for length
 
-	memcpy (lbmptr,data,width*height);
+	Q_memcpy (lbmptr,data,width*height);
 	lbmptr += width*height;
 
 	length = lbmptr-(byte *)bodylength-4;
@@ -739,6 +739,6 @@ void WriteLBMfile (char *filename, byte *data, int width, int height, byte *pale
 // write output file
 //
 	SaveFile (filename, lbm, lbmptr-lbm);
-	free (lbm);
+	Q_free (lbm);
 }
 

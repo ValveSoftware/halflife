@@ -21,22 +21,22 @@ void CheckHullFile( qboolean hullfile, char *filename )
 	FILE *f;
 	char scan[ 128 ];
 	vec3_t	new_hulls[NUM_HULLS][2];
-	qboolean read_error = false;
+	qboolean read_error = qfalse;
 	int i;
 
 	if ( !hullfile )
 		return;
 
 	// Open up hull file
-	f = fopen (filename, "r");
+	f = Q_fopen (filename, "r");
 	if ( !f )
 	{
-		printf ("WARNING: Couldn't open hullfile %s, using default hulls", filename );
+		Q_printf ("WARNING: Couldn't open hullfile %s, using default hulls", filename );
 		return;
 	}
 	else
 	{
-		printf("[Reading hulls from '%s']\n", filename);
+		Q_printf("[Reading hulls from '%s']\n", filename);
 	}
 
 	for ( i = 0 ; i < NUM_HULLS; i++ )
@@ -46,18 +46,18 @@ void CheckHullFile( qboolean hullfile, char *filename )
 		vec3_t mins, maxs;
 		int	argCnt;
 
-		if ( !fgets(scan, sizeof(scan), f ) )
+		if ( !Q_fgets(scan, sizeof(scan), f ) )
 		{
-			printf ("WARNING: Error parsing %s, couln't read hull line %i, using default hulls", filename, i );
-			read_error = true;
+			Q_printf ("WARNING: Error parsing %s, couln't read hull line %i, using default hulls", filename, i );
+			read_error = qtrue;
 			break;
 		}
 
-		argCnt = sscanf (scan, "( %f %f %f ) ( %f %f %f ) ", &x1, &y1, &z1, &x2, &y2, &z2 );
+		argCnt = Q_sscanf (scan, "( %f %f %f ) ( %f %f %f ) ", &x1, &y1, &z1, &x2, &y2, &z2 );
 		if ( argCnt != 6 )
 		{
-			printf ("WARNING: Error parsing %s, expeciting '( x y z ) ( x y z )' using default hulls", filename );
-			read_error = true;
+			Q_printf ("WARNING: Error parsing %s, expeciting '( x y z ) ( x y z )' using default hulls", filename );
+			read_error = qtrue;
 			break;
 		}
 		else
@@ -76,12 +76,12 @@ void CheckHullFile( qboolean hullfile, char *filename )
 
 	if ( read_error )
 	{
-		printf ("WARNING: Error parsing %s, using default hulls", filename );
+		Q_printf ("WARNING: Error parsing %s, using default hulls", filename );
 	}
 	else
 	{
-		memcpy( hull_size, new_hulls, 2 * NUM_HULLS * sizeof( vec3_t ) );
+		Q_memcpy( hull_size, new_hulls, 2 * NUM_HULLS * sizeof( vec3_t ) );
 	}
 
-	fclose( f );
+	Q_fclose( f );
 }

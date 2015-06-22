@@ -1,0 +1,20 @@
+#ifndef VSTDLIB_WARNINGS_H
+#define VSTDLIB_WARNINGS_H
+
+#ifdef _WIN32
+#pragma once
+#endif
+
+#ifndef VALVE_NO_CRT_WARNINGS
+#define VALVE_NO_CRT_WARNINGS 1
+#endif 
+
+#ifndef VALVE_NONSTDC_NO_DEPRECATE
+#define VALVE_NONSTDC_NO_DEPRECATE 1
+#endif
+
+#if defined ( VALVE_NO_CRT_WARNINGS ) && (VALVE_NO_CRT_WARNINGS >= 1)
+#define _CRT_SECURE_NO_WARNINGS 1
+#endif
+
+#endif // VSTDLIB_WARNINGS_H

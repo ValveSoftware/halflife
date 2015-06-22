@@ -56,7 +56,7 @@ void Draw_Triangles( void )
 	if (gHUD.m_hsprCursor == 0)
 	{
 		char sz[256];
-		sprintf( sz, "sprites/cursor.spr" );
+		Q_sprintf( sz, "sprites/cursor.spr" );
 		gHUD.m_hsprCursor = SPR_Load( sz );
 	}
 

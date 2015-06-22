@@ -5,6 +5,9 @@
 // $NoKeywords: $
 //=============================================================================
 
+#ifndef __LIGHT_H__
+#define __LIGHT_H__
+
 #include "cmdlib.h"
 #include "mathlib.h"
 #include "bspfile.h"
@@ -27,6 +30,9 @@ typedef struct entity_s
 extern	lightentity_t	lightentities[MAX_MAP_ENTITIES];
 extern	int		numlightentities;
 
+#ifdef ON_EPSILON
+#undef ON_EPSILON
+#endif
 #define	ON_EPSILON	0.1
 
 #define	MAXLIGHTS			1024
@@ -58,3 +64,6 @@ void RotateSample (vec3_t in, vec3_t out);
 extern	qboolean	extrasamples;
 
 extern	float		minlights[MAX_MAP_FACES];
+
+
+#endif // __LIGHT_H__

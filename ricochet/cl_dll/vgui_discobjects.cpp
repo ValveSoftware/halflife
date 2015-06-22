@@ -152,7 +152,7 @@ int CDiscArenaPanel::MsgFunc_GetPlayers(const char *pszName, int iSize, void *pb
 // Message handler. Gets the Ids of the players in the round.
 void CDiscArenaPanel::GetClientList( char *pszString )
 {
-	strcpy( pszString, "" );
+	Q_strcpy( pszString, "" );
 	for (int i = 0; i < m_iNumPlayers; i++ )
 	{
 		if ( m_iClients[i] <= 0 || m_iClients[i] > MAX_PLAYERS )
@@ -167,15 +167,15 @@ void CDiscArenaPanel::GetClientList( char *pszString )
 			{
 				if ( i == (m_iNumPlayers - 1) )
 				{
-					strcat( pszString, CHudTextMessage::BufferedLocaliseTextString( "#And" ) );
+					Q_strcat( pszString, CHudTextMessage::BufferedLocaliseTextString( "#And" ) );
 				}
 				else
 				{
-					strcat( pszString, ", " );
+					Q_strcat( pszString, ", " );
 				}
 			}
 
-			strcat( pszString, g_PlayerInfoList[ m_iClients[i] ].name );
+			Q_strcat( pszString, g_PlayerInfoList[ m_iClients[i] ].name );
 		}
 	}
 }
@@ -203,8 +203,8 @@ CDiscArena_RoundStart::CDiscArena_RoundStart( void ) : CDiscArenaPanel( ARENAWIN
 
 	// Trim the trailing \n from the VS string
 	char sz[32];
-	strcpy( sz, CHudTextMessage::BufferedLocaliseTextString( "#Versus" ) );
-	sz[ strlen(sz) - 1 ] = '\0';
+	Q_strcpy( sz, CHudTextMessage::BufferedLocaliseTextString( "#Versus" ) );
+	sz[ Q_strlen(sz) - 1 ] = '\0';
 	Label *pLabel = new Label( sz, 0, VERSUS_Y, getWide(), YRES(32) );
 	pLabel->setParent( this );
 	pLabel->setBgColor( 0, 0, 0, 255 );
@@ -254,9 +254,10 @@ void CDiscArena_RoundStart::RecalculateText( void )
 		pszLocalized =  "#Round_Start_1_Second";
 	}
 
-	strncpy( szTemp3, CHudTextMessage::BufferedLocaliseTextString( pszLocalized ), sizeof( szTemp3 ) - 1 );
+	Q_strncpy( szTemp3, CHudTextMessage::BufferedLocaliseTextString( pszLocalized ), sizeof( szTemp3 ) - 1 );
+
 	szTemp3[ sizeof( szTemp3 ) - 1 ] = '\0';
-	sprintf( sz, szTemp3, m_iRoundNumber, m_iSecondsToGo );
+	Q_sprintf( sz, szTemp3, m_iRoundNumber, m_iSecondsToGo );
 
 	m_pRound->setText( sz );
 
@@ -268,7 +269,7 @@ void CDiscArena_RoundStart::RecalculateText( void )
 		gViewPort->GetAllPlayersInfo();
 
 	// Find out what team this client's on (if a new battle's just starting)
-	strcpy( szOpponents, "" );
+	Q_strcpy( szOpponents, "" );
 	int iMyTeamNumber = 0;
 	if ( m_iRoundNumber == 1 )
 	{
@@ -280,34 +281,34 @@ void CDiscArena_RoundStart::RecalculateText( void )
 	}
 
 	// Team 1
-	strcpy( sz, "" );
+	Q_strcpy( sz, "" );
 	int i;
 	for (i = 0; i < (m_iNumPlayers / 2); i++ )
 	{
 		if ( g_PlayerInfoList[ m_iClients[i] ].name && g_PlayerInfoList[ m_iClients[i] ].name[0] )
-			strcat( sz, g_PlayerInfoList[ m_iClients[i] ].name );
+			Q_strcat( sz, g_PlayerInfoList[ m_iClients[i] ].name );
 
 		if ( iMyTeamNumber == 2 )
 		{
-			strcpy( szTemp, CHudTextMessage::BufferedLocaliseTextString( "#Opponent" ) );
-			sprintf( szTemp2, szTemp,  g_PlayerInfoList[ m_iClients[i] ].name, g_PlayerExtraInfo[ m_iClients[i] ].deaths, g_PlayerExtraInfo[ m_iClients[i] ].frags );
-			strcat( szOpponents, szTemp2 );
+			Q_strcpy( szTemp, CHudTextMessage::BufferedLocaliseTextString( "#Opponent" ) );
+			Q_sprintf( szTemp2, szTemp,  g_PlayerInfoList[ m_iClients[i] ].name, g_PlayerExtraInfo[ m_iClients[i] ].deaths, g_PlayerExtraInfo[ m_iClients[i] ].frags );
+			Q_strcat( szOpponents, szTemp2 );
 		}
 	}
 	m_pTeamOne->setText( sz );
 
 	// Team 2
-	strcpy( sz, "" );
+	Q_strcpy( sz, "" );
 	for ( ; i < m_iNumPlayers; i++ )
 	{
 		if ( g_PlayerInfoList[ m_iClients[i] ].name && g_PlayerInfoList[ m_iClients[i] ].name[0] )
-			strcat( sz, g_PlayerInfoList[ m_iClients[i] ].name );
+			Q_strcat( sz, g_PlayerInfoList[ m_iClients[i] ].name );
 
 		if ( iMyTeamNumber == 1 )
 		{
-			strcpy( szTemp, CHudTextMessage::BufferedLocaliseTextString( "#Opponent" ) );
-			sprintf( szTemp2, szTemp,  g_PlayerInfoList[ m_iClients[i] ].name, g_PlayerExtraInfo[ m_iClients[i] ].deaths, g_PlayerExtraInfo[ m_iClients[i] ].frags );
-			strcat( szOpponents, szTemp2 );
+			Q_strcpy( szTemp, CHudTextMessage::BufferedLocaliseTextString( "#Opponent" ) );
+			Q_sprintf( szTemp2, szTemp,  g_PlayerInfoList[ m_iClients[i] ].name, g_PlayerExtraInfo[ m_iClients[i] ].deaths, g_PlayerExtraInfo[ m_iClients[i] ].frags );
+			Q_strcat( szOpponents, szTemp2 );
 		}
 	}
 	m_pTeamTwo->setText( sz );
@@ -375,9 +376,10 @@ void CDiscArena_RoundEnd::RecalculateText( void )
 	g_iCannotFire = TRUE;
 
 	// Round Number
-	strncpy( szTemp1, CHudTextMessage::BufferedLocaliseTextString( "#Round_Won" ), sizeof( szTemp1 ) - 1 );
+	Q_strncpy( szTemp1, CHudTextMessage::BufferedLocaliseTextString( "#Round_Won" ), sizeof( szTemp1 ) - 1 );
+
 	szTemp1[ sizeof( szTemp1 ) - 1 ] = '\0';
-	sprintf( sz, szTemp1, m_iRoundNumber );
+	Q_sprintf( sz, szTemp1, m_iRoundNumber );
 
 	m_pRound->setText( sz );
 
@@ -404,18 +406,20 @@ void CDiscArena_RoundEnd::RecalculateText( void )
 		{
 			GetClientList( sz );
 
-			strncpy( szTemp2, CHudTextMessage::BufferedLocaliseTextString( "#Round_Won_Scores" ), sizeof( szTemp2 ) - 1 );
+			Q_strncpy( szTemp2, CHudTextMessage::BufferedLocaliseTextString( "#Round_Won_Scores" ), sizeof( szTemp2 ) - 1 );
+
 			szTemp2[ sizeof( szTemp2 ) - 1 ] = '\0';			
 
-			_snprintf( sz, sizeof( sz ) - 1, szTemp2, sz, iWinningScore, iLosingScore );
+			Q_snprintf( sz, sizeof( sz ) - 1, szTemp2, sz, iWinningScore, iLosingScore );
 		}
 		// Tied?
 		else if ( iWinningScore == iLosingScore )
 		{
-			strncpy( szTemp2, CHudTextMessage::BufferedLocaliseTextString( "#Round_Tied" ), sizeof( szTemp2 ) - 1 );
+			Q_strncpy( szTemp2, CHudTextMessage::BufferedLocaliseTextString( "#Round_Tied" ), sizeof( szTemp2 ) - 1 );
+
 			szTemp2[ sizeof( szTemp2 ) - 1 ] = '\0';			
 
-			_snprintf( sz, sizeof( sz ) - 1, szTemp2, iWinningScore );
+			Q_snprintf( sz, sizeof( sz ) - 1, szTemp2, iWinningScore );
 		}
 		else 
 		{
@@ -432,10 +436,11 @@ void CDiscArena_RoundEnd::RecalculateText( void )
 				pszTemp = "#Round_Lead";
 			}
 
-			strncpy( szTemp2, CHudTextMessage::BufferedLocaliseTextString( pszTemp ), sizeof( szTemp2 ) - 1 );
+			Q_strncpy( szTemp2, CHudTextMessage::BufferedLocaliseTextString( pszTemp ), sizeof( szTemp2 ) - 1 );
+
 			szTemp2[ sizeof( szTemp2 ) - 1 ] = '\0';			
 
-			_snprintf( sz, sizeof( sz ) - 1, szTemp2, sz, iWinningScore, iLosingScore );
+			Q_snprintf( sz, sizeof( sz ) - 1, szTemp2, sz, iWinningScore, iLosingScore );
 		}
 
 		sz[ sizeof( sz ) - 1 ] = '\0';
@@ -478,35 +483,35 @@ void CDiscPowerups::RecalculateText( int iPowerup )
 			return;
 	}
 
-	sprintf(sz, "");
+	Q_sprintf(sz, "");
 
 	if ( iPowerup & POW_TRIPLE )
 	{
-		strcat(sz, CHudTextMessage::BufferedLocaliseTextString("#Triple") );
+		Q_strcat(sz, CHudTextMessage::BufferedLocaliseTextString("#Triple") );
 		bAnd = true;
 	}
 	
 	if ( iPowerup & POW_FAST )
 	{
 		if (bAnd)
-			strcat(sz, ", ");
-		strcat(sz, CHudTextMessage::BufferedLocaliseTextString("#Fast") );
+			Q_strcat(sz, ", ");
+		Q_strcat(sz, CHudTextMessage::BufferedLocaliseTextString("#Fast") );
 		bAnd = true;
 	}
 	
 	if ( iPowerup & POW_FREEZE )
 	{
 		if (bAnd)
-			strcat(sz, ", ");
-		strcat(sz, CHudTextMessage::BufferedLocaliseTextString("#Freeze") );
+			Q_strcat(sz, ", ");
+		Q_strcat(sz, CHudTextMessage::BufferedLocaliseTextString("#Freeze") );
 		bAnd = true;
 	}
 	
 	if ( iPowerup & POW_HARD )
 	{
 		if (bAnd)
-			strcat(sz, ", ");
-		strcat(sz, CHudTextMessage::BufferedLocaliseTextString("#Hard") );
+			Q_strcat(sz, ", ");
+		Q_strcat(sz, CHudTextMessage::BufferedLocaliseTextString("#Hard") );
 	}
 
 	m_pLabel->setText( sz );
@@ -555,17 +560,17 @@ void CDiscRewards::RecalculateText( int iReward )
 
 	// Rewards
 	if ( iReward & REWARD_BOUNCE_NONE )
-		sprintf( sz, CHudTextMessage::BufferedLocaliseTextString( "#Hit_Direct" ) );
+		Q_sprintf( sz, CHudTextMessage::BufferedLocaliseTextString( "#Hit_Direct" ) );
 	if ( iReward & REWARD_BOUNCE_ONE )
-		sprintf( sz, CHudTextMessage::BufferedLocaliseTextString( "#Hit_One" ) );
+		Q_sprintf( sz, CHudTextMessage::BufferedLocaliseTextString( "#Hit_One" ) );
 	if ( iReward & REWARD_BOUNCE_TWO )
-		sprintf( sz, CHudTextMessage::BufferedLocaliseTextString( "#Hit_Two" ) );
+		Q_sprintf( sz, CHudTextMessage::BufferedLocaliseTextString( "#Hit_Two" ) );
 	if ( iReward & REWARD_BOUNCE_THREE )
-		sprintf( sz, CHudTextMessage::BufferedLocaliseTextString( "#Hit_Three" ) );
+		Q_sprintf( sz, CHudTextMessage::BufferedLocaliseTextString( "#Hit_Three" ) );
 	if ( iReward & REWARD_DECAPITATE )
-		sprintf( sz, CHudTextMessage::BufferedLocaliseTextString( "#Hit_Decap" ) );
+		Q_sprintf( sz, CHudTextMessage::BufferedLocaliseTextString( "#Hit_Decap" ) );
 	if ( iReward & REWARD_DOUBLEKILL )
-		sprintf( sz, CHudTextMessage::BufferedLocaliseTextString( "#Hit_Multiple" ) );
+		Q_sprintf( sz, CHudTextMessage::BufferedLocaliseTextString( "#Hit_Multiple" ) );
 
 	if ( iReward & REWARD_TELEPORT )
 		m_pTeleBonus->setVisible( true );

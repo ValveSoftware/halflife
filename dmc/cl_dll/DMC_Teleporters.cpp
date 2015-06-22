@@ -91,36 +91,37 @@ void Dmc_SetKeyValue( dmc_tele_t *pTele, const char *key, const char *value )
 {
 	float x, y, z;
 
-	if ( !stricmp( key, "classname" ) )
+	if ( !Q_stricmp( key, "classname" ) )
 	{
-		strcpy( pTele->classname, value );
+		Q_strcpy( pTele->classname, value );
 	}
-	else if ( !stricmp( key, "target" ) )
+	else if ( !Q_stricmp( key, "target" ) )
 	{
-		strcpy( pTele->target, value );
+		Q_strcpy( pTele->target, value );
 	}
-	else if ( !stricmp( key, "targetname" ) )
+	else if ( !Q_stricmp( key, "targetname" ) )
 	{
-		strcpy( pTele->targetname, value );
+		Q_strcpy( pTele->targetname, value );
 	}
-	else if ( !stricmp( key, "angles" ) )
+	else if ( !Q_stricmp( key, "angles" ) )
 	{
-		if ( sscanf( value, "%f %f %f", &x, &y, &z ) == 3 )
+		if ( Q_sscanf( value, "%f %f %f", &x, &y, &z ) == 3 )
 		{
 			pTele->angles[ 0 ] = x ;
 			pTele->angles[ 1 ] = y;
 			pTele->angles[ 2 ] = z;
 		}
 	}
-	else if ( !stricmp( key, "origin" ) )
+	else if ( !Q_stricmp( key, "origin" ) )
 	{
-		if ( sscanf( value, "%f %f %f", &x, &y, &z ) == 3 )
+		if ( Q_sscanf( value, "%f %f %f", &x, &y, &z ) == 3 )
 		{
 			pTele->origin[ 0 ]  = x;
 			pTele->origin[ 1 ]  = y;
 			pTele->origin[ 2 ]  = z;
 		}
 	}
+
 }
 
 /*
@@ -136,7 +137,7 @@ char *Dmc_ParseTeleporter( char *buffer, dmc_tele_t *pTele, int *error )
 	char		token[ 1024 ];
 	int			n;
 
-	memset( pTele, 0, sizeof( *pTele ) );
+	Q_memset( pTele, 0, sizeof( *pTele ) );
 
 	while (1)
 	{	
@@ -153,10 +154,10 @@ char *Dmc_ParseTeleporter( char *buffer, dmc_tele_t *pTele, int *error )
 		}
 		
 		// Store off the key
-		strcpy ( key, token );
+		Q_strcpy ( key, token );
 
 		// Fix heynames with trailing spaces
-		n = strlen( key );
+		n = Q_strlen( key );
 		while (n && key[n-1] == ' ')
 		{
 			key[n-1] = 0;
@@ -233,11 +234,11 @@ void Dmc_ProcessEnts( char *buffer )
 		}
 
 		// Check classname
-		if ( stricmp( pTele->classname, "trigger_teleport" ) && stricmp( pTele->classname, "info_teleport_destination" ) )
+		if ( Q_stricmp( pTele->classname, "trigger_teleport" ) && Q_stricmp( pTele->classname, "info_teleport_destination" ) )
 			continue;
 
 		// Set type based on classname
-		if ( !stricmp( pTele->classname, "trigger_teleport" ) )
+		if ( !Q_stricmp( pTele->classname, "trigger_teleport" ) )
 		{
 			pTele->type = DMC_TELE;
 		}
@@ -301,7 +302,7 @@ char *Dmc_LoadEntityLump( const char *filename )
 	g_pFileSystem->Seek( fp, curLump->fileofs, FILESYSTEM_SEEK_HEAD );
 
 	// Allocate sufficient memmory
-	buffer = (char *)malloc( size + 1 );
+	buffer = (char *)Q_malloc( size + 1 );
 	if ( !buffer )
 	{
 		g_pFileSystem->Close(fp);
@@ -335,7 +336,7 @@ void Dmc_LoadTeleporters( const char *map )
 	char	*buffer = NULL;
 	char	filename[ 256 ];
 
-	sprintf( filename, "%s", map );
+	Q_sprintf( filename, "%s", map );
 
 	// TODO:  Fix Slashes?
 
@@ -351,7 +352,7 @@ void Dmc_LoadTeleporters( const char *map )
 	Dmc_ProcessEnts( buffer );
 
 	// Discard buffer
-	free( buffer );
+	Q_free( buffer );
 }
 
 /*
@@ -374,7 +375,7 @@ dmc_tele_t *Dmc_FindTarget( const char *name, int numtele, dmc_tele_t *pTeles )
 		if ( !target )
 			continue;
 
-		if ( stricmp( target->targetname, name ) )
+		if ( Q_stricmp( target->targetname, name ) )
 			continue;
 
 		return target;
@@ -505,9 +506,10 @@ void Dmc_CheckTeleporters( struct local_state_s *from, struct local_state_s *to 
 	static char current_level[ 128 ];
 	
 	// See if we've changed to a new map
-	if ( stricmp( current_level, gEngfuncs.pfnGetLevelName() ) )
+	if ( Q_stricmp( current_level, gEngfuncs.pfnGetLevelName() ) )
 	{
-		strcpy( current_level, gEngfuncs.pfnGetLevelName() );
+		Q_strcpy( current_level, gEngfuncs.pfnGetLevelName() );
+
 		Dmc_LoadTeleporters( current_level );
 
 		// Grab sound event

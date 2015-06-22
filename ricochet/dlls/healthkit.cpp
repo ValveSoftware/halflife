@@ -144,7 +144,7 @@ void CWallHealth::KeyValue( KeyValueData *pkvd )
 	}
 	else if (FStrEq(pkvd->szKeyName, "dmdelay"))
 	{
-		m_iReactivate = atoi(pkvd->szValue);
+		m_iReactivate = Q_atoi(pkvd->szValue);
 		pkvd->fHandled = TRUE;
 	}
 	else

@@ -15,7 +15,7 @@ using namespace vgui;
 #define AssertCheck(expr, msg) \
 	if(!(expr))\
 	{\
-		assert(!msg);\
+		Q_assert(!msg);\
 		return 0;\
 	}
 
@@ -68,7 +68,7 @@ bool CGrid::SetDimensions(int xCols, int yRows)
 		return false;
 	}
 
-	memset(m_Widths, 0, sizeof(int) * (xCols*2 + yRows*2));
+	Q_memset(m_Widths, 0, sizeof(int) * (xCols*2 + yRows*2));
 
 	m_xCols = xCols;
 	m_yRows = yRows;

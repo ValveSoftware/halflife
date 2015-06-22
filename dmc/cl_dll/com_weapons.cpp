@@ -58,14 +58,14 @@ void COM_Log( char *pszFile, char *fmt, ...)
 	}
 
 	va_start (argptr,fmt);
-	vsprintf (string, fmt,argptr);
+	Q_vsprintf (string, fmt,argptr);
 	va_end (argptr);
 
-	fp = fopen( pfilename, "a+t");
+	fp = Q_fopen( pfilename, "a+t");
 	if (fp)
 	{
-		fprintf(fp, "%s", string);
-		fclose(fp);
+		Q_fprintf(fp, "%s", string);
+		Q_fclose(fp);
 	}
 }
 

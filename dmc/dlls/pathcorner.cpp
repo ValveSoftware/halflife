@@ -55,7 +55,7 @@ void CPathCorner :: KeyValue( KeyValueData *pkvd )
 {
 	if (FStrEq(pkvd->szKeyName, "wait"))
 	{
-		m_flWait = atof(pkvd->szValue);
+		m_flWait = Q_atof(pkvd->szValue);
 		pkvd->fHandled = TRUE;
 	}
 	else 

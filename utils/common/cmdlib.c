@@ -68,18 +68,18 @@ void Error (char *error, ...)
 {
 	va_list argptr;
 
-	printf ("\n************ ERROR ************\n");
+	Q_printf ("\n************ ERROR ************\n");
 
 	va_start (argptr,error);
-	vprintf (error,argptr);
+	Q_vprintf (error,argptr);
 	va_end (argptr);
-	printf ("\n");
+	Q_printf ("\n");
 
-	exit (1);
+	Q_exit (1);
 }
 
 // only printf if in verbose mode
-qboolean verbose = false;
+qboolean verbose = qfalse;
 void qprintf (char *format, ...)
 {
 	va_list argptr;
@@ -87,7 +87,7 @@ void qprintf (char *format, ...)
 	if (!verbose)
 		return;
 	va_start (argptr,format);
-	vprintf (format,argptr);
+	Q_vprintf (format,argptr);
 	va_end (argptr);
 }
 
@@ -113,24 +113,24 @@ void SetQdirFromPath (char *path)
 
 	if ( qproject[0]=='\0' )
 		{
-		if ( getenv("QPROJECT") )
+		if ( Q_getenv("QPROJECT") )
 		{
-			char c = qproject[ strlen(qproject)-1 ];
-			strcpy( qproject, getenv("QPROJECT") );
+			char c = qproject[ Q_strlen(qproject)-1 ];
+			Q_strcpy( qproject, Q_getenv("QPROJECT") );
 			if ( !PATHSEPARATOR( c ) )
-				strcat( qproject, "\\" );
+				Q_strcat( qproject, "\\" );
 		}
 		else
-			strcpy( qproject, "quiver\\" );
+			Q_strcpy( qproject, "quiver\\" );
 		}
 	if ( qproject[0] != '\\' && qproject[0] != '/' && qproject[1] != ':' )
 		{
-		strcpy( qdir, "\\" );
+		Q_strcpy( qdir, "\\" );
 		}
 
-	strcat( qdir, qproject );
-	strcpy( gamedir, qdir );
-	strcat( gamedir, "\\valve\\" );
+	Q_strcat( qdir, qproject );
+	Q_strcpy( gamedir, qdir );
+	Q_strcat( gamedir, "\\valve\\" );
 
 #else
 	char	temp[1024];
@@ -139,7 +139,7 @@ void SetQdirFromPath (char *path)
 	if (!(path[0] == '/' || path[0] == '\\' || path[1] == ':'))
 	{	// path is partial
 		Q_getwd (temp);
-		strcat (temp, path);
+		Q_strcat (temp, path);
 		path = temp;
 	}
 
@@ -147,12 +147,12 @@ void SetQdirFromPath (char *path)
 	if( !qproject[0] ) {
 		char *pszProj;
 
-		pszProj = getenv("QPROJECT");
+		pszProj = Q_getenv("QPROJECT");
 
 		if (pszProj != NULL)
-			strcpy(qproject, pszProj);
+			Q_strcpy(qproject, pszProj);
 		else
-			strcpy(qproject, "quiver");
+			Q_strcpy(qproject, "quiver");
 	}
 
 try_again:
@@ -161,20 +161,20 @@ try_again:
 	{
 		int iSize = 0;
 
-		if (!Q_strncasecmp( c, qproject, strlen( qproject ) ) )
-			iSize = strlen( qproject ) + 1;
+		if (!Q_strncasecmp( c, qproject, Q_strlen( qproject ) ) )
+			iSize = Q_strlen( qproject ) + 1;
 
 		if (iSize > 0) 
 		{
-			strncpy (qdir, path, c + iSize - path);
-			printf ("qdir: %s\n", qdir);
+			Q_strncpy (qdir, path, c + iSize - path);
+			Q_printf ("qdir: %s\n", qdir);
 			c += iSize;
 			while (*c)
 			{
 				if (*c == '/' || *c == '\\')
 				{
-					strncpy (gamedir, path, c+1-path);
-					printf ("gamedir: %s\n", gamedir);
+					Q_strncpy (gamedir, path, c+1-path);
+					Q_printf ("gamedir: %s\n", gamedir);
 					return;
 				}
 				c++;
@@ -184,9 +184,9 @@ try_again:
 		}
 	}
 
-	if (!strcmp(qproject, "quiver"))
+	if (!Q_strcmp(qproject, "quiver"))
 	{
-		strcpy(qproject, "prospero");
+		Q_strcpy(qproject, "prospero");
 		goto try_again;
 	}
 
@@ -202,10 +202,10 @@ char *ExpandArg (char *path)
 	if (path[0] != '/' && path[0] != '\\' && path[1] != ':')
 	{
 		Q_getwd (full);
-		strcat (full, path);
+		Q_strcat (full, path);
 	}
 	else
-		strcpy (full, path);
+		Q_strcpy (full, path);
 	return full;
 }
 
@@ -217,11 +217,11 @@ char *ExpandPath (char *path)
 		Error ("ExpandPath called without qdir set");
 	if (path[0] == '/' || path[0] == '\\' || path[1] == ':')
 		return path;
-	psz = strstr(path, qdir);
+	psz = Q_strstr(path, qdir);
 	if (psz)
-		strcpy(full, path);
+		Q_strcpy(full, path);
 	else
-		sprintf (full, "%s%s", qdir, path);
+		Q_sprintf (full, "%s%s", qdir, path);
 
 	return full;
 }
@@ -235,7 +235,7 @@ char *ExpandPathAndArchive (char *path)
 
 	if (archive)
 	{
-		sprintf (archivename, "%s/%s", archivedir, path);
+		Q_sprintf (archivename, "%s/%s", archivedir, path);
 		QCopyFile (expanded, archivename);
 	}
 	return expanded;
@@ -245,8 +245,8 @@ char *ExpandPathAndArchive (char *path)
 char *copystring(char *s)
 {
 	char	*b;
-	b = malloc(strlen(s)+1);
-	strcpy (b, s);
+	b = Q_malloc(Q_strlen(s)+1);
+	Q_strcpy (b, s);
 	return b;
 }
 
@@ -261,9 +261,9 @@ double I_FloatTime (void)
 {
 	time_t	t;
 	
-	time (&t);
+	Q_time (&t);
 	
-	return t;
+	return (double)t;
 #if 0
 // more precise, less portable
 	struct timeval tp;
@@ -286,7 +286,7 @@ void Q_getwd (char *out)
 {
 #ifdef WIN32
    _getcwd (out, 256);
-   strcat (out, "\\");
+   Q_strcat (out, "\\");
 #else
    getwd (out);
 #endif
@@ -302,8 +302,8 @@ void Q_mkdir (char *path)
 	if (mkdir (path, 0777) != -1)
 		return;
 #endif
-	if (errno != EEXIST)
-		Error ("mkdir %s: %s",path, strerror(errno));
+	if (Q_errno != EEXIST)
+		Error ("mkdir %s: %s",path, Q_strerror(Q_errno));
 }
 
 /*
@@ -320,7 +320,7 @@ int	FileTime (char *path)
 	if (stat (path,&buf) == -1)
 		return -1;
 	
-	return buf.st_mtime;
+	return (int)buf.st_mtime;
 }
 
 
@@ -349,7 +349,7 @@ skipwhite:
 	{
 		if (c == 0)
 		{
-			com_eof = true;
+			com_eof = qtrue;
 			return NULL;			// end of file;
 		}
 		data++;
@@ -439,18 +439,19 @@ int Q_strcasecmp (char *s1, char *s2)
 	return Q_strncasecmp (s1, s2, 99999);
 }
 
-
+/*
 char *strupr (char *start)
 {
 	char	*in;
 	in = start;
 	while (*in)
 	{
-		*in = toupper(*in);
+		*in = Q_toupper(*in);
 		in++;
 	}
 	return start;
 }
+*/
 
 char *strlower (char *start)
 {
@@ -458,7 +459,7 @@ char *strlower (char *start)
 	in = start;
 	while (*in)
 	{
-		*in = tolower(*in);
+		*in = Q_tolower(*in);
 		in++;
 	}
 	return start;
@@ -507,10 +508,10 @@ int filelength (FILE *f)
 	int		pos;
 	int		end;
 
-	pos = ftell (f);
-	fseek (f, 0, SEEK_END);
-	end = ftell (f);
-	fseek (f, pos, SEEK_SET);
+	pos = Q_ftell (f);
+	Q_fseek (f, 0, SEEK_END);
+	end = Q_ftell (f);
+	Q_fseek (f, pos, SEEK_SET);
 
 	return end;
 }
@@ -520,10 +521,10 @@ FILE *SafeOpenWrite (char *filename)
 {
 	FILE	*f;
 
-	f = fopen(filename, "wb");
+	f = Q_fopen(filename, "wb");
 
 	if (!f)
-		Error ("Error opening %s: %s",filename,strerror(errno));
+		Error ("Error opening %s: %s",filename,Q_strerror(Q_errno));
 
 	return f;
 }
@@ -532,10 +533,10 @@ FILE *SafeOpenRead (char *filename)
 {
 	FILE	*f;
 
-	f = fopen(filename, "rb");
+	f = Q_fopen(filename, "rb");
 
 	if (!f)
-		Error ("Error opening %s: %s",filename,strerror(errno));
+		Error ("Error opening %s: %s",filename,Q_strerror(Q_errno));
 
 	return f;
 }
@@ -543,14 +544,14 @@ FILE *SafeOpenRead (char *filename)
 
 void SafeRead (FILE *f, void *buffer, int count)
 {
-	if ( fread (buffer, 1, count, f) != (size_t)count)
+	if ( Q_fread (buffer, 1, count, f) != (size_t)count)
 		Error ("File read failure");
 }
 
 
 void SafeWrite (FILE *f, void *buffer, int count)
 {
-	if (fwrite (buffer, 1, count, f) != (size_t)count)
+	if (Q_fwrite (buffer, 1, count, f) != (size_t)count)
 		Error ("File read failure");
 }
 
@@ -569,10 +570,10 @@ int    LoadFile (char *filename, void **bufferptr)
 
 	f = SafeOpenRead (filename);
 	length = filelength (f);
-	buffer = malloc (length+1);
+	buffer = Q_malloc (length+1);
 	((char *)buffer)[length] = 0;
 	SafeRead (f, buffer, length);
-	fclose (f);
+	Q_fclose (f);
 
 	*bufferptr = buffer;
 	return length;
@@ -590,7 +591,7 @@ void    SaveFile (char *filename, void *buffer, int count)
 
 	f = SafeOpenWrite (filename);
 	SafeWrite (f, buffer, count);
-	fclose (f);
+	Q_fclose (f);
 }
 
 
@@ -602,7 +603,7 @@ void DefaultExtension (char *path, char *extension)
 // if path doesn't have a .EXT, append extension
 // (extension should include the .)
 //
-	src = path + strlen(path) - 1;
+	src = path + Q_strlen(path) - 1;
 
 	while (!PATHSEPARATOR(*src) && src != path)
 	{
@@ -611,7 +612,7 @@ void DefaultExtension (char *path, char *extension)
 		src--;
 	}
 
-	strcat (path, extension);
+	Q_strcat (path, extension);
 }
 
 
@@ -621,9 +622,9 @@ void DefaultPath (char *path, char *basepath)
 
 	if (PATHSEPARATOR(path[0]))
 		return;                   // absolute path location
-	strcpy (temp,path);
-	strcpy (path,basepath);
-	strcat (path,temp);
+	Q_strcpy (temp,path);
+	Q_strcpy (path,basepath);
+	Q_strcat (path,temp);
 }
 
 
@@ -631,7 +632,7 @@ void    StripFilename (char *path)
 {
 	int             length;
 
-	length = strlen(path)-1;
+	length = Q_strlen(path)-1;
 	while (length > 0 && !PATHSEPARATOR(path[length]))
 		length--;
 	path[length] = 0;
@@ -641,7 +642,7 @@ void    StripExtension (char *path)
 {
 	int             length;
 
-	length = strlen(path)-1;
+	length = Q_strlen(path)-1;
 	while (length > 0 && path[length] != '.')
 	{
 		length--;
@@ -662,7 +663,7 @@ void ExtractFilePath (char *path, char *dest)
 {
 	char    *src;
 
-	src = path + strlen(path) - 1;
+	src = path + Q_strlen(path) - 1;
 
 //
 // back up until a \ or the start
@@ -670,7 +671,7 @@ void ExtractFilePath (char *path, char *dest)
 	while (src != path && !PATHSEPARATOR(*(src-1)))
 		src--;
 
-	memcpy (dest, path, src-path);
+	Q_memcpy (dest, path, src-path);
 	dest[src-path] = 0;
 }
 
@@ -678,7 +679,7 @@ void ExtractFileBase (char *path, char *dest)
 {
 	char    *src;
 
-	src = path + strlen(path) - 1;
+	src = path + Q_strlen(path) - 1;
 
 //
 // back up until a \ or the start
@@ -697,7 +698,7 @@ void ExtractFileExtension (char *path, char *dest)
 {
 	char    *src;
 
-	src = path + strlen(path) - 1;
+	src = path + Q_strlen(path) - 1;
 
 //
 // back up until a . or the start
@@ -710,7 +711,7 @@ void ExtractFileExtension (char *path, char *dest)
 		return;
 	}
 
-	strcpy (dest,src);
+	Q_strcpy (dest,src);
 }
 
 
@@ -751,7 +752,7 @@ int ParseNum (char *str)
 		return ParseHex (str+1);
 	if (str[0] == '0' && str[1] == 'x')
 		return ParseHex (str+2);
-	return atol (str);
+	return Q_atol (str);
 }
 
 
@@ -982,7 +983,7 @@ void QCopyFile (char *from, char *to)
 	length = LoadFile (from, &buffer);
 	CreatePath (to);
 	SaveFile (to, buffer, length);
-	free (buffer);
+	Q_free (buffer);
 }
 
 
@@ -1003,37 +1004,37 @@ void ListPak(char* pakname)
 	long totlen=0;
 
 	SafeRead(f,&head,sizeof(packheader_t));
-	pdir=malloc(head.dirlen);
+	pdir=Q_malloc(head.dirlen);
 
-	fseek(f,head.dirofs,SEEK_SET);
+	Q_fseek(f,head.dirofs,SEEK_SET);
 	SafeRead(f,pdir,head.dirlen);
 	
-	fseek(f,0,SEEK_END);
-	totlen=ftell(f);
+	Q_fseek(f,0,SEEK_END);
+	totlen=Q_ftell(f);
 
-	fclose(f);
+	Q_fclose(f);
 
 	imax=head.dirlen/sizeof(packfile_t);
 
 	for(i;i<imax;i++)
 	{
-		printf ("%64s : %7i\n", pdir[i].name,pdir[i].filelen);
+		Q_printf ("%64s : %7i\n", pdir[i].name,pdir[i].filelen);
 	}
 
-	printf("Total Length: %li bytes\n",totlen);
+	Q_printf("Total Length: %li bytes\n",totlen);
 }
 
 
 
 long flen(FILE* f)
 {
-	long savepos=ftell(f);
+	long savepos=Q_ftell(f);
 	long filelen=0;
 
-	fseek(f,0,SEEK_END);
-	filelen=ftell(f);
+	Q_fseek(f,0,SEEK_END);
+	filelen=Q_ftell(f);
 
-	fseek(f,savepos,SEEK_SET);
+	Q_fseek(f,savepos,SEEK_SET);
 	return filelen;
 }
 

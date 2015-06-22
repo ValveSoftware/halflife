@@ -102,7 +102,7 @@ public:
 	}
 	virtual Panel* startCellEditing(int column,int row)
 	{
-		_textEntry->setText("Goat",strlen("Goat"));
+		_textEntry->setText("Goat",Q_strlen("Goat"));
 		_textEntry->requestFocus();
 		return _textEntry;
 	}
@@ -193,7 +193,8 @@ void ControlConfigPanel::AddCVarFromInputStream(InputStream* is)
 		{
 			break;
 		}
-		if(sscanf(buf,"\"%[^\"]\" \"%[^\"]\"",cvar,desc)==2)
+
+		if(Q_sscanf(buf,"\"%[^\"]\" \"%[^\"]\"",cvar,desc)==2)
 		{
 			AddCVar(cvar,desc);
 		}
@@ -202,8 +203,8 @@ void ControlConfigPanel::AddCVarFromInputStream(InputStream* is)
 
 void ControlConfigPanel::GetCVarBind(const char* cvar,char* bind,int bindLen,char* bindAlt,int bindAltLen)
 {
-	sprintf(bind,"%s : Bind",cvar);
-	sprintf(bindAlt,"%s : BindAlt",cvar);
+	Q_sprintf(bind, "%s : Bind",cvar);
+	Q_sprintf(bindAlt, "%s : BindAlt",cvar);
 }
 
 void ControlConfigPanel::SetCVarBind(const char* cvar,const char* bind,const char* bindAlt)

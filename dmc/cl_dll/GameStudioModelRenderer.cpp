@@ -109,7 +109,7 @@ extern "C" int EXPORT HUD_GetStudioModelInterface( int version, struct r_studio_
 	*ppinterface = &studio;
 
 	// Copy in engine helper functions
-	memcpy( &IEngineStudio, pstudio, sizeof( IEngineStudio ) );
+	Q_memcpy( &IEngineStudio, pstudio, sizeof( IEngineStudio ) );
 
 	// Initialize local variables, etc.
 	R_StudioInit();

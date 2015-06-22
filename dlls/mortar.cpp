@@ -82,17 +82,17 @@ void CFuncMortarField :: KeyValue( KeyValueData *pkvd )
 	}
 	else if (FStrEq(pkvd->szKeyName, "m_flSpread"))
 	{
-		m_flSpread = atof(pkvd->szValue);
+		m_flSpread = Q_atof(pkvd->szValue);
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "m_fControl"))
 	{
-		m_fControl = atoi(pkvd->szValue);
+		m_fControl = Q_atoi(pkvd->szValue);
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "m_iCount"))
 	{
-		m_iCount = atoi(pkvd->szValue);
+		m_iCount = Q_atoi(pkvd->szValue);
 		pkvd->fHandled = TRUE;
 	}
 }

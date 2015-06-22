@@ -50,7 +50,7 @@ void CHud::Think(void)
 	// think about default fov
 	if ( m_iFOV == 0 )
 	{  // only let players adjust up in fov,  and only if they are not overriden by something else
-		m_iFOV = max( default_fov->value, 90 );  
+		m_iFOV = Q_max( default_fov->value, 90 );  
 	}
 
 	
@@ -171,7 +171,7 @@ int CHud :: ReturnStringPixelLength ( char *Hihi )
 {
 	int iNameLength = 0;
 
-	int strleng = ( strlen( Hihi ) );
+	int strleng = ( Q_strlen( Hihi ) );
 
 	for ( int har = 0; har < strleng; har++)
 		iNameLength += gHUD.m_scrinfo.charWidths[ Hihi[har] ];
@@ -322,7 +322,7 @@ int CHud :: DrawHudString(int xpos, int ypos, int iMaxX, char *szIt, int r, int 
 int CHud :: DrawHudNumberString( int xpos, int ypos, int iMinX, int iNumber, int r, int g, int b )
 {
 	char szString[32];
-	sprintf( szString, "%d", iNumber );
+	Q_sprintf( szString, "%d", iNumber );
 	return DrawHudStringReverse( xpos, ypos, iMinX, szString, r, g, b );
 
 }

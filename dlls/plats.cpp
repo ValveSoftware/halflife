@@ -62,37 +62,37 @@ void CBasePlatTrain :: KeyValue( KeyValueData *pkvd )
 {
 	if (FStrEq(pkvd->szKeyName, "lip"))
 	{
-		m_flLip = atof(pkvd->szValue);
+		m_flLip = Q_atof(pkvd->szValue);
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "wait"))
 	{
-		m_flWait = atof(pkvd->szValue);
+		m_flWait = Q_atof(pkvd->szValue);
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "height"))
 	{
-		m_flHeight = atof(pkvd->szValue);
+		m_flHeight = Q_atof(pkvd->szValue);
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "rotation"))
 	{
-		m_vecFinalAngle.x = atof(pkvd->szValue);
+		m_vecFinalAngle.x = Q_atof(pkvd->szValue);
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "movesnd"))
 	{
-		m_bMoveSnd = atof(pkvd->szValue);
+		m_bMoveSnd = Q_atof(pkvd->szValue);
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "stopsnd"))
 	{
-		m_bStopSnd = atof(pkvd->szValue);
+		m_bStopSnd = Q_atof(pkvd->szValue);
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "volume"))
 	{
-		m_volume = atof(pkvd->szValue);
+		m_volume = Q_atof(pkvd->szValue);
 		pkvd->fHandled = TRUE;
 	}
 	else
@@ -664,7 +664,7 @@ void CFuncTrain :: KeyValue( KeyValueData *pkvd )
 {
 	if (FStrEq(pkvd->szKeyName, "sounds"))
 	{
-		m_sounds = atoi(pkvd->szValue);
+		m_sounds = Q_atoi(pkvd->szValue);
 		pkvd->fHandled = TRUE;
 	}
 	else
@@ -958,33 +958,33 @@ void CFuncTrackTrain :: KeyValue( KeyValueData *pkvd )
 {
 	if (FStrEq(pkvd->szKeyName, "wheels"))
 	{
-		m_length = atof(pkvd->szValue);
+		m_length = Q_atof(pkvd->szValue);
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "height"))
 	{
-		m_height = atof(pkvd->szValue);
+		m_height = Q_atof(pkvd->szValue);
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "startspeed"))
 	{
-		m_startSpeed = atof(pkvd->szValue);
+		m_startSpeed = Q_atof(pkvd->szValue);
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "sounds"))
 	{
-		m_sounds = atoi(pkvd->szValue);
+		m_sounds = Q_atoi(pkvd->szValue);
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "volume"))
 	{
-		m_flVolume = (float) (atoi(pkvd->szValue));
+		m_flVolume = (float) (Q_atoi(pkvd->szValue));
 		m_flVolume *= 0.1;
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "bank"))
 	{
-		m_flBank = atof(pkvd->szValue);
+		m_flBank = Q_atof(pkvd->szValue);
 		pkvd->fHandled = TRUE;
 	}
 	else
@@ -1010,7 +1010,7 @@ void CFuncTrackTrain :: Blocked( CBaseEntity *pOther )
 	// Blocker is on-ground on the train
 	if ( FBitSet( pevOther->flags, FL_ONGROUND ) && VARS(pevOther->groundentity) == pev )
 	{
-		float deltaSpeed = fabs(pev->speed);
+		float deltaSpeed = Q_fabs(pev->speed);
 		if ( deltaSpeed > 50 )
 			deltaSpeed = 50;
 		if ( !pevOther->velocity.z )
@@ -1126,7 +1126,7 @@ void CFuncTrackTrain :: UpdateSound( void )
 	if (!pev->noise)
 		return;
 
-	flpitch = TRAIN_STARTPITCH + (abs(pev->speed) * (TRAIN_MAXPITCH - TRAIN_STARTPITCH) / TRAIN_MAXSPEED);
+	flpitch = TRAIN_STARTPITCH + (Q_abs(pev->speed) * (TRAIN_MAXPITCH - TRAIN_STARTPITCH) / TRAIN_MAXSPEED);
 
 	if (!m_soundPlaying)
 	{

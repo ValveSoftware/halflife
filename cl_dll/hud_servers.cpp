@@ -186,14 +186,15 @@ void CHudServers::ServerResponse( struct net_response_s *response )
 		if ( response->response )
 		{
 			szresponse = (char *)response->response;
-			len = strlen( szresponse ) + 100 + 1;
-			sprintf( sz, "%i", (int)( 1000.0 * response->ping ) );
+			len = Q_strlen( szresponse ) + 100 + 1;
+			Q_sprintf( sz, "%i", (int)( 1000.0 * response->ping ) );
 
 			browser = new server_t;
 			browser->remote_address = response->remote_address;
 			browser->info = new char[ len ];
 			browser->ping = (int)( 1000.0 * response->ping );
-			strcpy( browser->info, szresponse );
+
+			Q_strcpy( browser->info, szresponse );
 
 			NET_API->SetValueForKey( browser->info, "address", gEngfuncs.pNetAPI->AdrToString( &response->remote_address ), len );
 			NET_API->SetValueForKey( browser->info, "ping", sz, len );
@@ -222,7 +223,7 @@ void CHudServers::PingResponse( struct net_response_s *response )
 	switch ( response->type )
 	{
 	case NETAPI_REQUEST_PING:
-		sprintf( sz, "%.2f", 1000.0 * response->ping );
+		Q_sprintf( sz, "%.2f", 1000.0 * response->ping );
 
 		gEngfuncs.Con_Printf( "ping == %s\n", sz );
 		break;
@@ -311,7 +312,7 @@ int	CHudServers::CompareServers( server_t *p1, server_t *p2 )
 
 			if ( n1 && n2 )
 			{
-				if ( stricmp( n1, n2 ) < 0 )
+				if ( Q_stricmp( n1, n2 ) < 0 )
 					return 1;
 			}
 		}
@@ -588,8 +589,8 @@ int CompareField( CHudServers::server_t *p1, CHudServers::server_t *p2, const ch
 	sz1 = NET_API->ValueForKey( p1->info, fieldname );
 	sz2 = NET_API->ValueForKey( p2->info, fieldname );
 
-	fv1 = atof( sz1 );
-	fv2 = atof( sz2 );
+	fv1 = Q_atof( sz1 );
+	fv2 = Q_atof( sz2 );
 
 	if ( fv1 && fv2 )
 	{
@@ -602,7 +603,7 @@ int CompareField( CHudServers::server_t *p1, CHudServers::server_t *p2, const ch
 	}
 
 	// String compare
-	return stricmp( sz1, sz2 );
+	return Q_stricmp( sz1, sz2 );
 }
 
 int ServerListCompareFunc( CHudServers::server_t *p1, CHudServers::server_t *p2, const char *fieldname )
@@ -637,7 +638,7 @@ void CHudServers::SortServers( const char *fieldname )
 	if ( !m_pServers )
 		return;
 
-	strcpy( g_fieldname, fieldname );
+	Q_strcpy( g_fieldname, fieldname );
 
 	int i;
 	int c = 0;
@@ -652,7 +653,7 @@ void CHudServers::SortServers( const char *fieldname )
 	server_t **pSortArray;
 	
 	pSortArray = new server_t *[ c ];
-	memset( pSortArray, 0, c  * sizeof( server_t * ) );
+	Q_memset( pSortArray, 0, c  * sizeof( server_t * ) );
 
 	// Now copy the list into the pSortArray:
 	p = m_pServers;
@@ -667,7 +668,7 @@ void CHudServers::SortServers( const char *fieldname )
 	size_t nCount = c;
 	size_t nSize  = sizeof( server_t * );
 
-	qsort(
+	Q_qsort(
 		pSortArray,
 		(size_t)nCount,
 		(size_t)nSize,
@@ -765,14 +766,14 @@ int CHudServers::LoadMasterAddresses( int maxservers, int *count, netadr_t *padr
 	int			nDefaultPort;
 
 	// Assume default master and master file
-	strcpy( szMaster, VALVE_MASTER_ADDRESS );    // IP:PORT string
-	strcpy( szMasterFile, MASTER_PARSE_FILE );
+	Q_strcpy( szMaster, VALVE_MASTER_ADDRESS );    // IP:PORT string
+	Q_strcpy( szMasterFile, MASTER_PARSE_FILE );
 
 	// See if there is a command line override
 	i = gEngfuncs.CheckParm( "-comm", &pstart );
 	if ( i && pstart )
 	{
-		strcpy (szMasterFile, pstart );
+		Q_strcpy (szMasterFile, pstart );
 	}
 
 	// Read them in from proper file
@@ -788,12 +789,12 @@ int CHudServers::LoadMasterAddresses( int maxservers, int *count, netadr_t *padr
 	{
 		pstart = gEngfuncs.COM_ParseFile( pstart, m_szToken );
 
-		if ( strlen(m_szToken) <= 0)
+		if ( Q_strlen(m_szToken) <= 0)
 			break;
 
 		bIgnore = true;
 
-		if ( !stricmp( m_szToken, "Master" ) )
+		if ( !Q_stricmp( m_szToken, "Master" ) )
 		{
 			nDefaultPort = PORT_MASTER;
 			bIgnore = FALSE;
@@ -801,10 +802,10 @@ int CHudServers::LoadMasterAddresses( int maxservers, int *count, netadr_t *padr
 
 		// Now parse all addresses between { }
 		pstart = gEngfuncs.COM_ParseFile( pstart, m_szToken );
-		if ( strlen(m_szToken) <= 0 )
+		if ( Q_strlen(m_szToken) <= 0 )
 			break;
 
-		if ( stricmp ( m_szToken, "{" ) )
+		if ( Q_stricmp ( m_szToken, "{" ) )
 			break;
 
 		// Parse addresses until we get to "}"
@@ -815,32 +816,32 @@ int CHudServers::LoadMasterAddresses( int maxservers, int *count, netadr_t *padr
 			// Now parse all addresses between { }
 			pstart = gEngfuncs.COM_ParseFile( pstart, m_szToken );
 			
-			if (strlen(m_szToken) <= 0)
+			if (Q_strlen(m_szToken) <= 0)
 				break;
 
-			if ( !stricmp ( m_szToken, "}" ) )
+			if ( !Q_stricmp ( m_szToken, "}" ) )
 				break;
 			
-			sprintf( base, "%s", m_szToken );
+			Q_sprintf( base, "%s", m_szToken );
 				
 			pstart = gEngfuncs.COM_ParseFile( pstart, m_szToken );
 			
-			if (strlen(m_szToken) <= 0)
+			if (Q_strlen(m_szToken) <= 0)
 				break;
 
-			if ( stricmp( m_szToken, ":" ) )
+			if ( Q_stricmp( m_szToken, ":" ) )
 				break;
 
 			pstart = gEngfuncs.COM_ParseFile( pstart, m_szToken );
 			
-			if (strlen(m_szToken) <= 0)
+			if (Q_strlen(m_szToken) <= 0)
 				break;
 
-			nPort = atoi ( m_szToken );
+			nPort = Q_atoi ( m_szToken );
 			if ( !nPort )
 				nPort = nDefaultPort;
 
-			sprintf( szAdr, "%s:%i", base, nPort );
+			Q_sprintf( szAdr, "%s:%i", base, nPort );
 
 			// Can we resolve it any better
 			if ( !NET_API->StringToAdr( szAdr, &adr ) )
@@ -856,7 +857,7 @@ int CHudServers::LoadMasterAddresses( int maxservers, int *count, netadr_t *padr
 finish_master:
 	if ( !nCount )
 	{
-		sprintf( szMaster, VALVE_MASTER_ADDRESS );    // IP:PORT string
+		Q_sprintf( szMaster, VALVE_MASTER_ADDRESS );    // IP:PORT string
 
 		// Convert to netadr_t
 		if ( NET_API->StringToAdr ( szMaster, &adr ) )
@@ -921,7 +922,7 @@ void CHudServers::RequestBroadcastList( int clearpending )
 	m_dStarted		= m_fElapsed;
 
 	netadr_t		adr;
-	memset( &adr, 0, sizeof( adr ) );
+	Q_memset( &adr, 0, sizeof( adr ) );
 
 	if ( clearpending )
 	{

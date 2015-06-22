@@ -51,7 +51,7 @@ public:
 	{
 		char buf[256];
 		_textEntry->getText(0,buf,256);
-		sscanf(buf,"%d",&_bindIndex);
+		Q_sscanf(buf,"%d",&_bindIndex);
 	}
 protected:
 	virtual void paintBackground()

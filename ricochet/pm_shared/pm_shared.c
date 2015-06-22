@@ -13,6 +13,8 @@
 *
 ****/
 
+#include "vstdlib/warnings.h"
+
 #include <assert.h>
 #include "mathlib.h"
 #include "const.h"
@@ -26,6 +28,8 @@
 #include <string.h> // strcpy
 #include <stdlib.h> // atoi
 #include <ctype.h>  // isspace
+
+#include "vstdlib/vstdlib.h"
 
 #ifdef CLIENT_DLL
 	// Spectator Mode
@@ -120,8 +124,8 @@ typedef struct hull_s
 
 // double to float warning
 #pragma warning(disable : 4244)
-#define max(a, b)  (((a) > (b)) ? (a) : (b))
-#define min(a, b)  (((a) < (b)) ? (a) : (b))
+//#define max(a, b)  (((a) > (b)) ? (a) : (b))
+//#define min(a, b)  (((a) < (b)) ? (a) : (b))
 // up / down
 #define	PITCH	0
 // left / right
@@ -162,13 +166,13 @@ void PM_SwapTextures( int i, int j )
 	char chTemp;
 	char szTemp[ CBTEXTURENAMEMAX ];
 
-	strcpy( szTemp, grgszTextureName[ i ] );
+	Q_strcpy( szTemp, grgszTextureName[ i ] );
 	chTemp = grgchTextureType[ i ];
 	
-	strcpy( grgszTextureName[ i ], grgszTextureName[ j ] );
+	Q_strcpy( grgszTextureName[ i ], grgszTextureName[ j ] );
 	grgchTextureType[ i ] = grgchTextureType[ j ];
 
-	strcpy( grgszTextureName[ j ], szTemp );
+	Q_strcpy( grgszTextureName[ j ], szTemp );
 	grgchTextureType[ j ] = chTemp;
 }
 
@@ -182,7 +186,7 @@ void PM_SortTextures( void )
 	{
 		for ( j = i + 1; j < gcTextures; j++ )
 		{
-			if ( stricmp( grgszTextureName[ i ], grgszTextureName[ j ] ) > 0 )
+			if ( Q_stricmp( grgszTextureName[ i ], grgszTextureName[ j ] ) > 0 )
 			{
 				// Swap
 				//
@@ -203,11 +207,11 @@ void PM_InitTextureTypes()
 	if ( bTextureTypeInit )
 		return;
 
-	memset(&(grgszTextureName[0][0]), 0, CTEXTURESMAX * CBTEXTURENAMEMAX);
-	memset(grgchTextureType, 0, CTEXTURESMAX);
+	Q_memset(&(grgszTextureName[0][0]), 0, CTEXTURESMAX * CBTEXTURENAMEMAX);
+	Q_memset(grgchTextureType, 0, CTEXTURESMAX);
 
 	gcTextures = 0;
-	memset(buffer, 0, 512);
+	Q_memset(buffer, 0, 512);
 
 	fileSize = pmove->COM_FileSize( "sound/materials.txt" );
 	pMemFile = pmove->COM_LoadFile( "sound/materials.txt", 5, NULL );
@@ -220,21 +224,21 @@ void PM_InitTextureTypes()
 	{
 		// skip whitespace
 		i = 0;
-		while(buffer[i] && isspace(buffer[i]))
+		while(buffer[i] && Q_isspace(buffer[i]))
 			i++;
 		
 		if (!buffer[i])
 			continue;
 
 		// skip comment lines
-		if (buffer[i] == '/' || !isalpha(buffer[i]))
+		if (buffer[i] == '/' || !Q_isalpha(buffer[i]))
 			continue;
 
 		// get texture type
-		grgchTextureType[gcTextures] = toupper(buffer[i++]);
+		grgchTextureType[gcTextures] = Q_toupper(buffer[i++]);
 
 		// skip whitespace
-		while(buffer[i] && isspace(buffer[i]))
+		while(buffer[i] && Q_isspace(buffer[i]))
 			i++;
 		
 		if (!buffer[i])
@@ -242,16 +246,16 @@ void PM_InitTextureTypes()
 
 		// get sentence name
 		j = i;
-		while (buffer[j] && !isspace(buffer[j]))
+		while (buffer[j] && !Q_isspace(buffer[j]))
 			j++;
 
 		if (!buffer[j])
 			continue;
 
 		// null-terminate name and save in sentences array
-		j = min (j, CBTEXTURENAMEMAX-1+i);
+		j = Q_min (j, CBTEXTURENAMEMAX-1+i);
 		buffer[j] = 0;
-		strcpy(&(grgszTextureName[gcTextures++][0]), &(buffer[i]));
+		Q_strcpy(&(grgszTextureName[gcTextures++][0]), &(buffer[i]));
 	}
 
 	// Must use engine to free since we are in a .dll
@@ -267,7 +271,7 @@ char PM_FindTextureType( char *name )
 	int left, right, pivot;
 	int val;
 
-	assert( pm_shared_initialized );
+	Q_assert( pm_shared_initialized );
 
 	left = 0;
 	right = gcTextures - 1;
@@ -276,7 +280,7 @@ char PM_FindTextureType( char *name )
 	{
 		pivot = ( left + right ) / 2;
 
-		val = strnicmp( name, grgszTextureName[ pivot ], CBTEXTURENAMEMAX-1 );
+		val = Q_strnicmp( name, grgszTextureName[ pivot ], CBTEXTURENAMEMAX-1 );
 		if ( val == 0 )
 		{
 			return grgchTextureType[ pivot ];
@@ -491,7 +495,7 @@ void PM_CatagorizeTextureType( void )
 		pTextureName++;
 	// '}}'
 	
-	strcpy( pmove->sztexturename, pTextureName);
+	Q_strcpy( pmove->sztexturename, pTextureName);
 	pmove->sztexturename[ CBTEXTURENAMEMAX - 1 ] = 0;
 		
 	// get texture type
@@ -1215,7 +1219,7 @@ void PM_Friction (void)
 	vel = pmove->velocity;
 	
 	// Calculate speed
-	speed = sqrt(vel[0]*vel[0] +vel[1]*vel[1] + vel[2]*vel[2]);
+	speed = Q_sqrt(vel[0]*vel[0] +vel[1]*vel[1] + vel[2]*vel[2]);
 	
 	// If too slow, return
 	if (speed < 0.1f)
@@ -2017,7 +2021,7 @@ void PM_Duck( void )
 				pmove->bInDuck    = true;
 			}
 
-			time = max( 0.0, ( 1.0 - (float)pmove->flDuckTime / 1000.0 ) );
+			time = Q_max( 0.0, ( 1.0 - (float)pmove->flDuckTime / 1000.0 ) );
 			
 			if ( pmove->bInDuck )
 			{
@@ -2490,7 +2494,7 @@ void PM_Jump (void)
 		return;
 	}
 
-	tfc = atoi( pmove->PM_Info_ValueForKey( pmove->physinfo, "tfc" ) ) == 1 ? true : false;
+	tfc = Q_atoi( pmove->PM_Info_ValueForKey( pmove->physinfo, "tfc" ) ) == 1 ? true : false;
 
 	// Spy that's feigning death cannot jump
 	if ( tfc && 
@@ -2573,7 +2577,7 @@ void PM_Jump (void)
 	}
 
 	// See if user can super long jump?
-	cansuperjump = atoi( pmove->PM_Info_ValueForKey( pmove->physinfo, "slj" ) ) == 1 ? true : false;
+	cansuperjump = Q_atoi( pmove->PM_Info_ValueForKey( pmove->physinfo, "slj" ) ) == 1 ? true : false;
 
 	// Acclerate upward
 	// If we are ducking...
@@ -2593,16 +2597,16 @@ void PM_Jump (void)
 				pmove->velocity[i] = pmove->forward[i] * PLAYER_LONGJUMP_SPEED * 1.6;
 			}
 		
-			pmove->velocity[2] = sqrt(2 * 800 * 56.0);
+			pmove->velocity[2] = Q_sqrt(2 * 800 * 56.0);
 		}
 		else
 		{
-			pmove->velocity[2] = sqrt(2 * 800 * 45.0);
+			pmove->velocity[2] = Q_sqrt(2 * 800 * 45.0);
 		}
 	}
 	else
 	{
-		pmove->velocity[2] = sqrt(2 * 800 * 45.0);
+		pmove->velocity[2] = Q_sqrt(2 * 800 * 45.0);
 	}
 
 	// Decay it for simulation
@@ -2662,7 +2666,7 @@ void PM_CheckWaterJump (void)
 	savehull = pmove->usehull;
 	pmove->usehull = 2;
 	tr = pmove->PM_PlayerTraceEx( vecStart, vecEnd, PM_NORMAL, PM_Ignore );
-	if ( tr.fraction < 1.0 && fabs( tr.plane.normal[2] ) < 0.1f )  // Facing a near vertical wall?
+	if ( tr.fraction < 1.0 && Q_fabs( tr.plane.normal[2] ) < 0.1f )  // Facing a near vertical wall?
 	{
 		vecStart[2] += pmove->player_maxs[ savehull ][2] - WJ_HEIGHT;
 		VectorMA( vecStart, 24, flatforward, vecEnd );
@@ -2711,7 +2715,7 @@ void PM_CheckFalling( void )
 		else if ( pmove->flFallVelocity > PLAYER_MAX_SAFE_FALL_SPEED / 2 )
 		{
 			qboolean tfc = false;
-			tfc = atoi( pmove->PM_Info_ValueForKey( pmove->physinfo, "tfc" ) ) == 1 ? true : false;
+			tfc = Q_atoi( pmove->PM_Info_ValueForKey( pmove->physinfo, "tfc" ) ) == 1 ? true : false;
 
 			if ( tfc )
 			{
@@ -2800,7 +2804,7 @@ float PM_CalcRoll (vec3_t angles, vec3_t velocity, float rollangle, float rollsp
     
 	sign = side < 0 ? -1 : 1;
     
-	side = fabs(side);
+	side = Q_fabs(side);
     
 	value = rollangle;
     
@@ -2828,7 +2832,7 @@ void PM_DropPunchAngle ( vec3_t punchangle )
 	
 	len = VectorNormalize ( punchangle );
 	len -= (10.0 + len * 0.5) * pmove->frametime;
-	len = max( len, 0.0 );
+	len = Q_max( len, 0.0 );
 	VectorScale ( punchangle, len, punchangle);
 }
 
@@ -2847,12 +2851,12 @@ void PM_CheckParamters( void )
 	spd = ( pmove->cmd.forwardmove * pmove->cmd.forwardmove ) +
 		  ( pmove->cmd.sidemove * pmove->cmd.sidemove ) +
 		  ( pmove->cmd.upmove * pmove->cmd.upmove );
-	spd = sqrt( spd );
+	spd = Q_sqrt( spd );
 
 	maxspeed = pmove->clientmaxspeed; //atof( pmove->PM_Info_ValueForKey( pmove->physinfo, "maxspd" ) );
 	if ( maxspeed != 0.0 )
 	{
-		pmove->maxspeed = min( maxspeed, pmove->maxspeed );
+		pmove->maxspeed = Q_min( maxspeed, pmove->maxspeed );
 	}
 
 	if ( ( spd != 0.0 ) &&
@@ -3218,7 +3222,7 @@ void PM_CreateStuckTable( void )
 	int i;
 	float zi[3];
 
-	memset(rgv3tStuckTable, 0, 54 * sizeof(vec3_t));
+	Q_memset(rgv3tStuckTable, 0, 54 * sizeof(vec3_t));
 
 	idx = 0;
 	// Little Moves.
@@ -3330,7 +3334,7 @@ and client.  This will ensure that prediction behaves appropriately.
 
 void PM_Move ( struct playermove_s *ppmove, int server )
 {
-	assert( pm_shared_initialized );
+	Q_assert( pm_shared_initialized );
 
 	pmove = ppmove;
 	
@@ -3363,7 +3367,7 @@ int PM_GetInfo( int ent )
 
 void PM_Init( struct playermove_s *ppmove )
 {
-	assert( !pm_shared_initialized );
+	Q_assert( !pm_shared_initialized );
 
 	pmove = ppmove;
 

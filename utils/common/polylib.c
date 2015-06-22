@@ -24,7 +24,7 @@ void pw(winding_t *w)
 {
 	int		i;
 	for (i=0 ; i<w->numpoints ; i++)
-		printf ("(%5.1f, %5.1f, %5.1f)\n",w->p[i][0], w->p[i][1],w->p[i][2]);
+		Q_printf ("(%5.1f, %5.1f, %5.1f)\n",w->p[i][0], w->p[i][1],w->p[i][2]);
 }
 
 
@@ -46,8 +46,8 @@ winding_t	*AllocWinding (int points)
 	s = sizeof(vec_t)*3*points + sizeof(int);
 	s += sizeof(vec_t) - sizeof(w->numpoints);		// padding
 
-	w = malloc (s);
-	memset (w, 0, s); 
+	w = Q_malloc (s);
+	Q_memset (w, 0, s); 
 
 	return w;
 }
@@ -55,7 +55,7 @@ winding_t	*AllocWinding (int points)
 void FreeWinding (winding_t *w)
 {
 	c_active_windings--;
-	free (w);
+	Q_free (w);
 }
 
 /*
@@ -93,7 +93,7 @@ void	RemoveColinearPoints (winding_t *w)
 
 	c_removed += w->numpoints - nump;
 	w->numpoints = nump;
-	memcpy (w->p, p, nump*sizeof(p[0]));
+	Q_memcpy (w->p, p, nump*sizeof(p[0]));
 }
 
 /*
@@ -130,7 +130,7 @@ vec_t	WindingArea (winding_t *w)
 		VectorSubtract (w->p[i-1], w->p[0], d1);
 		VectorSubtract (w->p[i], w->p[0], d2);
 		CrossProduct (d1, d2, cross);
-		total += 0.5 * VectorLength ( cross );
+		total += (vec_t)(0.5 * VectorLength ( cross ));
 	}
 	return total;
 }
@@ -164,14 +164,14 @@ WindingCenter
 void	WindingCenter (winding_t *w, vec3_t center)
 {
 	int		i;
-	vec3_t	d1, d2, cross;
+	/*vec3_t	d1, d2, cross;*/
 	float	scale;
 
 	VectorCopy (vec3_origin, center);
 	for (i=0 ; i<w->numpoints ; i++)
 		VectorAdd (w->p[i], center, center);
 
-	scale = 1.0/w->numpoints;
+	scale = 1.0f/w->numpoints;
 	VectorScale (center, scale, center);
 }
 
@@ -193,7 +193,7 @@ winding_t *BaseWindingForPlane (vec3_t normal, float dist)
 	x = -1;
 	for (i=0 ; i<3; i++)
 	{
-		v = fabs(normal[i]);
+		v = Q_fabs(normal[i]);
 		if (v > max)
 		{
 			x = i;
@@ -257,8 +257,8 @@ winding_t	*CopyWinding (winding_t *w)
 	winding_t	*c;
 	
 	size = (int)((winding_t *)0)->p[w->numpoints];
-	c = malloc (size);
-	memcpy (c, w, size);
+	c = Q_malloc (size);
+	Q_memcpy (c, w, size);
 	return c;
 }
 
@@ -652,7 +652,7 @@ void CheckWinding (winding_t *w)
 		CrossProduct (facenormal, dir, edgenormal);
 		VectorNormalize (edgenormal);
 		edgedist = DotProduct (p1, edgenormal);
-		edgedist += ON_EPSILON;
+		edgedist += (vec_t)ON_EPSILON;
 		
 	// all other points must be on front side
 		for (j=0 ; j<w->numpoints ; j++)
@@ -678,8 +678,8 @@ int		WindingOnPlaneSide (winding_t *w, vec3_t normal, vec_t dist)
 	int			i;
 	vec_t		d;
 
-	front = false;
-	back = false;
+	front = qfalse;
+	back = qfalse;
 	for (i=0 ; i<w->numpoints ; i++)
 	{
 		d = DotProduct (w->p[i], normal) - dist;
@@ -687,14 +687,14 @@ int		WindingOnPlaneSide (winding_t *w, vec3_t normal, vec_t dist)
 		{
 			if (front)
 				return SIDE_CROSS;
-			back = true;
+			back = qtrue;
 			continue;
 		}
 		if (d > ON_EPSILON)
 		{
 			if (back)
 				return SIDE_CROSS;
-			front = true;
+			front = qtrue;
 			continue;
 		}
 	}

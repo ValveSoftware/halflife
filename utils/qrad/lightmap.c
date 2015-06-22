@@ -78,7 +78,7 @@ void PairEdges (void)
 			{
 				// determine if coplanar
 				if (e->faces[0]->planenum == e->faces[1]->planenum)
-					e->coplanar = true;
+					e->coplanar = qtrue;
 				else if ( smoothing_threshold > 0 )
 				{
 					// see if they fall into a "smoothing group" based on angle of the normals
@@ -378,7 +378,7 @@ void LerpTriangle (triangulation_t *trian, triangle_t *t, vec3_t point, vec3_t r
 	y2 = 0;
 
 #ifdef BROKEN_CODE
-	if (fabs(y1)<ON_EPSILON || fabs(x2)<ON_EPSILON)
+	if (Q_fabs(y1)<ON_EPSILON || Q_fabs(x2)<ON_EPSILON)
 	{
 		VectorCopy( base, result );
 	}
@@ -389,10 +389,10 @@ void LerpTriangle (triangulation_t *trian, triangle_t *t, vec3_t point, vec3_t r
 	}
 #else
 	VectorCopy( base, result );
-	if ( fabs(x2) >= ON_EPSILON )
+	if ( Q_fabs(x2) >= ON_EPSILON )
 		for( i=0; i<3; i++)
 			result[i] += x*d2[i]/x2;
-	if ( fabs(y1) >= ON_EPSILON )
+	if ( Q_fabs(y1) >= ON_EPSILON )
 		for( i=0; i<3; i++)
 			result[i] += y*d1[i]/y1;
 #endif
@@ -410,10 +410,10 @@ qboolean PointInTriangle (vec3_t point, triangle_t *t)
 		e = t->edges[i];
 		d = DotProduct (e->normal, point) - e->dist;
 		if (d < 0)
-			return false;	// not inside
+			return qfalse;	// not inside
 	}
 
-	return true;
+	return qtrue;
 }
 
 /*
@@ -601,8 +601,8 @@ void CalcFaceExtents (lightinfo_t *l)
 		l->exactmins[i] = mins[i];
 		l->exactmaxs[i] = maxs[i];
 		
-		mins[i] = (float)floor(mins[i]/16);
-		maxs[i] = (float)ceil(maxs[i]/16);
+		mins[i] = (float)Q_floor(mins[i]/16);
+		maxs[i] = (float)Q_ceil(maxs[i]/16);
 
 		l->texmins[i] = (int)mins[i];
 		l->texsize[i] = (int)(maxs[i] - mins[i]);
@@ -814,7 +814,7 @@ entity_t *FindTargetEntity (char *target)
 	for (i=0 ; i<num_entities ; i++)
 	{
 		n = ValueForKey (&entities[i], "targetname");
-		if (!strcmp (n, target))
+		if (!Q_strcmp (n, target))
 			return &entities[i];
 	}
 
@@ -850,7 +850,7 @@ void CreateDirectLights (void)
 		if( VectorAvg( p->totallight ) >= dlight_threshold )
 			{
 			numdlights++;
-			dl = calloc(1, sizeof(directlight_t));
+			dl = Q_calloc(1, sizeof(directlight_t));
 
 			VectorCopy (p->origin, dl->origin);
 
@@ -882,11 +882,11 @@ void CreateDirectLights (void)
 
 		e = &entities[i];
 		name = ValueForKey (e, "classname");
-		if (strncmp (name, "light", 5))
+		if (Q_strncmp (name, "light", 5))
 			continue;
 
 		numdlights++;
-		dl = calloc(1, sizeof(directlight_t));
+		dl = Q_calloc(1, sizeof(directlight_t));
 
 		GetVectorForKey (e, "origin", dl->origin);
 
@@ -901,7 +901,7 @@ void CreateDirectLights (void)
 		pLight = ValueForKey( e, "_light" );
 		// scanf into doubles, then assign, so it is vec_t size independent
 		r = g = b = scaler = 0;
-		argCnt = sscanf ( pLight, "%lf %lf %lf %lf", &r, &g, &b, &scaler );
+		argCnt = Q_sscanf ( pLight, "%lf %lf %lf %lf", &r, &g, &b, &scaler );
 		dl->intensity[0] = (float)r;
 		if( argCnt == 1 )
 		{
@@ -925,14 +925,14 @@ void CreateDirectLights (void)
 		}
 		else
 		{
-			printf( "entity at (%f,%f,%f) has bad '_light' value : '%s'\n", 
+			Q_printf( "entity at (%f,%f,%f) has bad '_light' value : '%s'\n", 
 					dl->origin[0], dl->origin[1], dl->origin[2], pLight);
 			continue;
 		}
 
 		target = ValueForKey (e, "target");
 
-		if (!strcmp (name, "light_spot") || !strcmp(name, "light_environment") || target[0])
+		if (!Q_strcmp (name, "light_spot") || !Q_strcmp(name, "light_environment") || target[0])
 		{
 			if (!VectorAvg( dl->intensity ))
 				VectorFill( dl->intensity, 500 );
@@ -945,14 +945,14 @@ void CreateDirectLights (void)
 				dl->stopdot2 = dl->stopdot;
 			if (dl->stopdot2 < dl->stopdot)
 				dl->stopdot2 = dl->stopdot;
-			dl->stopdot2 = (float)cos(dl->stopdot2/180*Q_PI);
-			dl->stopdot = (float)cos(dl->stopdot/180*Q_PI);
+			dl->stopdot2 = (float)Q_cos(dl->stopdot2/180*Q_PI);
+			dl->stopdot = (float)Q_cos(dl->stopdot/180*Q_PI);
 
 			if (target[0])
 			{	// point towards target
 				e2 = FindTargetEntity (target);
 				if (!e2)
-					printf ("WARNING: light at (%i %i %i) has missing target\n",
+					Q_printf ("WARNING: light at (%i %i %i) has missing target\n",
 					(int)dl->origin[0], (int)dl->origin[1], (int)dl->origin[2]);
 				else
 				{
@@ -986,8 +986,8 @@ void CreateDirectLights (void)
 					}
 
 					dl->normal[2] = 0;
-					dl->normal[0] = (float)cos (angle/180*Q_PI);
-					dl->normal[1] = (float)sin (angle/180*Q_PI);
+					dl->normal[0] = (float)Q_cos (angle/180*Q_PI);
+					dl->normal[1] = (float)Q_sin (angle/180*Q_PI);
 				}
 
 				angle = FloatForKey (e, "pitch");
@@ -997,11 +997,11 @@ void CreateDirectLights (void)
 					angle = vAngles[0];
 				}
 
-				dl->normal[2] = (float)sin(angle/180*Q_PI);
-				dl->normal[0] *= (float)cos(angle/180*Q_PI);
-				dl->normal[1] *= (float)cos(angle/180*Q_PI);
+				dl->normal[2] = (float)Q_sin(angle/180*Q_PI);
+				dl->normal[0] *= (float)Q_cos(angle/180*Q_PI);
+				dl->normal[1] *= (float)Q_cos(angle/180*Q_PI);
 			}
-			if (FloatForKey( e, "_sky" ) || !strcmp(name, "light_environment")) 
+			if (FloatForKey( e, "_sky" ) || !Q_strcmp(name, "light_environment")) 
 			{
 				dl->type = emit_skylight;
 				dl->stopdot2 = FloatForKey( e, "_sky" ); // hack stopdot2 to a sky key number
@@ -1016,7 +1016,7 @@ void CreateDirectLights (void)
 
 		if (dl->type != emit_skylight)
 		{
-			l1 = max( dl->intensity[0], max( dl->intensity[1], dl->intensity[2] ) );
+			l1 = Q_max( dl->intensity[0], Q_max( dl->intensity[1], dl->intensity[2] ) );
 			l1 = l1 * l1 / 10;
 
 			dl->intensity[0] *= l1;
@@ -1045,7 +1045,7 @@ for ( l = 0; l < numleafs; l++ )
 	while ( dl = directlights[l] )
 	{
 		directlights[l] = dl->next;
-		free(dl);
+		Q_free(dl);
 	}
 }
 
@@ -1059,7 +1059,7 @@ float	r_avertexnormals[NUMVERTEXNORMALS][3] = {
 #include "..\..\engine\anorms.h"
 };
 
-#define VectorMaximum(a) ( max( (a)[0], max( (a)[1], (a)[2] ) ) )
+#define VectorMaximum(a) ( Q_max( (a)[0], Q_max( (a)[1], (a)[2] ) ) )
 
 void GatherSampleLight (vec3_t pos, byte *pvs, vec3_t normal, vec3_t *sample, byte *styles)
 {
@@ -1152,7 +1152,7 @@ void GatherSampleLight (vec3_t pos, byte *pvs, vec3_t normal, vec3_t *sample, by
 
 					if ( style_index == MAXLIGHTMAPS )
 					{
-						printf ("WARNING: Too many direct light styles on a face(%f,%f,%f)\n", 
+						Q_printf ("WARNING: Too many direct light styles on a face(%f,%f,%f)\n", 
 							pos[0], pos[1], pos[2] );
 						continue;
 					}
@@ -1198,7 +1198,7 @@ void GatherSampleLight (vec3_t pos, byte *pvs, vec3_t normal, vec3_t *sample, by
 
 			if ( style_index == MAXLIGHTMAPS )
 			{
-				printf ("WARNING: Too many direct light styles on a face(%f,%f,%f)\n", 
+				Q_printf ("WARNING: Too many direct light styles on a face(%f,%f,%f)\n", 
 					pos[0], pos[1], pos[2] );
 				return;
 			}
@@ -1282,11 +1282,11 @@ GetPhongNormal( int facenum, vec3_t spot, vec3_t phongnormal )
 			int e1 = dsurfedges[f->firstedge + ((j-1)%f->numedges)];
 			int e2 = dsurfedges[f->firstedge + ((j+1)%f->numedges)];
 			vec3_t	n1, n2;
-			edgeshare_t	*es = &edgeshare[abs(e)];
-			edgeshare_t	*es1 = &edgeshare[abs(e1)];
-			edgeshare_t	*es2 = &edgeshare[abs(e2)];
+			edgeshare_t	*es = &edgeshare[Q_abs(e)];
+			edgeshare_t	*es1 = &edgeshare[Q_abs(e1)];
+			edgeshare_t	*es2 = &edgeshare[Q_abs(e2)];
 			dface_t	*f2;
-			float		a, a1, a2, d1, d2, aa, bb, ab;
+			float		/*a,*/ a1, a2, /*d1, d2,*/ aa, bb, ab;
 
 			if ( es->coplanar && es1->coplanar && es2->coplanar 
 			|| VectorCompare(es->interface_normal, vec3_origin)
@@ -1336,7 +1336,7 @@ GetPhongNormal( int facenum, vec3_t spot, vec3_t phongnormal )
 				VectorNormalize(n2);
 
 				// Interpolate between the center and edge normals based on sample position
-				VectorScale( facenormal, 1.0 - a1 - a2, phongnormal );
+				VectorScale( facenormal, (vec_t)(1.0 - a1 - a2), phongnormal );
 				VectorScale( n1, a1, temp );
 				VectorAdd( phongnormal, temp, phongnormal );
 				VectorScale( n2, a2, temp );
@@ -1383,7 +1383,7 @@ void BuildFacelights (int facenum)
 
 	f->styles[0] = 0; // Everyone gets the style zero map.
 
-	memset (&l, 0, sizeof(l));
+	Q_memset (&l, 0, sizeof(l));
 	l.surfnum = facenum;
 	l.face = f;
 
@@ -1412,7 +1412,7 @@ void BuildFacelights (int facenum)
 	facelight[facenum].numsamples = l.numsurfpt;
 
 	for (k=0 ; k<MAXLIGHTMAPS; k++)
-		facelight[facenum].samples[k] = calloc(l.numsurfpt, sizeof(sample_t));
+		facelight[facenum].samples[k] = Q_calloc(l.numsurfpt, sizeof(sample_t));
 
 	spot = l.surfpt[0];
 	for (i=0 ; i<l.numsurfpt ; i++, spot += 3)
@@ -1425,7 +1425,7 @@ void BuildFacelights (int facenum)
 	    // get the PVS for the pos to limit the number of checks
         if (!visdatasize)
         {       
-            memset (pvs, 255, (numleafs+7)/8 );
+            Q_memset (pvs, 255, (numleafs+7)/8 );
             lastoffset = -1;
         }
         else 
@@ -1468,7 +1468,7 @@ void BuildFacelights (int facenum)
 						VectorCopy( l.surfpt[i], pos );
 						VectorAdd( pos, l.surfpt[i], pos );
 						VectorAdd( pos, l.surfpt[subsample], pos );
-						VectorScale( pos, 1.0/3.0, pos );
+						VectorScale( pos, (vec_t)(1.0/3.0), pos );
 
 						GetPhongNormal( facenum, pos, pointnormal );
 						GatherSampleLight( pos, pvs, pointnormal, subsampled, f->styles );
@@ -1482,7 +1482,7 @@ void BuildFacelights (int facenum)
 				}
 			}
 			for( j=0; j < MAXLIGHTMAPS && (f->styles[j] != 255); j++ )
-				VectorScale( sampled[j], 1.0/subsamples, sampled[j] );
+				VectorScale( sampled[j], (vec_t)(1.0/subsamples), sampled[j] );
 		}
 		else
 		{
@@ -1574,7 +1574,7 @@ PrecompLightmapOffsets()
 {
 int			facenum;
 dface_t		*f;
-patch_t		*patch;
+//patch_t		*patch;
 facelight_t	*fl;
 int			lightstyles;
 
@@ -1681,7 +1681,7 @@ void FinalLightFace (int facenum)
 			// Should be a VectorCopy, but we scale by 2 to compensate for an earlier lighting flaw
 			// Specifically, the directlight contribution was included in the bounced light AND the directlight
 			// Since many of the levels were built with this assumption, this "fudge factor" compensates for it.
-			VectorScale( samp->light, 2.0, lb ); 
+			VectorScale( samp->light, 2.0f, lb ); 
 
 			if (numbounce > 0 && k == 0 )
 			{
@@ -1710,7 +1710,7 @@ void FinalLightFace (int facenum)
 			// gamma adjust
 			if (gamma != 1.0)
 				for( i=0; i<3; i++ )
-					lb[i] = (float)pow( lb[i] / 256.0f, gamma ) * 256.0f;
+					lb[i] = (float)Q_pow( lb[i] / 256.0f, gamma ) * 256.0f;
 
 			dlightdata[f->lightofs + k*fl->numsamples*3 + j*3] = (unsigned char)lb[0];
 			dlightdata[f->lightofs + k*fl->numsamples*3 + j*3 + 1] = (unsigned char)lb[1];

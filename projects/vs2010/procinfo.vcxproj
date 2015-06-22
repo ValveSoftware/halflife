@@ -51,7 +51,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -59,8 +59,8 @@
       </AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>attrib -r ..\..\utils\procinfo\lib\win32_vc6\procinfo.lib
-copy $(TargetPath) ..\..\utils\procinfo\lib\win32_vc6\procinfo.lib</Command>
+      <Command>attrib -r "..\..\utils\procinfo\lib\win32_vc6\procinfo.lib"
+copy "$(TargetPath)" "..\..\utils\procinfo\lib\win32_vc6\procinfo.lib"</Command>
     </PostBuildEvent>
     <PostBuildEvent>
       <Message>Post-Build Event</Message>
@@ -69,7 +69,7 @@ copy $(TargetPath) ..\..\utils\procinfo\lib\win32_vc6\procinfo.lib</Command>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>WIN32;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -77,8 +77,8 @@ copy $(TargetPath) ..\..\utils\procinfo\lib\win32_vc6\procinfo.lib</Command>
       </AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>attrib -r ..\..\utils\procinfo\lib\win32_vc6\procinfo.lib
-copy $(TargetPath) ..\..\utils\procinfo\lib\win32_vc6\procinfo.lib</Command>
+      <Command>attrib -r "..\..\utils\procinfo\lib\win32_vc6\procinfo.lib"
+copy "$(TargetPath)" "..\..\utils\procinfo\lib\win32_vc6\procinfo.lib"</Command>
       <Message>Post-Build Event</Message>
     </PostBuildEvent>
   </ItemDefinitionGroup>

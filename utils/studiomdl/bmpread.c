@@ -8,10 +8,12 @@
 *
 ****/
 
+#include "../../public/vstdlib/warnings.h"
 
 #include <windows.h>
 #include <STDIO.H>
 
+#include "../../public/vstdlib/vstdlib.h"
 
 int
 ReadBmpFile(
@@ -35,11 +37,11 @@ ReadBmpFile(
 		{ rc = -1000; goto GetOut; }
 
 	// File exists?
-	if ((pfile = fopen(szFile, "rb")) == NULL)
+	if ((pfile = Q_fopen(szFile, "rb")) == NULL)
 		{ rc = -1; goto GetOut; }
 	
 	// Read file header
-	if (fread(&bmfh, sizeof bmfh, 1/*count*/, pfile) != 1)
+	if (Q_fread(&bmfh, sizeof bmfh, 1/*count*/, pfile) != 1)
 		{ rc = -2; goto GetOut; }
 
 	// Bogus file header check
@@ -47,7 +49,7 @@ ReadBmpFile(
 		{ rc = -2000; goto GetOut; }
 
 	// Read info header
-	if (fread(&bmih, sizeof bmih, 1/*count*/, pfile) != 1)
+	if (Q_fread(&bmih, sizeof bmih, 1/*count*/, pfile) != 1)
 		{ rc = -3; goto GetOut; }
 
 	// Bogus info header check
@@ -73,28 +75,28 @@ ReadBmpFile(
 		}
 
 	// Read palette (256 entries)
-	if (fread(rgrgbPalette, cbPalBytes, 1/*count*/, pfile) != 1)
+	if (Q_fread(rgrgbPalette, cbPalBytes, 1/*count*/, pfile) != 1)
 		{ rc = -6; goto GetOut; }
 
 	// Read bitmap bits (remainder of file)
-	cbBmpBits = bmfh.bfSize - ftell(pfile);
-	pbBmpBits = malloc(cbBmpBits);
-	if (fread(pbBmpBits, cbBmpBits, 1/*count*/, pfile) != 1)
+	cbBmpBits = bmfh.bfSize - Q_ftell(pfile);
+	pbBmpBits = Q_malloc(cbBmpBits);
+	if (Q_fread(pbBmpBits, cbBmpBits, 1/*count*/, pfile) != 1)
 		{ rc = -7; goto GetOut; }
 
 	// Set output parameters
-	*ppbPalette = malloc(sizeof rgrgbPalette);
-	memcpy(*ppbPalette, rgrgbPalette, cbPalBytes);
+	*ppbPalette = Q_malloc(sizeof rgrgbPalette);
+	Q_memcpy(*ppbPalette, rgrgbPalette, cbPalBytes);
 	*ppbBits = pbBmpBits;
 
 
     *pwidth = bmih.biWidth;
     *pheight = bmih.biHeight;
 
-	printf("w %d h %d s %d\n",bmih.biWidth, bmih.biHeight, cbBmpBits );
+	Q_printf("w %d h %d s %d\n",bmih.biWidth, bmih.biHeight, cbBmpBits );
 
 GetOut:
-	if (pfile) fclose(pfile);
+	if (pfile) Q_fclose(pfile);
 	return rc;
 	}
 
