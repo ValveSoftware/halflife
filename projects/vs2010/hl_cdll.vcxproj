@@ -69,6 +69,8 @@
     </Link>
     <PostBuildEvent>
       <Command>if not exist "..\..\..\game\mod_hl\cl_dlls" mkdir "..\..\..\game\mod_hl\cl_dlls"
+call "..\..\filecopy.bat" "$(TargetPath)" "..\..\..\game\mod_hl\cl_dlls\$(TargetName).dll"
+call "..\..\filecopy.bat" "$(TargetDir)\$(TargetName).pdb" "..\..\..\game\mod_hl\cl_dlls\$(TargetName).pdb"
 copy "$(TargetPath)" "..\..\..\game\mod_hl\cl_dlls\$(TargetName).dll"
 copy "$(TargetDir)\$(TargetName).pdb" "..\..\..\game\mod_hl\cl_dlls\$(TargetName).pdb"</Command>
     </PostBuildEvent>
@@ -100,6 +102,8 @@ copy "$(TargetDir)\$(TargetName).pdb" "..\..\..\game\mod_hl\cl_dlls\$(TargetName
     </Link>
     <PostBuildEvent>
       <Command>if not exist "..\..\..\game\mod_hl\cl_dlls" mkdir "..\..\..\game\mod_hl\cl_dlls"
+call "..\..\filecopy.bat" "$(TargetPath)" "..\..\..\game\mod_hl\cl_dlls\$(TargetName).dll"
+call "..\..\filecopy.bat" "$(TargetDir)\$(TargetName).pdb" "..\..\..\game\mod_hl\cl_dlls\$(TargetName).pdb"
 copy "$(TargetPath)" "..\..\..\game\mod_hl\cl_dlls\$(TargetName).dll"
 copy "$(TargetDir)\$(TargetName).pdb" "..\..\..\game\mod_hl\cl_dlls\$(TargetName).pdb"</Command>
     </PostBuildEvent>

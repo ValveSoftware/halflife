@@ -5,16 +5,10 @@
 #pragma once
 #endif
 
-#ifndef VALVE_NO_CRT_WARNINGS
-#define VALVE_NO_CRT_WARNINGS 1
-#endif 
-
-#ifndef VALVE_NONSTDC_NO_DEPRECATE
-#define VALVE_NONSTDC_NO_DEPRECATE 1
-#endif
-
-#if defined ( VALVE_NO_CRT_WARNINGS ) && (VALVE_NO_CRT_WARNINGS >= 1)
-#define _CRT_SECURE_NO_WARNINGS 1
-#endif
+// NOTE:
+//
+// Please, do not remove this file.
+//
+// Could be used, later, for POSIX/deprecate tweaks along with public/vstdlib/vstdlib.h
 
 #endif // VSTDLIB_WARNINGS_H

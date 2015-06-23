@@ -656,22 +656,16 @@ protected:
 public:
 	CMenuHandler_StringCommand( char *pszCommand )
 	{
-#if defined ( VS_2010_FIX ) && defined ( VS_2010_FIX_POSIX )
 		Q_strncpy( m_pszCommand, pszCommand, MAX_COMMAND_SIZE);
-#else
-		strncpy( m_pszCommand, pszCommand, MAX_COMMAND_SIZE);
-#endif
+
 		m_pszCommand[MAX_COMMAND_SIZE-1] = '\0';
 		m_iCloseVGUIMenu = false;
 	}
 
 	CMenuHandler_StringCommand( char *pszCommand, int iClose )
 	{
-#if defined ( VS_2010_FIX ) && defined ( VS_2010_FIX_POSIX )
 		Q_strncpy( m_pszCommand, pszCommand, MAX_COMMAND_SIZE);
-#else
-		strncpy( m_pszCommand, pszCommand, MAX_COMMAND_SIZE);
-#endif
+
 		m_pszCommand[MAX_COMMAND_SIZE-1] = '\0';
 		m_iCloseVGUIMenu = true;
 	}
@@ -862,11 +856,7 @@ protected:
 public:
 	CMenuHandler_SpectateFollow( char *player )
 	{
-#if defined ( VS_2010_FIX ) && defined ( VS_2010_FIX_POSIX )
 		Q_strncpy( m_szplayer, player, MAX_COMMAND_SIZE);
-#else
-		strncpy( m_szplayer, player, MAX_COMMAND_SIZE);
-#endif
 		m_szplayer[MAX_COMMAND_SIZE-1] = '\0';
 	}
 
@@ -1234,11 +1224,7 @@ private:
 public:
 	MapButton( const char *pMapName, const char* text,int x,int y,int wide,int tall ) : CommandButton( text,x,y,wide,tall)
 	{
-#if defined ( VS_2010_FIX ) && defined ( VS_2010_FIX_POSIX )
 		Q_sprintf( m_szMapName, "maps/%s.bsp", pMapName );
-#else
-		sprintf( m_szMapName, "maps/%s.bsp", pMapName );
-#endif
 	}
 
 	virtual int IsNotValid()

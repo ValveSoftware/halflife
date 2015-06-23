@@ -16,7 +16,11 @@
 // util.h
 //
 
+#include "vstdlib/warnings.h"
+
 #include "cvardef.h"
+
+#include "vstdlib/vstdlib.h"
 
 #ifndef TRUE
 #define TRUE 1
