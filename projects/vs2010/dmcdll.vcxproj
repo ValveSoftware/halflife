@@ -165,8 +165,7 @@
       <Command>if not exist "..\..\..\game\mod_dmc\dlls" mkdir "..\..\..\game\mod_dmc\dlls"
 call "..\..\filecopy.bat" "$(TargetPath)" "..\..\..\game\mod_dmc\dlls\$(TargetName).dll"
 call "..\..\filecopy.bat" "$(TargetDir)\$(TargetName).pdb" "..\..\..\game\mod_dmc\dlls\$(TargetName).pdb"
-copy "$(TargetPath)" "..\..\..\game\mod_dmc\dlls\$(TargetName).dll"
-copy "$(TargetDir)\$(TargetName).pdb" "..\..\..\game\mod_dmc\dlls\$(TargetName).pdb"</Command>
+</Command>
     </PostBuildEvent>
     <PostBuildEvent>
       <Message>Performing Post-Build Event</Message>
@@ -195,8 +194,7 @@ copy "$(TargetDir)\$(TargetName).pdb" "..\..\..\game\mod_dmc\dlls\$(TargetName).
       <Command>if not exist "..\..\..\game\mod_dmc\dlls" mkdir "..\..\..\game\mod_dmc\dlls"
 call "..\..\filecopy.bat" "$(TargetPath)" "..\..\..\game\mod_dmc\dlls\$(TargetName).dll"
 call "..\..\filecopy.bat" "$(TargetDir)\$(TargetName).pdb" "..\..\..\game\mod_dmc\dlls\$(TargetName).pdb"
-copy "$(TargetPath)" "..\..\..\game\mod_dmc\dlls\$(TargetName).dll"
-copy "$(TargetDir)\$(TargetName).pdb" "..\..\..\game\mod_dmc\dlls\$(TargetName).pdb"</Command>
+</Command>
     </PostBuildEvent>
     <PostBuildEvent>
       <Message>Performing Post-Build Event</Message>
