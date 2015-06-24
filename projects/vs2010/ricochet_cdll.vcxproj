@@ -179,8 +179,7 @@
       <Command>if not exist "..\..\..\game\mod_ricochet\cl_dlls" mkdir "..\..\..\game\mod_ricochet\cl_dlls"
 call "..\..\filecopy.bat" "$(TargetPath)" "..\..\..\game\mod_ricochet\cl_dlls\$(TargetName).dll"
 call "..\..\filecopy.bat" "$(TargetDir)\$(TargetName).pdb" "..\..\..\game\mod_ricochet\cl_dlls\$(TargetName).pdb"
-copy "$(TargetPath)" "..\..\..\game\mod_ricochet\cl_dlls\$(TargetName).dll"
-copy "$(TargetDir)\$(TargetName).pdb" "..\..\..\game\mod_ricochet\cl_dlls\$(TargetName).pdb"</Command>
+</Command>
     </PostBuildEvent>
     <PostBuildEvent>
       <Message>Performing Post-Build Event</Message>
@@ -211,8 +210,7 @@ copy "$(TargetDir)\$(TargetName).pdb" "..\..\..\game\mod_ricochet\cl_dlls\$(Targ
       <Command>if not exist "..\..\..\game\mod_ricochet\cl_dlls" mkdir "..\..\..\game\mod_ricochet\cl_dlls"
 call "..\..\filecopy.bat" "$(TargetPath)" "..\..\..\game\mod_ricochet\cl_dlls\$(TargetName).dll"
 call "..\..\filecopy.bat" "$(TargetDir)\$(TargetName).pdb" "..\..\..\game\mod_ricochet\cl_dlls\$(TargetName).pdb"
-copy "$(TargetPath)" "..\..\..\game\mod_ricochet\cl_dlls\$(TargetName).dll"
-copy "$(TargetDir)\$(TargetName).pdb" "..\..\..\game\mod_ricochet\cl_dlls\$(TargetName).pdb"</Command>
+</Command>
     </PostBuildEvent>
     <PostBuildEvent>
       <Message>Performing Post-Build Event</Message>

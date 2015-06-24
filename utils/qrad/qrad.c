@@ -1086,8 +1086,8 @@ readtransfers(char *transferfile, long numpatches)
 {
 	int		handle;
 	long	readpatches = 0, readtransfers = 0, totalbytes = 0;
-	long	start, end;
-	Q_time((time_t*)&start);
+	time_t	start, end;
+	Q_time(&start);
 	if ( (handle = _open( transferfile, _O_RDONLY | _O_BINARY )) != -1 )
 	{
 		long			filepatches;
@@ -1147,7 +1147,7 @@ readtransfers(char *transferfile, long numpatches)
 				Q_printf("\nIncorrect transfer patch count found!  Save file will now be rebuilt." );
 		}
 		_close( handle );
-		Q_time((time_t*)&end);
+		Q_time(&end);
 		Q_printf("%10.3fMB] (%d)\n",totalbytes/(1024.0*1024.0), end-start);
 	}
 

@@ -1,9 +1,10 @@
 // ServerCtrlDlg.cpp : implementation file
 //
 
+#include "stdafx.h"
+
 #include "../../public/vstdlib/warnings.h"
 
-#include "stdafx.h"
 #include <afxpriv.h>
 #include <mmsystem.h>
 #include "ServerCtrl.h"

@@ -290,8 +290,8 @@ getfiledata(char *filename, char *buffer, int buffersize)
 {
 	long			size = 0;
 	int				handle;
-	long			start,end;
-	Q_time((time_t*)&start);
+	time_t			start,end;
+	Q_time(&start);
 
 	if ( (handle = _open( filename, _O_RDONLY | _O_BINARY )) != -1 )
 	{
@@ -303,7 +303,7 @@ getfiledata(char *filename, char *buffer, int buffersize)
 			buffer += bytesread;
 		}
 		_close( handle );
-		Q_time((time_t*)&end);
+		Q_time(&end);
 		Q_printf("%10.3fMB] (%d)\n",size/(1024.0*1024.0), end-start);
 	}
 
