@@ -8,12 +8,20 @@ include $(CLEAR_VARS)
 LOCAL_MODULE := server
 
 LOCAL_CFLAGS += $(CFLAGS_OPT)
-ifeq ($(TARGET_ARCH),arm)
-LOCAL_CFLAGS += $(CFLAGS_OPT_ARM)
+ifeq ($(TARGET_ARCH_ABI),armeabi-v7a-hard)
+LOCAL_CFLAGS += $(CFLAGS_OPT_ARM) -mfloat-abi=hard -mhard-float
+LOCAL_MODULE_FILENAME = libserver_hardfp
 endif
-ifeq ($(TARGET_ARCH),x86)
+ifeq ($(TARGET_ARCH_ABI),armeabi-v7a)
+LOCAL_CFLAGS += $(CFLAGS_OPT_ARM) -mfloat-abi=softfp
+endif
+ifeq ($(TARGET_ARCH_ABI),armeabi)
+LOCAL_CFLAGS += $(CFLAGS_OPT_ARMv5)
+endif
+ifeq ($(TARGET_ARCH_ABI),x86)
 LOCAL_CFLAGS += $(CFLAGS_OPT_X86)
 endif
+
 
 LOCAL_CFLAGS += -D_LINUX -DCLIENT_WEAPONS -D_DEBUG \
 	-Dstricmp=strcasecmp -Dstrnicmp=strncasecmp -D_snprintf=snprintf \
