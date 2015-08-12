@@ -102,9 +102,7 @@ dirs:
 
 ricochet.$(SHLIBEXT): $(RICOCHETDLL_OBJS) $(RICOCHETWPN_OBJS) $(PM_OBJS) $(GAME_SHARED_OBJS)
 	$(CLINK) $(SHLIBLDFLAGS) -o $(BUILD_DIR)/$@ $(RICOCHETDLL_OBJS) $(RICOCHETWPN_OBJS) $(PM_OBJS) $(GAME_SHARED_OBJS) $(LDFLAGS) $(CPP_LIB)
-	p4 edit ../../game/mod/dlls/$@
-	cp $(BUILD_DIR)/$@  ../../game/mod/dlls
-	./gendbg.sh ../../game/mod/dlls/$@
+	./gendbg.sh $(BUILD_DIR)/$@
 		
 $(RICOCHETWPN_OBJ_DIR)/%.o : $(RICOCHETWPN_SRC_DIR)/%.cpp
 	$(DO_RICOCHETWPN_CC)
