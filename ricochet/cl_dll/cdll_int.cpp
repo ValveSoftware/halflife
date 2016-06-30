@@ -81,21 +81,24 @@ int EXPORT HUD_GetHullBounds( int hullnumber, float *mins, float *maxs )
 {
 	int iret = 0;
 
+	Vector& vecMins = *reinterpret_cast<Vector*>( mins );
+	Vector& vecMaxs = *reinterpret_cast<Vector*>( maxs );
+
 	switch ( hullnumber )
 	{
 	case 0:				// Normal player
-		mins = Vector(-16, -16, -36);
-		maxs = Vector(16, 16, 36);
+		vecMins = Vector( -16, -16, -36 );
+		vecMaxs = Vector( 16, 16, 36 );
 		iret = 1;
 		break;
 	case 1:				// Crouched player
-		mins = Vector(-16, -16, -18 );
-		maxs = Vector(16, 16, 18 );
+		vecMins = Vector( -16, -16, -18 );
+		vecMaxs = Vector( 16, 16, 18 );
 		iret = 1;
 		break;
 	case 2:				// Point based hull
-		mins = Vector( 0, 0, 0 );
-		maxs = Vector( 0, 0, 0 );
+		vecMins = Vector( 0, 0, 0 );
+		vecMaxs = Vector( 0, 0, 0 );
 		iret = 1;
 		break;
 	}
