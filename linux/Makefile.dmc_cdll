@@ -20,9 +20,9 @@ INCLUDEDIRS=-I$(PUBLIC_SRC_DIR) -I../utils/vgui/include -I$(DMC_SRC_DIR)/../dlls
 	-I../engine -I$(COMMON_SRC_DIR) -I../utils/common -I$(DMC_SRC_DIR)/../pm_shared -I$(DMC_SRC_DIR) -I../game_shared  -I../external
 
 ifeq ($(OS),Darwin)
-LDFLAGS=$(SHLIBLDFLAGS) $(CPP_LIB) -framework Carbon $(CFG)/vgui.dylib -L. -lSDL2-2.0.0
+LDFLAGS=$(SHLIBLDFLAGS) $(CPP_LIB) -framework Carbon release/vgui.dylib -L. -lSDL2-2.0.0
 else
-LDFLAGS=$(SHLIBLDFLAGS) $(CPP_LIB) vgui.so -L. libSDL2-2.0.so.0
+LDFLAGS=$(SHLIBLDFLAGS) $(CPP_LIB) release/vgui.so -L. libSDL2-2.0.so.0
 endif
 
 DO_CC=$(CPLUS) $(INCLUDEDIRS) $(CFLAGS) -o $@ -c $<
