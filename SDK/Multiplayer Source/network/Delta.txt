@@ -1,0 +1,2 @@
+Place delta.lst in the valve\ folder ( or a customized copy can be placed in your game directory's folder )
+
