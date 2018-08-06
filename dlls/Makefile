@@ -1,186 +1,181 @@
-#
-# Half-Life Full SDK 2.3 hl_i386.so Makefile for x86 Linux
-#
-# October 2002 by Leon Hartwig (hartwig@valvesoftware.com)
-#
+# hl.dll Makefile for Microsoft C++ compiler
 
-DLLNAME=hl
+TARGET=hl.dll
+DEF_FILE=hl.def
+HL_DIR=C:\Program Files (x86)\Steam\steamapps\common\Half-Life
+MOD_NAME=valve
 
-ARCH=i386
 
-#make sure this is the correct compiler for your system
-CC=gcc
+############################################################################
+
+CC=cl
+LINK=link
+CFLAGS=/Gd /GR /MT /GL /Gy /Oi /O2 /D NDEBUG /D WIN32 /D _WINDOWS /D VALVE_DLL /D CLIENT_WEAPONS /D QUIVER /D VOXEL /D QUAKE2 /D _WINDLL
+LDFLAGS= /INCREMENTAL:NO /SUBSYSTEM:WINDOWS /LTCG /TLBID:1 /DYNAMICBASE /NXCOMPAT
+
+INCLUDEDIRS=/I ..\dlls /I ..\engine /I ..\common /I ..\pm_shared /I ..\game_shared /I ..\public
 
 DLL_SRCDIR=.
-ENGINE_SRCDIR=../engine
-COMMON_SRCDIR=../common
-WPN_SHARED_SRCDIR=./wpn_shared
-PM_SHARED_SRCDIR=../pm_shared
-GAME_SHARED_SRCDIR=../game_shared
+ENGINE_SRCDIR=..\engine
+COMMON_SRCDIR=..\common
+WPN_SHARED_SRCDIR=.\wpn_shared
+PM_SHARED_SRCDIR=..\pm_shared
+GAME_SHARED_SRCDIR=..\game_shared
 
-DLL_OBJDIR=$(DLL_SRCDIR)/obj
-WPN_SHARED_OBJDIR=$(WPN_SHARED_SRCDIR)/obj
-PM_SHARED_OBJDIR=$(PM_SHARED_SRCDIR)/obj
-GAME_SHARED_OBJDIR=$(GAME_SHARED_SRCDIR)/obj
+MAIN_OBJ_DIR=.\obj
+DLL_OBJDIR=$(MAIN_OBJ_DIR)\dlls
+WPN_SHARED_OBJDIR=$(DLL_OBJDIR)\wpn_shared
+PM_SHARED_OBJDIR=$(MAIN_OBJ_DIR)\pm_shared
+GAME_SHARED_OBJDIR=$(MAIN_OBJ_DIR)\game_shared
 
-BASE_CFLAGS=	-Dstricmp=strcasecmp -D_strnicmp=strncasecmp -Dstrnicmp=strncasecmp \
-		-DCLIENT_WEAPONS
-
-#safe optimization
-CFLAGS=$(BASE_CFLAGS) -w -m486 -O1
-
-#full optimization
-#CFLAGS=$(BASE_CFLAGS) -w -O1 -m486 -ffast-math -funroll-loops \
-	-fomit-frame-pointer -fexpensive-optimizations \
-	-malign-loops=2 -malign-jumps=2 -malign-functions=2
-
-#use these when debugging 
-#CFLAGS=$(BASE_CFLAGS) -g
-
-INCLUDEDIRS=-I. -I$(ENGINE_SRCDIR) -I$(COMMON_SRCDIR) -I$(PM_SHARED_SRCDIR) -I$(GAME_SHARED_SRCDIR)
-
-LDFLAGS=
-
-SHLIBEXT=so
-SHLIBCFLAGS=-fPIC
-SHLIBLDFLAGS=-shared
-
-DO_CC=$(CC) $(CFLAGS) $(SHLIBCFLAGS) $(INCLUDEDIRS) -o $@ -c $<
 
 #############################################################################
-# SETUP AND BUILD
-# GAME
-#############################################################################
-
-$(DLL_OBJDIR)/%.o: $(DLL_SRCDIR)/%.cpp
-	$(DO_CC)
-
-$(WPN_SHARED_OBJDIR)/%.o: $(WPN_SHARED_SRCDIR)/%.cpp
-	$(DO_CC)
-
-$(GAME_SHARED_OBJDIR)/%.o: $(GAME_SHARED_SRCDIR)/%.cpp
-	$(DO_CC)
-
-$(PM_SHARED_OBJDIR)/%.o: $(PM_SHARED_SRCDIR)/%.c
-	$(DO_CC)
 
 OBJ = \
-	$(DLL_OBJDIR)/aflock.o \
-	$(DLL_OBJDIR)/agrunt.o \
-	$(DLL_OBJDIR)/airtank.o \
-	$(DLL_OBJDIR)/animating.o \
-	$(DLL_OBJDIR)/animation.o \
-	$(DLL_OBJDIR)/apache.o \
-	$(DLL_OBJDIR)/barnacle.o \
-	$(DLL_OBJDIR)/barney.o \
-	$(DLL_OBJDIR)/bigmomma.o \
-	$(DLL_OBJDIR)/bloater.o \
-	$(DLL_OBJDIR)/bmodels.o \
-	$(DLL_OBJDIR)/bullsquid.o \
-	$(DLL_OBJDIR)/buttons.o \
-	$(DLL_OBJDIR)/cbase.o \
-	$(DLL_OBJDIR)/client.o \
-	$(DLL_OBJDIR)/combat.o \
-	$(DLL_OBJDIR)/controller.o \
-	$(DLL_OBJDIR)/crossbow.o \
-	$(DLL_OBJDIR)/crowbar.o \
-	$(DLL_OBJDIR)/defaultai.o \
-	$(DLL_OBJDIR)/doors.o \
-	$(DLL_OBJDIR)/effects.o \
-	$(DLL_OBJDIR)/egon.o \
-	$(DLL_OBJDIR)/explode.o \
-	$(DLL_OBJDIR)/flyingmonster.o \
-	$(DLL_OBJDIR)/func_break.o \
-	$(DLL_OBJDIR)/func_tank.o \
-	$(DLL_OBJDIR)/game.o \
-	$(DLL_OBJDIR)/gamerules.o \
-	$(DLL_OBJDIR)/gargantua.o \
-	$(DLL_OBJDIR)/gauss.o \
-	$(DLL_OBJDIR)/genericmonster.o \
-	$(DLL_OBJDIR)/ggrenade.o \
-	$(DLL_OBJDIR)/globals.o \
-	$(DLL_OBJDIR)/gman.o \
-	$(DLL_OBJDIR)/h_ai.o \
-	$(DLL_OBJDIR)/h_battery.o \
-	$(DLL_OBJDIR)/h_cine.o \
-	$(DLL_OBJDIR)/h_cycler.o \
-	$(DLL_OBJDIR)/h_export.o \
-	$(DLL_OBJDIR)/handgrenade.o \
-	$(DLL_OBJDIR)/hassassin.o \
-	$(DLL_OBJDIR)/headcrab.o \
-	$(DLL_OBJDIR)/healthkit.o \
-	$(DLL_OBJDIR)/hgrunt.o \
-	$(DLL_OBJDIR)/hornet.o \
-	$(DLL_OBJDIR)/hornetgun.o \
-	$(DLL_OBJDIR)/houndeye.o \
-	$(DLL_OBJDIR)/ichthyosaur.o \
-	$(DLL_OBJDIR)/islave.o \
-	$(DLL_OBJDIR)/items.o \
-	$(DLL_OBJDIR)/leech.o \
-	$(DLL_OBJDIR)/lights.o \
-	$(DLL_OBJDIR)/maprules.o \
-	$(DLL_OBJDIR)/monstermaker.o \
-	$(DLL_OBJDIR)/monsters.o \
-	$(DLL_OBJDIR)/monsterstate.o \
-	$(DLL_OBJDIR)/mortar.o \
-	$(DLL_OBJDIR)/mp5.o \
-	$(DLL_OBJDIR)/multiplay_gamerules.o \
-	$(DLL_OBJDIR)/nihilanth.o \
-	$(DLL_OBJDIR)/nodes.o \
-	$(DLL_OBJDIR)/osprey.o \
-	$(DLL_OBJDIR)/pathcorner.o \
-	$(DLL_OBJDIR)/plane.o \
-	$(DLL_OBJDIR)/plats.o \
-	$(DLL_OBJDIR)/player.o \
-	$(DLL_OBJDIR)/python.o \
-	$(DLL_OBJDIR)/rat.o \
-	$(DLL_OBJDIR)/roach.o \
-	$(DLL_OBJDIR)/rpg.o \
-	$(DLL_OBJDIR)/satchel.o \
-	$(DLL_OBJDIR)/schedule.o \
-	$(DLL_OBJDIR)/scientist.o \
-	$(DLL_OBJDIR)/scripted.o \
-	$(DLL_OBJDIR)/shotgun.o \
-	$(DLL_OBJDIR)/singleplay_gamerules.o \
-	$(DLL_OBJDIR)/skill.o \
-	$(DLL_OBJDIR)/sound.o \
-	$(DLL_OBJDIR)/soundent.o \
-	$(DLL_OBJDIR)/spectator.o \
-	$(DLL_OBJDIR)/squadmonster.o \
-	$(DLL_OBJDIR)/squeakgrenade.o \
-	$(DLL_OBJDIR)/subs.o \
-	$(DLL_OBJDIR)/talkmonster.o \
-	$(DLL_OBJDIR)/teamplay_gamerules.o \
-	$(DLL_OBJDIR)/tempmonster.o \
-	$(DLL_OBJDIR)/tentacle.o \
-	$(DLL_OBJDIR)/triggers.o \
-	$(DLL_OBJDIR)/tripmine.o \
-	$(DLL_OBJDIR)/turret.o \
-	$(DLL_OBJDIR)/util.o \
-	$(DLL_OBJDIR)/weapons.o \
-	$(DLL_OBJDIR)/world.o \
-	$(DLL_OBJDIR)/xen.o \
-	$(DLL_OBJDIR)/zombie.o \
-	$(WPN_SHARED_OBJDIR)/hl_wpn_glock.o \
-	$(GAME_SHARED_OBJDIR)/voice_gamemgr.o \
-	$(PM_SHARED_OBJDIR)/pm_debug.o \
-	$(PM_SHARED_OBJDIR)/pm_math.o \
-	$(PM_SHARED_OBJDIR)/pm_shared.o
+	$(DLL_OBJDIR)\aflock.obj \
+	$(DLL_OBJDIR)\agrunt.obj \
+	$(DLL_OBJDIR)\airtank.obj \
+	$(DLL_OBJDIR)\animating.obj \
+	$(DLL_OBJDIR)\animation.obj	\
+	$(DLL_OBJDIR)\apache.obj \
+	$(DLL_OBJDIR)\barnacle.obj \
+	$(DLL_OBJDIR)\barney.obj \
+	$(DLL_OBJDIR)\bigmomma.obj \
+	$(DLL_OBJDIR)\bloater.obj \
+	$(DLL_OBJDIR)\bmodels.obj \
+	$(DLL_OBJDIR)\bullsquid.obj \
+	$(DLL_OBJDIR)\buttons.obj \
+	$(DLL_OBJDIR)\cbase.obj \
+	$(DLL_OBJDIR)\client.obj \
+	$(DLL_OBJDIR)\combat.obj \
+	$(DLL_OBJDIR)\controller.obj \
+	$(DLL_OBJDIR)\crossbow.obj \
+	$(DLL_OBJDIR)\crowbar.obj \
+	$(DLL_OBJDIR)\defaultai.obj \
+	$(DLL_OBJDIR)\doors.obj \
+	$(DLL_OBJDIR)\effects.obj \
+	$(DLL_OBJDIR)\egon.obj \
+	$(DLL_OBJDIR)\explode.obj \
+	$(DLL_OBJDIR)\flyingmonster.obj \
+	$(DLL_OBJDIR)\func_break.obj \
+	$(DLL_OBJDIR)\func_tank.obj \
+	$(DLL_OBJDIR)\game.obj \
+	$(DLL_OBJDIR)\gamerules.obj \
+	$(DLL_OBJDIR)\gargantua.obj \
+	$(DLL_OBJDIR)\gauss.obj \
+	$(DLL_OBJDIR)\genericmonster.obj \
+	$(DLL_OBJDIR)\ggrenade.obj \
+	$(DLL_OBJDIR)\globals.obj \
+	$(DLL_OBJDIR)\gman.obj \
+	$(DLL_OBJDIR)\h_ai.obj \
+	$(DLL_OBJDIR)\h_battery.obj \
+	$(DLL_OBJDIR)\h_cine.obj \
+	$(DLL_OBJDIR)\h_cycler.obj \
+	$(DLL_OBJDIR)\h_export.obj \
+	$(DLL_OBJDIR)\handgrenade.obj \
+	$(DLL_OBJDIR)\hassassin.obj \
+	$(DLL_OBJDIR)\headcrab.obj \
+	$(DLL_OBJDIR)\healthkit.obj \
+	$(DLL_OBJDIR)\hgrunt.obj \
+	$(DLL_OBJDIR)\hornet.obj \
+	$(DLL_OBJDIR)\hornetgun.obj \
+	$(DLL_OBJDIR)\houndeye.obj \
+	$(DLL_OBJDIR)\ichthyosaur.obj \
+	$(DLL_OBJDIR)\islave.obj \
+	$(DLL_OBJDIR)\items.obj \
+	$(DLL_OBJDIR)\leech.obj \
+	$(DLL_OBJDIR)\lights.obj \
+	$(DLL_OBJDIR)\maprules.obj \
+	$(DLL_OBJDIR)\monstermaker.obj \
+	$(DLL_OBJDIR)\monsters.obj \
+	$(DLL_OBJDIR)\monsterstate.obj \
+	$(DLL_OBJDIR)\mortar.obj \
+	$(DLL_OBJDIR)\mp5.obj \
+	$(DLL_OBJDIR)\multiplay_gamerules.obj \
+	$(DLL_OBJDIR)\nihilanth.obj \
+	$(DLL_OBJDIR)\nodes.obj \
+	$(DLL_OBJDIR)\observer.obj \
+	$(DLL_OBJDIR)\osprey.obj \
+	$(DLL_OBJDIR)\pathcorner.obj \
+	$(DLL_OBJDIR)\plane.obj \
+	$(DLL_OBJDIR)\plats.obj \
+	$(DLL_OBJDIR)\player.obj \
+	$(DLL_OBJDIR)\python.obj \
+	$(DLL_OBJDIR)\rat.obj \
+	$(DLL_OBJDIR)\roach.obj \
+	$(DLL_OBJDIR)\rpg.obj \
+	$(DLL_OBJDIR)\satchel.obj \
+	$(DLL_OBJDIR)\schedule.obj \
+	$(DLL_OBJDIR)\scientist.obj \
+	$(DLL_OBJDIR)\scripted.obj \
+	$(DLL_OBJDIR)\shotgun.obj \
+	$(DLL_OBJDIR)\singleplay_gamerules.obj \
+	$(DLL_OBJDIR)\skill.obj \
+	$(DLL_OBJDIR)\sound.obj \
+	$(DLL_OBJDIR)\soundent.obj \
+	$(DLL_OBJDIR)\spectator.obj \
+	$(DLL_OBJDIR)\squadmonster.obj \
+	$(DLL_OBJDIR)\squeakgrenade.obj \
+	$(DLL_OBJDIR)\subs.obj \
+	$(DLL_OBJDIR)\talkmonster.obj \
+	$(DLL_OBJDIR)\teamplay_gamerules.obj \
+	$(DLL_OBJDIR)\tempmonster.obj \
+	$(DLL_OBJDIR)\tentacle.obj \
+	$(DLL_OBJDIR)\triggers.obj \
+	$(DLL_OBJDIR)\tripmine.obj \
+	$(DLL_OBJDIR)\turret.obj \
+	$(DLL_OBJDIR)\util.obj \
+	$(DLL_OBJDIR)\weapons.obj \
+	$(DLL_OBJDIR)\world.obj \
+	$(DLL_OBJDIR)\xen.obj \
+	$(DLL_OBJDIR)\zombie.obj \
+	$(WPN_SHARED_OBJDIR)\hl_wpn_glock.obj \
+	$(GAME_SHARED_OBJDIR)\voice_gamemgr.obj \
+	$(PM_SHARED_OBJDIR)\pm_debug.obj \
+	$(PM_SHARED_OBJDIR)\pm_math.obj \
+	$(PM_SHARED_OBJDIR)\pm_shared.obj
 
-$(DLLNAME)_$(ARCH).$(SHLIBEXT) : neat $(OBJ)
-	$(CC) $(CFLAGS) $(SHLIBLDFLAGS) $(LDFLAGS) -o $@ $(OBJ)
+all : neat $(TARGET)
+	
+{$(GAME_SHARED_SRCDIR)}.cpp{$(GAME_SHARED_OBJDIR)}.obj :
+	$(CC) $** /c /Fo$(GAME_SHARED_OBJDIR)\ $(CFLAGS) $(INCLUDEDIRS)
+	
+{$(PM_SHARED_SRCDIR)}.c{$(PM_SHARED_OBJDIR)}.obj :
+	$(CC) $** /c /Fo$(PM_SHARED_OBJDIR)\ $(CFLAGS) $(INCLUDEDIRS)
+	
+{$(WPN_SHARED_SRCDIR)}.cpp{$(WPN_SHARED_OBJDIR)}.obj :
+	$(CC) $** /c /Fo$(WPN_SHARED_OBJDIR)\ $(CFLAGS) $(INCLUDEDIRS)
+		
+{$(DLL_SRCDIR)}.cpp{$(DLL_OBJDIR)}.obj :
+	$(CC) $** /c /Fo$(DLL_OBJDIR)\ $(CFLAGS) $(INCLUDEDIRS)
+	
+$(TARGET): $(OBJ)
+	$(LINK) $** /OUT:$@ /DEF:$(DEF_FILE) /DLL $(LDFLAGS)
 
-neat:
-	-mkdir $(DLL_OBJDIR)
-	-mkdir $(WPN_SHARED_OBJDIR)
-	-mkdir $(GAME_SHARED_OBJDIR)
-	-mkdir $(PM_SHARED_OBJDIR)
-clean:
-	-rm -f $(OBJ)
-	-rm -f $(DLLNAME)_$(ARCH).$(SHLIBEXT)
-spotless: clean
-	-rm -r $(DLL_OBJDIR)
-	-rm -r $(WPN_SHARED_OBJDIR)
-	-rm -r $(GAME_SHARED_OBJDIR)
-	-rm -r $(PM_SHARED_OBJDIR)
+install : all
+	@if exist "$(HL_DIR)\$(MOD_NAME)\dlls\$(TARGET)" del "$(HL_DIR)\$(MOD_NAME)\dlls\$(TARGET)"
+	copy $(TARGET) "$(HL_DIR)\$(MOD_NAME)\dlls\$(TARGET)"
+
+neat :
+	@if not exist $(DLL_OBJDIR) mkdir $(DLL_OBJDIR)
+	@if not exist $(WPN_SHARED_OBJDIR) mkdir $(WPN_SHARED_OBJDIR)
+	@if not exist $(GAME_SHARED_OBJDIR) mkdir $(GAME_SHARED_OBJDIR)
+	@if not exist $(PM_SHARED_OBJDIR) mkdir $(PM_SHARED_OBJDIR)
+	
+clean :
+	@del $(OBJ)
+	@del $(TARGET)
+	@del *.lib
+	@del *.exp
+	
+spotless :
+	@if exist $(MAIN_OBJ_DIR) rmdir /S /Q $(MAIN_OBJ_DIR)
+	@if exist $(DLL_OBJDIR) rmdir /S /Q $(DLL_OBJDIR)
+	@if exist $(WPN_SHARED_OBJDIR) rmdir /S /Q $(WPN_SHARED_OBJDIR)
+	@if exist $(GAME_SHARED_OBJDIR) rmdir /S /Q $(GAME_SHARED_OBJDIR)
+	@if exist $(PM_SHARED_OBJDIR) rmdir /S /Q $(PM_SHARED_OBJDIR)
+
+	
+
+
 
