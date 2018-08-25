@@ -1036,7 +1036,7 @@ void CBasePlayerAmmo :: DefaultTouch( CBaseEntity *pOther )
 //=========================================================
 int CBasePlayerWeapon::ExtractAmmo( CBasePlayerWeapon *pWeapon )
 {
-	int			iReturn;
+	int			iReturn = 0;
 
 	if ( pszAmmo1() != NULL )
 	{
