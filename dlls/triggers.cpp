@@ -896,18 +896,33 @@ void CTriggerHurt :: RadiationThink( void )
 //
 void CBaseTrigger :: ToggleUse ( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE useType, float value )
 {
-	if (pev->solid == SOLID_NOT)
-	{// if the trigger is off, turn it on
+	switch (useType){
+	case 1: //Enable
 		pev->solid = SOLID_TRIGGER;
-		
 		// Force retouch
 		gpGlobals->force_retouch++;
-	}
-	else
-	{// turn the trigger off
+		break;
+
+	case 0: //Disable
 		pev->solid = SOLID_NOT;
+		break;
+
+	default: //Toggle
+		if (pev->solid == SOLID_NOT)
+		{// if the trigger is off, turn it on
+			pev->solid = SOLID_TRIGGER;
+
+			// Force retouch
+			gpGlobals->force_retouch++;
+		}
+		else
+		{// turn the trigger off
+			pev->solid = SOLID_NOT;
+		}
+		break;
 	}
 	UTIL_SetOrigin( pev, pev->origin );
+
 }
 
 // When touched, a hurt trigger does DMG points of damage each half-second
