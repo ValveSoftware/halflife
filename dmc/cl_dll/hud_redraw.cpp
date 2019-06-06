@@ -21,8 +21,6 @@
 #include <string.h>
 #include "vgui_viewport.h"
 
-extern int g_iVisibleMouse;
-
 #define MAX_LOGO_FRAMES 56
 
 int grgLogoFrame[MAX_LOGO_FRAMES] = 
