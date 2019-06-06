@@ -1544,7 +1544,7 @@ void TEXTURETYPE_Init()
 	char buffer[512];
 	int i, j;
 	byte *pMemFile;
-	int fileSize, filePos;
+	int fileSize, filePos = 0;
 
 	if (fTextureTypeInit)
 		return;
