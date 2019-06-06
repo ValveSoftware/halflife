@@ -1572,7 +1572,7 @@ IMPLEMENT_SAVERESTORE( CRpg, CBasePlayerWeapon );
 TYPEDESCRIPTION	CRpgRocket::m_SaveData[] = 
 {
 	DEFINE_FIELD( CRpgRocket, m_flIgniteTime, FIELD_TIME ),
-	DEFINE_FIELD( CRpgRocket, m_pLauncher, FIELD_CLASSPTR ),
+	DEFINE_FIELD( CRpgRocket, m_hLauncher, FIELD_EHANDLE ),
 };
 IMPLEMENT_SAVERESTORE( CRpgRocket, CGrenade );
 
