@@ -74,7 +74,11 @@ typedef int BOOL;
 // Misc C-runtime library headers
 #include "stdio.h"
 #include "stdlib.h"
+#if _MSC_VER >= 1900 // C++11 Compatible for Visual Studio 2015 and later.
+#include <cmath>
+#else
 #include "math.h"
+#endif
 
 // Header file containing definition of globalvars_t and entvars_t
 typedef unsigned int	func_t;					//
