@@ -397,7 +397,7 @@ void CHornet::DartTouch( CBaseEntity *pOther )
 
 void CHornet::DieTouch ( CBaseEntity *pOther )
 {
-	if ( pOther && pOther->pev->takedamage )
+	if ( pOther && pOther->pev->takedamage && pev->owner )
 	{// do the damage
 
 		switch (RANDOM_LONG(0,2))
