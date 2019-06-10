@@ -502,11 +502,11 @@ int CHudBenchmark::Draw( float flTime )
 	{
 		if ( m_fReceiveTime && m_nSentFinish )
 		{
-			sprintf( sz, g_stage1[1], Bench_ScoreForValue( FIRST_STAGE, m_StoredLatency ));
+			sprintf( sz, "%s %d", g_stage1[1], Bench_ScoreForValue( FIRST_STAGE, m_StoredLatency ));
 		}
 		else
 		{
-			sprintf( sz, g_stage1[0] );
+			sprintf( sz, "%s", g_stage1[0] );
 		}
 		gHUD.DrawHudString( x, y, 320, sz, 255, 255, 255 );
 
@@ -527,11 +527,11 @@ int CHudBenchmark::Draw( float flTime )
 
 		if ( m_nSentFinish /* Bench_InStage( THIRD_STAGE ) */|| Bench_InStage( FOURTH_STAGE ) )
 		{
-			sprintf( sz, g_stage2[1], Bench_ScoreForValue( SECOND_STAGE, m_fAvgFrameRate ) );
+			sprintf( sz, "%s %d", g_stage2[1], Bench_ScoreForValue( SECOND_STAGE, m_fAvgFrameRate ) );
 		}
 		else
 		{
-			sprintf( sz, g_stage2[0] );
+			sprintf( sz, "%s", g_stage2[0] );
 		}
 		gHUD.DrawHudString( x, y, 320, sz, 255, 255, 255 );
 		y += 20;
@@ -542,11 +542,11 @@ int CHudBenchmark::Draw( float flTime )
 	{
 		if ( m_nSentFinish || Bench_InStage( FOURTH_STAGE ) )
 		{
-			sprintf( sz, g_stage3[1], Bench_ScoreForValue( THIRD_STAGE, m_fAvgScore ) );
+			sprintf( sz, "%s %d", g_stage3[1], Bench_ScoreForValue( THIRD_STAGE, m_fAvgScore ) );
 		}
 		else
 		{
-			sprintf( sz, g_stage3[0] );
+			sprintf( sz, "%s", g_stage3[0] );
 		}
 
 		gHUD.DrawHudString( x, y, 320, sz, 255, 255, 255 );
