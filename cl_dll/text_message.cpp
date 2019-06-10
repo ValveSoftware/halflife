@@ -47,14 +47,15 @@ int CHudTextMessage::Init(void)
 char *CHudTextMessage::LocaliseTextString( const char *msg, char *dst_buffer, int buffer_size )
 {
 	char *dst = dst_buffer;
-	for ( char *src = (char*)msg; *src != 0 && buffer_size > 0; buffer_size-- )
+	for ( char *src = (char*)msg; *src != 0 && (buffer_size - 1) > 0; buffer_size-- )
 	{
 		if ( *src == '#' )
 		{
 			// cut msg name out of string
 			static char word_buf[255];
 			char *wdst = word_buf, *word_start = src;
-			for ( ++src ; (*src >= 'A' && *src <= 'z') || (*src >= '0' && *src <= '9'); wdst++, src++ )
+			int wordbuf_size = 255;
+			for ( ++src ; ((*src >= 'A' && *src <= 'z') || (*src >= '0' && *src <= '9')) && (wordbuf_size - 1) > 0; wdst++, src++, wordbuf_size-- )
 			{
 				*wdst = *src;
 			}
@@ -71,21 +72,20 @@ char *CHudTextMessage::LocaliseTextString( const char *msg, char *dst_buffer, in
 			}
 
 			// copy string into message over the msg name
-			for ( char *wsrc = (char*)clmsg->pMessage; *wsrc != 0; wsrc++, dst++ )
+			for ( char *wsrc = (char*)clmsg->pMessage; *wsrc != 0 && (buffer_size - 1) > 0; wsrc++, dst++, buffer_size-- )
 			{
 				*dst = *wsrc;
 			}
-			*dst = 0;
+			buffer_size++;
 		}
 		else
 		{
 			*dst = *src;
 			dst++, src++;
-			*dst = 0;
 		}
 	}
 
-	dst_buffer[buffer_size-1] = 0; // ensure null termination
+	*dst = 0; // ensure null termination
 	return dst_buffer;
 }
 
