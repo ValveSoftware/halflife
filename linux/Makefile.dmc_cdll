@@ -115,7 +115,9 @@ all: client_dmc.$(SHLIBEXT)
 
 client_dmc.$(SHLIBEXT): $(DMC_OBJS) $(PUBLIC_OBJS) $(COMMON_OBJS) $(GAME_SHARED_OBJS) $(PM_SHARED_OBJS)
 	$(CLINK) -o $(BUILD_DIR)/$@ $(DMC_OBJS) $(PUBLIC_OBJS) $(COMMON_OBJS) $(GAME_SHARED_OBJS) $(PM_SHARED_OBJS) $(LDFLAGS) $(CPP_LIB)
+ifeq ($(PERFORCE), true)
 	p4 edit ../../game/mod/cl_dlls/client.$(SHLIBEXT)
+endif
 	cp $(BUILD_DIR)/$@  ../../game/mod/cl_dlls/client.$(SHLIBEXT)
 	./gendbg.sh ../../game/mod/cl_dlls/client.$(SHLIBEXT)
 
