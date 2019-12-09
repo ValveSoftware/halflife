@@ -1376,7 +1376,7 @@ void SENTENCEG_Init()
 	// init lru lists
 
 	i = 0;
-
+	//index out of range, need switch
 	while (rgsentenceg[i].count && i < CSENTENCEG_MAX)
 	{
 		USENTENCEG_InitLRU(&(rgsentenceg[i].rgblru[0]), rgsentenceg[i].count);
