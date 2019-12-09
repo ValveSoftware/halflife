@@ -408,6 +408,7 @@ void CFuncTank :: ControllerPostFrame( void )
 		Fire( BarrelPosition(), vecForward, m_pController->pev );
 		
 		// HACKHACK -- make some noise (that the AI can hear)
+		// FATALFATAL --- need move if (m_pController) check before 408 line
 		if ( m_pController && m_pController->IsPlayer() )
 			((CBasePlayer *)m_pController)->m_iWeaponVolume = LOUD_GUN_VOLUME;
 
