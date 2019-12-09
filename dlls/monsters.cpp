@@ -266,6 +266,7 @@ void CBaseMonster :: Listen ( void )
 		}
 
 //		iSound = g_pSoundEnt->m_SoundPool[ iSound ].m_iNext;
+		// Need move this line to 266, after 265
 		iSound = pCurrentSound->m_iNext;
 	}
 }
