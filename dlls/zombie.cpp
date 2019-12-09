@@ -325,7 +325,7 @@ void CZombie :: Precache()
 int CZombie::IgnoreConditions ( void )
 {
 	int iIgnore = CBaseMonster::IgnoreConditions();
-
+	//  BAD ZOMBIEEEEEE ! m_Activity == ACT_MELEE_ATTACK1 == m_Activity == ACT_MELEE_ATTACK1
 	if ((m_Activity == ACT_MELEE_ATTACK1) || (m_Activity == ACT_MELEE_ATTACK1))
 	{
 #if 0
