@@ -232,7 +232,7 @@ int CHudStatusBar :: MsgFunc_StatusText( const char *pszName, int iSize, void *p
 	BEGIN_READ( pbuf, iSize );
 
 	int line = READ_BYTE();
-
+	// index out of range! Need index >= MAX_STATUSBAR_VALUES !!!
 	if ( line < 0 || line > MAX_STATUSBAR_LINES )
 		return 1;
 
@@ -254,6 +254,7 @@ int CHudStatusBar :: MsgFunc_StatusValue( const char *pszName, int iSize, void *
 	BEGIN_READ( pbuf, iSize );
 
 	int index = READ_BYTE();
+	// index out of range! Need index >= MAX_STATUSBAR_VALUES !!!
 	if ( index < 1 || index > MAX_STATUSBAR_VALUES )
 		return 1; // index out of range
 
