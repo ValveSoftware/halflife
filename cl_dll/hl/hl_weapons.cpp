@@ -400,7 +400,7 @@ void CBasePlayer::SelectItem(const char *pstr)
 		return;
 
 	CBasePlayerItem *pItem = NULL;
-
+	// FATAL ERROR )))
 	if (!pItem)
 		return;
 
