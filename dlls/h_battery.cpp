@@ -137,6 +137,7 @@ void CRecharge::Use( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE use
 		return;
 
 	// Make sure that we have a caller
+	// NEED MOVE THIS LINE TO 109!!!
 	if (!pActivator)
 		return;
 
