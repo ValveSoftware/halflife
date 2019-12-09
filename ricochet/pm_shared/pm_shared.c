@@ -1667,7 +1667,7 @@ int PM_CheckStuck (void)
 			PM_ResetStuckOffsets( pmove->player_index, pmove->server );
 			do 
 			{
-				i = PM_GetRandomStuckOffsets(pmove->player_index, pmove->server, offset);
+				PM_GetRandomStuckOffsets(pmove->player_index, pmove->server, offset);
 
 				VectorAdd(base, offset, test);
 				if (pmove->PM_TestPlayerPositionEx (test, &traceresult, PM_Ignore ) == -1)
@@ -1816,7 +1816,6 @@ void PM_SpectatorMove (void)
 		vec3_t vecViewAngle;
 		vec3_t vecNewOrg;
 		vec3_t vecOffset;
-		int i;
 
 		// Find the client this player's targeting
 		for (i = 0; i < pmove->numphysent; i++)
@@ -1981,11 +1980,7 @@ void PM_Duck( void )
 	float time;
 	float duckFraction;
 
-	int buttonsChanged	= ( pmove->oldbuttons ^ pmove->cmd.buttons );	// These buttons have changed this frame
 	int nButtonPressed	=  buttonsChanged & pmove->cmd.buttons;		// The changed ones still down are "pressed"
-
-	int duckchange		= buttonsChanged & IN_DUCK ? 1 : 0;
-	int duckpressed		= nButtonPressed & IN_DUCK ? 1 : 0;
 
 	if ( pmove->cmd.buttons & IN_DUCK )
 	{
@@ -2426,7 +2421,7 @@ void PM_Physics_Toss()
 		else
 		{
 			VectorScale (pmove->velocity, (1.0 - trace.fraction) * pmove->frametime * 0.9, move);
-			trace = PM_PushEntity (move);
+			PM_PushEntity (move);
 		}
 		VectorSubtract( pmove->velocity, base, pmove->velocity )
 	}
