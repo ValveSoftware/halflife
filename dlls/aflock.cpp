@@ -836,7 +836,7 @@ void CFlockingFlyer :: SquadRemove( CFlockingFlyer *pRemove )
 			
 			// copy the enemy LKP to the new leader
 			pLeader->m_vecEnemyLKP = m_vecEnemyLKP;
-
+			// FATAL ERROR! Need move next line before prev line!
 			if ( pLeader )
 			{
 				CFlockingFlyer *pList = pLeader;
