@@ -627,8 +627,9 @@ int CGraph :: FindShortestPath ( int *piPath, int iStart, int iDest, int iHull, 
 			if (iCurrentNode == iNext)
 			{
 				//ALERT(at_aiconsole, "SVD: Can't get there from here..\n");
+				// RETURN OR BREAK ??
 				return 0;
-				break;
+				break;// RETURN OR BREAK ??
 			}
 			if (iNumPathNodes >= MAX_PATH_SIZE) 
 			{
@@ -1280,7 +1281,7 @@ int CGraph :: LinkVisibleNodes ( CLink *pLinkPool, FILE *file, int *piBadNode )
 				{// record info about the ent in the way, if any.
 					fprintf ( file, "  Entity on connection: %s, name: %s  Model: %s", STRING( VARS( pTraceEnt )->classname ), STRING ( VARS( pTraceEnt )->targetname ), STRING ( VARS(tr.pHit)->model ) );
 				}
-				
+				// FATAL ERROR, NEED ZERO ARGS!!!
 				fprintf ( file, "\n", j );
 			}
 
