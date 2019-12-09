@@ -680,6 +680,7 @@ void CStudioModelRenderer::StudioFxTransform( cl_entity_t *ent, float transform[
 		{
 			float offset;
 			int axis = gEngfuncs.pfnRandomLong(0,1);
+			// axis not used, this is error ?
 			if ( axis == 1 ) // Choose between x & z
 				axis = 2;
 			offset = gEngfuncs.pfnRandomFloat(-10,10);
@@ -862,7 +863,8 @@ void CStudioModelRenderer::StudioSetupBones ( void )
 		static float		pos1b[MAXSTUDIOBONES][3];
 		static vec4_t		q1b[MAXSTUDIOBONES];
 		float				s;
-
+		
+		// MISSION IMPOSSIBLE! SEE 860 LINE
 		if (m_pCurrentEntity->latched.prevsequence >=  m_pStudioHeader->numseq) 
 		{
 			m_pCurrentEntity->latched.prevsequence = 0;
@@ -1021,6 +1023,7 @@ void CStudioModelRenderer::StudioMergeBones ( model_t *m_pSubModel )
 {
 	int					i, j;
 	double				f;
+	// int do hunt = true ?? for what?
 	int					do_hunt = true;
 
 	mstudiobone_t		*pbones;
