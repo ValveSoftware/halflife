@@ -229,7 +229,7 @@ void CSoundEnt :: Initialize ( void )
 {
   	int i;
 	int iSound;
-
+	// FATAL ERROR )))
 	m_cLastActiveSounds;
 	m_iFreeSound = 0;
 	m_iActiveSound = SOUNDLIST_EMPTY;
