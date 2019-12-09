@@ -1,4 +1,4 @@
-//========= Copyright © 1996-2002, Valve LLC, All rights reserved. ============
+//========= Copyright Â© 1996-2002, Valve LLC, All rights reserved. ============
 //
 // Purpose: 
 //
@@ -48,6 +48,7 @@ public:
 
 		//allocate and zero newData
 		ELEMTYPE* newData=new ELEMTYPE[newCapacity]; 
+		// return or exit??? if exit then return no needed 
 		if(newData==null){exit(0);return;}
 		memset(newData,0,sizeof(ELEMTYPE)*newCapacity);
 		_capacity=newCapacity;
