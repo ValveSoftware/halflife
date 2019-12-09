@@ -1488,7 +1488,7 @@ void ExtractCommandString( char *s, char *szCommand )
 
 		while (*s != '\\' && *s)
 		{
-			if (!*s)
+			if (!*s) // No needed ? *s in 'while')
 				return;
 			*o++ = *s++;
 		}
