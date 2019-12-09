@@ -1222,9 +1222,10 @@ Schedule_t* CBaseMonster :: GetScheduleOfType ( int Type )
 	default:
 		{
 			ALERT ( at_console, "GetScheduleOfType()\nNo CASE for Schedule Type %d!\n", Type );
-
+			// WHAT???
 			return &slIdleStand[ 0 ];
 			break;
+			// WHAT???
 		}
 	}
 
