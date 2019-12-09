@@ -663,6 +663,7 @@ void CBasePlayerWeapon::ItemPostFrame( void )
 
 	if ((m_pPlayer->pev->button & IN_ATTACK2) && CanAttack( m_flNextSecondaryAttack, gpGlobals->time, UseDecrement() ) )
 	{
+		// 666 FATAL CRASH, m_pPlayer->m_rgAmmo[-1]
 		if ( pszAmmo2() && !m_pPlayer->m_rgAmmo[SecondaryAmmoIndex()] )
 		{
 			m_fFireOnEmpty = TRUE;
