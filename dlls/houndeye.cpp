@@ -1013,7 +1013,7 @@ Task_t	tlHoundWakeUrgent[] =
 {
 	{ TASK_HOUND_OPEN_EYE,		(float)0			},
 	{ TASK_PLAY_SEQUENCE,		(float)ACT_HOP		},
-	{ TASK_FACE_IDEAL,			(float)0			},
+	//{ TASK_FACE_IDEAL,			(float)0			},
 	{ TASK_HOUND_WAKE_UP,		(float)0			},
 };
 
