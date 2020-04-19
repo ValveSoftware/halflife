@@ -86,6 +86,7 @@ cvar_t *cl_lw = NULL;
 cvar_t *cl_rollangle;
 cvar_t *cl_rollspeed;
 cvar_t *cl_viewroll;
+cvar_t *cl_bobtilt;
 
 void ShutdownInput (void);
 
@@ -327,6 +328,7 @@ void CHud :: Init( void )
 	cl_rollangle = CVAR_CREATE( "cl_rollangle", "0.65", FCVAR_CLIENTDLL | FCVAR_ARCHIVE );
 	cl_rollspeed = CVAR_CREATE( "cl_rollspeed", "300", FCVAR_CLIENTDLL | FCVAR_ARCHIVE );
 	cl_viewroll = CVAR_CREATE( "cl_viewroll", "0", FCVAR_CLIENTDLL | FCVAR_ARCHIVE );
+	cl_bobtilt = CVAR_CREATE( "cl_bobtilt", "0", FCVAR_CLIENTDLL | FCVAR_ARCHIVE );
 
 
 	m_iLogo = 0;
