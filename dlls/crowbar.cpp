@@ -39,7 +39,9 @@ enum gauss_e {
 	CROWBAR_ATTACK2MISS,
 	CROWBAR_ATTACK2HIT,
 	CROWBAR_ATTACK3MISS,
-	CROWBAR_ATTACK3HIT
+	CROWBAR_ATTACK3HIT,
+	CROWBAR_IDLE2,
+	CROWBAR_IDLE3
 };
 
 
@@ -204,6 +206,7 @@ int CCrowbar::Swing( int fFirst )
 		{
 			// miss
 			m_flNextPrimaryAttack = GetNextAttackDelay(0.5);
+			m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + UTIL_SharedRandomFloat( m_pPlayer->random_seed, 10, 15 );
 			
 			// player "shoot" animation
 			m_pPlayer->SetAnimation( PLAYER_ATTACK1 );
@@ -305,6 +308,7 @@ int CCrowbar::Swing( int fFirst )
 		m_pPlayer->m_iWeaponVolume = flVol * CROWBAR_WALLHIT_VOLUME;
 #endif
 		m_flNextPrimaryAttack = GetNextAttackDelay(0.25);
+		m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + UTIL_SharedRandomFloat( m_pPlayer->random_seed, 10, 15 );
 		
 		SetThink( &CCrowbar::Smack );
 		pev->nextthink = UTIL_WeaponTimeBase() + 0.2;
@@ -314,5 +318,26 @@ int CCrowbar::Swing( int fFirst )
 	return fDidHit;
 }
 
+void CCrowbar::WeaponIdle( void )
+{
+	if ( m_flTimeWeaponIdle > UTIL_WeaponTimeBase() )
+		return;
 
-
+	int iAnim;
+	float flAnimTime = 5.34; // Only CROWBAR_IDLE has a different time
+	switch ( RANDOM_LONG( 0, 2 ) )
+	{
+	case 0:
+		iAnim = CROWBAR_IDLE;
+		flAnimTime = 2.7;
+		break;
+	case 1:
+		iAnim = CROWBAR_IDLE2;
+		break;
+	case 2:
+		iAnim = CROWBAR_IDLE3;
+		break;
+	}
+	SendWeaponAnim( iAnim, 1 );
+	m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + flAnimTime;
+}
