@@ -280,6 +280,17 @@ int __MsgFunc_AllowSpec(const char *pszName, int iSize, void *pbuf)
 	return 0;
 }
 
+extern "C" int g_bhopcap;
+
+int __MsgFunc_Bhopcap(const char *pszName, int iSize, void *pbuf)
+{
+	BEGIN_READ( pbuf, iSize );
+
+	g_bhopcap = READ_BYTE();
+
+	return 1;
+}
+
 // This is called every time the DLL is loaded
 void CHud :: Init( void )
 {
@@ -318,6 +329,9 @@ void CHud :: Init( void )
 
 	// VGUI Menus
 	HOOK_MESSAGE( VGUIMenu );
+
+	// Bunnyhop cap
+	HOOK_MESSAGE( Bhopcap );
 
 	CVAR_CREATE( "hud_classautokill", "1", FCVAR_ARCHIVE | FCVAR_USERINFO );		// controls whether or not to suicide immediately on TF class switch
 	CVAR_CREATE( "hud_takesshots", "0", FCVAR_ARCHIVE );		// controls whether or not to automatically take screenshots at the end of a round
