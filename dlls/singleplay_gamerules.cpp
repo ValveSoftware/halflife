@@ -30,11 +30,15 @@ extern int gmsgDeathMsg;	// client dll messages
 extern int gmsgScoreInfo;
 extern int gmsgMOTD;
 
+extern "C" int g_bhopcap;
+
 //=========================================================
 //=========================================================
 CHalfLifeRules::CHalfLifeRules( void )
 {
 	RefreshSkillData();
+
+	g_bhopcap = 0;
 }
 
 //=========================================================

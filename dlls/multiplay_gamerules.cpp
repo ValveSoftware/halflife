@@ -39,6 +39,10 @@ extern int gmsgScoreInfo;
 extern int gmsgMOTD;
 extern int gmsgServerName;
 
+extern int gmsgBhopcap;
+extern "C" int g_bhopcap;
+extern cvar_t bhopcap;
+
 extern int g_teamplay;
 
 #define ITEM_RESPAWN_TIME	30
@@ -266,6 +270,16 @@ void CHalfLifeMultiplay :: Think ( void )
 
 	last_frags = frags_remaining;
 	last_time  = time_remaining;
+
+	// Update the bunnyhop cap
+	int old_bhopcap = g_bhopcap;
+	g_bhopcap = (bhopcap.value != 0.);
+	if (g_bhopcap != old_bhopcap)
+	{
+		MESSAGE_BEGIN( MSG_ALL, gmsgBhopcap, NULL );
+			WRITE_BYTE( g_bhopcap );
+		MESSAGE_END();
+	}
 }
 
 
