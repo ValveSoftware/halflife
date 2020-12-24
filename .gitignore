@@ -1,1 +1,4 @@
 *.opt
+*.plg
+dlls/debughl
+dlls/debug
