@@ -61,14 +61,14 @@ InputName=hl
 SOURCE="$(InputPath)"
 
 BuildCmds= \
-	call ..\filecopy.bat $(InputPath) $(ProjDir)\..\..\game\mod\dlls\$(InputName).dll \
-	call ..\filecopy.bat $(InputDir)\$(InputName).pdb $(ProjDir)\..\..\game\mod\dlls\$(InputName).pdb \
+	call ..\filecopy.bat $(InputPath) $(ProjDir)\..\..\redist\dlls\$(InputName).dll \
+	call ..\filecopy.bat $(InputDir)\$(InputName).pdb $(ProjDir)\..\..\redist\dlls\$(InputName).pdb \
 	
 
-"$(ProjDir)\..\..\game\mod\dlls\$(InputName).dll" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+"$(ProjDir)\..\..\redist\dlls\$(InputName).dll" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
    $(BuildCmds)
 
-"$(ProjDir)\..\..\game\mod\dlls\$(InputName).pdb" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+"$(ProjDir)\..\..\redist\dlls\$(InputName).pdb" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
    $(BuildCmds)
 # End Custom Build
 
@@ -104,8 +104,8 @@ InputPath=.\debughl\hl.dll
 InputName=hl
 SOURCE="$(InputPath)"
 
-"$(ProjDir)\..\..\game\mod\dlls\$(InputName).dll" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	call ..\filecopy.bat $(InputPath) $(ProjDir)\..\..\game\mod\dlls\$(InputName).dll
+"$(ProjDir)\..\..\redist\dlls\$(InputName).dll" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	call ..\filecopy.bat $(InputPath) $(ProjDir)\..\..\redist\dlls\$(InputName).dll
 
 # End Custom Build
 
