@@ -155,6 +155,8 @@ public:
 // Monsters
 	virtual BOOL FAllowMonsters( void ) = 0;//are monsters allowed
 
+	virtual BOOL AllowGrapplingHook( void ) = FALSE;
+
 	// Immediately end a multiplayer game
 	virtual void EndMultiplayerGame( void ) {}
 };
@@ -242,6 +244,8 @@ public:
 
 // Monsters
 	virtual BOOL FAllowMonsters( void );
+
+	virtual BOOL AllowGrapplingHook( void );
 
 // Teamplay stuff	
 	virtual const char *GetTeamID( CBaseEntity *pEntity ) {return "";};
@@ -345,6 +349,8 @@ public:
 
 // Monsters
 	virtual BOOL FAllowMonsters( void );
+
+	virtual BOOL AllowGrapplingHook( void );
 
 	// Immediately end a multiplayer game
 	virtual void EndMultiplayerGame( void ) { GoToIntermission(); }

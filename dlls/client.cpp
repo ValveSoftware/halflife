@@ -548,17 +548,17 @@ void ClientCommand( edict_t *pEntity )
 	}
 	else if (FStrEq(pcmd, "+hook" ))
 	{
-		if ( CVAR_GET_FLOAT( "mp_grapplehook" ) > 0 )
+		if ( g_pGameRules->AllowGrapplingHook() )
 		{
 			GetClassPtr((CBasePlayer *)pev)->FireHook();
 			GetClassPtr((CBasePlayer *)pev)->m_fHookButton = TRUE;
 		} else {
-			ClientPrint( pev, HUD_PRINTCONSOLE, "Grapple hook is disabled.\n" );
+			ClientPrint( pev, HUD_PRINTCONSOLE, "Grappling hook is disabled.\n" );
 		}
 	}
 	else if (FStrEq(pcmd, "-hook" ))
 	{
-		if ( CVAR_GET_FLOAT( "mp_grapplehook" ) > 0 ) {
+		if ( g_pGameRules->AllowGrapplingHook() ) {
 			GetClassPtr((CBasePlayer *)pev)->m_fHookButton = FALSE;
 		}
 	}
