@@ -546,6 +546,22 @@ void ClientCommand( edict_t *pEntity )
 			CLIENT_PRINTF( pEntity, print_console, UTIL_VarArgs( "\"fov\" is \"%d\"\n", (int)GetClassPtr((CBasePlayer *)pev)->m_iFOV ) );
 		}
 	}
+	else if (FStrEq(pcmd, "+hook" ))
+	{
+		if ( CVAR_GET_FLOAT( "mp_grapplehook" ) > 0 )
+		{
+			GetClassPtr((CBasePlayer *)pev)->FireHook();
+			GetClassPtr((CBasePlayer *)pev)->m_fHookButton = TRUE;
+		} else {
+			ClientPrint( pev, HUD_PRINTCONSOLE, "Grapple hook is disabled.\n" );
+		}
+	}
+	else if (FStrEq(pcmd, "-hook" ))
+	{
+		if ( CVAR_GET_FLOAT( "mp_grapplehook" ) > 0 ) {
+			GetClassPtr((CBasePlayer *)pev)->m_fHookButton = FALSE;
+		}
+	}
 	else if ( FStrEq(pcmd, "use" ) )
 	{
 		GetClassPtr((CBasePlayer *)pev)->SelectItem((char *)CMD_ARGV(1));
