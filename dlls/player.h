@@ -110,10 +110,12 @@ public:
 	int					m_iWeaponFlash;// brightness of the weapon flash
 	float				m_flStopExtraSoundTime;
 
+#if defined( GRAPPLING_HOOK )
 	float				m_fHookInWall;
 	float				m_fActiveHook;
 	float				m_fHookButton;
 	Vector				m_vVecDirHookMove;
+#endif
 	
 	float				m_flFlashLightTime;	// Time until next battery draw/Recharge
 	int					m_iFlashBattery;		// Flashlight Battery Draw

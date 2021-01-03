@@ -37,7 +37,9 @@ extern cvar_t	teamoverride;
 extern cvar_t	defaultteam;
 extern cvar_t	allowmonsters;
 
+#if defined( GRAPPLING_HOOK )
 extern cvar_t	grapplinghook;
+#endif
 
 // Engine Cvars
 extern cvar_t	*g_psv_gravity;
