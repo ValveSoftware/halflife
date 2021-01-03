@@ -329,7 +329,9 @@ BOOL CHalfLifeRules :: FAllowMonsters( void )
 
 //=========================================================
 //=========================================================
+#if defined( GRAPPLING_HOOK )
 BOOL CHalfLifeRules :: AllowGrapplingHook( void )
 {
 	return FALSE;
 }
+#endif

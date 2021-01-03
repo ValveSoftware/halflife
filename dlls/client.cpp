@@ -546,11 +546,12 @@ void ClientCommand( edict_t *pEntity )
 			CLIENT_PRINTF( pEntity, print_console, UTIL_VarArgs( "\"fov\" is \"%d\"\n", (int)GetClassPtr((CBasePlayer *)pev)->m_iFOV ) );
 		}
 	}
+#if defined( GRAPPLING_HOOK )
 	else if (FStrEq(pcmd, "+hook" ))
 	{
 		if ( g_pGameRules->AllowGrapplingHook() )
 		{
-			GetClassPtr((CBasePlayer *)pev)->FireHook();
+			GetClassPtr((CBasePlayer *)pev)->FireGrapplingHook();
 			GetClassPtr((CBasePlayer *)pev)->m_fHookButton = TRUE;
 		} else {
 			ClientPrint( pev, HUD_PRINTCONSOLE, "Grappling hook is disabled.\n" );
@@ -562,6 +563,7 @@ void ClientCommand( edict_t *pEntity )
 			GetClassPtr((CBasePlayer *)pev)->m_fHookButton = FALSE;
 		}
 	}
+#endif
 	else if ( FStrEq(pcmd, "use" ) )
 	{
 		GetClassPtr((CBasePlayer *)pev)->SelectItem((char *)CMD_ARGV(1));

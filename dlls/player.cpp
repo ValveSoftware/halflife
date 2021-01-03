@@ -4669,6 +4669,7 @@ BOOL CBasePlayer :: SwitchWeapon( CBasePlayerItem *pWeapon )
 // Cold Ice Grapple Hook
 // Also see: https://developer.valvesoftware.com/wiki/Grapple_Hook
 //================================================================
+#if defined( GRAPPLING_HOOK )
 class CHook : public CBaseEntity
 {
 	void Spawn( void );
@@ -4861,7 +4862,7 @@ void CHook::Think ( void )
 
 #define HOOK_SPEED 1200
 
-void CBasePlayer::FireHook ( void )
+void CBasePlayer::FireGrapplingHook ( void )
 {
 	if ( m_fActiveHook ) {
 		return;
@@ -4896,6 +4897,7 @@ void CBasePlayer::FireHook ( void )
 
 	pev->punchangle.x -= 2;
 }
+#endif
 
 //=========================================================
 // Dead HEV suit prop

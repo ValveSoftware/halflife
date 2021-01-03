@@ -208,7 +208,9 @@ public:
 
 //	virtual void Think( void );
 	virtual void Jump( void );
-	virtual void FireHook( void );
+#if defined( GRAPPLING_HOOK )
+	virtual void FireGrapplingHook( void );
+#endif
 	virtual void Duck( void );
 	virtual void PreThink( void );
 	virtual void PostThink( void );
