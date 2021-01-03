@@ -111,9 +111,9 @@ public:
 	float				m_flStopExtraSoundTime;
 
 #if defined( GRAPPLING_HOOK )
-	float				m_fHookInWall;
-	float				m_fActiveHook;
-	float				m_fHookButton;
+	BOOL				m_fHookInWall;
+	BOOL				m_fActiveHook;
+	BOOL				m_fHookButton;
 	Vector				m_vVecDirHookMove;
 #endif
 	
