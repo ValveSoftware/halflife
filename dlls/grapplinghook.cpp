@@ -49,7 +49,7 @@ void CHook::Precache( )
 
 	PRECACHE_SOUND("weapons/xbow_fly1.wav");
 	PRECACHE_SOUND("weapons/xbow_hit1.wav");
-	PRECACHE_SOUND("weapons/grapple/deploy.wav");
+	PRECACHE_SOUND("weapons/rocketfire1.wav");
 
 	ropesprite = PRECACHE_MODEL("sprites/smoke.spr");
 }
@@ -67,7 +67,7 @@ void CHook::FireHook( ) {
 	TraceResult tr;
 	//m_iWeaponVolume = 300;
 
-	EMIT_SOUND_DYN(ENT(pev), CHAN_WEAPON, "weapons/grapple/deploy.wav", RANDOM_FLOAT(0.95, 1.0), ATTN_NORM, 0, 93 + RANDOM_LONG(0,0xF));
+	EMIT_SOUND_DYN(ENT(pev), CHAN_WEAPON, "weapons/rocketfire1.wav", RANDOM_FLOAT(0.95, 1.0), ATTN_NORM, 0, 93 + RANDOM_LONG(0,0xF));
 
 	pev->owner = edict();
 	Spawn();
