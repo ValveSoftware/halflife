@@ -40,6 +40,10 @@
 #include "netadr.h"
 #include "pm_shared.h"
 
+#if defined( GRAPPLING_HOOK )
+#include "grapplinghook.h"
+#endif
+
 #if !defined ( _WIN32 )
 #include <ctype.h>
 #endif
@@ -551,8 +555,11 @@ void ClientCommand( edict_t *pEntity )
 	{
 		if ( g_pGameRules->AllowGrapplingHook() )
 		{
-			GetClassPtr((CBasePlayer *)pev)->FireGrapplingHook();
-			GetClassPtr((CBasePlayer *)pev)->m_fHookButton = TRUE;
+			if (GetClassPtr((CBasePlayer *)pev)->m_flNextHook < gpGlobals->time) {
+				CHook::HookCreate(GetClassPtr((CBasePlayer *)pev))->FireHook();
+				GetClassPtr((CBasePlayer *)pev)->m_fHasActiveHook = TRUE;
+				GetClassPtr((CBasePlayer *)pev)->m_flNextHook = gpGlobals->time + 1.5;
+			}
 		} else {
 			ClientPrint( pev, HUD_PRINTCONSOLE, "Grappling hook is disabled.\n" );
 		}
@@ -560,7 +567,7 @@ void ClientCommand( edict_t *pEntity )
 	else if (FStrEq(pcmd, "-hook" ))
 	{
 		if ( g_pGameRules->AllowGrapplingHook() ) {
-			GetClassPtr((CBasePlayer *)pev)->m_fHookButton = FALSE;
+			GetClassPtr((CBasePlayer *)pev)->m_fHasActiveHook = FALSE;
 		}
 	}
 #endif

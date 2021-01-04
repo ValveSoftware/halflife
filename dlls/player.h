@@ -109,13 +109,6 @@ public:
 	int					m_iExtraSoundTypes;// additional classification for this weapon's sound
 	int					m_iWeaponFlash;// brightness of the weapon flash
 	float				m_flStopExtraSoundTime;
-
-#if defined( GRAPPLING_HOOK )
-	BOOL				m_fHookInWall;
-	BOOL				m_fActiveHook;
-	BOOL				m_fHookButton;
-	Vector				m_vVecDirHookMove;
-#endif
 	
 	float				m_flFlashLightTime;	// Time until next battery draw/Recharge
 	int					m_iFlashBattery;		// Flashlight Battery Draw
@@ -211,7 +204,8 @@ public:
 //	virtual void Think( void );
 	virtual void Jump( void );
 #if defined( GRAPPLING_HOOK )
-	virtual void FireGrapplingHook( void );
+	BOOL m_fHasActiveHook;
+	float m_flNextHook;
 #endif
 	virtual void Duck( void );
 	virtual void PreThink( void );

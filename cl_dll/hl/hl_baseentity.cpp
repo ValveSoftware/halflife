@@ -251,9 +251,6 @@ void CBasePlayer::PlayerDeathThink(void) { }
 void CBasePlayer::StartDeathCam( void ) { }
 void CBasePlayer::StartObserver( Vector vecPosition, Vector vecViewAngle ) { }
 void CBasePlayer::PlayerUse ( void ) { }
-#if defined( GRAPPLING_HOOK )
-void CBasePlayer::FireGrapplingHook() { }
-#endif
 void CBasePlayer::Jump() { }
 void CBasePlayer::Duck( ) { }
 int  CBasePlayer::Classify ( void ) { return 0; }

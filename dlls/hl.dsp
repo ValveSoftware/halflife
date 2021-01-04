@@ -575,6 +575,19 @@ SOURCE=.\gman.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\grapplinghook.cpp
+
+!IF  "$(CFG)" == "hl - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "hl - Win32 Debug"
+
+# ADD CPP /GR
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
 SOURCE=.\h_ai.cpp
 
 !IF  "$(CFG)" == "hl - Win32 Release"
@@ -1519,6 +1532,10 @@ SOURCE=.\func_break.h
 # Begin Source File
 
 SOURCE=.\gamerules.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\grapplinghook.h
 # End Source File
 # Begin Source File
 
