@@ -1128,6 +1128,15 @@ BOOL CHalfLifeMultiplay :: FAllowMonsters( void )
 }
 
 //=========================================================
+//=========================================================
+#if defined( GRAPPLING_HOOK )
+BOOL CHalfLifeMultiplay :: AllowGrapplingHook( void )
+{
+	return ( grapplinghook.value );
+}
+# endif
+
+//=========================================================
 //======== CHalfLifeMultiplay private functions ===========
 #define INTERMISSION_TIME		6
 

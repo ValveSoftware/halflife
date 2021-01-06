@@ -85,6 +85,10 @@ enum sbar_data
 
 #define CHAT_INTERVAL 1.0f
 
+#if defined( GRAPPLING_HOOK )
+class CHook;
+#endif
+
 class CBasePlayer : public CBaseMonster
 {
 public:
@@ -203,6 +207,10 @@ public:
 
 //	virtual void Think( void );
 	virtual void Jump( void );
+#if defined( GRAPPLING_HOOK )
+	CHook *pGrapplingHook;
+	float m_flNextHook;
+#endif
 	virtual void Duck( void );
 	virtual void PreThink( void );
 	virtual void PostThink( void );

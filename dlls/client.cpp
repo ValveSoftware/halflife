@@ -40,6 +40,10 @@
 #include "netadr.h"
 #include "pm_shared.h"
 
+#if defined( GRAPPLING_HOOK )
+#include "grapplinghook.h"
+#endif
+
 #if !defined ( _WIN32 )
 #include <ctype.h>
 #endif
@@ -546,6 +550,34 @@ void ClientCommand( edict_t *pEntity )
 			CLIENT_PRINTF( pEntity, print_console, UTIL_VarArgs( "\"fov\" is \"%d\"\n", (int)GetClassPtr((CBasePlayer *)pev)->m_iFOV ) );
 		}
 	}
+#if defined( GRAPPLING_HOOK )
+	else if (FStrEq(pcmd, "+hook" ))
+	{
+		CBasePlayer *plr = GetClassPtr((CBasePlayer *)pev);
+
+		if ( g_pGameRules->AllowGrapplingHook() )
+		{
+			if (plr->pGrapplingHook == NULL && plr->m_flNextHook < gpGlobals->time) {
+				plr->pGrapplingHook = CHook::HookCreate(plr);
+				plr->pGrapplingHook->FireHook();
+				plr->m_flNextHook = gpGlobals->time + grapplinghookdeploytime.value;
+			}
+		} else {
+			ClientPrint( pev, HUD_PRINTCONSOLE, "Grappling hook is disabled.\n" );
+		}
+	}
+	else if (FStrEq(pcmd, "-hook" ))
+	{
+		CBasePlayer *plr = GetClassPtr((CBasePlayer *)pev);
+
+		if ( g_pGameRules->AllowGrapplingHook() ) {
+			if (plr->pGrapplingHook) {
+				plr->pGrapplingHook->KillHook();
+				plr->pGrapplingHook = NULL;
+			}
+		}
+	}
+#endif
 	else if ( FStrEq(pcmd, "use" ) )
 	{
 		GetClassPtr((CBasePlayer *)pev)->SelectItem((char *)CMD_ARGV(1));

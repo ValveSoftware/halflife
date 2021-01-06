@@ -39,6 +39,11 @@ cvar_t	teamoverride = {"mp_teamoverride","1" };
 cvar_t	defaultteam = {"mp_defaultteam","0" };
 cvar_t	allowmonsters={"mp_allowmonsters","0", FCVAR_SERVER };
 
+#if defined( GRAPPLING_HOOK )
+cvar_t	grapplinghook = {"mp_grapplinghook","0", FCVAR_SERVER };
+cvar_t	grapplinghookdeploytime = {"mp_grapplinghookdeploytime","1.0", FCVAR_SERVER };
+#endif
+
 cvar_t  allow_spectators = { "allow_spectators", "0.0", FCVAR_SERVER };		// 0 prevents players from being spectators
 
 cvar_t  mp_chattime = {"mp_chattime","10", FCVAR_SERVER };
@@ -481,6 +486,11 @@ void GameDLLInit( void )
 	CVAR_REGISTER (&teamoverride);
 	CVAR_REGISTER (&defaultteam);
 	CVAR_REGISTER (&allowmonsters);
+
+#if defined( GRAPPLING_HOOK )
+	CVAR_REGISTER (&grapplinghook);
+	CVAR_REGISTER (&grapplinghookdeploytime);
+#endif
 
 	CVAR_REGISTER (&mp_chattime);
 
