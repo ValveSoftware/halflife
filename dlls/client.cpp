@@ -553,12 +553,14 @@ void ClientCommand( edict_t *pEntity )
 #if defined( GRAPPLING_HOOK )
 	else if (FStrEq(pcmd, "+hook" ))
 	{
+		CBasePlayer *plr = GetClassPtr((CBasePlayer *)pev);
+
 		if ( g_pGameRules->AllowGrapplingHook() )
 		{
-			if (GetClassPtr((CBasePlayer *)pev)->m_flNextHook < gpGlobals->time) {
-				CHook::HookCreate(GetClassPtr((CBasePlayer *)pev))->FireHook();
-				GetClassPtr((CBasePlayer *)pev)->m_fHasActiveHook = TRUE;
-				GetClassPtr((CBasePlayer *)pev)->m_flNextHook = gpGlobals->time + 1.5;
+			if (plr->pGrapplingHook == NULL && plr->m_flNextHook < gpGlobals->time) {
+				plr->pGrapplingHook = CHook::HookCreate(plr);
+				plr->pGrapplingHook->FireHook();
+				plr->m_flNextHook = gpGlobals->time + 1.0;
 			}
 		} else {
 			ClientPrint( pev, HUD_PRINTCONSOLE, "Grappling hook is disabled.\n" );
@@ -566,8 +568,13 @@ void ClientCommand( edict_t *pEntity )
 	}
 	else if (FStrEq(pcmd, "-hook" ))
 	{
+		CBasePlayer *plr = GetClassPtr((CBasePlayer *)pev);
+
 		if ( g_pGameRules->AllowGrapplingHook() ) {
-			GetClassPtr((CBasePlayer *)pev)->m_fHasActiveHook = FALSE;
+			if (plr->pGrapplingHook) {
+				plr->pGrapplingHook->KillHook();
+				plr->pGrapplingHook = NULL;
+			}
 		}
 	}
 #endif

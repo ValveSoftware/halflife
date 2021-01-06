@@ -6,7 +6,6 @@ class CHook : public CBaseEntity
 	void Precache( void );
 	void EXPORT HookTouch( CBaseEntity *pOther );
 	void Think ( void );
-	void KillHook( void );
 	Vector m_vPlayerHangOrigin;
 	BOOL m_fPlayerAtEnd;
 	short ropesprite;
@@ -15,7 +14,8 @@ class CHook : public CBaseEntity
 	Vector m_vVecDirHookMove;
 	CBasePlayer *pevOwner;
 
-	public:
+public:
 	static CHook *HookCreate( CBasePlayer *owner );
 	void FireHook( void );
+	void KillHook( void );
 };

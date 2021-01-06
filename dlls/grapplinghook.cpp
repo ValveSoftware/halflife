@@ -114,7 +114,6 @@ void CHook::HookTouch( CBaseEntity *pOther )
 		}
 		pevOwner->pev->movetype = MOVETYPE_WALK;
 		pevOwner->pev->gravity = 1;
-		 pevOwner->m_fHasActiveHook = FALSE;
 
 		m_fActiveHook = FALSE;
 		m_fHookInWall = FALSE;
@@ -153,7 +152,6 @@ void CHook::KillHook( void )
 {
 	pevOwner->pev->movetype = MOVETYPE_WALK;
 	pevOwner->pev->gravity = 1;
-	pevOwner->m_fHasActiveHook = FALSE;
 
 	m_fActiveHook = FALSE;
 	m_fHookInWall = FALSE;
@@ -165,12 +163,6 @@ void CHook::KillHook( void )
 void CHook::Think ( void )
 {
 	if ( !pevOwner->IsAlive( ) )
-	{
-		KillHook();
-		return;
-	}
-
-	if ( !pevOwner->m_fHasActiveHook )
 	{
 		KillHook();
 		return;
