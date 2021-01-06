@@ -1,3 +1,5 @@
+#if defined( GRAPPLING_HOOK )
+
 #include "extdll.h"
 #include "util.h"
 
@@ -211,3 +213,4 @@ void CHook::Think ( void )
 
 	pev->nextthink = gpGlobals->time + 0.01;
 }
+#endif

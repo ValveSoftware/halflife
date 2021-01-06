@@ -1,3 +1,4 @@
+#if defined( GRAPPLING_HOOK )
 
 class CHook : public CBaseEntity
 {
@@ -19,3 +20,5 @@ public:
 	void FireHook( void );
 	void KillHook( void );
 };
+
+#endif
