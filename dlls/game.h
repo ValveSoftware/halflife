@@ -39,6 +39,7 @@ extern cvar_t	allowmonsters;
 
 #if defined( GRAPPLING_HOOK )
 extern cvar_t	grapplinghook;
+extern cvar_t	grapplinghookdeploytime;
 #endif
 
 // Engine Cvars

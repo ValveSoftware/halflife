@@ -560,7 +560,7 @@ void ClientCommand( edict_t *pEntity )
 			if (plr->pGrapplingHook == NULL && plr->m_flNextHook < gpGlobals->time) {
 				plr->pGrapplingHook = CHook::HookCreate(plr);
 				plr->pGrapplingHook->FireHook();
-				plr->m_flNextHook = gpGlobals->time + 1.0;
+				plr->m_flNextHook = gpGlobals->time + grapplinghookdeploytime.value;
 			}
 		} else {
 			ClientPrint( pev, HUD_PRINTCONSOLE, "Grappling hook is disabled.\n" );
