@@ -32,14 +32,12 @@ void CHook::Spawn( )
 	Precache( );
 	pev->movetype = MOVETYPE_FLY;
 	pev->solid = SOLID_BBOX;
-	pev->gravity = -0.01;
+	pev->gravity = -1;
 
 	SET_MODEL(ENT(pev), "models/crossbow_bolt.mdl");
 
 	UTIL_SetOrigin( pev, pev->origin );
 	UTIL_SetSize(pev, Vector(0, 0, 0), Vector(0, 0, 0));
-
-	SetTouch( CHook::HookTouch );
 }
 
 void CHook::Precache( )
@@ -66,38 +64,45 @@ void CHook::FireHook( ) {
 		return;
 	}
 
-	TraceResult tr;
-	//m_iWeaponVolume = 300;
-
 	EMIT_SOUND_DYN(ENT(pev), CHAN_WEAPON, "weapons/rocketfire1.wav", RANDOM_FLOAT(0.95, 1.0), ATTN_NORM, 0, 93 + RANDOM_LONG(0,0xF));
 
 	pev->owner = edict();
 	Spawn();
 
+	TraceResult tr;
 	Vector anglesAim = pevOwner->pev->v_angle + pevOwner->pev->punchangle;
-	Vector vecSrc = pevOwner->GetGunPosition( ) + gpGlobals->v_forward * 16 + gpGlobals->v_right * 8 + gpGlobals->v_up * -12;
+	UTIL_MakeVectors( anglesAim );
+	anglesAim.x = -anglesAim.x;
 	Vector vecDir = gpGlobals->v_forward;
+	Vector trace_origin = pevOwner->GetGunPosition();
+	if ( pevOwner->pev->flags & FL_DUCKING ) {
+			trace_origin = trace_origin - ( VEC_HULL_MIN - VEC_DUCK_HULL_MIN );
+	}
+	UTIL_TraceLine( trace_origin + gpGlobals->v_forward * 20, trace_origin + gpGlobals->v_forward * 64, dont_ignore_monsters, NULL, &tr );
 
-	pev->origin = vecSrc;
+	pev->origin = tr.vecEndPos;
 	pev->angles = anglesAim;
 	pev->velocity = vecDir * HOOK_SPEED;
 	m_vVecDirHookMove = vecDir;
 
 	m_fActiveHook = TRUE;
+
+	SetTouch( HookTouch );
+	pev->nextthink = gpGlobals->time + 0.2;
 }
 
 void CHook::HookTouch( CBaseEntity *pOther )
 {
+	if (pOther == pevOwner) {
+		pev->nextthink = gpGlobals->time + 0.2;
+		return;
+	}
+
 	SetTouch( NULL );
 	SetThink( NULL );
 
 	if (pOther->pev->takedamage)
 	{
-		if (pOther == pevOwner) {
-			pev->nextthink = gpGlobals->time + 0.2;
-			return;
-		}
-
 		TraceResult tr = UTIL_GetGlobalTrace( );
 		entvars_t *Owner;
 		Owner = VARS( pev->owner );
@@ -139,7 +144,7 @@ void CHook::HookTouch( CBaseEntity *pOther )
 		pev->velocity = Vector( 0, 0, 0 );
 		pev->avelocity.z = 0;
 		pev->angles.z = RANDOM_LONG(0,360);
-		SetThink( CHook::Think );
+		SetThink( Think );
 		pev->nextthink = gpGlobals->time + 0.01;
 
 		m_fHookInWall = TRUE;
