@@ -3755,7 +3755,7 @@ int CBasePlayer::RemovePlayerItem( CBasePlayerItem *pItem )
 		pev->viewmodel = 0;
 		pev->weaponmodel = 0;
 	}
-	else if ( m_pLastItem == pItem )
+	if ( m_pLastItem == pItem )
 		m_pLastItem = NULL;
 
 	CBasePlayerItem *pPrev = m_rgpPlayerItems[pItem->iItemSlot()];
