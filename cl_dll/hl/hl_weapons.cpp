@@ -66,7 +66,7 @@ CHandGrenade g_HandGren;
 CSatchel g_Satchel;
 CTripmine g_Tripmine;
 CSqueak g_Snark;
-
+CVest g_Vest;
 
 /*
 ======================
@@ -619,6 +619,7 @@ void HUD_InitClientWeapons( void )
 	HUD_PrepEntity( &g_Satchel	, &player );
 	HUD_PrepEntity( &g_Tripmine	, &player );
 	HUD_PrepEntity( &g_Snark	, &player );
+	HUD_PrepEntity( &g_Vest		, &player );
 }
 
 /*
@@ -738,6 +739,10 @@ void HUD_WeaponsPostThink( local_state_s *from, local_state_s *to, usercmd_t *cm
 
 		case WEAPON_SNARK:
 			pWeapon = &g_Snark;
+			break;
+
+		case WEAPON_VEST:
+			pWeapon = &g_Vest;
 			break;
 	}
 

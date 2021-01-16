@@ -51,6 +51,8 @@ ItemInfo CBasePlayerItem::ItemInfoArray[MAX_WEAPONS];
 AmmoInfo CBasePlayerItem::AmmoInfoArray[MAX_AMMO_SLOTS];
 
 extern int gmsgCurWeapon;
+extern int gmsgSayWeapon;
+
 
 MULTIDAMAGE gMultiDamage;
 
@@ -387,6 +389,10 @@ void W_Precache(void)
 	UTIL_PrecacheOtherWeapon( "weapon_hornetgun" );
 #endif
 
+#if !defined( OEM_BUILD ) && !defined( HLDEMO_BUILD )
+	UTIL_PrecacheOtherWeapon( "weapon_vest" );
+#endif
+
 
 #if !defined( OEM_BUILD ) && !defined( HLDEMO_BUILD )
 	if ( g_pGameRules->IsDeathmatch() )
@@ -576,9 +582,22 @@ void CBasePlayerItem :: CheckRespawn ( void )
 //=========================================================
 CBaseEntity* CBasePlayerItem::Respawn( void )
 {
+	CBaseEntity *pNewWeapon = NULL;
+
+	// Randomly replace explosives with vest.
+	if (strcmp(STRING(pev->classname), "weapon_satchel") ||
+		strcmp(STRING(pev->classname), "weapon_tripmine") ||
+		strcmp(STRING(pev->classname), "weapon_handgrenade")) {
+		if (RANDOM_LONG(0, 1)) {
+			pNewWeapon = CBaseEntity::Create("weapon_vest", g_pGameRules->VecWeaponRespawnSpot(this), pev->angles, pev->owner );
+		}
+	}
+
 	// make a copy of this weapon that is invisible and inaccessible to players (no touch function). The weapon spawn/respawn code
 	// will decide when to make the weapon visible and touchable.
-	CBaseEntity *pNewWeapon = CBaseEntity::Create( (char *)STRING( pev->classname ), g_pGameRules->VecWeaponRespawnSpot( this ), pev->angles, pev->owner );
+	if (!pNewWeapon) {
+		pNewWeapon = CBaseEntity::Create((char *)STRING( pev->classname ), g_pGameRules->VecWeaponRespawnSpot( this ), pev->angles, pev->owner );
+	}
 
 	if ( pNewWeapon )
 	{
@@ -834,6 +853,10 @@ int CBasePlayerWeapon::UpdateClientData( CBasePlayer *pPlayer )
 	{
 		if ( pPlayer->m_pActiveItem != pPlayer->m_pClientActiveItem )
 		{
+			MESSAGE_BEGIN( MSG_ONE, gmsgSayWeapon, NULL, pPlayer->pev );
+				WRITE_BYTE( pPlayer->m_pActiveItem->m_iId );
+			MESSAGE_END();
+
 			bSend = TRUE;
 		}
 	}

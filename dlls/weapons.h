@@ -33,6 +33,7 @@ public:
 	static CGrenade *ShootTimed( entvars_t *pevOwner, Vector vecStart, Vector vecVelocity, float time );
 	static CGrenade *ShootContact( entvars_t *pevOwner, Vector vecStart, Vector vecVelocity );
 	static CGrenade *ShootSatchelCharge( entvars_t *pevOwner, Vector vecStart, Vector vecVelocity );
+	static CGrenade *Vest( entvars_t *pevOwner, Vector vecStart );
 	static void UseSatchelCharges( entvars_t *pevOwner, SATCHELCODE code );
 
 	void Explode( Vector vecSrc, Vector vecAim );
@@ -78,6 +79,7 @@ public:
 #define WEAPON_TRIPMINE			13
 #define	WEAPON_SATCHEL			14
 #define	WEAPON_SNARK			15
+#define	WEAPON_VEST				16
 
 #define WEAPON_ALLWEAPONS		(~(1<<WEAPON_SUIT))
 
@@ -1015,5 +1017,32 @@ private:
 	unsigned short m_usSnarkFire;
 };
 
+class CVest : public CBasePlayerWeapon
+{
+public:
+	void Spawn( void );
+	void Precache( void );
+	int iItemSlot( void ) { return 5; }
+	int GetItemInfo(ItemInfo *p);
+	int AddToPlayer( CBasePlayer *pPlayer );
+	void PrimaryAttack( void );
+	BOOL CanDeploy( void );
+	BOOL Deploy( void );
+	BOOL IsUseable( void );
+	void BlowThink( void );
+	void GoneThink( void );
+
+	void Holster( int skiplocal = 0 );
+	void WeaponIdle( void );
+
+	virtual BOOL UseDecrement( void )
+	{
+#if defined( CLIENT_WEAPONS )
+		return TRUE;
+#else
+		return FALSE;
+#endif
+	}
+};
 
 #endif // WEAPONS_H
