@@ -158,6 +158,7 @@ int gmsgResetHUD = 0;
 int gmsgInitHUD = 0;
 int gmsgShowGameTitle = 0;
 int gmsgCurWeapon = 0;
+int gmsgSayWeapon = 0;
 int gmsgHealth = 0;
 int gmsgDamage = 0;
 int gmsgBattery = 0;
@@ -199,6 +200,7 @@ void LinkUserMessages( void )
 	}
 
 	gmsgSelAmmo = REG_USER_MSG("SelAmmo", sizeof(SelAmmo));
+	gmsgSayWeapon = REG_USER_MSG("SayWeapon", -1);
 	gmsgCurWeapon = REG_USER_MSG("CurWeapon", 3);
 	gmsgGeigerRange = REG_USER_MSG("Geiger", 1);
 	gmsgFlashlight = REG_USER_MSG("Flashlight", 2);
@@ -943,6 +945,12 @@ void CBasePlayer::Killed( entvars_t *pevAttacker, int iGib )
 
 	SetThink(&CBasePlayer::PlayerDeathThink);
 	pev->nextthink = gpGlobals->time + 0.1;
+}
+
+void CBasePlayer::Killed( entvars_t *pevAttacker, entvars_t *lastInflictor, int iGib )
+{
+	g_pevLastInflictor = lastInflictor;
+	Killed( pevAttacker, iGib );
 }
 
 
@@ -3560,6 +3568,7 @@ void CBasePlayer::CheatImpulseCommands( int iImpulse )
 		GiveNamedItem( "weapon_satchel" );
 		GiveNamedItem( "weapon_snark" );
 		GiveNamedItem( "weapon_hornetgun" );
+		GiveNamedItem( "weapon_vest" );
 #endif
 		gEvilImpulse101 = FALSE;
 		break;

@@ -205,6 +205,10 @@ SOURCE=..\dlls\squeakgrenade.cpp
 
 SOURCE=..\dlls\tripmine.cpp
 # End Source File
+# Begin Source File
+
+SOURCE=..\dlls\vest.cpp
+# End Source File
 # End Group
 # Begin Source File
 

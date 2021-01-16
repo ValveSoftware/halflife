@@ -32,6 +32,7 @@
 WEAPON *gpActiveSel;	// NULL means off, 1 means just the menu bar, otherwise
 						// this points to the active weapon menu item
 WEAPON *gpLastSel;		// Last weapon menu selection 
+client_textmessage_t msg;
 
 client_sprite_t *GetSpriteList(client_sprite_t *pList, const char *psz, int iRes, int iCount);
 
@@ -231,6 +232,7 @@ int giBucketHeight, giBucketWidth, giABHeight, giABWidth; // Ammo Bar width and 
 
 HSPRITE ghsprBuckets;					// Sprite for top row of weapons menu
 
+DECLARE_MESSAGE(m_Ammo, SayWeapon);
 DECLARE_MESSAGE(m_Ammo, CurWeapon );	// Current weapon and clip
 DECLARE_MESSAGE(m_Ammo, WeaponList);	// new weapon type
 DECLARE_MESSAGE(m_Ammo, AmmoX);			// update known ammo type's count
@@ -263,6 +265,7 @@ int CHudAmmo::Init(void)
 {
 	gHUD.AddHudElem(this);
 
+	HOOK_MESSAGE(SayWeapon);
 	HOOK_MESSAGE(CurWeapon);
 	HOOK_MESSAGE(WeaponList);
 	HOOK_MESSAGE(AmmoPickup);
@@ -629,6 +632,40 @@ int CHudAmmo::MsgFunc_CurWeapon(const char *pszName, int iSize, void *pbuf )
 	m_fFade = 200.0f; //!!!
 	m_iFlags |= HUD_ACTIVE;
 	
+	return 1;
+}
+
+int CHudAmmo::MsgFunc_SayWeapon(const char *pszName, int iSize, void *pbuf )
+{
+	BEGIN_READ( pbuf, iSize );
+
+	int iId = READ_CHAR();
+	WEAPON *pWeapon = gWR.GetWeapon( iId );
+
+	if (m_fSayWeaponTime < gHUD.m_flTime) {
+		if (iId == 16) {
+			PlaySound("vest_selected.wav", 1);
+
+			msg.effect = 2;
+			msg.r1 = msg.g1 = msg.b1 = msg.a1 = 100;
+			msg.r2 = 0;
+			msg.g2 = 110;
+			msg.b2 = 240;
+			msg.a2 = 0;
+			msg.x = -1;	// Centered
+			msg.y = 0.05;
+			msg.fadein = 0.01;
+			msg.fadeout = 1.5;
+			msg.fxtime = 0.25;
+			msg.holdtime = 5;
+			msg.pMessage = pWeapon->szName;
+			msg.pName = pWeapon->szName;
+			gHUD.m_Message.MessageAdd( &msg );
+		}
+	}
+
+	m_fSayWeaponTime = gHUD.m_flTime + 1.5;
+
 	return 1;
 }
 

@@ -1394,6 +1394,19 @@ SOURCE=.\util.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\vest.cpp
+
+!IF  "$(CFG)" == "hl - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "hl - Win32 Debug"
+
+# ADD CPP /GR
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
 SOURCE=..\game_shared\voice_gamemgr.cpp
 
 !IF  "$(CFG)" == "hl - Win32 Release"
