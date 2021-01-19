@@ -5,3 +5,5 @@ dlls/debug
 dlls/releasehl
 cl_dll/debug
 cl_dll/release
+.vs/
+projects/vs2019/Release/

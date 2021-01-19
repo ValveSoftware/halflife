@@ -87,7 +87,7 @@ void CHook::FireHook( ) {
 
 	m_fActiveHook = TRUE;
 
-	SetTouch( HookTouch );
+	SetTouch( &CHook::HookTouch );
 	pev->nextthink = gpGlobals->time + 0.2;
 }
 
@@ -144,7 +144,7 @@ void CHook::HookTouch( CBaseEntity *pOther )
 		pev->velocity = Vector( 0, 0, 0 );
 		pev->avelocity.z = 0;
 		pev->angles.z = RANDOM_LONG(0,360);
-		SetThink( Think );
+		SetThink( &CHook::Think );
 		pev->nextthink = gpGlobals->time + 0.01;
 
 		m_fHookInWall = TRUE;
