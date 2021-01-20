@@ -157,4 +157,6 @@ void CVest::WeaponIdle( void )
 	m_flTimeWeaponIdle = UTIL_WeaponTimeBase() + UTIL_SharedRandomFloat( m_pPlayer->random_seed, 10, 15 );// how long till we do this again.
 }
 
+#ifdef VEST
 LINK_ENTITY_TO_CLASS( weapon_vest, CVest );
+#endif
