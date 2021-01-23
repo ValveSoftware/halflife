@@ -479,10 +479,11 @@ public:
 
 	void PrimaryAttack( void );
 	void SecondaryAttack( void );
-	void GlockFire( float flSpread, float flCycleTime, BOOL fUseAutoAim );
+	void GlockFire( float flSpread, float flCycleTime, BOOL fUseAutoAim, int silencer );
 	BOOL Deploy( void );
 	void Reload( void );
 	void WeaponIdle( void );
+	void AddSilencer( void );
 
 	virtual BOOL UseDecrement( void )
 	{ 
@@ -495,7 +496,7 @@ public:
 
 private:
 	int m_iShell;
-	
+	int m_iSilencer;
 
 	unsigned short m_usFireGlock1;
 	unsigned short m_usFireGlock2;

@@ -643,25 +643,21 @@ int CHudAmmo::MsgFunc_SayWeapon(const char *pszName, int iSize, void *pbuf )
 	WEAPON *pWeapon = gWR.GetWeapon( iId );
 
 	if (m_fSayWeaponTime < gHUD.m_flTime) {
-		if (iId == 16) {
-			PlaySound("vest_selected.wav", 1);
-
-			msg.effect = 2;
-			msg.r1 = msg.g1 = msg.b1 = msg.a1 = 100;
-			msg.r2 = 0;
-			msg.g2 = 110;
-			msg.b2 = 240;
-			msg.a2 = 0;
-			msg.x = -1;	// Centered
-			msg.y = 0.05;
-			msg.fadein = 0.01;
-			msg.fadeout = 1.5;
-			msg.fxtime = 0.25;
-			msg.holdtime = 5;
-			msg.pMessage = pWeapon->szName;
-			msg.pName = pWeapon->szName;
-			gHUD.m_Message.MessageAdd( &msg );
-		}
+		msg.effect = 2;
+		msg.r1 = msg.g1 = msg.b1 = msg.a1 = 100;
+		msg.r2 = 0;
+		msg.g2 = 110;
+		msg.b2 = 240;
+		msg.a2 = 0;
+		msg.x = -1;	// Centered
+		msg.y = 0.05;
+		msg.fadein = 0.01;
+		msg.fadeout = 1.5;
+		msg.fxtime = 0.25;
+		msg.holdtime = 5;
+		msg.pMessage = pWeapon->szName;
+		msg.pName = pWeapon->szName;
+		gHUD.m_Message.MessageAdd( &msg );
 	}
 
 	m_fSayWeaponTime = gHUD.m_flTime + 1.5;
