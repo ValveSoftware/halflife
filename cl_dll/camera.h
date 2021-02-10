@@ -9,7 +9,7 @@
 // NOTE: must include quakedef.h first
 
 #ifndef _CAMERA_H_
-#define _CAMEA_H_
+#define _CAMERA_H_
 
 // pitch, yaw, dist
 extern vec3_t cam_ofs;
