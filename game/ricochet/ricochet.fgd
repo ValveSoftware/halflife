@@ -1,0 +1,63 @@
+// Ricochet FGD file
+// By SiPlus
+// April 4, 2012 revision
+// For Hammer 3.5
+// http://developer.valvesoftware.com/wiki/Ricochet_Level_Creation
+// Requires Half-Life FGD
+@SolidClass = worldspawn : "World entity"
+[
+	message(string) : "Map Description / Title"
+	skyname(string) : "environment map (cl_skyname)" : "disc"
+	sounds(integer) : "CD track to play" : 1
+	light(integer) : "Default light level"
+	WaveHeight(string) : "Default Wave Height"
+	MaxRange(string) : "Max viewable distance" : "4096"
+	chaptertitle(string) : "Chapter Title Message"
+	startdark(choices) : "Level Fade In" : 0 =
+	[
+		0 : "No"
+		1 : "Yes"
+	]
+	gametitle(choices) : "Display game title" : 0 = 
+	[
+		0 : "No"
+		1 : "Yes"
+	]
+	newunit(choices) : "New Level Unit" : 0 = 
+	[
+		0 : "No, keep current"
+		1 : "Yes, clear previous levels"
+	]
+	mapteams(string) : "Map Team List"
+	defaultteam(choices) : "Default Team" : 0 = 
+	[
+		0 : "Fewest Players"
+		1 : "First Team"
+	]
+	no_arena(choices) : "Game mode" : 1 =
+	[
+		0 : "Arena"
+		1 : "Deathmatch"
+	]
+]
+@PointClass base(PlayerClass) = info_player_start []
+@PointClass base(PlayerClass) studio("models/ricochet/male.mdl") = info_player_deathmatch
+[
+	target(target_destination) : "Target"
+	master(string) : "Master"
+]
+
+@PointClass base(Angles) = info_ricochet []
+@PointClass base(PlayerClass) studio("models/ricochet/head.mdl") = info_player_spectator
+[
+	target(target_destination) : "Target"
+	master(string) : "Master"
+]
+@PointClass size(-16 16 0,16 16 16) base(PlayerClass, Targetname) studio("models/ricochet/head.mdl") = info_teleport_destination []
+@PointClass size(-16 -16 -16, 16 16 32) base(Weapon, Targetx) studio("models/ricochet/pow_visual.mdl") = item_powerup []
+@SolidClass = trigger_discreturn []
+@SolidClass = trigger_fall []
+@SolidClass base(Target) = trigger_jump
+[
+        height(integer) : "Height" : 128
+]
