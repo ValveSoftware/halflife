@@ -53,7 +53,7 @@ BitmapTGA *LoadTGA( const char* pImageName )
 	BitmapTGA	*pTGA;
 
 	char sz[256];
-	sprintf(sz, "%%d_%s", pImageName);
+	Q_sprintf(sz, "%%d_%s", pImageName);
 
 	// Load the Image
 	FileInputStream* fis = new FileInputStream( GetVGUITGAName(sz), false );
@@ -113,18 +113,18 @@ void CommandButton::RecalculateText( void )
 	{
 		if ( m_cBoundKey == (char)255 )
 		{
-			strcpy( szBuf, m_sMainText );
+			Q_strcpy( szBuf, m_sMainText );
 		}
 		else
 		{
-			sprintf( szBuf, "  %c  %s", m_cBoundKey, m_sMainText );
+			Q_sprintf( szBuf, "  %c  %s", m_cBoundKey, m_sMainText );
 		}
 		szBuf[MAX_BUTTON_SIZE-1] = 0;
 	}
 	else
 	{
 		// just draw a space if no key bound
-		sprintf( szBuf, "     %s", m_sMainText );
+		Q_sprintf( szBuf, "     %s", m_sMainText );
 		szBuf[MAX_BUTTON_SIZE-1] = 0;
 	}
 
@@ -133,7 +133,8 @@ void CommandButton::RecalculateText( void )
 
 void CommandButton::setText( const char *text )
 {
-	strncpy( m_sMainText, text, MAX_BUTTON_SIZE );
+	Q_strncpy( m_sMainText, text, MAX_BUTTON_SIZE );
+
 	m_sMainText[MAX_BUTTON_SIZE-1] = 0;
 
 	RecalculateText();

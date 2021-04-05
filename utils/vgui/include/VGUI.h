@@ -84,6 +84,8 @@
 #include <sys/types.h> // size_t define
 #endif
 
+#include "../../../public/vstdlib/vstdlib.h"
+
 #define null 0L
 
 typedef unsigned char  uchar;

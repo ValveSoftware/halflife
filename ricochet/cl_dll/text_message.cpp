@@ -127,7 +127,7 @@ char *CHudTextMessage::LookupString( const char *msg, int *msg_dest )
 
 void StripEndNewlineFromString( char *str )
 {
-	int s = strlen( str ) - 1;
+	int s = Q_strlen( str ) - 1;
 	if ( str[s] == '\n' || str[s] == '\r' )
 		str[s] = 0;
 }

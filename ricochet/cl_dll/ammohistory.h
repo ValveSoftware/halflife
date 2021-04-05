@@ -32,15 +32,15 @@ private:
 public:
 	void Init( void )
 	{
-		memset( rgWeapons, 0, sizeof rgWeapons );
+		Q_memset( rgWeapons, 0, sizeof rgWeapons );
 		Reset();
 	}
 
 	void Reset( void )
 	{
 		iOldWeaponBits = 0;
-		memset( rgSlots, 0, sizeof rgSlots );
-		memset( riAmmo, 0, sizeof riAmmo );
+		Q_memset( rgSlots, 0, sizeof rgSlots );
+		Q_memset( riAmmo, 0, sizeof riAmmo );
 	}
 
 ///// WEAPON /////
@@ -124,7 +124,7 @@ public:
 
 	void Reset( void )
 	{
-		memset( rgAmmoHistory, 0, sizeof rgAmmoHistory );
+		Q_memset( rgAmmoHistory, 0, sizeof rgAmmoHistory );
 	}
 
 	int iHistoryGap;

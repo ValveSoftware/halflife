@@ -75,14 +75,14 @@ void GrabRaw (void)
 	byte            *screen_p;
 	int             linedelta;
 
-	GetToken (false);
-	xl = atoi (token);
-	GetToken (false);
-	yl = atoi (token);
-	GetToken (false);
-	w = atoi (token);
-	GetToken (false);
-	h = atoi (token);
+	GetToken (qfalse);
+	xl = Q_atoi (token);
+	GetToken (qfalse);
+	yl = Q_atoi (token);
+	GetToken (qfalse);
+	w = Q_atoi (token);
+	GetToken (qfalse);
+	h = Q_atoi (token);
 
 	if (xl == -1)
 	{
@@ -123,10 +123,10 @@ void GrabPalette (void)
 
 	if (TokenAvailable())
 	{
-		GetToken (false);
-		start = atoi (token);
-		GetToken (false);
-		end = atoi (token);
+		GetToken (qfalse);
+		start = Q_atoi (token);
+		GetToken (qfalse);
+		end = Q_atoi (token);
 	}
 	else
 	{
@@ -135,7 +135,7 @@ void GrabPalette (void)
 	}
 
 	length = 3*(end-start+1);
-	memcpy (lump_p, lbmpalette+start*3, length);
+	Q_memcpy (lump_p, lbmpalette+start*3, length);
 	lump_p += length;
 }
 
@@ -153,14 +153,14 @@ void GrabPic (void)
 	int             width;
 	qpic_t 			*header;
 
-	GetToken (false);
-	xl = atoi (token);
-	GetToken (false);
-	yl = atoi (token);
-	GetToken (false);
-	xh = xl+atoi (token);
-	GetToken (false);
-	yh = yl+atoi (token);
+	GetToken (qfalse);
+	xl = Q_atoi (token);
+	GetToken (qfalse);
+	yl = Q_atoi (token);
+	GetToken (qfalse);
+	xh = xl+Q_atoi (token);
+	GetToken (qfalse);
+	yh = yl+Q_atoi (token);
 
 	if (xl == -1)
 	{
@@ -260,10 +260,10 @@ void GrabColormap (void)
 	int		l, c;
 	float	frac, red, green, blue;
 		
-	GetToken (false);
-	levels = atoi (token);
-	GetToken (false);
-	brights = atoi (token);
+	GetToken (qfalse);
+	levels = Q_atoi (token);
+	GetToken (qfalse);
+	brights = Q_atoi (token);
 
 // identity lump
 	for (l=0 ; l<256 ; l++)
@@ -317,12 +317,12 @@ void GrabColormap2 (void)
 	float	frac, red, green, blue;
 	float	range;
 	
-	GetToken (false);
-	range = atof (token);
-	GetToken (false);
-	levels = atoi (token);
-	GetToken (false);
-	brights = atoi (token);
+	GetToken (qfalse);
+	range = Q_atof (token);
+	GetToken (qfalse);
+	levels = Q_atoi (token);
+	GetToken (qfalse);
+	brights = Q_atoi (token);
 
 // shaded levels
 	for (l=0;l<levels;l++)
@@ -388,13 +388,13 @@ byte AddColor( float r, float g, float b )
 			linearpalette[i][2] = b;
 			if (r < 0) r = 0.0;
 			if (r > 1.0) r = 1.0;
-			lbmpalette[i*3+0] = pow( r, 1.0 / 2.2) * 255;
+			lbmpalette[i*3+0] = Q_pow( r, 1.0f / 2.2f) * 255;
 			if (g < 0) g = 0.0;
 			if (g > 1.0) g = 1.0;
-			lbmpalette[i*3+1] = pow( g, 1.0 / 2.2) * 255;
+			lbmpalette[i*3+1] = Q_pow( g, 1.0f / 2.2f) * 255;
 			if (b < 0) b = 0.0;
 			if (b > 1.0) b = 1.0;
-			lbmpalette[i*3+2] = pow( b, 1.0 / 2.2) * 255;
+			lbmpalette[i*3+2] = Q_pow( b, 1.0f / 2.2f) * 255;
 			color_used[i] = 1;
 			colors_used++;
 			return i;
@@ -417,7 +417,7 @@ byte AveragePixels (int count)
 	float 	dr, dg, db;
 	float 	bestdistortion, distortion;
 	int		bestcolor;
-	byte	*pal;
+	//byte	*pal;
 	
 	vis = 0;
 	r = g = b = 0;
@@ -510,14 +510,14 @@ void GrabMip (void)
 	int				xx, yy, pix;
 	int				count;
 	
-	GetToken (false);
-	xl = atoi (token);
-	GetToken (false);
-	yl = atoi (token);
-	GetToken (false);
-	w = atoi (token);
-	GetToken (false);
-	h = atoi (token);
+	GetToken (qfalse);
+	xl = Q_atoi (token);
+	GetToken (qfalse);
+	yl = Q_atoi (token);
+	GetToken (qfalse);
+	w = Q_atoi (token);
+	GetToken (qfalse);
+	h = Q_atoi (token);
 
 	if (xl == -1)
 	{
@@ -535,7 +535,7 @@ void GrabMip (void)
 	qtex = (miptex_t *)lump_p;
 	qtex->width = LittleLong(w);
 	qtex->height = LittleLong(h);
-	strcpy (qtex->name, lumpname); 
+	Q_strcpy (qtex->name, lumpname); 
 	
 	lump_p = (byte *)&qtex->offsets[4];
 	
@@ -565,7 +565,7 @@ void GrabMip (void)
 		{
 			float f;
 			f = lbmpalette[i*3+j] / 255.0;
-			linearpalette[i][j] = pow(f, 2.2 ); // assume textures are done at 2.2, we want to remap them at 1.0
+			linearpalette[i][j] = Q_pow(f, 2.2f ); // assume textures are done at 2.2, we want to remap them at 1.0
 		}
 	}
 
@@ -658,13 +658,13 @@ PALETTE GRABBING
 
 void GrabPalette16( void )
 {
-	int i;
+	//int i;
 
 	// Write out palette in 16bit mode
 	*(unsigned short *) lump_p = 256;	// palette size
 	lump_p += sizeof(short);
 
-	memcpy( lump_p, lbmpalette, 768 );
+	Q_memcpy( lump_p, lbmpalette, 768 );
 	lump_p += 768;
 }
 
@@ -690,7 +690,7 @@ void GrabFont( void )
 {
 	int		x, y, y2, xl, x2, yl, xh, yh, i, j;
 	int		index, offset;
-	int		width;
+	//int	width;
 	int		iCurX;	// current x in destination
 	int		iMaxX;  // max x in destination
 	
@@ -703,29 +703,29 @@ void GrabFont( void )
 
 	// Set up header
 	header = (qfont_t *)lump_p;
-	memset( header, 0, sizeof(qfont_t) );
+	Q_memset( header, 0, sizeof(qfont_t) );
 
-	GetToken( false );
-	header->width = header->rowheight = atoi( token );  //mwh why does width equal rowheight? 
+	GetToken( qfalse );
+	header->width = header->rowheight = Q_atoi( token );  //mwh why does width equal rowheight? 
 	header->height = 1;
 	lump_p = (byte *)header->data;
 	pCur = (byte *)lump_p;
-	memset( lump_p, 0xFF, 256 * 160);
+	Q_memset( lump_p, 0xFF, 256 * 160);
 
-	GetToken( false );
-	index = atoi( token );
+	GetToken( qfalse );
+	index = Q_atoi( token );
 
 	while( index != -1 )
 	{
 		// Get/Process source bitmap coordinates
-		GetToken (false);
-		xl = atoi (token);
-		GetToken (false);
-		yl = atoi (token);
-		GetToken (false);
-		xh = xl-1+atoi (token);
-		GetToken (false);
-		yh = atoi (token) - 1;
+		GetToken (qfalse);
+		xl = Q_atoi (token);
+		GetToken (qfalse);
+		yl = Q_atoi (token);
+		GetToken (qfalse);
+		xh = xl-1+Q_atoi (token);
+		GetToken (qfalse);
+		yh = Q_atoi (token) - 1;
 		if (xl == -1)
 		{
 			xl = yl = 0;
@@ -771,7 +771,7 @@ void GrabFont( void )
 				// Set up glyph information
 				if( index >= NUM_GLYPHS )
 				{
-					printf( "GrabFont: Glyph out of range\n" );
+					Q_printf( "GrabFont: Glyph out of range\n" );
 					goto getout;
 				}
 		
@@ -816,8 +816,8 @@ void GrabFont( void )
 
 		// Get next ASCII index
 getout:
-		GetToken (false);
-		index = atoi (token);
+		GetToken (qfalse);
+		index = Q_atoi (token);
 	}
 
 	// advance the lump pointer so that the last row is saved.
@@ -829,7 +829,7 @@ getout:
 	y = (offset>128)?256:(offset>64)?128:(offset>32)?64:(offset>16)?32:16;
 	if ( offset != y )
 	{
-		printf("Rounding font from 256x%d to 256x%d\n", offset, y );
+		Q_printf("Rounding font from 256x%d to 256x%d\n", offset, y );
 		lump_p += (256 * (y - offset));
 	}
 	header->rowcount = header->height;

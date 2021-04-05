@@ -68,7 +68,7 @@ void MakeTnodes (dmodel_t *bm)
 {
 	if (!numnodes)
 		Error ("Map has no nodes\n");
-	tnode_p = tnodes = malloc(numnodes * sizeof(tnode_t));
+	tnode_p = tnodes = Q_malloc(numnodes * sizeof(tnode_t));
 	
 	MakeTnode (0);
 }
@@ -126,7 +126,7 @@ qboolean TestLine (vec3_t start, vec3_t stop)
 		// pop up the stack for a back side
 			tstack_p--;
 			if (tstack_p < tracestack)
-				return true;
+				return qtrue;
 			node = tstack_p->node;
 			
 		// set the hit point for this plane
@@ -145,7 +145,7 @@ qboolean TestLine (vec3_t start, vec3_t stop)
 		}
 
 		if (node == CONTENTS_SOLID)
-			return false;	// DONE!
+			return qfalse;	// DONE!
 		
 		tnode = &tnodes[node];
 		

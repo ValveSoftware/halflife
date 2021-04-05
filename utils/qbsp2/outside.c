@@ -47,9 +47,9 @@ qboolean PlaceOccupant (int num, vec3_t point, node_t *headnode)
 	
 	n = PointInLeaf (headnode, point);
 	if (n->contents == CONTENTS_SOLID)
-		return false;
+		return qfalse;
 	n->occupied = num;
-	return true;
+	return qtrue;
 }
 
 
@@ -61,14 +61,14 @@ WindingCenter
 void	WindingCenter (winding_t *w, vec3_t center)
 {
 	int		i;
-	vec3_t	d1, d2, cross;
+	//vec3_t	d1, d2, cross;
 	float	scale;
 
 	VectorCopy (vec3_origin, center);
 	for (i=0 ; i<w->numpoints ; i++)
 		VectorAdd (w->points[i], center, center);
 
-	scale = 1.0/w->numpoints;
+	scale = 1.0f/w->numpoints;
 	VectorScale (center, scale, center);
 }
 
@@ -81,7 +81,7 @@ portal_t	*prevleaknode;
 FILE	*pointfile, *linefile;
 void MarkLeakTrail (portal_t *n2)
 {
-	int		i, j;
+	int		i/*, j*/;
 	vec3_t	p1, p2, dir;
 	float	len;
 	portal_t *n1;
@@ -98,15 +98,15 @@ void MarkLeakTrail (portal_t *n2)
 	WindingCenter (n2->winding, p1);
 	WindingCenter (n1->winding, p2);
 
-	fprintf (linefile, "%f %f %f\n", p1[0], p1[1], p1[2]);
+	Q_fprintf (linefile, "%f %f %f\n", p1[0], p1[1], p1[2]);
 	
 	VectorSubtract (p2, p1, dir);
-	len = VectorLength (dir);
+	len = (float)VectorLength (dir);
 	VectorNormalize (dir);
 
 	while (len > 2)
 	{
-		fprintf (pointfile,"%f %f %f\n", p1[0], p1[1], p1[2]);
+		Q_fprintf (pointfile,"%f %f %f\n", p1[0], p1[1], p1[2]);
 		for (i=0 ; i<3 ; i++)
 			p1[i] += dir[i]*2;
 		len -= 2;
@@ -119,7 +119,7 @@ void MarkLeakTrail (portal_t *n2)
 RecursiveFillOutside
 
 If fill is false, just check, don't fill
-Returns true if an occupied leaf is reached
+Returns qtrue if an occupied leaf is reached
 ==================
 */
 int		hit_occupied;
@@ -130,16 +130,16 @@ qboolean RecursiveFillOutside (node_t *l, qboolean fill)
 	int			s;
 
 	if (l->contents == CONTENTS_SOLID || l->contents == CONTENTS_SKY)
-		return false;
+		return qfalse;
 		
 	if (l->valid == valid)
-		return false;
+		return qfalse;
 	
 	if (l->occupied)
 	{
 		hit_occupied = l->occupied;
 		backdraw = 1000;
-		return true;
+		return qtrue;
 	}
 	
 	l->valid = valid;
@@ -163,12 +163,12 @@ qboolean RecursiveFillOutside (node_t *l, qboolean fill)
 				MarkLeakTrail (p);
 				DrawLeaf (l, 2);
 			}
-			return true;
+			return qtrue;
 		}
 		p = p->next[!s];
 	}
 	
-	return false;
+	return qfalse;
 }
 
 /*
@@ -271,7 +271,7 @@ node_t *ClearOutFaces_r (node_t *node)
 
 	// this was a filled in node, so free the markfaces
 	if (node->planenum != -1)
-		free (node->markfaces);
+		Q_free (node->markfaces);
 
 	return node;
 }
@@ -288,7 +288,7 @@ FillOutside
 node_t *FillOutside (node_t *node, qboolean leakfile)
 {
 	int			s;
-	vec_t		*v;
+	//vec_t		*v;
 	int			i;
 	qboolean	inside;
 	qboolean	ret;
@@ -299,7 +299,7 @@ node_t *FillOutside (node_t *node, qboolean leakfile)
 
 	if (nofill)
 	{
-		printf ("skipped\n");
+		Q_printf ("skipped\n");
 		return node;
 	}
 		
@@ -307,7 +307,7 @@ node_t *FillOutside (node_t *node, qboolean leakfile)
 	// place markers for all entities so
 	// we know if we leak inside
 	//
-	inside = false;
+	inside = qfalse;
 	for (i=1 ; i<num_entities ; i++)
 	{
 		GetVectorForKey (&entities[i], "origin", origin);
@@ -318,7 +318,7 @@ node_t *FillOutside (node_t *node, qboolean leakfile)
 
 			// nudge playerstart around if needed so clipping hulls allways
 			// have a vlaid point
-			if (!strcmp (cl, "info_player_start"))
+			if (!Q_strcmp (cl, "info_player_start"))
 			{
 				int	x, y;
 
@@ -330,7 +330,7 @@ node_t *FillOutside (node_t *node, qboolean leakfile)
 						origin[1] += y;
 						if (PlaceOccupant (i, origin, node))
 						{
-							inside = true;
+							inside = qtrue;
 							goto gotit;
 						}
 						origin[0] -= x;
@@ -342,14 +342,14 @@ gotit: ;
 			else
 			{
 				if (PlaceOccupant (i, origin, node))
-					inside = true;
+					inside = qtrue;
 			}
 		}
 	}
 
 	if (!inside)
 	{
-		printf ("Hullnum %i: No entities in empty space -- no filling performed\n", hullnum);
+		Q_printf ("Hullnum %i: No entities in empty space -- no filling performed\n", hullnum);
 		return node;
 	}
 
@@ -363,27 +363,27 @@ gotit: ;
 	
 	if (leakfile)
 	{
-		pointfile = fopen (pointfilename, "w");
+		pointfile = Q_fopen (pointfilename, "w");
 		if (!pointfile)
 			Error ("Couldn't open %s\n", pointfilename);
 		StripExtension (pointfilename);
-		strcat (pointfilename, ".lin");
-		linefile = fopen (pointfilename, "w");
+		Q_strcat (pointfilename, ".lin");
+		linefile = Q_fopen (pointfilename, "w");
 		if (!linefile)
 			Error ("Couldn't open %s\n", pointfilename);
 	}
 
-	ret = RecursiveFillOutside (outside_node.portals->nodes[s], false);
+	ret = RecursiveFillOutside (outside_node.portals->nodes[s], qfalse);
 
 	if (leakfile)
 	{
-		fclose (pointfile);
-		fclose (linefile);
+		Q_fclose (pointfile);
+		Q_fclose (linefile);
 	}
 
 	if (ret)
 	{
-		printf("LEAK LEAK LEAK\n");
+		Q_printf("LEAK LEAK LEAK\n");
 		GetVectorForKey (&entities[hit_occupied], "origin", origin);
 		qprintf ("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n");
 		qprintf ("reached occupant at: (%4.0f,%4.0f,%4.0f)\n"
@@ -398,7 +398,7 @@ gotit: ;
 
 // now go back and fill things in
 	valid++;
-	RecursiveFillOutside (outside_node.portals->nodes[s], true);
+	RecursiveFillOutside (outside_node.portals->nodes[s], qtrue);
 
 // remove faces and nodes from filled in leafs	
 	c_falsenodes = 0;

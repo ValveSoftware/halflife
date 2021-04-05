@@ -130,8 +130,8 @@ CThreeWave :: CThreeWave()
 	m_DisableDeathMessages = FALSE;
 	m_DisableDeathPenalty = FALSE;
 
-	memset( team_names, 0, sizeof(team_names) );
-	memset( team_scores, 0, sizeof(team_scores) );
+	Q_memset( team_names, 0, sizeof(team_names) );
+	Q_memset( team_scores, 0, sizeof(team_scores) );
 	num_teams = 0;
 
 	iBlueTeamScore = iRedTeamScore = 0;
@@ -141,7 +141,7 @@ CThreeWave :: CThreeWave()
 	m_szTeamList[0] = 0;
 
 	// Cache this because the team code doesn't want to deal with changing this in the middle of a game
-	strncpy( m_szTeamList, teamlist.string, TEAMPLAY_TEAMLISTLENGTH );
+	Q_strncpy( m_szTeamList, teamlist.string, TEAMPLAY_TEAMLISTLENGTH );
 
 	edict_t *pWorld = INDEXENT(0);
 	if ( pWorld && pWorld->v.team )
@@ -149,14 +149,14 @@ CThreeWave :: CThreeWave()
 		if ( teamoverride.value )
 		{
 			const char *pTeamList = STRING(pWorld->v.team);
-			if ( pTeamList && strlen(pTeamList) )
+			if ( pTeamList && Q_strlen(pTeamList) )
 			{
-				strncpy( m_szTeamList, pTeamList, TEAMPLAY_TEAMLISTLENGTH );
+				Q_strncpy( m_szTeamList, pTeamList, TEAMPLAY_TEAMLISTLENGTH );
 			}
 		}
 	}
 	// Has the server set teams
-	if ( strlen( m_szTeamList ) )
+	if ( Q_strlen( m_szTeamList ) )
 		m_teamLimit = TRUE;
 	else
 		m_teamLimit = FALSE;
@@ -345,7 +345,7 @@ BOOL CThreeWave :: ClientCommand( CBasePlayer *pPlayer, const char *pcmd )
 		if ( CMD_ARGC() < 2 )
 			return TRUE;
 
-		int slot = atoi( CMD_ARGV(1) );
+		int slot = Q_atoi( CMD_ARGV(1) );
 
 		// select the item from the current menu
 		switch( pPlayer->m_iMenu )
@@ -599,13 +599,13 @@ void CThreeWave::ChangePlayerTeam( CBasePlayer *pPlayer, int iTeam )
 
 	if ( pPlayer->pev->team == RED )
 	{
-		strncpy( pPlayer->m_szTeamName, "RED", TEAM_NAME_LENGTH );
+		Q_strncpy( pPlayer->m_szTeamName, "RED", TEAM_NAME_LENGTH );
 		g_engfuncs.pfnSetClientKeyValue( clientIndex, g_engfuncs.pfnGetInfoKeyBuffer( pPlayer->edict() ), "model", "red" );
 		g_engfuncs.pfnSetClientKeyValue( clientIndex, g_engfuncs.pfnGetInfoKeyBuffer( pPlayer->edict() ), "topcolor", UTIL_VarArgs( "%d", 255 ) );
 	}
 	else if ( pPlayer->pev->team == BLUE )
 	{
-		strncpy( pPlayer->m_szTeamName, "BLUE", TEAM_NAME_LENGTH );
+		Q_strncpy( pPlayer->m_szTeamName, "BLUE", TEAM_NAME_LENGTH );
 		g_engfuncs.pfnSetClientKeyValue( clientIndex, g_engfuncs.pfnGetInfoKeyBuffer( pPlayer->edict() ), "model", "blue" );
 		g_engfuncs.pfnSetClientKeyValue( clientIndex, g_engfuncs.pfnGetInfoKeyBuffer( pPlayer->edict() ), "topcolor", UTIL_VarArgs( "%d", 153 ) );
 	}
@@ -1580,17 +1580,17 @@ void CThreeWave::RecountTeams( void )
 
 	// Copy all of the teams from the teamlist
 	// make a copy because strtok is destructive
-	strcpy( teamlist, m_szTeamList );
+	Q_strcpy( teamlist, m_szTeamList );
 	pName = teamlist;
-	pName = strtok( pName, ";" );
+	pName = Q_strtok( pName, ";" );
 	while ( pName != NULL && *pName )
 	{
 		if ( GetTeamIndex( pName ) < 0 )
 		{
-			strcpy( team_names[num_teams], pName );
+			Q_strcpy( team_names[num_teams], pName );
 			num_teams++;
 		}
-		pName = strtok( NULL, ";" );
+		pName = Q_strtok( NULL, ";" );
 	}
 
 	if ( num_teams < 2 )
@@ -1600,7 +1600,7 @@ void CThreeWave::RecountTeams( void )
 	}
 
 	// Sanity check
-	memset( team_scores, 0, sizeof(team_scores) );
+	Q_memset( team_scores, 0, sizeof(team_scores) );
 
 	// loop through all clients
 	for ( int i = 1; i <= gpGlobals->maxClients; i++ )
@@ -1621,7 +1621,7 @@ void CThreeWave::RecountTeams( void )
 					tm = num_teams;
 					num_teams++;
 					team_scores[tm] = 0;
-					strncpy( team_names[tm], pTeamName, MAX_TEAMNAME_LENGTH );
+					Q_strncpy( team_names[tm], pTeamName, MAX_TEAMNAME_LENGTH );
 				}
 			}
 
@@ -2234,10 +2234,10 @@ BOOL IsRuneSpawnPointValid( CBaseEntity *pSpot )
 	while ( (ent = UTIL_FindEntityInSphere( ent, pSpot->pev->origin, 128 )) != NULL )
 	{
 		//Try not to spawn it near other runes.
-		if ( !strcmp( STRING( ent->pev->classname ), "item_rune1")  || 
-			 !strcmp( STRING( ent->pev->classname ), "item_rune2")  ||
-			 !strcmp( STRING( ent->pev->classname ), "item_rune3")  ||
-			 !strcmp( STRING( ent->pev->classname ), "item_rune4")  )
+		if ( !Q_strcmp( STRING( ent->pev->classname ), "item_rune1")  || 
+			 !Q_strcmp( STRING( ent->pev->classname ), "item_rune2")  ||
+			 !Q_strcmp( STRING( ent->pev->classname ), "item_rune3")  ||
+			 !Q_strcmp( STRING( ent->pev->classname ), "item_rune4")  )
 			return FALSE;
 	}
 
@@ -2283,7 +2283,7 @@ edict_t *RuneSelectSpawnPoint( void )
 		goto ReturnSpot;
 	
 	// If startspot is set, (re)spawn there.
-	if ( FStringNull( gpGlobals->startspot ) || !strlen(STRING(gpGlobals->startspot)))
+	if ( FStringNull( gpGlobals->startspot ) || !Q_strlen(STRING(gpGlobals->startspot)))
 	{
 		pSpot = UTIL_FindEntityByClassname(NULL, "info_player_start");
 		if ( pSpot )

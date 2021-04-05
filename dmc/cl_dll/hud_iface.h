@@ -10,6 +10,9 @@
 #pragma once
 
 #ifdef _WIN32
+#ifdef EXPORT
+#undef EXPORT
+#endif // EXPORT
 #define EXPORT _declspec( dllexport )
 #else
 #define EXPORT __attribute__ ((visibility("default")))

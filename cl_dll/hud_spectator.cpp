@@ -87,9 +87,9 @@ void SpectatorMode(void)
 
 	// SetModes() will decide if command is executed on server or local
 	if ( gEngfuncs.Cmd_Argc() == 2 )
-		gHUD.m_Spectator.SetModes( atoi( gEngfuncs.Cmd_Argv(1) ), -1 );
+		gHUD.m_Spectator.SetModes( Q_atoi( gEngfuncs.Cmd_Argv(1) ), -1 );
 	else if ( gEngfuncs.Cmd_Argc() == 3 )
-		gHUD.m_Spectator.SetModes( atoi( gEngfuncs.Cmd_Argv(1) ), atoi( gEngfuncs.Cmd_Argv(2) )  );	
+		gHUD.m_Spectator.SetModes( Q_atoi( gEngfuncs.Cmd_Argv(1) ), Q_atoi( gEngfuncs.Cmd_Argv(2) )  );	
 }
 
 void SpectatorSpray(void)
@@ -106,7 +106,7 @@ void SpectatorSpray(void)
 	pmtrace_t * trace = gEngfuncs.PM_TraceLine( v_origin, forward, PM_TRACELINE_PHYSENTSONLY, 2, -1 );
 	if ( trace->fraction != 1.0 )
 	{
-		sprintf(string, "drc_spray %.2f %.2f %.2f %i", 
+		Q_sprintf(string, "drc_spray %.2f %.2f %.2f %i", 
 			trace->endpos[0], trace->endpos[1], trace->endpos[2], trace->ent );
 		gEngfuncs.pfnServerCmd(string);
 	}
@@ -142,7 +142,7 @@ void SpectatorMenu( void )
 		return;
 	}
 	
-	gViewPort->m_pSpectatorPanel->ShowMenu( atoi( gEngfuncs.Cmd_Argv(1))!=0  );
+	gViewPort->m_pSpectatorPanel->ShowMenu( Q_atoi( gEngfuncs.Cmd_Argv(1))!=0  );
 }
 
 void ToggleScores( void )
@@ -175,8 +175,8 @@ int CHudSpectator::Init()
 	m_chatEnabled = (gHUD.m_SayText.m_HUD_saytext->value!=0);
 	iJumpSpectator	= 0;
 
-	memset( &m_OverviewData, 0, sizeof(m_OverviewData));
-	memset( &m_OverviewEntities, 0, sizeof(m_OverviewEntities));
+	Q_memset( &m_OverviewData, 0, sizeof(m_OverviewData));
+	Q_memset( &m_OverviewEntities, 0, sizeof(m_OverviewEntities));
 	m_lastPrimaryObject = m_lastSecondaryObject = 0;
 
 	gEngfuncs.pfnAddCommand ("spec_mode", SpectatorMode );
@@ -210,12 +210,12 @@ void UTIL_StringToVector( float * pVector, const char *pString )
 	char *pstr, *pfront, tempString[128];
 	int	j;
 
-	strcpy( tempString, pString );
+	Q_strcpy( tempString, pString );
 	pstr = pfront = tempString;
 	
 	for ( j = 0; j < 3; j++ )		
 	{
-		pVector[j] = atof( pfront );
+		pVector[j] = Q_atof( pfront );
 		
 		while ( *pstr && *pstr != ' ' )
 			pstr++;
@@ -280,10 +280,10 @@ int UTIL_FindEntityInMap(char * name, float * origin, float * angle)
 				return 0;
 			};
 			
-			strcpy (keyname, token);
+			Q_strcpy (keyname, token);
 
 			// another hack to fix keynames with trailing spaces
-			n = strlen(keyname);
+			n = Q_strlen(keyname);
 			while (n && keyname[n-1] == ' ')
 			{
 				keyname[n-1] = 0;
@@ -304,17 +304,17 @@ int UTIL_FindEntityInMap(char * name, float * origin, float * angle)
 				return 0;
 			}
 
-			if (!strcmp(keyname,"classname"))
+			if (!Q_strcmp(keyname,"classname"))
 			{
-				if (!strcmp(token, name ))
+				if (!Q_strcmp(token, name ))
 				{
 					found = 1;	// thats our entity
 				}
 			};
 
-			if( !strcmp( keyname, "angle" ) )
+			if( !Q_strcmp( keyname, "angle" ) )
 			{
-				float y = atof( token );
+				float y = Q_atof( token );
 				
 				if (y >= 0)
 				{
@@ -335,12 +335,12 @@ int UTIL_FindEntityInMap(char * name, float * origin, float * angle)
 				angle[2] =  0.0f;
 			}
 
-			if( !strcmp( keyname, "angles" ) )
+			if( !Q_strcmp( keyname, "angles" ) )
 			{
 				UTIL_StringToVector(angle, token);
 			}
 			
-			if (!strcmp(keyname,"origin"))
+			if (!Q_strcmp(keyname,"origin"))
 			{
 				UTIL_StringToVector(origin, token);
 
@@ -665,9 +665,9 @@ int CHudSpectator::Draw(float flTime)
 		color = GetClientColor( i+1 );
 
 		// draw the players name and health underneath
-		sprintf(string, "%s", g_PlayerInfoList[i+1].name );
+		Q_sprintf(string, "%s", g_PlayerInfoList[i+1].name );
 		
-		lx = strlen(string)*3; // 3 is avg. character length :)
+		lx = Q_strlen(string)*3; // 3 is avg. character length :)
 
 		gEngfuncs.pfnDrawSetTextColor( color[0], color[1], color[2] );
 		DrawConsoleString( m_vPlayerPos[i][0]-lx,m_vPlayerPos[i][1], string);
@@ -767,7 +767,7 @@ void CHudSpectator::DirectorMessage( int iSize, void *pbuf )
 								msg->holdtime	= READ_FLOAT();	// holdtime
 								msg->fxtime		= READ_FLOAT();	// fxtime;
 
-								strncpy( m_HUDMessageText[m_lastHudMessage], READ_STRING(), 128 );
+								Q_strncpy( m_HUDMessageText[m_lastHudMessage], READ_STRING(), 128 );
 								m_HUDMessageText[m_lastHudMessage][127]=0;	// text 
 
 								msg->pMessage = m_HUDMessageText[m_lastHudMessage];
@@ -893,7 +893,8 @@ void CHudSpectator::FindNextPlayer(bool bReverse)
 	{
 		char cmdstring[32];
 		// forward command to server
-		sprintf(cmdstring,"follownext %i",bReverse?1:0);
+		Q_sprintf(cmdstring,"follownext %i",bReverse?1:0);
+
 		gEngfuncs.pfnServerCmd(cmdstring);
 		return;
 	}
@@ -965,7 +966,8 @@ void CHudSpectator::FindPlayer(const char *name)
 	{
 		char cmdstring[32];
 		// forward command to server
-		sprintf(cmdstring,"follow %s",name);
+		Q_sprintf(cmdstring,"follow %s",name);
+
 		gEngfuncs.pfnServerCmd(cmdstring);
 		return;
 	}
@@ -985,7 +987,7 @@ void CHudSpectator::FindPlayer(const char *name)
 		if ( !IsActivePlayer( pEnt ) )
 		continue;
 
-		if(!stricmp(g_PlayerInfoList[pEnt->index].name,name))
+		if(!Q_stricmp(g_PlayerInfoList[pEnt->index].name,name))
 		{
 			g_iUser2 = i;
 			break;
@@ -1155,7 +1157,7 @@ void CHudSpectator::SetModes(int iNewMainMode, int iNewInsetMode)
 		{
 			char cmdstring[32];
 			// forward command to server
-			sprintf(cmdstring,"specmode %i",iNewMainMode );
+			Q_sprintf(cmdstring,"specmode %i",iNewMainMode );
 			gEngfuncs.pfnServerCmd(cmdstring);
 			return;
 		}
@@ -1217,16 +1219,17 @@ void CHudSpectator::SetModes(int iNewMainMode, int iNewInsetMode)
 		}
 		else
 		{
-			memset( &m_crosshairRect,0,sizeof(m_crosshairRect) );
+			Q_memset( &m_crosshairRect,0,sizeof(m_crosshairRect) );
 			SetCrosshair( 0, m_crosshairRect, 0, 0, 0 );
 		} 
 
 		gViewPort->MsgFunc_ResetFade( NULL, 0, NULL );
 
 		char string[128];
-		sprintf(string, "#Spec_Mode%d", g_iUser1 );
-		sprintf(string, "%c%s", HUD_PRINTCENTER, CHudTextMessage::BufferedLocaliseTextString( string ));
-		gHUD.m_TextMessage.MsgFunc_TextMsg(NULL, strlen(string)+1, string );
+		Q_sprintf(string, "#Spec_Mode%d", g_iUser1 );
+		Q_sprintf(string, "%c%s", HUD_PRINTCENTER, CHudTextMessage::BufferedLocaliseTextString( string ));
+
+		gHUD.m_TextMessage.MsgFunc_TextMsg(NULL, Q_strlen(string)+1, string );
 	}
 
 	gViewPort->UpdateSpectatorPanel();
@@ -1253,7 +1256,7 @@ bool CHudSpectator::ParseOverviewFile( )
 	
 	char *pfile  = NULL;
 
-	memset( &m_OverviewData, 0, sizeof(m_OverviewData));
+	Q_memset( &m_OverviewData, 0, sizeof(m_OverviewData));
 
 	// fill in standrd values
 	m_OverviewData.insetWindowX = 4;	// upper left corner
@@ -1266,15 +1269,15 @@ bool CHudSpectator::ParseOverviewFile( )
 	m_OverviewData.zoom	= 1.0f;
 	m_OverviewData.layers = 0;
 	m_OverviewData.layersHeights[0] = 0.0f;
-	strcpy( m_OverviewData.map, gEngfuncs.pfnGetLevelName() );
+	Q_strcpy( m_OverviewData.map, gEngfuncs.pfnGetLevelName() );
 
-	if ( strlen( m_OverviewData.map ) == 0 )
+	if ( Q_strlen( m_OverviewData.map ) == 0 )
 		return false; // not active yet
 
-	strcpy(levelname, m_OverviewData.map + 5);
-	levelname[strlen(levelname)-4] = 0;
+	Q_strcpy(levelname, m_OverviewData.map + 5);
+	levelname[Q_strlen(levelname)-4] = 0;
 	
-	sprintf(filename, "overviews/%s.txt", levelname );
+	Q_sprintf(filename, "overviews/%s.txt", levelname );
 
 	pfile = (char *)gEngfuncs.COM_LoadFile( filename, 5, NULL);
 
@@ -1292,11 +1295,12 @@ bool CHudSpectator::ParseOverviewFile( )
 		if (!pfile)
 			break;
 
-		if ( !stricmp( token, "global" ) )
+		if ( !Q_stricmp( token, "global" ) )
 		{
 			// parse the global data
 			pfile = gEngfuncs.COM_ParseFile(pfile, token);
-			if ( stricmp( token, "{" ) ) 
+
+			if ( Q_stricmp( token, "{" ) ) 
 			{
 				gEngfuncs.Con_Printf("Error parsing overview file %s. (expected { )\n", filename );
 				return false;
@@ -1304,37 +1308,37 @@ bool CHudSpectator::ParseOverviewFile( )
 
 			pfile = gEngfuncs.COM_ParseFile(pfile,token);
 
-			while (stricmp( token, "}") )
+			while (Q_stricmp( token, "}") )
 			{
-				if ( !stricmp( token, "zoom" ) )
+				if ( !Q_stricmp( token, "zoom" ) )
 				{
 					pfile = gEngfuncs.COM_ParseFile(pfile,token);
-					m_OverviewData.zoom = atof( token );
+					m_OverviewData.zoom = Q_atof( token );
 				} 
-				else if ( !stricmp( token, "origin" ) )
+				else if ( !Q_stricmp( token, "origin" ) )
 				{
 					pfile = gEngfuncs.COM_ParseFile(pfile, token); 
-					m_OverviewData.origin[0] = atof( token );
+					m_OverviewData.origin[0] = Q_atof( token );
 					pfile = gEngfuncs.COM_ParseFile(pfile,token); 
-					m_OverviewData.origin[1] = atof( token );
+					m_OverviewData.origin[1] = Q_atof( token );
 					pfile = gEngfuncs.COM_ParseFile(pfile, token); 
-					m_OverviewData.origin[2] = atof( token );
+					m_OverviewData.origin[2] = Q_atof( token );
 				}
-				else if ( !stricmp( token, "rotated" ) )
+				else if ( !Q_stricmp( token, "rotated" ) )
 				{
 					pfile = gEngfuncs.COM_ParseFile(pfile,token); 
-					m_OverviewData.rotated = atoi( token );
+					m_OverviewData.rotated = Q_atoi( token );
 				}
-				else if ( !stricmp( token, "inset" ) )
+				else if ( !Q_stricmp( token, "inset" ) )
 				{
 					pfile = gEngfuncs.COM_ParseFile(pfile,token); 
-					m_OverviewData.insetWindowX = atof( token );
+					m_OverviewData.insetWindowX = Q_atof( token );
 					pfile = gEngfuncs.COM_ParseFile(pfile,token); 
-					m_OverviewData.insetWindowY = atof( token );
+					m_OverviewData.insetWindowY = Q_atof( token );
 					pfile = gEngfuncs.COM_ParseFile(pfile,token); 
-					m_OverviewData.insetWindowWidth = atof( token );
+					m_OverviewData.insetWindowWidth = Q_atof( token );
 					pfile = gEngfuncs.COM_ParseFile(pfile,token); 
-					m_OverviewData.insetWindowHeight = atof( token );
+					m_OverviewData.insetWindowHeight = Q_atof( token );
 
 				}
 				else
@@ -1347,7 +1351,7 @@ bool CHudSpectator::ParseOverviewFile( )
 
 			}
 		}
-		else if ( !stricmp( token, "layer" ) )
+		else if ( !Q_stricmp( token, "layer" ) )
 		{
 			// parse a layer data
 
@@ -1358,9 +1362,8 @@ bool CHudSpectator::ParseOverviewFile( )
 			}
 
 			pfile = gEngfuncs.COM_ParseFile(pfile,token);
-
-				
-			if ( stricmp( token, "{" ) ) 
+	
+			if ( Q_stricmp( token, "{" ) ) 
 			{
 				gEngfuncs.Con_Printf("Error parsing overview file %s. (expected { )\n", filename );
 				return false;
@@ -1368,19 +1371,17 @@ bool CHudSpectator::ParseOverviewFile( )
 
 			pfile = gEngfuncs.COM_ParseFile(pfile,token);
 
-			while (stricmp( token, "}") )
+			while (Q_stricmp( token, "}") )
 			{
-				if ( !stricmp( token, "image" ) )
+				if ( !Q_stricmp( token, "image" ) )
 				{
 					pfile = gEngfuncs.COM_ParseFile(pfile,token);
-					strcpy(m_OverviewData.layersImages[ m_OverviewData.layers ], token);
-					
-					
+					Q_strcpy(m_OverviewData.layersImages[ m_OverviewData.layers ], token);
 				} 
-				else if ( !stricmp( token, "height" ) )
+				else if ( !Q_stricmp( token, "height" ) )
 				{
 					pfile = gEngfuncs.COM_ParseFile(pfile,token); 
-					height = atof(token);
+					height = Q_atof(token);
 					m_OverviewData.layersHeights[ m_OverviewData.layers ] = height;
 				}
 				else
@@ -1428,7 +1429,7 @@ void CHudSpectator::DrawOverviewLayer()
 	if ( hasMapImage)
 	{
 		i = m_MapSprite->numframes / (4*3);
-		i = sqrt((float)i);
+		i = Q_sqrt((float)i);
 		xTiles = i*4;
 		yTiles = i*3;
 	}
@@ -1772,7 +1773,7 @@ void CHudSpectator::CheckOverviewEntities()
 		// remove entity from list if it is too old
 		if ( m_OverviewEntities[i].killTime < time )
 		{
-			memset( &m_OverviewEntities[i], 0, sizeof (overviewEntity_t) );
+			Q_memset( &m_OverviewEntities[i], 0, sizeof (overviewEntity_t) );
 		}
 	}
 }
@@ -1867,7 +1868,8 @@ void CHudSpectator::CheckSettings()
 		{
 			// tell proxy our new chat mode
 			char chatcmd[32];
-			sprintf(chatcmd, "ignoremsg %i", m_chatEnabled?0:1 );
+			Q_sprintf(chatcmd, "ignoremsg %i", m_chatEnabled?0:1 );
+
 			gEngfuncs.pfnServerCmd(chatcmd);
 		}
 	}
@@ -1884,7 +1886,7 @@ void CHudSpectator::CheckSettings()
 	}
 	else
 	{
-		memset( &m_crosshairRect,0,sizeof(m_crosshairRect) );
+		Q_memset( &m_crosshairRect,0,sizeof(m_crosshairRect) );
 		SetCrosshair( 0, m_crosshairRect, 0, 0, 0 );
 	} 
 
@@ -1934,14 +1936,14 @@ int CHudSpectator::ToggleInset(bool allowOff)
 void CHudSpectator::Reset()
 {
 	// Reset HUD
-	if ( strcmp( m_OverviewData.map, gEngfuncs.pfnGetLevelName() ) )
+	if ( Q_strcmp( m_OverviewData.map, gEngfuncs.pfnGetLevelName() ) )
 	{
 		// update level overview if level changed
 		ParseOverviewFile();
 		LoadMapSprites();
 	}
 
-	memset( &m_OverviewEntities, 0, sizeof(m_OverviewEntities));
+	Q_memset( &m_OverviewEntities, 0, sizeof(m_OverviewEntities));
 
 	m_FOV = 90.0f;
 
@@ -1961,8 +1963,8 @@ void CHudSpectator::InitHUDData()
 	iJumpSpectator	= 0;
 	g_iUser1 = g_iUser2 = 0;
 
-	memset( &m_OverviewData, 0, sizeof(m_OverviewData));
-	memset( &m_OverviewEntities, 0, sizeof(m_OverviewEntities));
+	Q_memset( &m_OverviewData, 0, sizeof(m_OverviewData));
+	Q_memset( &m_OverviewEntities, 0, sizeof(m_OverviewEntities));
 
 	if ( gEngfuncs.IsSpectateOnly() || gEngfuncs.pDemoAPI->IsPlayingback() )
 		m_autoDirector->value = 1.0f;

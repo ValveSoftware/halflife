@@ -12,6 +12,9 @@
 // 2-8-99	fixed demand loaded sequence bug (thanks to Frans 'Otis' Bouma)
 
 ////////////////////////////////////////////////////////////////////////
+
+#include "../../public/vstdlib/warnings.h"
+
 #include <stdio.h>
 
 #include <windows.h>
@@ -23,6 +26,8 @@
 #include "../../public/steam/steamtypes.h" // defines int32, required by studio.h
 #include "..\..\engine\studio.h"
 #include "mdlviewer.h"
+
+#include "../../public/vstdlib/vstdlib.h"
 
 #pragma warning( disable : 4244 ) // double to float
 
@@ -52,7 +57,7 @@ void StudioModel::UploadTexture(mstudiotexture_t *ptexture, byte *data, byte *pa
 	if (outheight > 256)
 		outheight = 256;
 
-	tex = out = (byte *)malloc( outwidth * outheight * 4);
+	tex = out = (byte *)Q_malloc( outwidth * outheight * 4);
 
 	for (i = 0; i < outwidth; i++)
 	{
@@ -96,7 +101,7 @@ void StudioModel::UploadTexture(mstudiotexture_t *ptexture, byte *data, byte *pa
 
 	g_texnum++;
 
-	free( tex );
+	Q_free( tex );
 }
 
 
@@ -109,17 +114,17 @@ studiohdr_t *StudioModel::LoadModel( char *modelname )
 	void *buffer;
 
 	// load the model
-	if( (fp = fopen( modelname, "rb" )) == NULL)
+	if( (fp = Q_fopen( modelname, "rb" )) == NULL)
 	{
-		printf("unable to open %s\n", modelname );
-		exit(1);
+		Q_printf("unable to open %s\n", modelname );
+		Q_exit(1);
 	}
 
-	fseek( fp, 0, SEEK_END );
-	size = ftell( fp );
-	fseek( fp, 0, SEEK_SET );
-	buffer = malloc( size );
-	fread( buffer, size, 1, fp );
+	Q_fseek( fp, 0, SEEK_END );
+	size = Q_ftell( fp );
+	Q_fseek( fp, 0, SEEK_SET );
+	buffer = Q_malloc( size );
+	Q_fread( buffer, size, 1, fp );
 
 	int					i;
 	byte				*pin;
@@ -142,7 +147,7 @@ studiohdr_t *StudioModel::LoadModel( char *modelname )
 
 	// UNDONE: free texture memory
 
-	fclose( fp );
+	Q_fclose( fp );
 
 	return (studiohdr_t *)buffer;
 }
@@ -155,19 +160,19 @@ studioseqhdr_t *StudioModel::LoadDemandSequences( char *modelname )
 	void *buffer;
 
 	// load the model
-	if( (fp = fopen( modelname, "rb" )) == NULL)
+	if( (fp = Q_fopen( modelname, "rb" )) == NULL)
 	{
-		printf("unable to open %s\n", modelname );
-		exit(1);
+		Q_printf("unable to open %s\n", modelname );
+		Q_exit(1);
 	}
 
-	fseek( fp, 0, SEEK_END );
-	size = ftell( fp );
-	fseek( fp, 0, SEEK_SET );
-	buffer = malloc( size );
-	fread( buffer, size, 1, fp );
+	Q_fseek( fp, 0, SEEK_END );
+	size = Q_ftell( fp );
+	Q_fseek( fp, 0, SEEK_SET );
+	buffer = Q_malloc( size );
+	Q_fread( buffer, size, 1, fp );
 
-	fclose( fp );
+	Q_fclose( fp );
 
 	return (studioseqhdr_t *)buffer;
 }
@@ -182,8 +187,8 @@ void StudioModel::Init( char *modelname )
 	{
 		char texturename[256];
 
-		strcpy( texturename, modelname );
-		strcpy( &texturename[strlen(texturename) - 4], "T.mdl" );
+		Q_strcpy( texturename, modelname );
+		Q_strcpy( &texturename[Q_strlen(texturename) - 4], "T.mdl" );
 
 		m_ptexturehdr = LoadModel( texturename );
 	}
@@ -199,8 +204,8 @@ void StudioModel::Init( char *modelname )
 		{
 			char seqgroupname[256];
 
-			strcpy( seqgroupname, modelname );
-			sprintf( &seqgroupname[strlen(seqgroupname) - 4], "%02d.mdl", i );
+			Q_strcpy( seqgroupname, modelname );
+			Q_sprintf( &seqgroupname[Q_strlen(seqgroupname) - 4], "%02d.mdl", i );
 
 			m_panimhdr[i] = LoadDemandSequences( seqgroupname );
 		}
@@ -255,7 +260,7 @@ void StudioModel::GetSequenceInfo( float *pflFrameRate, float *pflGroundSpeed )
 	if (pseqdesc->numframes > 1)
 	{
 		*pflFrameRate = 256 * pseqdesc->fps / (pseqdesc->numframes - 1);
-		*pflGroundSpeed = sqrt( pseqdesc->linearmovement[0]*pseqdesc->linearmovement[0]+ pseqdesc->linearmovement[1]*pseqdesc->linearmovement[1]+ pseqdesc->linearmovement[2]*pseqdesc->linearmovement[2] );
+		*pflGroundSpeed = Q_sqrt( pseqdesc->linearmovement[0]*pseqdesc->linearmovement[0]+ pseqdesc->linearmovement[1]*pseqdesc->linearmovement[1]+ pseqdesc->linearmovement[2]*pseqdesc->linearmovement[2] );
 		*pflGroundSpeed = *pflGroundSpeed * pseqdesc->fps / (pseqdesc->numframes - 1);
 	}
 	else

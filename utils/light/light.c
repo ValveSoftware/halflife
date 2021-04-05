@@ -28,7 +28,7 @@ vec3_t	bsp_origin;
 
 qboolean	extrasamples;
 qboolean hicolor;
-qboolean clamp192 = true;
+qboolean clamp192 = qtrue;
 
 float		minlights[MAX_MAP_FACES];
 
@@ -56,25 +56,25 @@ void LoadEntities (void)
 		e = &entities[i];
 
 		s = ValueForKey (e, "classname");
-		if (strncmp (s, "light", 5))
+		if (Q_strncmp (s, "light", 5))
 			continue;
 
 		le = &lightentities[numlightentities];
 		numlightentities++;
 
-		strcpy (le->classname, s);
+		Q_strcpy (le->classname, s);
 		s = ValueForKey( e, "_light" );
 		if( s )
 		{
 			double	v1, v2, v3;
 		
 			v1 = v2 = v3 = 0;
-			if( sscanf( s, "%lf %lf %lf", &v1, &v2, &v3) != 3 )
+			if( Q_sscanf( s, "%lf %lf %lf", &v1, &v2, &v3) != 3 )
 				v2 = v3 = v1;
 
-			le->light[0] = v1;
-			le->light[1] = v2;
-			le->light[2] = v3;
+			le->light[0] = (vec_t)v1;
+			le->light[1] = (vec_t)v2;
+			le->light[2] = (vec_t)v3;
 		}
 		else
 		{
@@ -83,8 +83,8 @@ void LoadEntities (void)
 			le->light[2] = DEFAULTLIGHTLEVEL;
 		}
 
-		le->style = FloatForKey (e, "style");
-		le->angle = FloatForKey (e, "angle");
+		le->style = (int)FloatForKey (e, "style");
+		le->angle = (float)FloatForKey (e, "angle");
 		GetVectorForKey (e, "origin", le->origin);
 
 		s = ValueForKey (e, "target");
@@ -95,15 +95,15 @@ void LoadEntities (void)
 		for (j=1 ; j<num_entities ; j++)
 		{
 			s2 = ValueForKey (&entities[j], "targetname");
-			if (!strcmp (s, s2))
+			if (!Q_strcmp (s, s2))
 			{
-				le->targetent = true;
+				le->targetent = qtrue;
 				GetVectorForKey (&entities[j], "origin", le->targetorigin);
 				break;
 			}
 		}
 		if (j == num_entities)
-			printf ("WARNING: entity %i has unmatched target %s\n", i, s);
+			Q_printf ("WARNING: entity %i has unmatched target %s\n", i, s);
 	}
 
 	qprintf ("%d lightentities\n", numlightentities);
@@ -137,11 +137,11 @@ void LightWorld (void)
 	filebase = file_p = dlightdata;
 	file_end = filebase + MAX_MAP_LIGHTING;
 
-	RunThreadsOnIndividual (numfaces, true, LightFace);
+	RunThreadsOnIndividual (numfaces, qtrue, LightFace);
 
 	lightdatasize = file_p - filebase;
 	
-	printf ("lightdatasize: %i\n", lightdatasize);
+	Q_printf ("lightdatasize: %i\n", lightdatasize);
 }
 
 
@@ -158,41 +158,41 @@ int main (int argc, char **argv)
 	double		start, end;
 	char		source[1024];
 
-	printf("Light.exe Version 1.3 Id Software and valve (%s)\n", __DATE__ );
-	printf ("----- LightFaces ----\n");
+	Q_printf("Light.exe Version 1.3 Id Software and valve (%s)\n", __DATE__ );
+	Q_printf ("----- LightFaces ----\n");
 
 	// default to 24-bit light info
-	hicolor = true;
+	hicolor = qtrue;
 
 	for (i=1 ; i<argc ; i++)
 	{
-		if (!strcmp(argv[i],"-threads"))
+		if (!Q_strcmp(argv[i],"-threads"))
 		{
-			numthreads = atoi (argv[i+1]);
+			numthreads = Q_atoi (argv[i+1]);
 			i++;
 		}
-		else if (!strcmp(argv[i],"-extra"))
+		else if (!Q_strcmp(argv[i],"-extra"))
 		{
-			extrasamples = true;
-			printf ("extra sampling enabled\n");
+			extrasamples = qtrue;
+			Q_printf ("extra sampling enabled\n");
 		}
-		else if (!strcmp(argv[i],"-dist"))
+		else if (!Q_strcmp(argv[i],"-dist"))
 		{
-			scaledist = atof (argv[i+1]);
+			scaledist = (float)Q_atof (argv[i+1]);
 			i++;
 		}
-		else if (!strcmp(argv[i],"-range"))
+		else if (!Q_strcmp(argv[i],"-range"))
 		{
-			rangescale = atof (argv[i+1]);
+			rangescale = (float)Q_atof (argv[i+1]);
 			i++;
 		}
-		else if (!strcmp(argv[i],"-lowcolor"))
+		else if (!Q_strcmp(argv[i],"-lowcolor"))
 		{
-			hicolor = false;
+			hicolor = qfalse;
 		}
-		else if (!strcmp( argv[ i ], "-noclamp" ) )
+		else if (!Q_strcmp( argv[ i ], "-noclamp" ) )
 		{
-			clamp192 = false;
+			clamp192 = qfalse;
 		}
 		else if (argv[i][0] == '-')
 			Error ("Unknown option \"%s\"", argv[i]);
@@ -207,7 +207,7 @@ int main (int argc, char **argv)
 
 	start = I_FloatTime ();
 
-	strcpy (source, argv[i]);
+	Q_strcpy (source, argv[i]);
 	StripExtension (source);
 	DefaultExtension (source, ".bsp");
 	
@@ -221,7 +221,7 @@ int main (int argc, char **argv)
 	WriteBSPFile (source);
 
 	end = I_FloatTime ();
-	printf ("%5.1f seconds elapsed\n", end-start);
+	Q_printf ("%5.1f seconds elapsed\n", end-start);
 	
 	return 0;
 }

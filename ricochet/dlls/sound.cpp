@@ -192,7 +192,7 @@ void CAmbientGeneric :: Spawn( void )
 	
 	char* szSoundFile = (char*) STRING(pev->message);
 
-	if ( FStringNull( pev->message ) || strlen( szSoundFile ) < 1 )
+	if ( FStringNull( pev->message ) || Q_strlen( szSoundFile ) < 1 )
 	{
 		ALERT( at_error, "EMPTY AMBIENT AT: %f, %f, %f\n", pev->origin.x, pev->origin.y, pev->origin.z );
 		pev->nextthink = gpGlobals->time + 0.1;
@@ -227,7 +227,7 @@ void CAmbientGeneric :: Precache( void )
 {
 	char* szSoundFile = (char*) STRING(pev->message);
 
-	if ( !FStringNull( pev->message ) && strlen( szSoundFile ) > 1 )
+	if ( !FStringNull( pev->message ) && Q_strlen( szSoundFile ) > 1 )
 	{
 		if (*szSoundFile != '!')
 			PRECACHE_SOUND(szSoundFile);
@@ -368,14 +368,14 @@ void CAmbientGeneric :: RampThink( void )
 		if (m_dpv.lfofrac < 0)
 		{
 			m_dpv.lfofrac = 0;
-			m_dpv.lforate = abs(m_dpv.lforate);
+			m_dpv.lforate = Q_abs(m_dpv.lforate);
 			pos = 0;
 		}
 		else if (pos > 255)
 		{
 			pos = 255;
 			m_dpv.lfofrac = (255 << 8);
-			m_dpv.lforate = -abs(m_dpv.lforate);
+			m_dpv.lforate = -Q_abs(m_dpv.lforate);
 		}
 
 		switch(m_dpv.lfotype)
@@ -508,7 +508,7 @@ void CAmbientGeneric :: InitModulationParms(void)
 	m_dpv.volfrac = m_dpv.vol << 8;
 
 	m_dpv.lfofrac = 0;
-	m_dpv.lforate = abs(m_dpv.lforate);
+	m_dpv.lforate = Q_abs(m_dpv.lforate);
 
 	m_dpv.cspincount = 1;
 	
@@ -652,14 +652,14 @@ void CAmbientGeneric :: KeyValue( KeyValueData *pkvd )
 	// preset
 	if (FStrEq(pkvd->szKeyName, "preset"))
 	{
-		m_dpv.preset = atoi(pkvd->szValue);
+		m_dpv.preset = Q_atoi(pkvd->szValue);
 		pkvd->fHandled = TRUE;
 	}
 
 	// pitchrun
 	else if (FStrEq(pkvd->szKeyName, "pitch"))
 	{
-		m_dpv.pitchrun = atoi(pkvd->szValue);
+		m_dpv.pitchrun = Q_atoi(pkvd->szValue);
 		pkvd->fHandled = TRUE;
 		
 		if (m_dpv.pitchrun > 255) m_dpv.pitchrun = 255;
@@ -669,7 +669,7 @@ void CAmbientGeneric :: KeyValue( KeyValueData *pkvd )
 	// pitchstart
 	else if (FStrEq(pkvd->szKeyName, "pitchstart"))
 	{
-		m_dpv.pitchstart = atoi(pkvd->szValue);
+		m_dpv.pitchstart = Q_atoi(pkvd->szValue);
 		pkvd->fHandled = TRUE;		
 		
 		if (m_dpv.pitchstart > 255) m_dpv.pitchstart = 255;
@@ -679,7 +679,7 @@ void CAmbientGeneric :: KeyValue( KeyValueData *pkvd )
 	// spinup
 	else if (FStrEq(pkvd->szKeyName, "spinup"))
 	{
-		m_dpv.spinup = atoi(pkvd->szValue);
+		m_dpv.spinup = Q_atoi(pkvd->szValue);
 		
 		if (m_dpv.spinup > 100) m_dpv.spinup = 100;
 		if (m_dpv.spinup < 0) m_dpv.spinup = 0;
@@ -693,7 +693,7 @@ void CAmbientGeneric :: KeyValue( KeyValueData *pkvd )
 	// spindown
 	else if (FStrEq(pkvd->szKeyName, "spindown"))
 	{
-		m_dpv.spindown = atoi(pkvd->szValue);
+		m_dpv.spindown = Q_atoi(pkvd->szValue);
 		
 		if (m_dpv.spindown > 100) m_dpv.spindown = 100;
 		if (m_dpv.spindown < 0) m_dpv.spindown = 0;
@@ -707,7 +707,7 @@ void CAmbientGeneric :: KeyValue( KeyValueData *pkvd )
 	// volstart
 	else if (FStrEq(pkvd->szKeyName, "volstart"))
 	{
-		m_dpv.volstart = atoi(pkvd->szValue);
+		m_dpv.volstart = Q_atoi(pkvd->szValue);
 
 		if (m_dpv.volstart > 10) m_dpv.volstart = 10;
 		if (m_dpv.volstart < 0) m_dpv.volstart = 0;
@@ -720,7 +720,7 @@ void CAmbientGeneric :: KeyValue( KeyValueData *pkvd )
 	// fadein
 	else if (FStrEq(pkvd->szKeyName, "fadein"))
 	{
-		m_dpv.fadein = atoi(pkvd->szValue);
+		m_dpv.fadein = Q_atoi(pkvd->szValue);
 		
 		if (m_dpv.fadein > 100) m_dpv.fadein = 100;
 		if (m_dpv.fadein < 0) m_dpv.fadein = 0;
@@ -734,7 +734,7 @@ void CAmbientGeneric :: KeyValue( KeyValueData *pkvd )
 	// fadeout
 	else if (FStrEq(pkvd->szKeyName, "fadeout"))
 	{
-		m_dpv.fadeout = atoi(pkvd->szValue);
+		m_dpv.fadeout = Q_atoi(pkvd->szValue);
 		
 		if (m_dpv.fadeout > 100) m_dpv.fadeout = 100;
 		if (m_dpv.fadeout < 0) m_dpv.fadeout = 0;
@@ -748,7 +748,7 @@ void CAmbientGeneric :: KeyValue( KeyValueData *pkvd )
 	// lfotype
 	else if (FStrEq(pkvd->szKeyName, "lfotype"))
 	{
-		m_dpv.lfotype = atoi(pkvd->szValue);
+		m_dpv.lfotype = Q_atoi(pkvd->szValue);
 		if (m_dpv.lfotype > 4) m_dpv.lfotype = LFO_TRIANGLE;
 		pkvd->fHandled = TRUE;
 	}
@@ -756,7 +756,7 @@ void CAmbientGeneric :: KeyValue( KeyValueData *pkvd )
 	// lforate
 	else if (FStrEq(pkvd->szKeyName, "lforate"))
 	{
-		m_dpv.lforate = atoi(pkvd->szValue);
+		m_dpv.lforate = Q_atoi(pkvd->szValue);
 		
 		if (m_dpv.lforate > 1000) m_dpv.lforate = 1000;
 		if (m_dpv.lforate < 0) m_dpv.lforate = 0;
@@ -768,7 +768,7 @@ void CAmbientGeneric :: KeyValue( KeyValueData *pkvd )
 	// lfomodpitch
 	else if (FStrEq(pkvd->szKeyName, "lfomodpitch"))
 	{
-		m_dpv.lfomodpitch = atoi(pkvd->szValue);
+		m_dpv.lfomodpitch = Q_atoi(pkvd->szValue);
 		if (m_dpv.lfomodpitch > 100) m_dpv.lfomodpitch = 100;
 		if (m_dpv.lfomodpitch < 0) m_dpv.lfomodpitch = 0;
 		
@@ -779,7 +779,7 @@ void CAmbientGeneric :: KeyValue( KeyValueData *pkvd )
 	// lfomodvol
 	else if (FStrEq(pkvd->szKeyName, "lfomodvol"))
 	{
-		m_dpv.lfomodvol = atoi(pkvd->szValue);
+		m_dpv.lfomodvol = Q_atoi(pkvd->szValue);
 		if (m_dpv.lfomodvol > 100) m_dpv.lfomodvol = 100;
 		if (m_dpv.lfomodvol < 0) m_dpv.lfomodvol = 0;
 
@@ -789,7 +789,7 @@ void CAmbientGeneric :: KeyValue( KeyValueData *pkvd )
 	// cspinup
 	else if (FStrEq(pkvd->szKeyName, "cspinup"))
 	{
-		m_dpv.cspinup = atoi(pkvd->szValue);
+		m_dpv.cspinup = Q_atoi(pkvd->szValue);
 		if (m_dpv.cspinup > 100) m_dpv.cspinup = 100;
 		if (m_dpv.cspinup < 0) m_dpv.cspinup = 0;
 
@@ -833,12 +833,12 @@ void CEnvSound :: KeyValue( KeyValueData *pkvd )
 	
 	if (FStrEq(pkvd->szKeyName, "radius"))
 	{
-		m_flRadius = atof(pkvd->szValue);
+		m_flRadius = Q_atof(pkvd->szValue);
 		pkvd->fHandled = TRUE;
 	}
 	if (FStrEq(pkvd->szKeyName, "roomtype"))
 	{
-		m_flRoomtype = atof(pkvd->szValue);
+		m_flRoomtype = Q_atof(pkvd->szValue);
 		pkvd->fHandled = TRUE;
 	}
 }
@@ -1065,10 +1065,10 @@ int USENTENCEG_PickSequential(int isentenceg, char *szfound, int ipick, int fres
 	if (ipick >= count)
 		ipick = count-1;
 
-	strcpy(szfound, "!");
-	strcat(szfound, szgroupname);
-	itoa(ipick, sznum, 10);
-	strcat(szfound, sznum);
+	Q_strcpy(szfound, "!");
+	Q_strcat(szfound, szgroupname);
+	Q_itoa(ipick, sznum, 10);
+	Q_strcat(szfound, sznum);
 	
 	if (ipick >= count)
 	{
@@ -1127,10 +1127,11 @@ int USENTENCEG_Pick(int isentenceg, char *szfound)
 			USENTENCEG_InitLRU(plru, count);
 		else
 		{
-			strcpy(szfound, "!");
-			strcat(szfound, szgroupname);
-			itoa(ipick, sznum, 10);
-			strcat(szfound, sznum);
+			Q_strcpy(szfound, "!");
+			Q_strcat(szfound, szgroupname);
+			Q_itoa(ipick, sznum, 10);
+			Q_strcat(szfound, sznum);
+
 			return ipick;
 		}
 	}
@@ -1154,7 +1155,7 @@ int SENTENCEG_GetIndex(const char *szgroupname)
 	i = 0;
 	while (rgsentenceg[i].count)
 	{
-		if (!strcmp(szgroupname, rgsentenceg[i].szgroupname))
+		if (!Q_strcmp(szgroupname, rgsentenceg[i].szgroupname))
 			return i;
 	i++;
 	}
@@ -1251,10 +1252,10 @@ void SENTENCEG_Stop(edict_t *entity, int isentenceg, int ipick)
 	if (isentenceg < 0 || ipick < 0)
 		return;
 	
-	strcpy(buffer, "!");
-	strcat(buffer, rgsentenceg[isentenceg].szgroupname);
-	itoa(ipick, sznum, 10);
-	strcat(buffer, sznum);
+	Q_strcpy(buffer, "!");
+	Q_strcat(buffer, rgsentenceg[isentenceg].szgroupname);
+	Q_itoa(ipick, sznum, 10);
+	Q_strcat(buffer, sznum);
 
 	STOP_SOUND(entity, CHAN_VOICE, buffer);
 }
@@ -1273,12 +1274,12 @@ void SENTENCEG_Init()
 	if (fSentencesInit)
 		return;
 
-	memset(gszallsentencenames, 0, CVOXFILESENTENCEMAX * CBSENTENCENAME_MAX);
+	Q_memset(gszallsentencenames, 0, CVOXFILESENTENCEMAX * CBSENTENCENAME_MAX);
 	gcallsentences = 0;
 
-	memset(rgsentenceg, 0, CSENTENCEG_MAX * sizeof(SENTENCEG));
-	memset(buffer, 0, 512);
-	memset(szgroup, 0, 64);
+	Q_memset(rgsentenceg, 0, CSENTENCEG_MAX * sizeof(SENTENCEG));
+	Q_memset(buffer, 0, 512);
+	Q_memset(szgroup, 0, 64);
 	isentencegs = -1;
 
 	
@@ -1298,7 +1299,7 @@ void SENTENCEG_Init()
 		if (!buffer[i])
 			continue;
 
-		if (buffer[i] == '/' || !isalpha(buffer[i]))
+		if (buffer[i] == '/' || !Q_isalpha(buffer[i]))
 			continue;
 
 		// get sentence name
@@ -1319,19 +1320,19 @@ void SENTENCEG_Init()
 		buffer[j] = 0;
 		const char *pString = buffer + i;
 
-		if ( strlen( pString ) >= CBSENTENCENAME_MAX )
+		if ( Q_strlen( pString ) >= CBSENTENCENAME_MAX )
 			ALERT( at_warning, "Sentence %s longer than %d letters\n", pString, CBSENTENCENAME_MAX-1 );
 
-		strcpy( gszallsentencenames[gcallsentences++], pString );
+		Q_strcpy( gszallsentencenames[gcallsentences++], pString );
 
 		j--;
 		if (j <= i)
 			continue;
-		if (!isdigit(buffer[j]))
+		if (!Q_isdigit(buffer[j]))
 			continue;
 
 		// cut out suffix numbers
-		while (j > i && isdigit(buffer[j]))
+		while (j > i && Q_isdigit(buffer[j]))
 			j--;
 
 		if (j <= i)
@@ -1342,7 +1343,7 @@ void SENTENCEG_Init()
 		// if new name doesn't match previous group name, 
 		// make a new group.
 
-		if (strcmp(szgroup, &(buffer[i])))
+		if (Q_strcmp(szgroup, &(buffer[i])))
 		{
 			// name doesn't match with prev name,
 			// copy name into group, init count to 1
@@ -1353,10 +1354,10 @@ void SENTENCEG_Init()
 				break;
 			}
 
-			strcpy(rgsentenceg[isentencegs].szgroupname, &(buffer[i]));
+			Q_strcpy(rgsentenceg[isentencegs].szgroupname, &(buffer[i]));
 			rgsentenceg[isentencegs].count = 1;
 
-			strcpy(szgroup, &(buffer[i]));
+			Q_strcpy(szgroup, &(buffer[i]));
 
 			continue;
 		}
@@ -1398,13 +1399,13 @@ int SENTENCEG_Lookup(const char *sample, char *sentencenum)
 	// this is a sentence name; lookup sentence number
 	// and give to engine as string.
 	for (i = 0; i < gcallsentences; i++)
-		if (!stricmp(gszallsentencenames[i], sample+1))
+		if (!Q_stricmp(gszallsentencenames[i], sample+1))
 		{
 			if (sentencenum)
 			{
-				strcpy(sentencenum, "!");
-				itoa(i, sznum, 10);
-				strcat(sentencenum, sznum);
+				Q_strcpy(sentencenum, "!");
+				Q_itoa(i, sznum, 10);
+				Q_strcat(sentencenum, sznum);
 			}
 			return i;
 		}
@@ -1523,7 +1524,7 @@ static char *memfgets( byte *pMemFile, int fileSize, int &filePos, char *pBuffer
 		// We read in size bytes
 		int size = i - filePos;
 		// copy it out
-		memcpy( pBuffer, pMemFile + filePos, sizeof(byte)*size );
+		Q_memcpy( pBuffer, pMemFile + filePos, sizeof(byte)*size );
 		
 		// If the buffer isn't full, terminate (this is always true)
 		if ( size < bufferSize )
@@ -1549,11 +1550,11 @@ void TEXTURETYPE_Init()
 	if (fTextureTypeInit)
 		return;
 
-	memset(&(grgszTextureName[0][0]), 0, CTEXTURESMAX * CBTEXTURENAMEMAX);
-	memset(grgchTextureType, 0, CTEXTURESMAX);
+	Q_memset(&(grgszTextureName[0][0]), 0, CTEXTURESMAX * CBTEXTURENAMEMAX);
+	Q_memset(grgchTextureType, 0, CTEXTURESMAX);
 
 	gcTextures = 0;
-	memset(buffer, 0, 512);
+	Q_memset(buffer, 0, 512);
 
 	pMemFile = g_engfuncs.pfnLoadFileForMe( "sound/materials.txt", &fileSize );
 	if ( !pMemFile )
@@ -1564,21 +1565,21 @@ void TEXTURETYPE_Init()
 	{
 		// skip whitespace
 		i = 0;
-		while(buffer[i] && isspace(buffer[i]))
+		while(buffer[i] && Q_isspace(buffer[i]))
 			i++;
 		
 		if (!buffer[i])
 			continue;
 
 		// skip comment lines
-		if (buffer[i] == '/' || !isalpha(buffer[i]))
+		if (buffer[i] == '/' || !Q_isalpha(buffer[i]))
 			continue;
 
 		// get texture type
-		grgchTextureType[gcTextures] = toupper(buffer[i++]);
+		grgchTextureType[gcTextures] = Q_toupper(buffer[i++]);
 
 		// skip whitespace
-		while(buffer[i] && isspace(buffer[i]))
+		while(buffer[i] && Q_isspace(buffer[i]))
 			i++;
 		
 		if (!buffer[i])
@@ -1586,16 +1587,16 @@ void TEXTURETYPE_Init()
 
 		// get sentence name
 		j = i;
-		while (buffer[j] && !isspace(buffer[j]))
+		while (buffer[j] && !Q_isspace(buffer[j]))
 			j++;
 
 		if (!buffer[j])
 			continue;
 
 		// null-terminate name and save in sentences array
-		j = min (j, CBTEXTURENAMEMAX-1+i);
+		j = Q_min (j, CBTEXTURENAMEMAX-1+i);
 		buffer[j] = 0;
-		strcpy(&(grgszTextureName[gcTextures++][0]), &(buffer[i]));
+		Q_strcpy(&(grgszTextureName[gcTextures++][0]), &(buffer[i]));
 	}
 
 	g_engfuncs.pfnFreeFile( pMemFile );
@@ -1677,7 +1678,7 @@ float TEXTURETYPE_PlaySound(TraceResult *ptr,  Vector vecSrc, Vector vecEnd, int
 			if (*pTextureName == '{' || *pTextureName == '!' || *pTextureName == '~' || *pTextureName == ' ')
 				pTextureName++;
 			// '}}'
-			strcpy(szbuffer, pTextureName);
+			Q_strcpy(szbuffer, pTextureName);
 			szbuffer[CBTEXTURENAMEMAX - 1] = 0;
 				
 			// ALERT ( at_console, "texture hit: %s\n", szbuffer);
@@ -1827,7 +1828,7 @@ void CSpeaker :: Spawn( void )
 {
 	char* szSoundFile = (char*) STRING(pev->message);
 
-	if ( !m_preset && (FStringNull( pev->message ) || strlen( szSoundFile ) < 1 ))
+	if ( !m_preset && (FStringNull( pev->message ) || Q_strlen( szSoundFile ) < 1 ))
 	{
 		ALERT( at_error, "SPEAKER with no Level/Sentence! at: %f, %f, %f\n", pev->origin.x, pev->origin.y, pev->origin.z );
 		pev->nextthink = gpGlobals->time + 0.1;
@@ -1977,7 +1978,7 @@ void CSpeaker :: KeyValue( KeyValueData *pkvd )
 	// preset
 	if (FStrEq(pkvd->szKeyName, "preset"))
 	{
-		m_preset = atoi(pkvd->szValue);
+		m_preset = Q_atoi(pkvd->szValue);
 		pkvd->fHandled = TRUE;
 	}
 	else

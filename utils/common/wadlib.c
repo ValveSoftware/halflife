@@ -50,7 +50,8 @@ W_OpenWad
 void W_OpenWad (char *filename)
 {
 	lumpinfo_t		*lump_p;
-	unsigned		i;
+	//unsigned		i;
+	int				i;
 	int				length;
 	
 //
@@ -59,8 +60,8 @@ void W_OpenWad (char *filename)
 	wadhandle = SafeOpenRead (filename);
 	SafeRead (wadhandle, &header, sizeof(header));
 
-	if (strncmp(header.identification,"WAD2",4) &&
-		strncmp(header.identification, "WAD3", 4))
+	if (Q_strncmp(header.identification,"WAD2",4) &&
+		Q_strncmp(header.identification, "WAD3", 4))
 		Error ("Wad file %s doesn't have WAD2/WAD3 id\n",filename);
 		
 	header.numlumps = LittleLong(header.numlumps);
@@ -69,10 +70,10 @@ void W_OpenWad (char *filename)
 	numlumps = header.numlumps;
 
 	length = numlumps*sizeof(lumpinfo_t);
-	lumpinfo = malloc (length);
+	lumpinfo = Q_malloc (length);
 	lump_p = lumpinfo;
 	
-	fseek (wadhandle, header.infotableofs, SEEK_SET);
+	Q_fseek (wadhandle, header.infotableofs, SEEK_SET);
 	SafeRead (wadhandle, lumpinfo, length);
 
 //
@@ -97,7 +98,7 @@ void CleanupName (char *in, char *out)
 		if (!in[i])
 			break;
 			
-		out[i] = toupper(in[i]);
+		out[i] = Q_toupper(in[i]);
 	}
 	
 	for ( ; i<sizeof( ((lumpinfo_t *)0)->name ); i++ )
@@ -194,7 +195,7 @@ void W_ReadLumpNum (int lump, void *dest)
 		Error ("W_ReadLump: %i >= numlumps",lump);
 	l = lumpinfo+lump;
 	
-	fseek (wadhandle, l->filepos, SEEK_SET);
+	Q_fseek (wadhandle, l->filepos, SEEK_SET);
 	SafeRead (wadhandle, dest, l->size);
 }
 
@@ -209,10 +210,13 @@ void	*W_LoadLumpNum (int lump)
 {
 	void	*buf;
 	
-	if ((unsigned)lump >= numlumps)
+	//if ((unsigned)lump >= numlumps)
+	//	Error ("W_CacheLumpNum: %i >= numlumps",lump);
+
+	if (lump >= numlumps)
 		Error ("W_CacheLumpNum: %i >= numlumps",lump);
 		
-	buf = malloc (W_LumpLength (lump));
+	buf = Q_malloc (W_LumpLength (lump));
 	W_ReadLumpNum (lump, buf);
 	
 	return buf;
@@ -255,8 +259,8 @@ NewWad
 void NewWad (char *pathname, qboolean bigendien)
 {
 	outwad = SafeOpenWrite (pathname);
-	fseek (outwad, sizeof(wadinfo_t), SEEK_SET);
-	memset (outinfo, 0, sizeof(outinfo));
+	Q_fseek (outwad, sizeof(wadinfo_t), SEEK_SET);
+	Q_memset (outinfo, 0, sizeof(outinfo));
 	
 	if (bigendien)
 	{
@@ -287,12 +291,13 @@ void	AddLump (char *name, void *buffer, int length, int type, int compress)
 	info = &outinfo[outlumps];
 	outlumps++;
 
-	memset (info,0,sizeof(info));
+	Q_memset (info,0,sizeof(info));
 	
-	strcpy (info->name, name);
-	strupr (info->name);
-	
-	ofs = ftell(outwad);
+	Q_strcpy (info->name, name);
+	//strupr (info->name);
+	Q_strupr (info->name, sizeof(info->name));
+
+	ofs = Q_ftell(outwad);
 	info->filepos = wadlong(ofs);
 	info->size = info->disksize = wadlong(length);
 	info->type = type;
@@ -316,7 +321,7 @@ void WriteWad (int wad3)
 	int			ofs;
 	
 // write the lumpingo
-	ofs = ftell(outwad);
+	ofs = Q_ftell(outwad);
 
 	SafeWrite (outwad, outinfo, outlumps*sizeof(lumpinfo_t) );
 		
@@ -331,9 +336,9 @@ void WriteWad (int wad3)
 	header.numlumps = wadlong(outlumps);
 	header.infotableofs = wadlong(ofs);
 		
-	fseek (outwad, 0, SEEK_SET);
+	Q_fseek (outwad, 0, SEEK_SET);
 	SafeWrite (outwad, &header, sizeof(header));
-	fclose (outwad);
+	Q_fclose (outwad);
 }
 
 

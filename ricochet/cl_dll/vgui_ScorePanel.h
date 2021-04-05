@@ -56,7 +56,7 @@ public:
 		_image[1]->getTextSize(w2, t2);
 
 		wide = w1 + w2;
-		tall = max(t1, t2);
+		tall = Q_max(t1, t2);
 		setSize(wide, tall);
 	}
 
@@ -145,10 +145,10 @@ public:
 	{
 		// strip any non-alnum characters from the end
 		char buf[512];
-		strcpy(buf, text);
+		Q_strcpy(buf, text);
 
-		int len = strlen(buf);
-		while (len && isspace(buf[--len]))
+		int len = Q_strlen(buf);
+		while (len && Q_isspace(buf[--len]))
 		{
 			buf[len] = 0;
 		}

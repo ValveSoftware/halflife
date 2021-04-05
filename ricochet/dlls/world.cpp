@@ -322,12 +322,12 @@ void CGlobalState :: EntityAdd( string_t globalname, string_t mapName, GLOBALEST
 {
 	ASSERT( !Find(globalname) );
 
-	globalentity_t *pNewEntity = (globalentity_t *)calloc( sizeof( globalentity_t ), 1 );
+	globalentity_t *pNewEntity = (globalentity_t *)Q_calloc( sizeof( globalentity_t ), 1 );
 	ASSERT( pNewEntity != NULL );
 	pNewEntity->pNext = m_pList;
 	m_pList = pNewEntity;
-	strcpy( pNewEntity->name, STRING( globalname ) );
-	strcpy( pNewEntity->levelName, STRING(mapName) );
+	Q_strcpy( pNewEntity->name, STRING( globalname ) );
+	Q_strcpy( pNewEntity->levelName, STRING(mapName) );
 	pNewEntity->state = state;
 	m_listCount++;
 }
@@ -422,7 +422,7 @@ void CGlobalState::EntityUpdate( string_t globalname, string_t mapname )
 	globalentity_t *pEnt = Find( globalname );
 
 	if ( pEnt )
-		strcpy( pEnt->levelName, STRING(mapname) );
+		Q_strcpy( pEnt->levelName, STRING(mapname) );
 }
 
 
@@ -432,7 +432,7 @@ void CGlobalState::ClearStates( void )
 	while ( pFree )
 	{
 		globalentity_t *pNext = pFree->pNext;
-		free( pFree );
+		Q_free( pFree );
 		pFree = pNext;
 	}
 	Reset();
@@ -707,19 +707,19 @@ void CWorld :: KeyValue( KeyValueData *pkvd )
 	}
 	else if ( FStrEq(pkvd->szKeyName, "sounds") )
 	{
-		gpGlobals->cdAudioTrack = atoi(pkvd->szValue);
+		gpGlobals->cdAudioTrack = Q_atoi(pkvd->szValue);
 		pkvd->fHandled = TRUE;
 	}
 	else if ( FStrEq(pkvd->szKeyName, "WaveHeight") )
 	{
 		// Sent over net now.
-		pev->scale = atof(pkvd->szValue) * (1.0/8.0);
+		pev->scale = Q_atof(pkvd->szValue) * (1.0/8.0);
 		pkvd->fHandled = TRUE;
 		CVAR_SET_FLOAT( "sv_wateramp", pev->scale );
 	}
 	else if ( FStrEq(pkvd->szKeyName, "MaxRange") )
 	{
-		pev->speed = atof(pkvd->szValue);
+		pev->speed = Q_atof(pkvd->szValue);
 		pkvd->fHandled = TRUE;
 	}
 	else if ( FStrEq(pkvd->szKeyName, "chaptertitle") )
@@ -731,7 +731,7 @@ void CWorld :: KeyValue( KeyValueData *pkvd )
 	{
 		// UNDONE: This is a gross hack!!! The CVAR is NOT sent over the client/sever link
 		// but it will work for single player
-		int flag = atoi(pkvd->szValue);
+		int flag = Q_atoi(pkvd->szValue);
 		pkvd->fHandled = TRUE;
 		if ( flag )
 			pev->spawnflags |= SF_WORLD_DARK;
@@ -739,13 +739,13 @@ void CWorld :: KeyValue( KeyValueData *pkvd )
 	else if ( FStrEq(pkvd->szKeyName, "newunit") )
 	{
 		// Single player only.  Clear save directory if set
-		if ( atoi(pkvd->szValue) )
+		if ( Q_atoi(pkvd->szValue) )
 			CVAR_SET_FLOAT( "sv_newunit", 1 );
 		pkvd->fHandled = TRUE;
 	}
 	else if ( FStrEq(pkvd->szKeyName, "gametitle") )
 	{
-		if ( atoi(pkvd->szValue) )
+		if ( Q_atoi(pkvd->szValue) )
 			pev->spawnflags |= SF_WORLD_TITLE;
 
 		pkvd->fHandled = TRUE;
@@ -757,7 +757,7 @@ void CWorld :: KeyValue( KeyValueData *pkvd )
 	}
 	else if ( FStrEq(pkvd->szKeyName, "defaultteam") )
 	{
-		if ( atoi(pkvd->szValue) )
+		if ( Q_atoi(pkvd->szValue) )
 		{
 			pev->spawnflags |= SF_WORLD_FORCETEAM;
 		}
@@ -767,12 +767,12 @@ void CWorld :: KeyValue( KeyValueData *pkvd )
 	// Discwar
 	else if ( FStrEq(pkvd->szKeyName, "playersperteam") )
 	{
-		g_iPlayersPerTeam = atoi(pkvd->szValue);
+		g_iPlayersPerTeam = Q_atoi(pkvd->szValue);
 		pkvd->fHandled = TRUE;
 	}
 	else if ( FStrEq(pkvd->szKeyName, "no_arena") )
 	{
-		if ( atoi(pkvd->szValue) )
+		if ( Q_atoi(pkvd->szValue) )
 			m_iArenaOff = TRUE;
 		pkvd->fHandled = TRUE;
 	}

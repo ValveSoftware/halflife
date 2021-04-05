@@ -67,8 +67,8 @@ extern void AddClientToArena( CBasePlayer *pPlayer );
 
 int GetHueFromRGB( float r, float g, float b )
 {
-	float fMax = max( max( r, g ) , b );
-	float fMin = min( min( r, g ) , b );
+	float fMax = Q_max( Q_max( r, g ) , b );
+	float fMin = Q_min( Q_min( r, g ) , b );
 	float fSaturation = 0;
 
 	if ( fMax != 0 )
@@ -281,7 +281,7 @@ void ClientPutInServer( edict_t *pEntity )
 	}
 
 	static char sName[128];
-	strcpy(sName,STRING(pPlayer->pev->netname));
+	Q_strcpy(sName,STRING(pPlayer->pev->netname));
 	
 	// First parse the name and remove any %'s
 	for ( char *pApersand = sName; pApersand != NULL && *pApersand != 0; pApersand++ )
@@ -322,7 +322,7 @@ void Host_Say( edict_t *pEntity, int teamonly )
 	if ( CMD_ARGC() == 0 )
 		return;
 
-	if ( !stricmp( pcmd, cpSay) || !stricmp( pcmd, cpSayTeam ) )
+	if ( !Q_stricmp( pcmd, cpSay) || !Q_stricmp( pcmd, cpSayTeam ) )
 	{
 		if ( CMD_ARGC() >= 2 )
 		{
@@ -338,12 +338,12 @@ void Host_Say( edict_t *pEntity, int teamonly )
 	{
 		if ( CMD_ARGC() >= 2 )
 		{
-			sprintf( szTemp, "%s %s", ( char * )pcmd, (char *)CMD_ARGS() );
+			Q_sprintf( szTemp, "%s %s", ( char * )pcmd, (char *)CMD_ARGS() );
 		}
 		else
 		{
 			// Just a one word command, use the first word...sigh
-			sprintf( szTemp, "%s", ( char * )pcmd );
+			Q_sprintf( szTemp, "%s", ( char * )pcmd );
 		}
 		p = szTemp;
 	}
@@ -352,14 +352,14 @@ void Host_Say( edict_t *pEntity, int teamonly )
 	if (*p == '"')
 	{
 		p++;
-		p[strlen(p)-1] = 0;
+		p[Q_strlen(p)-1] = 0;
 	}
 
 // make sure the text has content
 	char *pc;
 	for ( pc = p; pc != NULL && *pc != 0; pc++ )
 	{
-		if ( isprint( *pc ) && !isspace( *pc ) )
+		if ( Q_isprint( *pc ) && !Q_isspace( *pc ) )
 		{
 			pc = NULL;	// we've found an alphanumeric character,  so text is valid
 			break;
@@ -370,16 +370,16 @@ void Host_Say( edict_t *pEntity, int teamonly )
 
 // turn on color set 2  (color on,  no sound)
 	if ( teamonly )
-		sprintf( text, "%c(TEAM) %s: ", 2, STRING( pEntity->v.netname ) );
+		Q_sprintf( text, "%c(TEAM) %s: ", 2, STRING( pEntity->v.netname ) );
 	else
-		sprintf( text, "%c%s: ", 2, STRING( pEntity->v.netname ) );
+		Q_sprintf( text, "%c%s: ", 2, STRING( pEntity->v.netname ) );
 
-	j = sizeof(text) - 2 - strlen(text);  // -2 for /n and null terminator
-	if ( (int)strlen(p) > j )
+	j = sizeof(text) - 2 - Q_strlen(text);  // -2 for /n and null terminator
+	if ( (int)Q_strlen(p) > j )
 		p[j] = 0;
 
-	strcat( text, p );
-	strcat( text, "\n" );
+	Q_strcat( text, p );
+	Q_strcat( text, "\n" );
 
 	// loop through all players
 	// Start with the first player.
@@ -504,7 +504,7 @@ void ClientCommand( edict_t *pEntity )
 	{
 		if ( g_flWeaponCheat && CMD_ARGC() > 1)
 		{
-			GetClassPtr((CBasePlayer *)pev)->m_iFOV = atoi( CMD_ARGV(1) );
+			GetClassPtr((CBasePlayer *)pev)->m_iFOV = Q_atoi( CMD_ARGV(1) );
 		}
 		else
 		{
@@ -515,7 +515,7 @@ void ClientCommand( edict_t *pEntity )
 	{
 		GetClassPtr((CBasePlayer *)pev)->SelectItem((char *)CMD_ARGV(1));
 	}
-	else if (((pstr = strstr(pcmd, "weapon_")) != NULL)  && (pstr == pcmd))
+	else if (((pstr = Q_strstr(pcmd, "weapon_")) != NULL)  && (pstr == pcmd))
 	{
 		GetClassPtr((CBasePlayer *)pev)->SelectItem(pcmd);
 	}
@@ -534,7 +534,7 @@ void ClientCommand( edict_t *pEntity )
 
 		// check the length of the command (prevents crash)
 		// max total length is 192 ...and we're adding a string below (#Game_unknown_command)
-		strncpy( command, pcmd, 127 );
+		Q_strncpy( command, pcmd, 127 );
 		command[127] = '\0';
 
 		ClientPrint( &pEntity->v, HUD_PRINTCONSOLE, "#Game_unknown_command", command );
@@ -561,7 +561,7 @@ void ClientUserInfoChanged( edict_t *pEntity, char *infobuffer )
 	{
 		char sName[256];
 		char *pName = g_engfuncs.pfnInfoKeyValue( infobuffer, "name" );
-		strncpy( sName, pName, sizeof(sName) - 1 );
+		Q_strncpy( sName, pName, sizeof(sName) - 1 );
 		sName[ sizeof(sName) - 1 ] = '\0';
 
 		// First parse the name and remove any %'s
@@ -576,7 +576,7 @@ void ClientUserInfoChanged( edict_t *pEntity, char *infobuffer )
 		g_engfuncs.pfnSetClientKeyValue( ENTINDEX(pEntity), infobuffer, "name", sName );
 
 		char text[256];
-		sprintf( text, "* %s changed name to %s\n", STRING(pEntity->v.netname), g_engfuncs.pfnInfoKeyValue( infobuffer, "name" ) );
+		Q_sprintf( text, "* %s changed name to %s\n", STRING(pEntity->v.netname), g_engfuncs.pfnInfoKeyValue( infobuffer, "name" ) );
 		MESSAGE_BEGIN( MSG_ALL, gmsgSayText, NULL );
 			WRITE_BYTE( ENTINDEX(pEntity) );
 			WRITE_STRING( text );
@@ -593,7 +593,7 @@ void ClientUserInfoChanged( edict_t *pEntity, char *infobuffer )
 	g_pGameRules->ClientUserInfoChanged( GetClassPtr((CBasePlayer *)&pEntity->v), infobuffer );
 
 	// Override model
-	if ( (!strcmp( "models/player/female/female.mdl", g_engfuncs.pfnInfoKeyValue( infobuffer, "model" ) )) )//&& (!strcmp( "models/player/hgrunt/hgrunt.mdl" )) )
+	if ( (!Q_strcmp( "models/player/female/female.mdl", g_engfuncs.pfnInfoKeyValue( infobuffer, "model" ) )) )//&& (!strcmp( "models/player/hgrunt/hgrunt.mdl" )) )
 		SET_MODEL( pEntity, "models/player/male/male.mdl" );
 	g_engfuncs.pfnSetClientKeyValue( ENTINDEX( pEntity ), infobuffer, "model", "male" );
 
@@ -1081,7 +1081,7 @@ int AddToFullPack( struct entity_state_s *state, int e, edict_t *ent, edict_t *h
 		UTIL_UnsetGroupTrace();
 	}
 
-	memset( state, 0, sizeof( *state ) );
+	Q_memset( state, 0, sizeof( *state ) );
 
 	// Assign index so we can track this entity from frame to frame and
 	//  delta from it.
@@ -1101,13 +1101,13 @@ int AddToFullPack( struct entity_state_s *state, int e, edict_t *ent, edict_t *h
 	// Round animtime to nearest millisecond
 	state->animtime   = (int)(1000.0 * ent->v.animtime ) / 1000.0;
 
-	memcpy( state->origin, ent->v.origin, 3 * sizeof( float ) );
-	memcpy( state->angles, ent->v.angles, 3 * sizeof( float ) );
-	memcpy( state->mins, ent->v.mins, 3 * sizeof( float ) );
-	memcpy( state->maxs, ent->v.maxs, 3 * sizeof( float ) );
+	Q_memcpy( state->origin, ent->v.origin, 3 * sizeof( float ) );
+	Q_memcpy( state->angles, ent->v.angles, 3 * sizeof( float ) );
+	Q_memcpy( state->mins, ent->v.mins, 3 * sizeof( float ) );
+	Q_memcpy( state->maxs, ent->v.maxs, 3 * sizeof( float ) );
 
-	memcpy( state->startpos, ent->v.startpos, 3 * sizeof( float ) );
-	memcpy( state->endpos, ent->v.endpos, 3 * sizeof( float ) );
+	Q_memcpy( state->startpos, ent->v.startpos, 3 * sizeof( float ) );
+	Q_memcpy( state->endpos, ent->v.endpos, 3 * sizeof( float ) );
 
 	state->impacttime = ent->v.impacttime;
 	state->starttime = ent->v.starttime;
@@ -1176,7 +1176,7 @@ int AddToFullPack( struct entity_state_s *state, int e, edict_t *ent, edict_t *h
 	// Special stuff for players only
 	if ( player )
 	{
-		memcpy( state->basevelocity, ent->v.basevelocity, 3 * sizeof( float ) );
+		Q_memcpy( state->basevelocity, ent->v.basevelocity, 3 * sizeof( float ) );
 
 		state->weaponmodel  = MODEL_INDEX( STRING( ent->v.weaponmodel ) );
 		state->gaitsequence = ent->v.gaitsequence;
@@ -1516,7 +1516,7 @@ int GetWeaponData( struct edict_s *player, struct weapon_data_s *info )
 	
 	ItemInfo II;
 
-	memset( info, 0, 32 * sizeof( weapon_data_t ) );
+	Q_memset( info, 0, 32 * sizeof( weapon_data_t ) );
 
 	if ( !pl )
 		return 1;
@@ -1535,7 +1535,7 @@ int GetWeaponData( struct edict_s *player, struct weapon_data_s *info )
 				if ( gun && gun->UseDecrement() )
 				{
 					// Get The ID.
-					memset( &II, 0, sizeof( II ) );
+					Q_memset( &II, 0, sizeof( II ) );
 					gun->GetItemInfo( &II );
 
 					if ( II.iId >= 0 && II.iId < 32 )
@@ -1545,9 +1545,9 @@ int GetWeaponData( struct edict_s *player, struct weapon_data_s *info )
 						item->m_iId						= II.iId;
 						item->m_iClip					= pl->m_rgAmmo[gun->m_iPrimaryAmmoType];//gun->m_iClip;
 
-						item->m_flTimeWeaponIdle		= max( gun->m_flTimeWeaponIdle, -0.001 );
-						item->m_flNextPrimaryAttack		= max( gun->m_flNextPrimaryAttack, -0.001 );
-						item->m_flNextSecondaryAttack	= max( gun->m_flNextSecondaryAttack, -0.001 );
+						item->m_flTimeWeaponIdle		= Q_max( gun->m_flTimeWeaponIdle, -0.001 );
+						item->m_flNextPrimaryAttack		= Q_max( gun->m_flNextPrimaryAttack, -0.001 );
+						item->m_flNextSecondaryAttack	= Q_max( gun->m_flNextSecondaryAttack, -0.001 );
 						item->m_fInReload				= gun->m_fInReload;
 					}
 				}
@@ -1588,7 +1588,7 @@ void UpdateClientData ( const struct edict_s *ent, int sendweapons, struct clien
 	cd->flSwimTime		= ent->v.flSwimTime;
 	cd->waterjumptime	= ent->v.teleport_time;
 
-	strcpy( cd->physinfo, ENGINE_GETPHYSINFO( ent ) );
+	Q_strcpy( cd->physinfo, ENGINE_GETPHYSINFO( ent ) );
 
 	cd->maxspeed		= ent->v.maxspeed;
 	cd->fov				= ent->v.fov;
@@ -1616,7 +1616,7 @@ void UpdateClientData ( const struct edict_s *ent, int sendweapons, struct clien
 				if ( gun && gun->UseDecrement() )
 				{
 					ItemInfo II;
-					memset( &II, 0, sizeof( II ) );
+					Q_memset( &II, 0, sizeof( II ) );
 					gun->GetItemInfo( &II );
 
 					cd->m_iId = II.iId;
@@ -1738,7 +1738,7 @@ void CreateInstancedBaselines ( void )
 	int iret = 0;
 	entity_state_t state;
 
-	memset( &state, 0, sizeof( state ) );
+	Q_memset( &state, 0, sizeof( state ) );
 
 	// Create any additional baselines here for things like grendates, etc.
 	// iret = ENGINE_INSTANCE_BASELINE( pc->pev->classname, &state );
@@ -1762,7 +1762,7 @@ int	InconsistentFile( const edict_t *player, const char *filename, char *disconn
 		return 0;
 
 	// Default behavior is to kick the player
-	sprintf( disconnect_message, "Server is enforcing file consistency for %s\n", filename );
+	Q_sprintf( disconnect_message, "Server is enforcing file consistency for %s\n", filename );
 
 	// Kick now with specified disconnect message.
 	return 1;

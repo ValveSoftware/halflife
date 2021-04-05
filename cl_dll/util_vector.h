@@ -16,10 +16,14 @@
 // A subset of the extdll.h in the project HL Entity DLL
 //
 
+#include "../public/vstdlib/warnings.h"
+
 // Misc C-runtime library headers
 #include "stdio.h"
 #include "stdlib.h"
 #include "math.h"
+
+#include "../public/vstdlib/vstdlib.h"
 
 // Header file containing definition of globalvars_t and entvars_t
 typedef unsigned int	func_t;		//
@@ -40,7 +44,7 @@ public:
 	inline Vector2D operator*(float fl)				const	{ return Vector2D(x*fl, y*fl);	}
 	inline Vector2D operator/(float fl)				const	{ return Vector2D(x/fl, y/fl);	}
 	
-	inline float Length(void)						const	{ return (float)sqrt(x*x + y*y );		}
+	inline float Length(void)						const	{ return (float)Q_sqrt(x*x + y*y );		}
 
 	inline Vector2D Normalize ( void ) const
 	{
@@ -90,7 +94,7 @@ public:
 	
 	// Methods
 	inline void CopyToArray(float* rgfl) const		{ rgfl[0] = x, rgfl[1] = y, rgfl[2] = z; }
-	inline float Length(void) const					{ return (float)sqrt(x*x + y*y + z*z); }
+	inline float Length(void) const					{ return (float)Q_sqrt(x*x + y*y + z*z); }
 	operator float *()								{ return &x; } // Vectors will now automatically convert to float * when needed
 	operator const float *() const					{ return &x; } // Vectors will now automatically convert to float * when needed
 	inline Vector Normalize(void) const
@@ -110,7 +114,7 @@ public:
 
 		return Vec2;
 	}
-	inline float Length2D(void) const					{ return (float)sqrt(x*x + y*y); }
+	inline float Length2D(void) const					{ return (float)Q_sqrt(x*x + y*y); }
 
 	// Members
 	vec_t x, y, z;

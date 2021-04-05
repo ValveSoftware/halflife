@@ -12,9 +12,14 @@
 *   without written permission from Valve LLC.
 *
 ****/
+
+#include "vstdlib/warnings.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#include "vstdlib/vstdlib.h"
 
 typedef bool BOOL;
 
@@ -165,7 +170,7 @@ int LookupSequence( void *pmodel, const char *label )
 
 	for (int i = 0; i < pstudiohdr->numseq; i++)
 	{
-		if (stricmp( pseqdesc[i].label, label ) == 0)
+		if (Q_stricmp( pseqdesc[i].label, label ) == 0)
 			return i;
 	}
 
@@ -208,7 +213,7 @@ void SequencePrecache( void *pmodel, const char *pSequenceName )
 			// of it's name if it is.
 			if ( IsSoundEvent( pevent[i].event ) )
 			{
-				if ( !strlen(pevent[i].options) )
+				if ( !Q_strlen(pevent[i].options) )
 				{
 					ALERT( at_error, "Bad sound event %d in sequence %s :: %s (sound is \"%s\")\n", pevent[i].event, pstudiohdr->name, pSequenceName, pevent[i].options );
 				}
@@ -243,7 +248,7 @@ void GetSequenceInfo( void *pmodel, entvars_t *pev, float *pflFrameRate, float *
 	if (pseqdesc->numframes > 1)
 	{
 		*pflFrameRate = 256 * pseqdesc->fps / (pseqdesc->numframes - 1);
-		*pflGroundSpeed = sqrt( pseqdesc->linearmovement[0]*pseqdesc->linearmovement[0]+ pseqdesc->linearmovement[1]*pseqdesc->linearmovement[1]+ pseqdesc->linearmovement[2]*pseqdesc->linearmovement[2] );
+		*pflGroundSpeed = Q_sqrt( pseqdesc->linearmovement[0]*pseqdesc->linearmovement[0]+ pseqdesc->linearmovement[1]*pseqdesc->linearmovement[1]+ pseqdesc->linearmovement[2]*pseqdesc->linearmovement[2] );
 		*pflGroundSpeed = *pflGroundSpeed * pseqdesc->fps / (pseqdesc->numframes - 1);
 	}
 	else

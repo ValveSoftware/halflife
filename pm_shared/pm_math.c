@@ -14,9 +14,13 @@
 ****/
 // pm_math.c -- math primitives
 
+#include "../public/vstdlib/warnings.h"
+
 #include "mathlib.h"
 #include "const.h"
 #include <math.h>
+
+#include "../public/vstdlib/vstdlib.h"
 
 // up / down
 #define	PITCH	0
@@ -44,14 +48,14 @@ void AngleVectors (const vec3_t angles, vec3_t forward, vec3_t right, vec3_t up)
 	float		sr, sp, sy, cr, cp, cy;
 	
 	angle = angles[YAW] * (M_PI*2 / 360);
-	sy = sin(angle);
-	cy = cos(angle);
+	sy = Q_sin(angle);
+	cy = Q_cos(angle);
 	angle = angles[PITCH] * (M_PI*2 / 360);
-	sp = sin(angle);
-	cp = cos(angle);
+	sp = Q_sin(angle);
+	cp = Q_cos(angle);
 	angle = angles[ROLL] * (M_PI*2 / 360);
-	sr = sin(angle);
-	cr = cos(angle);
+	sr = Q_sin(angle);
+	cr = Q_cos(angle);
 
 	if (forward)
 	{
@@ -79,14 +83,14 @@ void AngleVectorsTranspose (const vec3_t angles, vec3_t forward, vec3_t right, v
 	float		sr, sp, sy, cr, cp, cy;
 	
 	angle = angles[YAW] * (M_PI*2 / 360);
-	sy = sin(angle);
-	cy = cos(angle);
+	sy = Q_sin(angle);
+	cy = Q_cos(angle);
 	angle = angles[PITCH] * (M_PI*2 / 360);
-	sp = sin(angle);
-	cp = cos(angle);
+	sp = Q_sin(angle);
+	cp = Q_cos(angle);
 	angle = angles[ROLL] * (M_PI*2 / 360);
-	sr = sin(angle);
-	cr = cos(angle);
+	sr = Q_sin(angle);
+	cr = Q_cos(angle);
 
 	if (forward)
 	{
@@ -115,14 +119,14 @@ void AngleMatrix (const vec3_t angles, float (*matrix)[4] )
 	float		sr, sp, sy, cr, cp, cy;
 	
 	angle = angles[YAW] * (M_PI*2 / 360);
-	sy = sin(angle);
-	cy = cos(angle);
+	sy = Q_sin(angle);
+	cy = Q_cos(angle);
 	angle = angles[PITCH] * (M_PI*2 / 360);
-	sp = sin(angle);
-	cp = cos(angle);
+	sp = Q_sin(angle);
+	cp = Q_cos(angle);
 	angle = angles[ROLL] * (M_PI*2 / 360);
-	sr = sin(angle);
-	cr = cos(angle);
+	sr = Q_sin(angle);
+	cr = Q_cos(angle);
 
 	// matrix = (YAW * PITCH) * ROLL
 	matrix[0][0] = cp*cy;
@@ -145,14 +149,14 @@ void AngleIMatrix (const vec3_t angles, float matrix[3][4] )
 	float		sr, sp, sy, cr, cp, cy;
 	
 	angle = angles[YAW] * (M_PI*2 / 360);
-	sy = sin(angle);
-	cy = cos(angle);
+	sy = Q_sin(angle);
+	cy = Q_cos(angle);
 	angle = angles[PITCH] * (M_PI*2 / 360);
-	sp = sin(angle);
-	cp = cos(angle);
+	sp = Q_sin(angle);
+	cp = Q_cos(angle);
 	angle = angles[ROLL] * (M_PI*2 / 360);
-	sr = sin(angle);
-	cr = cos(angle);
+	sr = Q_sin(angle);
+	cr = Q_cos(angle);
 
 	// matrix = (YAW * PITCH) * ROLL
 	matrix[0][0] = cp*cy;
@@ -242,7 +246,7 @@ float AngleBetweenVectors( const vec3_t v1, const vec3_t v2 )
 	if ( !l1 || !l2 )
 		return 0.0f;
 
-	angle = acos( DotProduct( v1, v2 ) ) / (l1*l2);
+	angle = Q_acos( DotProduct( v1, v2 ) ) / (l1*l2);
 	angle = ( angle  * 180.0f ) / M_PI;
 
 	return angle;
@@ -321,7 +325,7 @@ float Length(const vec3_t v)
 		
 	for (i=0 ; i< 3 ; i++)
 		length += v[i]*v[i];
-	length = sqrt (length);		// FIXME
+	length = Q_sqrt (length);		// FIXME
 
 	return length;
 }
@@ -340,7 +344,7 @@ float VectorNormalize (vec3_t v)
 	float	length, ilength;
 
 	length = v[0]*v[0] + v[1]*v[1] + v[2]*v[2];
-	length = sqrt (length);		// FIXME
+	length = Q_sqrt (length);		// FIXME
 
 	if (length)
 	{
@@ -416,12 +420,12 @@ void VectorAngles( const vec3_t forward, vec3_t angles )
 	}
 	else
 	{
-		yaw = (atan2(forward[1], forward[0]) * 180 / M_PI);
+		yaw = (Q_atan2(forward[1], forward[0]) * 180 / M_PI);
 		if (yaw < 0)
 			yaw += 360;
 
-		tmp = sqrt (forward[0]*forward[0] + forward[1]*forward[1]);
-		pitch = (atan2(forward[2], tmp) * 180 / M_PI);
+		tmp = Q_sqrt (forward[0]*forward[0] + forward[1]*forward[1]);
+		pitch = (Q_atan2(forward[2], tmp) * 180 / M_PI);
 		if (pitch < 0)
 			pitch += 360;
 	}

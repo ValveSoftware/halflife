@@ -35,7 +35,7 @@ int			scriptline;
 
 char    token[MAXTOKEN];
 qboolean endofscript;
-qboolean tokenready;                     // only true if UnGetToken was just called
+qboolean tokenready;                     // only qtrue if UnGetToken was just called
 
 /*
 ==============
@@ -49,11 +49,11 @@ void AddScriptToStack (char *filename)
 	script++;
 	if (script == &scriptstack[MAX_INCLUDES])
 		Error ("script file exceeded MAX_INCLUDES");
-	strcpy (script->filename, ExpandPath (filename) );
+	Q_strcpy (script->filename, ExpandPath (filename) );
 
 	size = LoadFile (script->filename, (void **)&script->buffer);
 
-	printf ("entering %s\n", script->filename);
+	Q_printf ("entering %s\n", script->filename);
 
 	script->line = 1;
 
@@ -72,8 +72,8 @@ void LoadScriptFile (char *filename)
 	script = scriptstack;
 	AddScriptToStack (filename);
 
-	endofscript = false;
-	tokenready = false;
+	endofscript = qfalse;
+	tokenready = qfalse;
 }
 
 
@@ -88,15 +88,15 @@ void ParseFromMemory (char *buffer, int size)
 	script++;
 	if (script == &scriptstack[MAX_INCLUDES])
 		Error ("script file exceeded MAX_INCLUDES");
-	strcpy (script->filename, "memory buffer" );
+	Q_strcpy (script->filename, "memory buffer" );
 
 	script->buffer = buffer;
 	script->line = 1;
 	script->script_p = script->buffer;
 	script->end_p = script->buffer + size;
 
-	endofscript = false;
-	tokenready = false;
+	endofscript = qfalse;
+	tokenready = qfalse;
 }
 
 
@@ -107,16 +107,16 @@ UnGetToken
 Signals that the current token was not used, and should be reported
 for the next GetToken.  Note that
 
-GetToken (true);
+GetToken (qtrue);
 UnGetToken ();
-GetToken (false);
+GetToken (qfalse);
 
 could cross a line boundary.
 ==============
 */
 void UnGetToken (void)
 {
-	tokenready = true;
+	tokenready = qtrue;
 }
 
 
@@ -125,21 +125,21 @@ qboolean EndOfScript (qboolean crossline)
 	if (!crossline)
 		Error ("Line %i is incomplete\n",scriptline);
 
-	if (!strcmp (script->filename, "memory buffer"))
+	if (!Q_strcmp (script->filename, "memory buffer"))
 	{
-		endofscript = true;
-		return false;
+		endofscript = qtrue;
+		return qfalse;
 	}
 
-	free (script->buffer);
+	Q_free (script->buffer);
 	if (script == scriptstack+1)
 	{
-		endofscript = true;
-		return false;
+		endofscript = qtrue;
+		return qfalse;
 	}
 	script--;
 	scriptline = script->line;
-	printf ("returning to %s\n", script->filename);
+	Q_printf ("returning to %s\n", script->filename);
 	return GetToken (crossline);
 }
 
@@ -154,8 +154,8 @@ qboolean GetToken (qboolean crossline)
 
 	if (tokenready)                         // is a token allready waiting?
 	{
-		tokenready = false;
-		return true;
+		tokenready = qfalse;
+		return qtrue;
 	}
 
 	if (script->script_p >= script->end_p)
@@ -222,14 +222,14 @@ skipspace:
 
 	*token_p = 0;
 
-	if (!strcmp (token, "$include"))
+	if (!Q_strcmp (token, "$include"))
 	{
-		GetToken (false);
+		GetToken (qfalse);
 		AddScriptToStack (token);
 		return GetToken (crossline);
 	}
 
-	return true;
+	return qtrue;
 }
 
 
@@ -237,7 +237,7 @@ skipspace:
 ==============
 TokenAvailable
 
-Returns true if there is another token on the line
+Returns qtrue if there is another token on the line
 ==============
 */
 qboolean TokenAvailable (void)
@@ -247,22 +247,22 @@ qboolean TokenAvailable (void)
 	search_p = script->script_p;
 
 	if (search_p >= script->end_p)
-		return false;
+		return qfalse;
 
 	while ( *search_p <= 32)
 	{
 		if (*search_p == '\n')
-			return false;
+			return qfalse;
 		search_p++;
 		if (search_p == script->end_p)
-			return false;
+			return qfalse;
 
 	}
 
 	if (*search_p == ';')
-		return false;
+		return qfalse;
 
-	return true;
+	return qtrue;
 }
 
 

@@ -76,38 +76,38 @@ void Ricochet_SetKeyValue( ric_pad_t *pad, const char *key, const char *value )
 {
 	float x, y, z;
 
-	if ( !stricmp( key, "classname" ) )
+	if ( !Q_stricmp( key, "classname" ) )
 	{
-		strcpy( pad->classname, value );
+		Q_strcpy( pad->classname, value );
 	}
-	else if ( !stricmp( key, "target" ) )
+	else if ( !Q_stricmp( key, "target" ) )
 	{
-		strcpy( pad->target, value );
+		Q_strcpy( pad->target, value );
 	}
-	else if ( !stricmp( key, "targetname" ) )
+	else if ( !Q_stricmp( key, "targetname" ) )
 	{
-		strcpy( pad->targetname, value );
+		Q_strcpy( pad->targetname, value );
 	}
-	else if ( !stricmp( key, "model" ) )
+	else if ( !Q_stricmp( key, "model" ) )
 	{
-		strcpy( pad->modelname, value );
+		Q_strcpy( pad->modelname, value );
 	}
-	else if ( !stricmp( key, "height" ) )
+	else if ( !Q_stricmp( key, "height" ) )
 	{
-		pad->height = atof( value );
+		pad->height = Q_atof( value );
 	}
-	else if ( !stricmp( key, "angles" ) )
+	else if ( !Q_stricmp( key, "angles" ) )
 	{
-		if ( sscanf( value, "%f %f %f", &x, &y, &z ) == 3 )
+		if ( Q_sscanf( value, "%f %f %f", &x, &y, &z ) == 3 )
 		{
 			pad->angles[ 0 ] = x ;
 			pad->angles[ 1 ] = y;
 			pad->angles[ 2 ] = z;
 		}
 	}
-	else if ( !stricmp( key, "origin" ) )
+	else if ( !Q_stricmp( key, "origin" ) )
 	{
-		if ( sscanf( value, "%f %f %f", &x, &y, &z ) == 3 )
+		if ( Q_sscanf( value, "%f %f %f", &x, &y, &z ) == 3 )
 		{
 			pad->origin[ 0 ]  = x;
 			pad->origin[ 1 ]  = y;
@@ -129,7 +129,7 @@ char *Ricochet_ParsePad( char *buffer, ric_pad_t *pad, int *error )
 	char		token[ 1024 ];
 	int			n;
 
-	memset( pad, 0, sizeof( *pad ) );
+	Q_memset( pad, 0, sizeof( *pad ) );
 
 	while (1)
 	{	
@@ -146,10 +146,10 @@ char *Ricochet_ParsePad( char *buffer, ric_pad_t *pad, int *error )
 		}
 		
 		// Store off the key
-		strcpy ( key, token );
+		Q_strcpy ( key, token );
 
 		// Fix heynames with trailing spaces
-		n = strlen( key );
+		n = Q_strlen( key );
 		while (n && key[n-1] == ' ')
 		{
 			key[n-1] = 0;
@@ -224,11 +224,11 @@ void Ricochet_ProcessEnts( char *buffer )
 		}
 
 		// Check classname
-		if ( stricmp( pad->classname, "trigger_jump" ) && stricmp( pad->classname, "info_target" ) )
+		if ( Q_stricmp( pad->classname, "trigger_jump" ) && Q_stricmp( pad->classname, "info_target" ) )
 			continue;
 
 		// Set type based on classname
-		if ( !stricmp( pad->classname, "trigger_jump" ) )
+		if ( !Q_stricmp( pad->classname, "trigger_jump" ) )
 		{
 			pad->type = RIC_PAD;
 		}
@@ -278,7 +278,7 @@ char *Ricochet_LoadEntityLump( const char *filename )
 		return NULL;
 
 	// Read in the .bsp header
-	memcpy(&header, fileBuffer, sizeof(dheader_t));
+	Q_memcpy(&header, fileBuffer, sizeof(dheader_t));
 
 	// Check the version
 	i = header.version;
@@ -298,7 +298,7 @@ char *Ricochet_LoadEntityLump( const char *filename )
 	entlump = fileBuffer + curLump->fileofs;
 
 	// Allocate sufficient memmory
-	buffer = (char *)malloc( size + 1 );
+	buffer = (char *)Q_malloc( size + 1 );
 	if ( !buffer )
 	{
 		gEngfuncs.COM_FreeFile(fileBuffer);
@@ -307,7 +307,7 @@ char *Ricochet_LoadEntityLump( const char *filename )
 	}
 
 	// Read in the entity lump
-	memcpy( buffer, entlump, size );
+	Q_memcpy( buffer, entlump, size );
 
 	// Terminate the string
 	buffer[ size ] = '\0';
@@ -332,7 +332,7 @@ void Ricochet_LoadJumpPads( const char *map )
 	char	*buffer = NULL;
 	char	filename[ 256 ];
 
-	sprintf( filename, "%s/%s", gEngfuncs.pfnGetGameDirectory(), map );
+	Q_sprintf( filename, "%s/%s", gEngfuncs.pfnGetGameDirectory(), map );
 
 	// TODO:  Fix Slashes?
 
@@ -348,7 +348,7 @@ void Ricochet_LoadJumpPads( const char *map )
 	Ricochet_ProcessEnts( buffer );
 
 	// Discard buffer
-	free( buffer );
+	Q_free( buffer );
 }
 
 /*
@@ -370,7 +370,7 @@ ric_pad_t *Ricochet_FindTarget( const char *name, int numpads, ric_pad_t *pads )
 		if ( !target )
 			continue;
 
-		if ( stricmp( target->targetname, name ) )
+		if ( Q_stricmp( target->targetname, name ) )
 			continue;
 
 		return target;
@@ -436,12 +436,12 @@ void Ricochet_PadTouched( int numpads, ric_pad_t *pads, ric_pad_t *pad, struct l
 	vecMidPoint[2] -= 15;
 
 	// How high should we travel to reach the apex
-	float distance1 = fabs(vecMidPoint[2] - origin[2]);
-	float distance2 = fabs(vecMidPoint[2] - target->origin[2]);
+	float distance1 = Q_fabs(vecMidPoint[2] - origin[2]);
+	float distance2 = Q_fabs(vecMidPoint[2] - target->origin[2]);
 
 	// How long will it take to travel this distance
-	float time1 = sqrt( distance1 / (0.5 * flGravity) );
-	float time2 = sqrt( distance2 / (0.5 * flGravity) );
+	float time1 = Q_sqrt( distance1 / (0.5 * flGravity) );
+	float time2 = Q_sqrt( distance2 / (0.5 * flGravity) );
 	if (time1 < 0.1)
 		return;
 
@@ -562,9 +562,9 @@ void Ricochet_CheckJumpPads( struct local_state_s *from, struct local_state_s *t
 	static char current_level[ 128 ];
 	
 	// See if we've changed to a new map
-	if ( stricmp( current_level, gEngfuncs.pfnGetLevelName() ) )
+	if ( Q_stricmp( current_level, gEngfuncs.pfnGetLevelName() ) )
 	{
-		strcpy( current_level, gEngfuncs.pfnGetLevelName() );
+		Q_strcpy( current_level, gEngfuncs.pfnGetLevelName() );
 		Ricochet_LoadJumpPads( current_level );
 
 		// Grab sound event

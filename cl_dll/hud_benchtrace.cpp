@@ -2,6 +2,8 @@
 // Functions for spawning a thread to get a hopcount to a particular ip address and returning the result in a specified
 //  variable
 
+#include "../public/vstdlib/warnings.h"
+
 #ifdef _WIN32
 #include "winsani_in.h"
 #include <windows.h>
@@ -10,6 +12,8 @@
 #include "port.h"
 #include <dlfcn.h>
 #endif
+
+#include "../public/vstdlib/vstdlib.h"
 
 // For tracking the trace threads
 typedef struct
@@ -103,7 +107,7 @@ int Trace_GetHopCount( char *pServer, int nMaxHops )
 		traceOptions.ucTTL = (unsigned char)c;
 
 		// Clear out return structure
-		memset( &traceReturn, 0, sizeof( traceReturn ) );
+		Q_memset( &traceReturn, 0, sizeof( traceReturn ) );
 
 		// Send echo request, 2000 milliseconds maximum waiting time
 		pfnICMPSendEcho ( hIP, *dwIPAddr, 0, 0, &traceOptions, &traceReturn, sizeof(traceReturn), 2000 );
@@ -195,7 +199,8 @@ void Trace_StartTrace( int *results, int *finished, const char *server )
 {
 #ifdef _WIN32
 	tp.p_nresults = results;
-	strcpy( tp.server, server );
+
+	Q_strcpy( tp.server, server );
 
 	*results = -1;
 

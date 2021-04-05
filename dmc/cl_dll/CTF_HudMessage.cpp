@@ -87,7 +87,7 @@ void CHudBonus :: Reset( void )
 		 g_PlayerBonus[ reset ].iType = 0;
 		 g_PlayerBonus[ reset ].bActive = false;
 		 m_bUsedSlot[ reset ] = false;
-		 strcpy ( g_PlayerBonus[ reset ].sPlayerName, "" );
+		 Q_strcpy ( g_PlayerBonus[ reset ].sPlayerName, "" );
 	 }
 }
 
@@ -122,8 +122,8 @@ int CHudBonus ::Draw(float flTime )
 			
 			char szText[256];
 
-			strcpy ( szText, g_PlayerBonus[ index ].sPlayerName );
-			strcat ( szText, sBonusStrings[ g_PlayerBonus[ index ].iType ] );
+			Q_strcpy ( szText, g_PlayerBonus[ index ].sPlayerName );
+			Q_strcat ( szText, sBonusStrings[ g_PlayerBonus[ index ].iType ] );
 		
 			if ( gHUD.m_FlagStat.iBlueTeamScore >= 10 )
 				gHUD.DrawHudStringCTF( XPos + 20, YPos, 640, szText, 255, 255, 255 );
@@ -137,7 +137,7 @@ int CHudBonus ::Draw(float flTime )
 			g_PlayerBonus[ index ].bActive = false;
 			m_bUsedSlot[ g_PlayerBonus[ index ].iSlot ] = false;
 			g_PlayerBonus[ index ].iSlot = 0;
-			strcpy ( g_PlayerBonus[ index ].sPlayerName, "" );
+			Q_strcpy ( g_PlayerBonus[ index ].sPlayerName, "" );
 		}
 	}
 
@@ -158,7 +158,7 @@ int CHudBonus::MsgFunc_Bonus(const char *pszName, int iSize, void *pbuf)
 	g_PlayerBonus[ index ].bActive = true;
 	g_PlayerBonus[ index ].flBonusTime = 0.0;
 	g_PlayerBonus[ index ].iType = READ_BYTE();
-	strcpy ( g_PlayerBonus[ index ].sPlayerName, READ_STRING() );
+	Q_strcpy ( g_PlayerBonus[ index ].sPlayerName, READ_STRING() );
 
 	switch ( g_PlayerBonus[ index ].iType )
 	{

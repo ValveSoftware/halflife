@@ -113,7 +113,7 @@ float EV_HLDM_PlayTextureSound( int idx, pmtrace_t *ptr, float *vecSrc, float *v
 		
 		if ( pTextureName )
 		{
-			strcpy( texname, pTextureName );
+			Q_strcpy( texname, pTextureName );
 			pTextureName = texname;
 
 			// strip leading '-0' or '+0~' or '{' or '!'
@@ -128,7 +128,8 @@ float EV_HLDM_PlayTextureSound( int idx, pmtrace_t *ptr, float *vecSrc, float *v
 			}
 			
 			// '}}'
-			strcpy( szbuffer, pTextureName );
+
+			Q_strcpy( szbuffer, pTextureName );
 			szbuffer[ CBTEXTURENAMEMAX - 1 ] = 0;
 				
 			// get texture type
@@ -237,7 +238,9 @@ char *EV_HLDM_RocketDamageDecal( void )
 	int idx;
 
 	idx = gEngfuncs.pfnRandomLong( 1, 3 );
-	sprintf( decalname, "{scorch%i", idx );
+
+	Q_sprintf( decalname, "{scorch%i", idx );
+
 	return decalname;
 }
 
@@ -247,7 +250,9 @@ char *EV_HLDM_DamageDecal( void )
 	int idx;
 
 	idx = gEngfuncs.pfnRandomLong( 0, 4 );
-	sprintf( decalname, "{shot%i", idx + 1 );
+
+	Q_sprintf( decalname, "{shot%i", idx + 1 );
+
 	return decalname;
 }
 
@@ -259,7 +264,8 @@ char *EV_Lightning_DamageDecal( void )
 	//sprintf( decalname, "{smscorch1");
 
 	idx = gEngfuncs.pfnRandomLong( 0, 2 );
-	sprintf( decalname, "{smscorch%i", idx + 1 );
+
+	Q_sprintf( decalname, "{smscorch%i", idx + 1 );
 
 	return decalname;
 }
@@ -270,7 +276,9 @@ char *EV_Quake_DamageDecalClub( void )
 	int idx;
 
 	idx = gEngfuncs.pfnRandomLong( 0, 4 );
-	sprintf( decalname, "{shot%i", idx + 1 );
+
+	Q_sprintf( decalname, "{shot%i", idx + 1 );
+
 	return decalname;
 }
 
@@ -1064,7 +1072,9 @@ void EV_Quake_NailTouch( struct tempent_s *ent, pmtrace_t *ptr )
 	{
 		decalname[ 0 ] = '\0';
 		idx = gEngfuncs.pfnRandomLong( 0, 4 );
-		sprintf( decalname, "{shot%i", idx + 1 );
+
+		Q_sprintf( decalname, "{shot%i", idx + 1 );
+
 		EV_Quake_GunshotDecalTrace( ptr, decalname );
 	}
 }
@@ -1167,15 +1177,15 @@ void EV_TrainPitchAdjust( event_args_t *args )
 
 	switch ( noise )
 	{
-	case 1: strcpy( sz, "plats/ttrain1.wav"); break;
-	case 2: strcpy( sz, "plats/ttrain2.wav"); break;
-	case 3: strcpy( sz, "plats/ttrain3.wav"); break; 
-	case 4: strcpy( sz, "plats/ttrain4.wav"); break;
-	case 5: strcpy( sz, "plats/ttrain6.wav"); break;
-	case 6: strcpy( sz, "plats/ttrain7.wav"); break;
+	case 1: Q_strcpy( sz, "plats/ttrain1.wav"); break;
+	case 2: Q_strcpy( sz, "plats/ttrain2.wav"); break;
+	case 3: Q_strcpy( sz, "plats/ttrain3.wav"); break; 
+	case 4: Q_strcpy( sz, "plats/ttrain4.wav"); break;
+	case 5: Q_strcpy( sz, "plats/ttrain6.wav"); break;
+	case 6: Q_strcpy( sz, "plats/ttrain7.wav"); break;
 	default:
 		// no sound
-		strcpy( sz, "" );
+		Q_strcpy( sz, "" );
 		return;
 	}
 
@@ -1196,7 +1206,7 @@ char *DMC_BloodDecal (void)
 
         idx = gEngfuncs.pfnRandomLong( 0, 5 );
 
-		sprintf( blooddecal, "{blood%i", idx + 1 );
+		Q_sprintf( blooddecal, "{blood%i", idx + 1 );
 
         return blooddecal;
 }
@@ -1417,7 +1427,7 @@ char *EV_DMC_LookupDoorSound( int type, int index )
 	int idx;
 
 	// Assume the worst
-	strcpy( sound, "common/null.wav");
+	Q_strcpy( sound, "common/null.wav");
 
 	if ( type == EV_DMC_MOVE_SOUND )
 	{
@@ -1426,40 +1436,40 @@ char *EV_DMC_LookupDoorSound( int type, int index )
 		switch (idx)
 		{
 		case	0:
-			strcpy( sound, "common/null.wav");
+			Q_strcpy( sound, "common/null.wav");
 			break;
 		case	1:
-			strcpy( sound, "doors/doormove1.wav");
+			Q_strcpy( sound, "doors/doormove1.wav");
 			break;
 		case	2:
-			strcpy( sound, "doors/doormove2.wav");
+			Q_strcpy( sound, "doors/doormove2.wav");
 			break;
 		case	3:
-			strcpy( sound, "doors/doormove3.wav");
+			Q_strcpy( sound, "doors/doormove3.wav");
 			break;
 		case	4:
-			strcpy( sound, "doors/doormove4.wav");
+			Q_strcpy( sound, "doors/doormove4.wav");
 			break;
 		case	5:
-			strcpy( sound, "doors/doormove5.wav");
+			Q_strcpy( sound, "doors/doormove5.wav");
 			break;
 		case	6:
-			strcpy( sound, "doors/doormove6.wav");
+			Q_strcpy( sound, "doors/doormove6.wav");
 			break;
 		case	7:
-			strcpy( sound, "doors/doormove7.wav");
+			Q_strcpy( sound, "doors/doormove7.wav");
 			break;
 		case	8:
-			strcpy( sound, "doors/doormove8.wav");
+			Q_strcpy( sound, "doors/doormove8.wav");
 			break;
 		case	9:
-			strcpy( sound, "doors/doormove9.wav");
+			Q_strcpy( sound, "doors/doormove9.wav");
 			break;
 		case	10:
-			strcpy( sound, "doors/doormove10.wav");
+			Q_strcpy( sound, "doors/doormove10.wav");
 			break;
 		default:
-			strcpy( sound, "common/null.wav");
+			Q_strcpy( sound, "common/null.wav");
 			break;
 		}
 	}
@@ -1471,34 +1481,34 @@ char *EV_DMC_LookupDoorSound( int type, int index )
 		switch ( idx )
 		{
 		case	0:
-			strcpy( sound, "common/null.wav");
+			Q_strcpy( sound, "common/null.wav");
 			break;
 		case	1:
-			strcpy( sound, "doors/doorstop1.wav");
+			Q_strcpy( sound, "doors/doorstop1.wav");
 			break;
 		case	2:
-			strcpy( sound, "doors/doorstop2.wav");
+			Q_strcpy( sound, "doors/doorstop2.wav");
 			break;
 		case	3:
-			strcpy( sound, "doors/doorstop3.wav");
+			Q_strcpy( sound, "doors/doorstop3.wav");
 			break;
 		case	4:
-			strcpy( sound, "doors/doorstop4.wav");
+			Q_strcpy( sound, "doors/doorstop4.wav");
 			break;
 		case	5:
-			strcpy( sound, "doors/doorstop5.wav");
+			Q_strcpy( sound, "doors/doorstop5.wav");
 			break;
 		case	6:
-			strcpy( sound, "doors/doorstop6.wav");
+			Q_strcpy( sound, "doors/doorstop6.wav");
 			break;
 		case	7:
-			strcpy( sound, "doors/doorstop7.wav");
+			Q_strcpy( sound, "doors/doorstop7.wav");
 			break;
 		case	8:
-			strcpy( sound, "doors/doorstop8.wav");
+			Q_strcpy( sound, "doors/doorstop8.wav");
 			break;
 		default:
-			strcpy( sound, "common/null.wav");
+			Q_strcpy( sound, "common/null.wav");
 			break;
 		}
 	}

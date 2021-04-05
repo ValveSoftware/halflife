@@ -689,8 +689,8 @@ void CBasePlayer::PackDeadPlayerItems( void )
 	int iPW = 0;// index into packweapons array
 	int iPA = 0;// index into packammo array
 
-	memset(rgpPackWeapons, 0, sizeof(rgpPackWeapons) );
-	memset(iPackAmmo, -1, sizeof(iPackAmmo) );
+	Q_memset(rgpPackWeapons, 0, sizeof(rgpPackWeapons) );
+	Q_memset(iPackAmmo, -1, sizeof(iPackAmmo) );
 
 	// get the game rules 
 	iWeaponRules = g_pGameRules->DeadPlayerWeapons( this );
@@ -1036,10 +1036,10 @@ void CBasePlayer::SetAnimation( PLAYER_ANIM playerAnim )
 
 	case ACT_RANGE_ATTACK1:
 		if ( FBitSet( pev->flags, FL_DUCKING ) )	// crouching
-			strcpy( szAnim, "crouch_shoot_" );
+			Q_strcpy( szAnim, "crouch_shoot_" );
 		else
-			strcpy( szAnim, "ref_shoot_" );
-		strcat( szAnim, m_szAnimExtention );
+			Q_strcpy( szAnim, "ref_shoot_" );
+		Q_strcat( szAnim, m_szAnimExtention );
 		animDesired = LookupSequence( szAnim );
 		if (animDesired == -1)
 			animDesired = 0;
@@ -1064,10 +1064,10 @@ void CBasePlayer::SetAnimation( PLAYER_ANIM playerAnim )
 		if (m_Activity != ACT_RANGE_ATTACK1 || m_fSequenceFinished)
 		{
 			if ( FBitSet( pev->flags, FL_DUCKING ) )	// crouching
-				strcpy( szAnim, "crouch_aim_" );
+				Q_strcpy( szAnim, "crouch_aim_" );
 			else
-				strcpy( szAnim, "ref_aim_" );
-			strcat( szAnim, m_szAnimExtention );
+				Q_strcpy( szAnim, "ref_aim_" );
+			Q_strcat( szAnim, m_szAnimExtention );
 			animDesired = LookupSequence( szAnim );
 			if (animDesired == -1)
 				animDesired = 0;
@@ -1748,9 +1748,9 @@ void CBasePlayer::UpdateStatusBar()
 	char sbuf0[ SBAR_STRING_SIZE ];
 	char sbuf1[ SBAR_STRING_SIZE ];
 
-	memset( newSBarState, 0, sizeof(newSBarState) );
-	strcpy( sbuf0, m_SbarString0 );
-	strcpy( sbuf1, m_SbarString1 );
+	Q_memset( newSBarState, 0, sizeof(newSBarState) );
+	Q_strcpy( sbuf0, m_SbarString0 );
+	Q_strcpy( sbuf1, m_SbarString1 );
 
 	// Find an ID Target
 	TraceResult tr;
@@ -1768,7 +1768,7 @@ void CBasePlayer::UpdateStatusBar()
 			if (pEntity->Classify() == CLASS_PLAYER )
 			{
 				newSBarState[ SBAR_ID_TARGETNAME ] = ENTINDEX( pEntity->edict() );
-				strcpy( sbuf1, "1 %p1\n2 Health: %i2%%\n3 Armor: %i3%%" );
+				Q_strcpy( sbuf1, "1 %p1\n2 Health: %i2%%\n3 Armor: %i3%%" );
 
 				// allies and medics get to see the targets health
 				if ( g_pGameRules->PlayerRelationship( this, pEntity ) == GR_TEAMMATE )
@@ -1791,27 +1791,27 @@ void CBasePlayer::UpdateStatusBar()
 
 	BOOL bForceResend = FALSE;
 
-	if ( strcmp( sbuf0, m_SbarString0 ) )
+	if ( Q_strcmp( sbuf0, m_SbarString0 ) )
 	{
 		MESSAGE_BEGIN( MSG_ONE, gmsgStatusText, NULL, pev );
 			WRITE_BYTE( 0 );
 			WRITE_STRING( sbuf0 );
 		MESSAGE_END();
 
-		strcpy( m_SbarString0, sbuf0 );
+		Q_strcpy( m_SbarString0, sbuf0 );
 
 		// make sure everything's resent
 		bForceResend = TRUE;
 	}
 
-	if ( strcmp( sbuf1, m_SbarString1 ) )
+	if ( Q_strcmp( sbuf1, m_SbarString1 ) )
 	{
 		MESSAGE_BEGIN( MSG_ONE, gmsgStatusText, NULL, pev );
 			WRITE_BYTE( 1 );
 			WRITE_STRING( sbuf1 );
 		MESSAGE_END();
 
-		strcpy( m_SbarString1, sbuf1 );
+		Q_strcpy( m_SbarString1, sbuf1 );
 
 		// make sure everything's resent
 		bForceResend = TRUE;
@@ -2072,7 +2072,7 @@ void CBasePlayer::CheckTimeBasedDamage()
 		return;
 
 	// only check for time based damage approx. every 2 seconds
-	if (abs(gpGlobals->time - m_tbdPrev) < 2.0)
+	if (Q_abs(gpGlobals->time - m_tbdPrev) < 2.0)
 		return;
 	
 	m_tbdPrev = gpGlobals->time;
@@ -2105,7 +2105,7 @@ void CBasePlayer::CheckTimeBasedDamage()
 				// after the player has been drowning and finally takes a breath
 				if (m_idrowndmg > m_idrownrestored)
 				{
-					int idif = min(m_idrowndmg - m_idrownrestored, 10);
+					int idif = Q_min(m_idrowndmg - m_idrownrestored, 10);
 
 					TakeHealth(idif, DMG_GENERIC);
 					m_idrownrestored += idif;
@@ -2308,8 +2308,8 @@ void CBasePlayer::CheckSuitUpdate()
 				// play sentence number
 
 				char sentence[CBSENTENCENAME_MAX+1];
-				strcpy(sentence, "!");
-				strcat(sentence, gszallsentencenames[isentence]);
+				Q_strcpy(sentence, "!");
+				Q_strcat(sentence, gszallsentencenames[isentence]);
 				EMIT_SOUND_SUIT(ENT(pev), sentence);
 			}
 			else
@@ -2674,17 +2674,17 @@ pt_end:
 				
 				if ( gun && gun->UseDecrement() )
 				{
-					gun->m_flNextPrimaryAttack		= max( gun->m_flNextPrimaryAttack - gpGlobals->frametime, -1.0 );
-					gun->m_flNextSecondaryAttack	= max( gun->m_flNextSecondaryAttack - gpGlobals->frametime, -0.001 );
+					gun->m_flNextPrimaryAttack		= Q_max( gun->m_flNextPrimaryAttack - gpGlobals->frametime, -1.0 );
+					gun->m_flNextSecondaryAttack	= Q_max( gun->m_flNextSecondaryAttack - gpGlobals->frametime, -0.001 );
 
 					if ( gun->m_flTimeWeaponIdle != 1000 )
 					{
-						gun->m_flTimeWeaponIdle		= max( gun->m_flTimeWeaponIdle - gpGlobals->frametime, -0.001 );
+						gun->m_flTimeWeaponIdle		= Q_max( gun->m_flTimeWeaponIdle - gpGlobals->frametime, -0.001 );
 					}
 
 					if ( gun->pev->fuser1 != 1000 )
 					{
-						gun->pev->fuser1	= max( gun->pev->fuser1 - gpGlobals->frametime, -0.001 );
+						gun->pev->fuser1	= Q_max( gun->pev->fuser1 - gpGlobals->frametime, -0.001 );
 					}
 
 					// Only decrement if not flagged as NO_DECREMENT
@@ -2823,7 +2823,7 @@ edict_t *EntSelectSpawnPoint( CBaseEntity *pPlayer )
 	}
 
 	// If startspot is set, (re)spawn there.
-	if ( FStringNull( gpGlobals->startspot ) || !strlen(STRING(gpGlobals->startspot)))
+	if ( FStringNull( gpGlobals->startspot ) || !Q_strlen(STRING(gpGlobals->startspot)))
 	{
 		pSpot = UTIL_FindEntityByClassname(NULL, "info_player_start");
 		if ( !FNullEnt(pSpot) )
@@ -3805,7 +3805,7 @@ int CBasePlayer :: GiveAmmo( int iCount, char *szName, int iMax )
 	if ( i < 0 || i >= MAX_AMMO_SLOTS )
 		return -1;
 
-	int iAdd = min( iCount, iMax - m_rgAmmo[i] );
+	int iAdd = Q_min( iCount, iMax - m_rgAmmo[i] );
 	if ( iAdd < 1 )
 		return i;
 
@@ -3906,7 +3906,7 @@ int CBasePlayer::GetAmmoIndex(const char *psz)
 		if ( !CBasePlayerItem::AmmoInfoArray[i].pszName )
 			continue;
 
-		if (stricmp( psz, CBasePlayerItem::AmmoInfoArray[i].pszName ) == 0)
+		if (Q_stricmp( psz, CBasePlayerItem::AmmoInfoArray[i].pszName ) == 0)
 			return i;
 	}
 
@@ -3929,7 +3929,7 @@ void CBasePlayer::SendAmmoUpdate(void)
 			// send "Ammo" update message
 			MESSAGE_BEGIN( MSG_ONE, gmsgAmmoX, NULL, pev );
 				WRITE_BYTE( i );
-				WRITE_BYTE( max( min( m_rgAmmo[i], 254 ), 0 ) );  // clamp the value to one byte
+				WRITE_BYTE( Q_max( Q_min( m_rgAmmo[i], 254 ), 0 ) );  // clamp the value to one byte
 			MESSAGE_END();
 		}
 	}
@@ -4414,8 +4414,8 @@ Vector CBasePlayer :: AutoaimDeflection( Vector &vecSrc, float flDist, float flD
 		if (DotProduct (dir, gpGlobals->v_forward ) < 0)
 			continue;
 
-		dot = fabs( DotProduct (dir, gpGlobals->v_right ) ) 
-			+ fabs( DotProduct (dir, gpGlobals->v_up ) ) * 0.5;
+		dot = Q_fabs( DotProduct (dir, gpGlobals->v_right ) ) 
+			+ Q_fabs( DotProduct (dir, gpGlobals->v_up ) ) * 0.5;
 
 		// tweek for distance
 		dot *= 1.0 + 0.2 * ((center - vecSrc).Length() / flDist);
@@ -4512,7 +4512,7 @@ void CBasePlayer::DropPlayerItem ( char *pszItemName )
 		return;
 	}
 
-	if ( !strlen( pszItemName ) )
+	if ( !Q_strlen( pszItemName ) )
 	{
 		// if this string has no length, the client didn't type a name!
 		// assume player wants to drop the active item.
@@ -4532,7 +4532,7 @@ void CBasePlayer::DropPlayerItem ( char *pszItemName )
 			if ( pszItemName )
 			{
 				// try to match by name. 
-				if ( !strcmp( pszItemName, STRING( pWeapon->pev->classname ) ) )
+				if ( !Q_strcmp( pszItemName, STRING( pWeapon->pev->classname ) ) )
 				{
 					// match! 
 					break;
@@ -4631,7 +4631,7 @@ BOOL CBasePlayer::HasNamedPlayerItem( const char *pszItemName )
 		
 		while (pItem)
 		{
-			if ( !strcmp( pszItemName, STRING( pItem->pev->classname ) ) )
+			if ( !Q_strcmp( pszItemName, STRING( pItem->pev->classname ) ) )
 			{
 				return TRUE;
 			}
@@ -4686,7 +4686,7 @@ void CDeadHEV::KeyValue( KeyValueData *pkvd )
 {
 	if (FStrEq(pkvd->szKeyName, "pose"))
 	{
-		m_iPose = atoi(pkvd->szValue);
+		m_iPose = Q_atoi(pkvd->szValue);
 		pkvd->fHandled = TRUE;
 	}
 	else 
@@ -4794,22 +4794,22 @@ void CRevertSaved :: KeyValue( KeyValueData *pkvd )
 {
 	if (FStrEq(pkvd->szKeyName, "duration"))
 	{
-		SetDuration( atof(pkvd->szValue) );
+		SetDuration( Q_atof(pkvd->szValue) );
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "holdtime"))
 	{
-		SetHoldTime( atof(pkvd->szValue) );
+		SetHoldTime( Q_atof(pkvd->szValue) );
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "messagetime"))
 	{
-		SetMessageTime( atof(pkvd->szValue) );
+		SetMessageTime( Q_atof(pkvd->szValue) );
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "loadtime"))
 	{
-		SetLoadTime( atof(pkvd->szValue) );
+		SetLoadTime( Q_atof(pkvd->szValue) );
 		pkvd->fHandled = TRUE;
 	}
 	else 

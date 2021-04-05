@@ -63,7 +63,7 @@ void CHudStatusBar :: Reset( void )
 	m_iFlags &= ~HUD_ACTIVE;  // start out inactive
 	for ( int i = 0; i < MAX_STATUSBAR_LINES; i++ )
 		m_szStatusText[i][0] = 0;
-	memset( m_iStatusValues, 0, sizeof m_iStatusValues );
+	Q_memset( m_iStatusValues, 0, sizeof m_iStatusValues );
 
 	m_iStatusValues[0] = 1;  // 0 is the special index, which always returns true
 }
@@ -78,20 +78,20 @@ void CHudStatusBar :: ParseStatusString( int line_num )
 
 	if ( g_PlayerInfoList[indexval].name != NULL )
 	{
-		strncpy( m_szName[line_num], g_PlayerInfoList[indexval].name, MAX_PLAYER_NAME_LENGTH );
+		Q_strncpy( m_szName[line_num], g_PlayerInfoList[indexval].name, MAX_PLAYER_NAME_LENGTH );
 	}
 	else
 	{
-	    strncpy( m_szName[line_num], "******", MAX_PLAYER_NAME_LENGTH );
+	    Q_strncpy( m_szName[line_num], "******", MAX_PLAYER_NAME_LENGTH );
 	}
 
 	g_iNameColors = GetTeamIndex( indexval );
 	
 	indexval = m_iStatusValues[ 2 ];
-    sprintf( m_szHealth[ line_num ], ":%d", indexval );
+    Q_sprintf( m_szHealth[ line_num ], ":%d", indexval );
 	
 	indexval = m_iStatusValues[ 3 ];
-    sprintf( m_szArmor[ line_num ], ":%d", indexval );
+    Q_sprintf( m_szArmor[ line_num ], ":%d", indexval );
 
 	m_iTeamMate[ line_num ] = m_iStatusValues[ 5 ];
 }
@@ -227,7 +227,8 @@ int CHudStatusBar :: MsgFunc_StatusText( const char *pszName, int iSize, void *p
 	if ( line < 0 || line >= MAX_STATUSBAR_LINES )
 		return 1;
 
-	strncpy( m_szStatusText[line], READ_STRING(), MAX_STATUSTEXT_LENGTH );
+	Q_strncpy( m_szStatusText[line], READ_STRING(), MAX_STATUSTEXT_LENGTH );
+
 	m_szStatusText[line][MAX_STATUSTEXT_LENGTH-1] = 0;  // ensure it's null terminated ( strncpy() won't null terminate if read string too long)
 
 	if ( m_szStatusText[0] == 0 )

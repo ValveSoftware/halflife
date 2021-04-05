@@ -436,14 +436,16 @@ protected:
 public:
 	CMenuHandler_StringCommand( char *pszCommand )
 	{
-		strncpy( m_pszCommand, pszCommand, MAX_COMMAND_SIZE);
+		Q_strncpy( m_pszCommand, pszCommand, MAX_COMMAND_SIZE);
+
 		m_pszCommand[MAX_COMMAND_SIZE-1] = '\0';
 		m_iCloseVGUIMenu = false;
 	}
 
 	CMenuHandler_StringCommand( char *pszCommand, int iClose )
 	{
-		strncpy( m_pszCommand, pszCommand, MAX_COMMAND_SIZE);
+		Q_strncpy( m_pszCommand, pszCommand, MAX_COMMAND_SIZE);
+
 		m_pszCommand[MAX_COMMAND_SIZE-1] = '\0';
 		m_iCloseVGUIMenu = true;
 	}
@@ -895,7 +897,7 @@ private:
 public:
 	MapButton( const char *pMapName, const char* text,int x,int y,int wide,int tall ) : CommandButton( text,x,y,wide,tall)
 	{
-		sprintf( m_szMapName, "maps/%s.bsp", pMapName );
+		Q_sprintf( m_szMapName, "maps/%s.bsp", pMapName );
 	}
 
 	virtual int IsNotValid()
@@ -905,7 +907,7 @@ public:
 			return true;
 
 		// Does it match the current map name?
-		if ( strcmp(m_szMapName, level) )
+		if ( Q_strcmp(m_szMapName, level) )
 			return true;
 
 		return false;

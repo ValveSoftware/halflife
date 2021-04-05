@@ -16,7 +16,11 @@
 // util.h
 //
 
+#include "vstdlib/warnings.h"
+
 #include "cvardef.h"
+
+#include "vstdlib/vstdlib.h"
 
 #ifndef TRUE
 #define TRUE 1
@@ -118,9 +122,9 @@ inline void CenterPrint( const char *string )
 inline void PlaySound( char *szSound, float vol ) { gEngfuncs.pfnPlaySoundByName( szSound, vol ); }
 inline void PlaySound( int iSound, float vol ) { gEngfuncs.pfnPlaySoundByIndex( iSound, vol ); }
 
-#define max(a, b)  (((a) > (b)) ? (a) : (b))
-#define min(a, b)  (((a) < (b)) ? (a) : (b))
-#define fabs(x)	   ((x) > 0 ? (x) : 0 - (x))
+//#define max(a, b)  (((a) > (b)) ? (a) : (b))
+//#define min(a, b)  (((a) < (b)) ? (a) : (b))
+//#define fabs(x)	   ((x) > 0 ? (x) : 0 - (x))
 
 void ScaleColors( int &r, int &g, int &b, int a );
 

@@ -45,7 +45,7 @@ int	GetThreadWork (void)
 	{
 		oldf = f;
 		if (pacifier)
-			printf ("%i...", f);
+			Q_printf ("%i...", f);
 	}
 
 	r = dispatch;
@@ -143,12 +143,12 @@ void RunThreadsOn (int workcnt, qboolean showpacifier, void(*func)(int))
 	int		i;
 	int		start, end;
 
-	start = I_FloatTime ();
+	start = (int)I_FloatTime ();
 	dispatch = 0;
 	workcount = workcnt;
 	oldf = -1;
 	pacifier = showpacifier;
-	threaded = true;
+	threaded = qtrue;
 	//
 	// run threads in parallel
 	//
@@ -168,10 +168,10 @@ void RunThreadsOn (int workcnt, qboolean showpacifier, void(*func)(int))
 		WaitForSingleObject (threadhandle[i], INFINITE);
 	DeleteCriticalSection (&crit);
 
-	threaded = false;
-	end = I_FloatTime ();
+	threaded = qfalse;
+	end = (int)I_FloatTime ();
 	if (pacifier)
-		printf (" (%i)\n", end-start);
+		Q_printf (" (%i)\n", end-start);
 }
 
 
@@ -232,14 +232,14 @@ void RunThreadsOn (int workcnt, qboolean showpacifier, void(*func)(int))
 	workcount = workcnt;
 	oldf = -1;
 	pacifier = showpacifier;
-	threaded = true;
+	threaded = qtrue;
 
 	if (pacifier)
-		setbuf (stdout, NULL);
+		Q_setbuf (stdout, NULL);
 
 	if (!my_mutex)
 	{
-		my_mutex = malloc (sizeof(*my_mutex));
+		my_mutex = Q_malloc (sizeof(*my_mutex));
 		if (pthread_mutexattr_create (&mattrib) == -1)
 			Error ("pthread_mutex_attr_create failed");
 		if (pthread_mutexattr_setkind_np (&mattrib, MUTEX_FAST_NP) == -1)
@@ -266,11 +266,11 @@ void RunThreadsOn (int workcnt, qboolean showpacifier, void(*func)(int))
 			Error ("pthread_join failed");
 	}
 
-	threaded = false;
+	threaded = qfalse;
 
 	end = I_FloatTime ();
 	if (pacifier)
-		printf (" (%i)\n", end-start);
+		Q_printf (" (%i)\n", end-start);
 }
 
 
@@ -318,13 +318,13 @@ void RunThreadsOn (int workcnt, qboolean showpacifier, void(*func)(int))
 	start = I_FloatTime (); 
 #ifdef NeXT
 	if (pacifier)
-		setbuf (stdout, NULL);
+		Q_setbuf (stdout, NULL);
 #endif
 	func(0);
 
 	end = I_FloatTime ();
 	if (pacifier)
-		printf (" (%i)\n", end-start);
+		Q_printf (" (%i)\n", end-start);
 }
 
 #endif

@@ -84,16 +84,17 @@ void WeaponsResource :: LoadWeaponSprites( WEAPON *pWeapon )
 	if ( !pWeapon )
 		return;
 
-	memset( &pWeapon->rcActive, 0, sizeof(wrect_t) );
-	memset( &pWeapon->rcInactive, 0, sizeof(wrect_t) );
-	memset( &pWeapon->rcAmmo, 0, sizeof(wrect_t) );
-	memset( &pWeapon->rcAmmo2, 0, sizeof(wrect_t) );
+	Q_memset( &pWeapon->rcActive, 0, sizeof(wrect_t) );
+	Q_memset( &pWeapon->rcInactive, 0, sizeof(wrect_t) );
+	Q_memset( &pWeapon->rcAmmo, 0, sizeof(wrect_t) );
+	Q_memset( &pWeapon->rcAmmo2, 0, sizeof(wrect_t) );
 	pWeapon->hInactive = 0;
 	pWeapon->hActive = 0;
 	pWeapon->hAmmo = 0;
 	pWeapon->hAmmo2 = 0;
 
-	sprintf(sz, "sprites/%s.txt", pWeapon->szName);
+	Q_sprintf(sz, "sprites/%s.txt", pWeapon->szName);
+
 	client_sprite_t *pList = SPR_GetList(sz, &i);
 
 	if (!pList)
@@ -104,7 +105,8 @@ void WeaponsResource :: LoadWeaponSprites( WEAPON *pWeapon )
 	p = GetSpriteList( pList, "crosshair", iRes, i );
 	if (p)
 	{
-		sprintf(sz, "sprites/%s.spr", p->szSprite);
+		Q_sprintf(sz, "sprites/%s.spr", p->szSprite);
+
 		pWeapon->hCrosshair = SPR_Load(sz);
 		pWeapon->rcCrosshair = p->rc;
 	}
@@ -114,7 +116,8 @@ void WeaponsResource :: LoadWeaponSprites( WEAPON *pWeapon )
 	p = GetSpriteList(pList, "autoaim", iRes, i);
 	if (p)
 	{
-		sprintf(sz, "sprites/%s.spr", p->szSprite);
+		Q_sprintf(sz, "sprites/%s.spr", p->szSprite);
+
 		pWeapon->hAutoaim = SPR_Load(sz);
 		pWeapon->rcAutoaim = p->rc;
 	}
@@ -124,7 +127,8 @@ void WeaponsResource :: LoadWeaponSprites( WEAPON *pWeapon )
 	p = GetSpriteList( pList, "zoom", iRes, i );
 	if (p)
 	{
-		sprintf(sz, "sprites/%s.spr", p->szSprite);
+		Q_sprintf(sz, "sprites/%s.spr", p->szSprite);
+
 		pWeapon->hZoomedCrosshair = SPR_Load(sz);
 		pWeapon->rcZoomedCrosshair = p->rc;
 	}
@@ -137,7 +141,8 @@ void WeaponsResource :: LoadWeaponSprites( WEAPON *pWeapon )
 	p = GetSpriteList(pList, "zoom_autoaim", iRes, i);
 	if (p)
 	{
-		sprintf(sz, "sprites/%s.spr", p->szSprite);
+		Q_sprintf(sz, "sprites/%s.spr", p->szSprite);
+
 		pWeapon->hZoomedAutoaim = SPR_Load(sz);
 		pWeapon->rcZoomedAutoaim = p->rc;
 	}
@@ -150,11 +155,12 @@ void WeaponsResource :: LoadWeaponSprites( WEAPON *pWeapon )
 	p = GetSpriteList(pList, "weapon", iRes, i);
 	if (p)
 	{
-		sprintf(sz, "sprites/%s.spr", p->szSprite);
+		Q_sprintf(sz, "sprites/%s.spr", p->szSprite);
+
 		pWeapon->hInactive = SPR_Load(sz);
 		pWeapon->rcInactive = p->rc;
 
-		gHR.iHistoryGap = max( gHR.iHistoryGap, pWeapon->rcActive.bottom - pWeapon->rcActive.top );
+		gHR.iHistoryGap = Q_max( gHR.iHistoryGap, pWeapon->rcActive.bottom - pWeapon->rcActive.top );
 	}
 	else
 		pWeapon->hInactive = 0;
@@ -162,7 +168,8 @@ void WeaponsResource :: LoadWeaponSprites( WEAPON *pWeapon )
 	p = GetSpriteList(pList, "weapon_s", iRes, i);
 	if (p)
 	{
-		sprintf(sz, "sprites/%s.spr", p->szSprite);
+		Q_sprintf(sz, "sprites/%s.spr", p->szSprite);
+
 		pWeapon->hActive = SPR_Load(sz);
 		pWeapon->rcActive = p->rc;
 	}
@@ -172,11 +179,12 @@ void WeaponsResource :: LoadWeaponSprites( WEAPON *pWeapon )
 	p = GetSpriteList(pList, "ammo", iRes, i);
 	if (p)
 	{
-		sprintf(sz, "sprites/%s.spr", p->szSprite);
+		Q_sprintf(sz, "sprites/%s.spr", p->szSprite);
+
 		pWeapon->hAmmo = SPR_Load(sz);
 		pWeapon->rcAmmo = p->rc;
 
-		gHR.iHistoryGap = max( gHR.iHistoryGap, pWeapon->rcActive.bottom - pWeapon->rcActive.top );
+		gHR.iHistoryGap = Q_max( gHR.iHistoryGap, pWeapon->rcActive.bottom - pWeapon->rcActive.top );
 	}
 	else
 		pWeapon->hAmmo = 0;
@@ -184,11 +192,12 @@ void WeaponsResource :: LoadWeaponSprites( WEAPON *pWeapon )
 	p = GetSpriteList(pList, "ammo2", iRes, i);
 	if (p)
 	{
-		sprintf(sz, "sprites/%s.spr", p->szSprite);
+		Q_sprintf(sz, "sprites/%s.spr", p->szSprite);
+
 		pWeapon->hAmmo2 = SPR_Load(sz);
 		pWeapon->rcAmmo2 = p->rc;
 
-		gHR.iHistoryGap = max( gHR.iHistoryGap, pWeapon->rcActive.bottom - pWeapon->rcActive.top );
+		gHR.iHistoryGap = Q_max( gHR.iHistoryGap, pWeapon->rcActive.bottom - pWeapon->rcActive.top );
 	}
 	else
 		pWeapon->hAmmo2 = 0;
@@ -320,7 +329,7 @@ int CHudAmmo::VidInit(void)
 	giBucketWidth = gHUD.GetSpriteRect(m_HUD_bucket0).right - gHUD.GetSpriteRect(m_HUD_bucket0).left;
 	giBucketHeight = gHUD.GetSpriteRect(m_HUD_bucket0).bottom - gHUD.GetSpriteRect(m_HUD_bucket0).top;
 
-	gHR.iHistoryGap = max( gHR.iHistoryGap, gHUD.GetSpriteRect(m_HUD_bucket0).bottom - gHUD.GetSpriteRect(m_HUD_bucket0).top);
+	gHR.iHistoryGap = Q_max( gHR.iHistoryGap, gHUD.GetSpriteRect(m_HUD_bucket0).bottom - gHUD.GetSpriteRect(m_HUD_bucket0).top);
 
 	// If we've already loaded weapons, let's get new sprites
 	gWR.LoadAllWeaponSprites();
@@ -490,7 +499,7 @@ int CHudAmmo::MsgFunc_AmmoX(const char *pszName, int iSize, void *pbuf)
 	int iIndex = READ_BYTE();
 	int iCount = READ_BYTE();
 
-	gWR.SetAmmo( iIndex, abs(iCount) );
+	gWR.SetAmmo( iIndex, Q_abs(iCount) );
 
 	return 1;
 }
@@ -502,7 +511,7 @@ int CHudAmmo::MsgFunc_AmmoPickup( const char *pszName, int iSize, void *pbuf )
 	int iCount = READ_BYTE();
 
 	// Add ammo to the history
-	gHR.AddToHistory( HISTSLOT_AMMO, iIndex, abs(iCount) );
+	gHR.AddToHistory( HISTSLOT_AMMO, iIndex, Q_abs(iCount) );
 
 	return 1;
 }
@@ -600,7 +609,7 @@ int CHudAmmo::MsgFunc_CurWeapon(const char *pszName, int iSize, void *pbuf )
 		return 0;
 
 	if ( iClip < -1 )
-		pWeapon->iClip = abs(iClip);
+		pWeapon->iClip = Q_abs(iClip);
 	else
 		pWeapon->iClip = iClip;
 
@@ -641,7 +650,8 @@ int CHudAmmo::MsgFunc_WeaponList(const char *pszName, int iSize, void *pbuf )
 	
 	WEAPON Weapon;
 
-	strcpy( Weapon.szName, READ_STRING() );
+	Q_strcpy( Weapon.szName, READ_STRING() );
+
 	Weapon.iAmmoType = (int)READ_CHAR();	
 	
 	Weapon.iMax1 = READ_BYTE();
@@ -862,7 +872,7 @@ int CHudAmmo::Draw(float flTime)
 
 	AmmoWidth = gHUD.GetSpriteRect(gHUD.m_HUD_number_0).right - gHUD.GetSpriteRect(gHUD.m_HUD_number_0).left;
 
-	a = (int) max( MIN_ALPHA, m_fFade );
+	a = (int) Q_max( MIN_ALPHA, m_fFade );
 
 	if (m_fFade > 0)
 		m_fFade -= (gHUD.m_flTimeDelta * 20);
@@ -1191,7 +1201,7 @@ client_sprite_t *GetSpriteList(client_sprite_t *pList, const char *psz, int iRes
 
 	while(i--)
 	{
-		if ((!strcmp(psz, p->szName)) && (p->iRes == iRes))
+		if ((!Q_strcmp(psz, p->szName)) && (p->iRes == iRes))
 			return p;
 		p++;
 	}

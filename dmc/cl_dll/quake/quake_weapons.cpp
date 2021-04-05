@@ -66,7 +66,7 @@ void AlertMessage( ALERT_TYPE atype, char *szFmt, ... )
 	static char	string[1024];
 	
 	va_start (argptr, szFmt);
-	vsprintf (string, szFmt,argptr);
+	Q_vsprintf (string, szFmt,argptr);
 	va_end (argptr);
 
 	gEngfuncs.Con_Printf( "cl:  " );
@@ -83,7 +83,7 @@ we set up the m_pPlayer field.
 */
 void HUD_PrepEntity( CBaseEntity *pEntity, CBasePlayer *pWeaponOwner )
 {
-	memset( &ev[ num_ents ], 0, sizeof( entvars_t ) );
+	Q_memset( &ev[ num_ents ], 0, sizeof( entvars_t ) );
 	pEntity->pev = &ev[ num_ents++ ];
 
 	pEntity->Precache();
@@ -291,7 +291,7 @@ void CBasePlayerWeapon::ItemPostFrame( void )
 	{
 #if 0 // FIXME, need ammo on client to make this work right
 		// complete the reload. 
-		int j = min( iMaxClip() - m_iClip, m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType]);	
+		int j = Q_min( iMaxClip() - m_iClip, m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType]);	
 
 		// Add them to the clip
 		m_iClip += j;
@@ -444,7 +444,7 @@ void CBasePlayer::Spawn( void )
 BOOL CQuakeGun::Deploy( )
 {
 	gEngfuncs.CL_LoadModel( "models/v_axe.mdl", &m_pPlayer->pev->viewmodel );
-	strcpy( m_pPlayer->m_szAnimExtention, "onehanded" );
+	Q_strcpy( m_pPlayer->m_szAnimExtention, "onehanded" );
 	return TRUE;
 }
 
@@ -464,7 +464,7 @@ Don't actually trace, but act like the trace didn't hit anything.
 */
 void UTIL_TraceLine( const Vector &vecStart, const Vector &vecEnd, IGNORE_MONSTERS igmon, edict_t *pentIgnore, TraceResult *ptr )
 {
-	memset( ptr, 0, sizeof( *ptr ) );
+	Q_memset( ptr, 0, sizeof( *ptr ) );
 	ptr->flFraction = 1.0;
 }
 
@@ -693,7 +693,7 @@ void HUD_WeaponsPostThink( local_state_s *from, local_state_s *to, usercmd_t *cm
 	weapon_data_t nulldata, *pfrom, *pto;
 	static int lasthealth;
 
-	memset( &nulldata, 0, sizeof( nulldata ) );
+	Q_memset( &nulldata, 0, sizeof( nulldata ) );
 
 	HUD_InitClientWeapons();	
 
@@ -892,7 +892,7 @@ void HUD_WeaponsPostThink( local_state_s *from, local_state_s *to, usercmd_t *cm
 
 		if ( !pCurrent )
 		{
-			memset( pto, 0, sizeof( weapon_data_t ) );
+			Q_memset( pto, 0, sizeof( weapon_data_t ) );
 			continue;
 		}
 	

@@ -152,7 +152,7 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;QUIVER;VOXEL;QUAKE2;VALVE_DLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;QUIVER;VOXEL;QUAKE2;VALVE_DLL;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>..\..\public;..\..\game_shared;..\..\dmc\dlls;..\..\engine;..\..\common;..\..\dmc\pm_shared;..\..\dmc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
@@ -162,8 +162,10 @@
       <ModuleDefinitionFile>$(ProjectDir)..\..\dmc\dlls\dmc.def</ModuleDefinitionFile>
     </Link>
     <PostBuildEvent>
-      <Command>call ..\..\filecopy.bat $(TargetPath) ..\..\..\game\mod\dlls\$(TargetName).dll
-call ..\..\filecopy.bat $(TargetDir)\$(TargetName).pdb ..\..\..\game\mod\dlls\$(TargetName).pdb</Command>
+      <Command>if not exist "..\..\..\game\mod_dmc\dlls" mkdir "..\..\..\game\mod_dmc\dlls"
+call "..\..\filecopy.bat" "$(TargetPath)" "..\..\..\game\mod_dmc\dlls\$(TargetName).dll"
+call "..\..\filecopy.bat" "$(TargetDir)\$(TargetName).pdb" "..\..\..\game\mod_dmc\dlls\$(TargetName).pdb"
+</Command>
     </PostBuildEvent>
     <PostBuildEvent>
       <Message>Performing Post-Build Event</Message>
@@ -177,7 +179,7 @@ call ..\..\filecopy.bat $(TargetDir)\$(TargetName).pdb ..\..\..\game\mod\dlls\$(
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;QUIVER;VOXEL;QUAKE2;VALVE_DLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;QUIVER;VOXEL;QUAKE2;VALVE_DLL;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>..\..\public;..\..\game_shared;..\..\dmc\dlls;..\..\engine;..\..\common;..\..\dmc\pm_shared;..\..\dmc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
@@ -189,8 +191,10 @@ call ..\..\filecopy.bat $(TargetDir)\$(TargetName).pdb ..\..\..\game\mod\dlls\$(
       <ModuleDefinitionFile>$(ProjectDir)..\..\dmc\dlls\dmc.def</ModuleDefinitionFile>
     </Link>
     <PostBuildEvent>
-      <Command>call ..\..\filecopy.bat $(TargetPath) ..\..\..\game\mod\dlls\$(TargetName).dll
-call ..\..\filecopy.bat $(TargetDir)\$(TargetName).pdb ..\..\..\game\mod\dlls\$(TargetName).pdb</Command>
+      <Command>if not exist "..\..\..\game\mod_dmc\dlls" mkdir "..\..\..\game\mod_dmc\dlls"
+call "..\..\filecopy.bat" "$(TargetPath)" "..\..\..\game\mod_dmc\dlls\$(TargetName).dll"
+call "..\..\filecopy.bat" "$(TargetDir)\$(TargetName).pdb" "..\..\..\game\mod_dmc\dlls\$(TargetName).pdb"
+</Command>
     </PostBuildEvent>
     <PostBuildEvent>
       <Message>Performing Post-Build Event</Message>

@@ -335,7 +335,7 @@ int CopyLump (int lump, void *dest, int size)
 	if (length % size)
 		Error ("LoadBSPFile: odd lump size");
 	
-	memcpy (dest, (byte *)header + ofs, length);
+	Q_memcpy (dest, (byte *)header + ofs, length);
 
 	return length / size;
 }
@@ -378,12 +378,12 @@ void	LoadBSPFile (char *filename)
 	lightdatasize = CopyLump (LUMP_LIGHTING, dlightdata, 1);
 	entdatasize = CopyLump (LUMP_ENTITIES, dentdata, 1);
 
-	free (header);		// everything has been copied out
+	Q_free (header);		// everything has been copied out
 		
 //
 // swap everything
 //	
-	SwapBSPFile (false);
+	SwapBSPFile (qfalse);
 
 	dmodels_checksum = FastChecksum( dmodels, nummodels*sizeof(dmodels[0]) );
     dvertexes_checksum = FastChecksum( dvertexes, numvertexes*sizeof(dvertexes[0]) );
@@ -414,7 +414,7 @@ void AddLump (int lumpnum, void *data, int len)
 
 	lump = &header->lumps[lumpnum];
 	
-	lump->fileofs = LittleLong( ftell(wadfile) );
+	lump->fileofs = LittleLong( Q_ftell(wadfile) );
 	lump->filelen = LittleLong(len);
 	SafeWrite (wadfile, data, (len+3)&~3);
 }
@@ -429,9 +429,9 @@ Swaps the bsp file in place, so it should not be referenced again
 void	WriteBSPFile (char *filename)
 {		
 	header = &outheader;
-	memset (header, 0, sizeof(dheader_t));
+	Q_memset (header, 0, sizeof(dheader_t));
 	
-	SwapBSPFile (true);
+	SwapBSPFile (qtrue);
 
 	header->version = LittleLong (BSPVERSION);
 	
@@ -455,9 +455,9 @@ void	WriteBSPFile (char *filename)
 	AddLump (LUMP_ENTITIES, dentdata, entdatasize);
 	AddLump (LUMP_TEXTURES, dtexdata, texdatasize);
 	
-	fseek (wadfile, 0, SEEK_SET);
+	Q_fseek (wadfile, 0, SEEK_SET);
 	SafeWrite (wadfile, header, sizeof(dheader_t));
-	fclose (wadfile);	
+	Q_fclose (wadfile);	
 }
 
 //============================================================================
@@ -467,34 +467,34 @@ void	WriteBSPFile (char *filename)
 
 ArrayUsage( char *szItem, int items, int maxitems, int itemsize )
 {
-	float	percentage = maxitems ? items * 100.0 / maxitems : 0.0;
+	float	percentage = maxitems ? items * 100.0f / maxitems : 0.0f;
 
-    printf("%-12s  %7i/%-7i  %7i/%-7i  (%4.1f%%)", 
+    Q_printf("%-12s  %7i/%-7i  %7i/%-7i  (%4.1f%%)", 
 		   szItem, items, maxitems, items * itemsize, maxitems * itemsize, percentage );
-	if ( percentage > 80.0 )
-		printf( "VERY FULL!\n" );
-	else if ( percentage > 95.0 )
-		printf( "SIZE DANGER!\n" );
-	else if ( percentage > 99.9 )
-		printf( "SIZE OVERFLOW!!!\n" );
+	if ( percentage > 80.0f )
+		Q_printf( "VERY FULL!\n" );
+	else if ( percentage > 95.0f )
+		Q_printf( "SIZE DANGER!\n" );
+	else if ( percentage > 99.9f )
+		Q_printf( "SIZE OVERFLOW!!!\n" );
 	else
-		printf( "\n" );
+		Q_printf( "\n" );
 	return items * itemsize;
 }
 
 GlobUsage( char *szItem, int itemstorage, int maxstorage )
 {
-	float	percentage = maxstorage ? itemstorage * 100.0 / maxstorage : 0.0;
-    printf("%-12s     [variable]    %7i/%-7i  (%4.1f%%)", 
+	float	percentage = maxstorage ? itemstorage * 100.0f / maxstorage : 0.0f;
+    Q_printf("%-12s     [variable]    %7i/%-7i  (%4.1f%%)", 
 		   szItem, itemstorage, maxstorage, percentage );
-	if ( percentage > 80.0 )
-		printf( "VERY FULL!\n" );
-	else if ( percentage > 95.0 )
-		printf( "SIZE DANGER!\n" );
-	else if ( percentage > 99.9 )
-		printf( "SIZE OVERFLOW!!!\n" );
+	if ( percentage > 80.0f )
+		Q_printf( "VERY FULL!\n" );
+	else if ( percentage > 95.0f )
+		Q_printf( "SIZE DANGER!\n" );
+	else if ( percentage > 99.9f )
+		Q_printf( "SIZE OVERFLOW!!!\n" );
 	else
-		printf( "\n" );
+		Q_printf( "\n" );
 	return itemstorage;
 }
 
@@ -510,9 +510,9 @@ void PrintBSPFileSizes (void)
 	int	numtextures = texdatasize ? ((dmiptexlump_t*)dtexdata)->nummiptex : 0;
 	int	totalmemory = 0;
 
-	printf("\n");
-	printf("Object names  Objects/Maxobjs  Memory / Maxmem  Fullness\n" );
-	printf("------------  ---------------  ---------------  --------\n" );
+	Q_printf("\n");
+	Q_printf("Object names  Objects/Maxobjs  Memory / Maxmem  Fullness\n" );
+	Q_printf("------------  ---------------  ---------------  --------\n" );
 
 	totalmemory += ArrayUsage( "models",		nummodels,		ENTRIES(dmodels),		ENTRYSIZE(dmodels) );
 	totalmemory += ArrayUsage( "planes",		numplanes,		ENTRIES(dplanes),		ENTRYSIZE(dplanes) );
@@ -531,7 +531,7 @@ void PrintBSPFileSizes (void)
 	totalmemory += GlobUsage( "visdata",		visdatasize,	sizeof(dvisdata) );
 	totalmemory += GlobUsage( "entdata",		entdatasize,	sizeof(dentdata) );
 
-	printf( "=== Total BSP file data space used: %d bytes ===\n", totalmemory );
+	Q_printf( "=== Total BSP file data space used: %d bytes ===\n", totalmemory );
 }
 
 
@@ -544,14 +544,14 @@ epair_t *ParseEpair (void)
 {
 	epair_t	*e;
 	
-	e = malloc (sizeof(epair_t));
-	memset (e, 0, sizeof(epair_t));
+	e = Q_malloc (sizeof(epair_t));
+	Q_memset (e, 0, sizeof(epair_t));
 	
-	if (strlen(token) >= MAX_KEY-1)
+	if (Q_strlen(token) >= MAX_KEY-1)
 		Error ("ParseEpar: token too long");
 	e->key = copystring(token);
-	GetToken (false);
-	if (strlen(token) >= MAX_VALUE-1)
+	GetToken (qfalse);
+	if (Q_strlen(token) >= MAX_VALUE-1)
 		Error ("ParseEpar: token too long");
 	e->value = copystring(token);
 
@@ -569,10 +569,10 @@ qboolean	ParseEntity (void)
 	epair_t		*e;
 	entity_t	*mapent;
 
-	if (!GetToken (true))
-		return false;
+	if (!GetToken (qtrue))
+		return qfalse;
 
-	if (strcmp (token, "{") )
+	if (Q_strcmp (token, "{") )
 		Error ("ParseEntity: { not found");
 	
 	if (num_entities == MAX_MAP_ENTITIES)
@@ -583,16 +583,16 @@ qboolean	ParseEntity (void)
 
 	do
 	{
-		if (!GetToken (true))
+		if (!GetToken (qtrue))
 			Error ("ParseEntity: EOF without closing brace");
-		if (!strcmp (token, "}") )
+		if (!Q_strcmp (token, "}") )
 			break;
 		e = ParseEpair ();
 		e->next = mapent->epairs;
 		mapent->epairs = e;
 	} while (1);
 	
-	return true;
+	return qtrue;
 }
 
 /*
@@ -637,16 +637,16 @@ void UnparseEntities (void)
 		if (!ep)
 			continue;	// ent got removed
 		
-		strcat (end,"{\n");
+		Q_strcat (end,"{\n");
 		end += 2;
 				
 		for (ep = entities[i].epairs ; ep ; ep=ep->next)
 		{
-			sprintf (line, "\"%s\" \"%s\"\n", ep->key, ep->value);
-			strcat (end, line);
-			end += strlen(line);
+			Q_sprintf (line, "\"%s\" \"%s\"\n", ep->key, ep->value);
+			Q_strcat (end, line);
+			end += Q_strlen(line);
 		}
-		strcat (end,"}\n");
+		Q_strcat (end,"}\n");
 		end += 2;
 
 		if (end > buf + MAX_MAP_ENTSTRING)
@@ -662,13 +662,13 @@ void 	SetKeyValue (entity_t *ent, char *key, char *value)
 	epair_t	*ep;
 	
 	for (ep=ent->epairs ; ep ; ep=ep->next)
-		if (!strcmp (ep->key, key) )
+		if (!Q_strcmp (ep->key, key) )
 		{
-			free (ep->value);
+			Q_free (ep->value);
 			ep->value = copystring(value);
 			return;
 		}
-	ep = malloc (sizeof(*ep));
+	ep = Q_malloc (sizeof(*ep));
 	ep->next = ent->epairs;
 	ent->epairs = ep;
 	ep->key = copystring(key);
@@ -680,7 +680,7 @@ char 	*ValueForKey (entity_t *ent, char *key)
 	epair_t	*ep;
 	
 	for (ep=ent->epairs ; ep ; ep=ep->next)
-		if (!strcmp (ep->key, key) )
+		if (!Q_strcmp (ep->key, key) )
 			return ep->value;
 	return "";
 }
@@ -690,7 +690,7 @@ vec_t	FloatForKey (entity_t *ent, char *key)
 	char	*k;
 	
 	k = ValueForKey (ent, key);
-	return atof(k);
+	return (vec_t)Q_atof(k);
 }
 
 void 	GetVectorForKey (entity_t *ent, char *key, vec3_t vec)
@@ -701,9 +701,9 @@ void 	GetVectorForKey (entity_t *ent, char *key, vec3_t vec)
 	k = ValueForKey (ent, key);
 // scanf into doubles, then assign, so it is vec_t size independent
 	v1 = v2 = v3 = 0;
-	sscanf (k, "%lf %lf %lf", &v1, &v2, &v3);
-	vec[0] = v1;
-	vec[1] = v2;
-	vec[2] = v3;
+	Q_sscanf (k, "%lf %lf %lf", &v1, &v2, &v3);
+	vec[0] = (vec_t)v1;
+	vec[1] = (vec_t)v2;
+	vec[2] = (vec_t)v3;
 }
 

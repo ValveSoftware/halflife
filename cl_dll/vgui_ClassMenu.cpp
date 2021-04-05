@@ -62,7 +62,7 @@ CClassMenuPanel::CClassMenuPanel(int iTrans, int iRemoveMe, int x,int y,int wide
 		bShowClassGraphic = false;
 	}
 
-	memset( m_pClassImages, 0, sizeof(m_pClassImages) );
+	Q_memset( m_pClassImages, 0, sizeof(m_pClassImages) );
 
 	// Get the scheme used for the Titles
 	CSchemeManager *pSchemes = gViewPort->GetSchemeManager();
@@ -111,16 +111,16 @@ CClassMenuPanel::CClassMenuPanel(int iTrans, int iRemoveMe, int x,int y,int wide
 		ActionSignal *pASignal = new CMenuHandler_StringCommandClassSelect( sTFClassSelection[i], true );
 
 		// Class button
-		sprintf(sz, "%s", CHudTextMessage::BufferedLocaliseTextString( sLocalisedClasses[i] ) );
+		Q_sprintf(sz, "%s", CHudTextMessage::BufferedLocaliseTextString( sLocalisedClasses[i] ) );
 		m_pButtons[i] = new ClassButton( i, sz, CLASSMENU_TOPLEFT_BUTTON_X, iYPos, CLASSMENU_BUTTON_SIZE_X, CLASSMENU_BUTTON_SIZE_Y, true);
 		// RandomPC uses '0'
 		if ( i >= 1 && i <= 9 )
 		{
-			sprintf(sz,"%d",i);
+			Q_sprintf(sz,"%d",i);
 		}
 		else
 		{
-			sprintf(sz,"0");
+			Q_sprintf(sz,"0");
 		}
 		m_pButtons[i]->setBoundKey( sz[0] );
 		m_pButtons[i]->setContentAlignment( vgui::Label::a_west );
@@ -143,7 +143,7 @@ CClassMenuPanel::CClassMenuPanel(int iTrans, int iRemoveMe, int x,int y,int wide
 		}
 
 		// Create the Class Name Label
-		sprintf(sz, "#Title_%s", sTFClassSelection[i]);
+		Q_sprintf(sz, "#Title_%s", sTFClassSelection[i]);
 		char* localName=CHudTextMessage::BufferedLocaliseTextString( sz );
 		Label *pNameLabel = new Label( "", textOffs, CLASSMENU_WINDOW_NAME_Y );
 		pNameLabel->setFont( pSchemes->getFont(hTitleScheme) ); 
@@ -163,11 +163,11 @@ CClassMenuPanel::CClassMenuPanel(int iTrans, int iRemoveMe, int x,int y,int wide
 			{
 				if ( team == 1 )
 				{
-					sprintf( sz, "%sred", sTFClassSelection[i] );
+					Q_sprintf( sz, "%sred", sTFClassSelection[i] );
 				}
 				else
 				{
-					sprintf( sz, "%sblue", sTFClassSelection[i] );
+					Q_sprintf( sz, "%sblue", sTFClassSelection[i] );
 				}
 
 				m_pClassImages[team][i] = new CImageLabel( sz, 0, 0, CLASSMENU_WINDOW_TEXT_X, CLASSMENU_WINDOW_TEXT_Y );
@@ -197,7 +197,7 @@ CClassMenuPanel::CClassMenuPanel(int iTrans, int iRemoveMe, int x,int y,int wide
 		m_pPlayers[i]->setFont( pSchemes->getFont(hClassWindowText) );
 
 		// Open up the Class Briefing File
-		sprintf(sz, "classes/short_%s.txt", sTFClassSelection[i]);
+		Q_sprintf(sz, "classes/short_%s.txt", sTFClassSelection[i]);
 		char *cText = "Class Description not available.";
 		char *pfile = (char *)gEngfuncs.COM_LoadFile( sz, 5, NULL );
 		if (pfile)
@@ -319,7 +319,7 @@ void CClassMenuPanel::Update()
 		}
 
 		char sz[256]; 
-		sprintf(sz, m_sPlayersOnTeamString, iTotal);
+		Q_sprintf(sz, m_sPlayersOnTeamString, iTotal);
 		m_pPlayers[i]->setText( "%s", sz );
 
 		// Set the text color to the teamcolor

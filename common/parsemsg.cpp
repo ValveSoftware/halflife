@@ -16,8 +16,14 @@
 //  parsemsg.cpp
 //
 //--------------------------------------------------------------------------------------------------------------
+
+#include "../public/vstdlib/warnings.h"
+
 #include "parsemsg.h"
 #include <port.h>
+
+#include "../public/vstdlib/vstdlib.h"
+
 
 typedef unsigned char byte;
 #define true 1
@@ -237,7 +243,7 @@ void BufferWriter::WriteString( const char *str )
 	if (!str)
 		str = "";
 
-	int len = strlen(str)+1;
+	int len = Q_strlen(str)+1;
 	if ( len > m_remaining )
 	{
 		m_overflow = true;
@@ -245,7 +251,8 @@ void BufferWriter::WriteString( const char *str )
 		len = 1;
 	}
 
-	strcpy((char *)m_buffer, str);
+	Q_strcpy((char *)m_buffer, str);
+
 	m_remaining -= len;
 	m_buffer += len;
 }

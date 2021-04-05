@@ -8,10 +8,14 @@
 *
 ****/
 
+#include "../../public/vstdlib/warnings.h"
+
 #include <windows.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#include "../../public/vstdlib/vstdlib.h"
 
 
 char	**ppszFiles = NULL;
@@ -23,13 +27,13 @@ string_comparator( const void *string1, const void *string2 )
 {
 	char	*s1 = *(char **)string1;
 	char	*s2 = *(char **)string2;
-	return strcmp( s1, s2 );
+	return Q_strcmp( s1, s2 );
 }
 
 void PrintUsage(char *pname)
 {
-	printf("\n\tusage:%s <source directory> <wadfile name> <script name> \n\n",pname);
-	printf("\t%s.exe is used to generate a bitmap name sorted 'qlumpy script'.\n",pname);
+	Q_printf("\n\tusage:%s <source directory> <wadfile name> <script name> \n\n",pname);
+	Q_printf("\t%s.exe is used to generate a bitmap name sorted 'qlumpy script'.\n",pname);
 }
 
 int main(int argc, void **argv)
@@ -44,47 +48,47 @@ int main(int argc, void **argv)
 	BOOL fContinue = TRUE;
 	DWORD dwWritten;
 
-	printf("makels Copyright (c) 1998 Valve L.L.C., %s\n", __DATE__ );
+	Q_printf("makels Copyright (c) 1998 Valve L.L.C., %s\n", __DATE__ );
 
 	pszdir = (char *)argv[1];
 
 	if ((argc != 4) || (pszdir[0] == '/') || (pszdir[0] == '-'))
 	{
 		PrintUsage((char *)argv[0]);
-		exit(1);
+		Q_exit(1);
 	}
 
-	pszdir = (char *)malloc(strlen((char *)argv[1]) + 7);
-	strcpy(pszdir, (char *)argv[1]);
-	strcat(pszdir, "\\*.bmp");
+	pszdir = (char *)Q_malloc(Q_strlen((char *)argv[1]) + 7);
+	Q_strcpy(pszdir, (char *)argv[1]);
+	Q_strcat(pszdir, "\\*.bmp");
 
-	pszWadName = (char *)malloc(strlen((char *)argv[2]) + 5);
-	strcpy(pszWadName, (char *)argv[2]);
-	strcat(pszWadName, ".WAD");
+	pszWadName = (char *)Q_malloc(Q_strlen((char *)argv[2]) + 5);
+	Q_strcpy(pszWadName, (char *)argv[2]);
+	Q_strcat(pszWadName, ".WAD");
 
-	pszScriptName = (char *)malloc(strlen((char *)argv[3]));
-	strcpy(pszScriptName, (char *)argv[3]);
+	pszScriptName = (char *)Q_malloc(Q_strlen((char *)argv[3]));
+	Q_strcpy(pszScriptName, (char *)argv[3]);
 	hScriptFile = CreateFile(pszScriptName, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, 
 			FILE_ATTRIBUTE_NORMAL, NULL);
 
 	if (hScriptFile == INVALID_HANDLE_VALUE)
 	{
-		printf("\n---------- ERROR ------------------\n");
-		printf(" Could not open the script file: %s\n", pszScriptName);
+		Q_printf("\n---------- ERROR ------------------\n");
+		Q_printf(" Could not open the script file: %s\n", pszScriptName);
 		Beep(800,500);
-		exit(EXIT_FAILURE);
+		Q_exit(EXIT_FAILURE);
 	}
 
-	sprintf(szBuf, "$DEST    \"%s\"\r\n\r\n", pszWadName);
-	fWrite = WriteFile(hScriptFile, szBuf, strlen(szBuf), &dwWritten, NULL);
-	if (!fWrite || (dwWritten != strlen(szBuf)))
+	Q_sprintf(szBuf, "$DEST    \"%s\"\r\n\r\n", pszWadName);
+	fWrite = WriteFile(hScriptFile, szBuf, Q_strlen(szBuf), &dwWritten, NULL);
+	if (!fWrite || (dwWritten != Q_strlen(szBuf)))
 	{
 write_error:
-		printf("\n---------- ERROR ------------------\n");
-		printf(" Could not write to the script file: %s\n", pszScriptName);
+		Q_printf("\n---------- ERROR ------------------\n");
+		Q_printf(" Could not write to the script file: %s\n", pszScriptName);
 		Beep(800,500);
 		CloseHandle(hScriptFile);
-		exit(EXIT_FAILURE);
+		Q_exit(EXIT_FAILURE);
 	}
 	
 	
@@ -100,29 +104,29 @@ write_error:
 				char szShort[MAX_PATH];
 
 				// ignore N_ and F_ files
-				strcpy(szShort, FindData.cFileName);
-				strupr(szShort);
+				Q_strcpy(szShort, FindData.cFileName);
+				Q_strupr(szShort);
 
 				if ((szShort[1] == '_') && ((szShort[0] == 'N') || (szShort[0] == 'F')))
 				{
 
-					printf("Skipping %s.\n", FindData.cFileName);
+					Q_printf("Skipping %s.\n", FindData.cFileName);
 
 				} else {
 				
 					if ( nFiles >= nMaxFiles )
 					{
 						nMaxFiles += 1000;
-						ppszFiles = (char **)realloc( ppszFiles, nMaxFiles * sizeof(*ppszFiles) );
+						ppszFiles = (char **)Q_realloc( ppszFiles, nMaxFiles * sizeof(*ppszFiles) );
 						if ( !ppszFiles )
 						{
-							printf("\n---------- ERROR ------------------\n");
-							printf(" Could not realloc more filename pointer storage\n");
+							Q_printf("\n---------- ERROR ------------------\n");
+							Q_printf(" Could not realloc more filename pointer storage\n");
 							Beep(800,500);
-							exit(EXIT_FAILURE);
+							Q_exit(EXIT_FAILURE);
 						}
 					}
-					ppszFiles[nFiles++] = strdup( szShort );
+					ppszFiles[nFiles++] = Q_strdup( szShort );
 				}
 			}
 			fContinue = FindNextFile(hFile, &FindData);
@@ -132,7 +136,7 @@ write_error:
 
 	if (nFiles > 0)
 	{
-		qsort( ppszFiles, nFiles, sizeof(char*), string_comparator );
+		Q_qsort( ppszFiles, nFiles, sizeof(char*), string_comparator );
 
 		for( int i = 0; i < nFiles; i++ )
 		{
@@ -140,34 +144,34 @@ write_error:
 			char szShort[MAX_PATH];
 			char szFull[MAX_PATH];
 
-			strcpy(szShort, pszdir);
-			p = strchr(szShort, '*');
+			Q_strcpy(szShort, pszdir);
+			p = Q_strchr(szShort, '*');
 			*p = '\0';
-			strcat(szShort, ppszFiles[i]);
+			Q_strcat(szShort, ppszFiles[i]);
 			GetFullPathName(szShort, MAX_PATH, szFull, NULL);
 
-			sprintf(szBuf, "$loadbmp    \"%s\"\r\n", szFull);
-			fWrite = WriteFile(hScriptFile, szBuf, strlen(szBuf), &dwWritten, NULL);
-			if (!fWrite || (dwWritten != strlen(szBuf)))
+			Q_sprintf(szBuf, "$loadbmp    \"%s\"\r\n", szFull);
+			fWrite = WriteFile(hScriptFile, szBuf, Q_strlen(szBuf), &dwWritten, NULL);
+			if (!fWrite || (dwWritten != Q_strlen(szBuf)))
 				goto write_error;
 
 
-			p = strchr(ppszFiles[i], '.');
+			p = Q_strchr(ppszFiles[i], '.');
 			*p = '\0';
 
-			sprintf(szBuf, "%s  miptex -1 -1 -1 -1\r\n\r\n", ppszFiles[i]);
-			fWrite = WriteFile(hScriptFile, szBuf, strlen(szBuf), &dwWritten, NULL);
-			if (!fWrite || (dwWritten != strlen(szBuf)))
+			Q_sprintf(szBuf, "%s  miptex -1 -1 -1 -1\r\n\r\n", ppszFiles[i]);
+			fWrite = WriteFile(hScriptFile, szBuf, Q_strlen(szBuf), &dwWritten, NULL);
+			if (!fWrite || (dwWritten != Q_strlen(szBuf)))
 				goto write_error;
 
-			free( ppszFiles[i] );
+			Q_free( ppszFiles[i] );
 		}
 	}
 	
-	printf("Processed %d files specified by %s\n", nFiles, pszdir );
+	Q_printf("Processed %d files specified by %s\n", nFiles, pszdir );
 
 	CloseHandle(hScriptFile);
-	free(pszdir);
-	exit(0);
+	Q_free(pszdir);
+	Q_exit(0);
 	return 0;
 }

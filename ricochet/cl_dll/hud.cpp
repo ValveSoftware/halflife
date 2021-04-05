@@ -240,7 +240,7 @@ void CHud :: Init( void )
 		{
 			pList = m_pHudList;
 			m_pHudList = m_pHudList->pNext;
-			free( pList );
+			Q_free( pList );
 		}
 		m_pHudList = NULL;
 	}
@@ -286,7 +286,7 @@ CHud :: ~CHud()
 		{
 			pList = m_pHudList;
 			m_pHudList = m_pHudList->pNext;
-			free( pList );
+			Q_free( pList );
 		}
 		m_pHudList = NULL;
 	}
@@ -303,7 +303,7 @@ int CHud :: GetSpriteIndex( const char *SpriteName )
 	// look through the loaded sprite name list for SpriteName
 	for ( int i = 0; i < m_iSpriteCount; i++ )
 	{
-		if ( strncmp( SpriteName, m_rgszSpriteNames + (i * MAX_SPRITE_NAME_LENGTH), MAX_SPRITE_NAME_LENGTH ) == 0 )
+		if ( Q_strncmp( SpriteName, m_rgszSpriteNames + (i * MAX_SPRITE_NAME_LENGTH), MAX_SPRITE_NAME_LENGTH ) == 0 )
 			return i;
 	}
 
@@ -359,10 +359,11 @@ void CHud :: VidInit( void )
 				if ( p->iRes == m_iRes )
 				{
 					char sz[256];
-					sprintf(sz, "sprites/%s.spr", p->szSprite);
+					Q_sprintf(sz, "sprites/%s.spr", p->szSprite);
+
 					m_rghSprites[index] = SPR_Load(sz);
 					m_rgrcRects[index] = p->rc;
-					strncpy( &m_rgszSpriteNames[index * MAX_SPRITE_NAME_LENGTH], p->szName, MAX_SPRITE_NAME_LENGTH );
+					Q_strncpy( &m_rgszSpriteNames[index * MAX_SPRITE_NAME_LENGTH], p->szName, MAX_SPRITE_NAME_LENGTH );
 
 					index++;
 				}
@@ -382,7 +383,8 @@ void CHud :: VidInit( void )
 			if ( p->iRes == m_iRes )
 			{
 				char sz[256];
-				sprintf( sz, "sprites/%s.spr", p->szSprite );
+				Q_sprintf( sz, "sprites/%s.spr", p->szSprite );
+
 				m_rghSprites[index] = SPR_Load(sz);
 				index++;
 			}
@@ -436,7 +438,7 @@ void COM_FileBase ( const char *in, char *out)
 {
 	int len, start, end;
 
-	len = strlen( in );
+	len = Q_strlen( in );
 	
 	// scan backward for '.'
 	end = len - 1;
@@ -463,7 +465,8 @@ void COM_FileBase ( const char *in, char *out)
 	len = end - start + 1;
 
 	// Copy partial string
-	strncpy( out, &in[start], len );
+	Q_strncpy( out, &in[start], len );
+
 	// Terminate it
 	out[len] = 0;
 }
@@ -483,7 +486,8 @@ int HUD_IsGame( const char *game )
 	if ( gamedir && gamedir[0] )
 	{
 		COM_FileBase( gamedir, gd );
-		if ( !stricmp( gd, game ) )
+
+		if ( !Q_stricmp( gd, game ) )
 			return 1;
 	}
 	return 0;
@@ -563,11 +567,11 @@ void CHud::AddHudElem(CHudBase *phudelem)
 	if (!phudelem)
 		return;
 
-	pdl = (HUDLIST *)malloc(sizeof(HUDLIST));
+	pdl = (HUDLIST *)Q_malloc(sizeof(HUDLIST));
 	if (!pdl)
 		return;
 
-	memset(pdl, 0, sizeof(HUDLIST));
+	Q_memset(pdl, 0, sizeof(HUDLIST));
 	pdl->p = phudelem;
 
 	if (!m_pHudList)

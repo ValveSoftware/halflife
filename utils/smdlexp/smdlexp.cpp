@@ -144,7 +144,7 @@ int SmdExportClass::DoExport(const TCHAR *name,ExpInterface *ei,Interface *i, BO
 	TSTR strPath, strFile, strExt;
 	TCHAR szFile[MAX_PATH];
 	SplitFilename(TSTR(name), &strPath, &strFile, &strExt);
-		sprintf(szFile,  "%s\\%s.%s",  (char*)strPath, (char*)strFile, DEFAULT_EXT);
+		Q_sprintf(szFile,  "%s\\%s.%s",  (char*)strPath, (char*)strFile, DEFAULT_EXT);
 
 	/*
 	if (m_fReferenceFrame)
@@ -152,10 +152,10 @@ int SmdExportClass::DoExport(const TCHAR *name,ExpInterface *ei,Interface *i, BO
 	*/
 
 	FILE *pFile;
-	if ((pFile = fopen(szFile, "w")) == NULL)
+	if ((pFile = Q_fopen(szFile, "w")) == NULL)
 		return FALSE/*failure*/;
 
-	fprintf( pFile, "version %d\n", 1 );
+	Q_fprintf( pFile, "version %d\n", 1 );
 
 	// Get animation metrics
 	m_intervalOfAnimation = piface->GetAnimRange();
@@ -170,7 +170,7 @@ int SmdExportClass::DoExport(const TCHAR *name,ExpInterface *ei,Interface *i, BO
 	// Output nodes
 	if (!DumpBones(pFile, pexpiface))
 	{
-		fclose( pFile );
+		Q_fclose( pFile );
 		return 0;	/*fail*/
 	}
 
@@ -187,11 +187,11 @@ int SmdExportClass::DoExport(const TCHAR *name,ExpInterface *ei,Interface *i, BO
 	{
 		// Tell user that exporting is finished (it can take a while with no feedback)
 		char szExportComplete[300];
-		sprintf(szExportComplete, "Exported %s.", szFile);
+		Q_sprintf(szExportComplete, "Exported %s.", szFile);
 		MessageBox(GetActiveWindow(), szExportComplete, "Status", MB_OK);
 	}
 
-	fclose( pFile );
+	Q_fclose( pFile );
 
 	return 1/*success*/;
 }
@@ -226,9 +226,9 @@ BOOL SmdExportClass::DumpBones(FILE *pFile, ExpInterface *pexpiface)
 	DumpNodesTEP procDumpNodes;
 	procDumpNodes.m_pfile = pFile;
 	procDumpNodes.m_phec = this;
-	fprintf(pFile, "nodes\n" );
+	Q_fprintf(pFile, "nodes\n" );
 	(void) pexpiface->theScene->EnumTree(&procDumpNodes);
-	fprintf(pFile, "end\n" );
+	Q_fprintf(pFile, "end\n" );
 
 	return TRUE;
 }
@@ -244,14 +244,14 @@ BOOL SmdExportClass::DumpRotations(FILE *pFile, ExpInterface *pexpiface)
 
 	TimeValue m_tvTill = (m_fReferenceFrame) ? m_tvStart : m_tvEnd;
 
-	fprintf(pFile, "skeleton\n" );
+	Q_fprintf(pFile, "skeleton\n" );
 	for (TimeValue tv = m_tvStart; tv <= m_tvTill; tv += m_tpf)
 	{
-		fprintf(pFile, "time %d\n", tv / GetTicksPerFrame() );
+		Q_fprintf(pFile, "time %d\n", tv / GetTicksPerFrame() );
 		procDumpFrameRotations.m_tvToDump = tv;
 		(void) pexpiface->theScene->EnumTree(&procDumpFrameRotations);
 	}
-	fprintf(pFile, "end\n" );
+	Q_fprintf(pFile, "end\n" );
 
 	return TRUE;
 }
@@ -263,10 +263,10 @@ BOOL SmdExportClass::DumpModel( FILE *pFile, ExpInterface *pexpiface)
 	DumpModelTEP procDumpModel;
 	procDumpModel.m_pfile	= pFile;
 	procDumpModel.m_phec	= this;
-	fprintf(pFile, "triangles\n" );
+	Q_fprintf(pFile, "triangles\n" );
 	procDumpModel.m_tvToDump = m_tvStart;
 	(void) pexpiface->theScene->EnumTree(&procDumpModel);
-	fprintf(pFile, "end\n" );
+	Q_fprintf(pFile, "end\n" );
 	return TRUE;
 }	
 
@@ -329,7 +329,7 @@ int CollectNodesTEP::callback(INode *node)
 	
 	// Get name, store name in array
 	TSTR strNodeName(pnode->GetName());
-	strcpy(m_phec->m_rgmaxnode[iNode].szNodeName, (char*)strNodeName);
+	Q_strcpy(m_phec->m_rgmaxnode[iNode].szNodeName, (char*)strNodeName);
 
 	// Get Node's time-zero Transformation Matrices
 	m_phec->m_rgmaxnode[iNode].mat3NodeTM		= pnode->GetNodeTM(0/*TimeValue*/);
@@ -375,7 +375,7 @@ int DumpNodesTEP::callback(INode *pnode)
 		iNodeParent = -1;
 		
 	// Dump node description
-	fprintf(m_pfile, "%3d \"%s\" %3d\n", 
+	Q_fprintf(m_pfile, "%3d \"%s\" %3d\n", 
 		iNode, 
 		strNodeName, 
 		iNodeParent );
@@ -430,7 +430,7 @@ int DumpFrameRotationsTEP::callback(INode *pnode)
 	
 	// Print rotations
 	//fprintf(m_pfile, "%3d %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f\n", 
-	fprintf(m_pfile, "%3d %f %f %f %f %f %f\n", 
+	Q_fprintf(m_pfile, "%3d %f %f %f %f %f %f\n", 
 			// Node:%-15s Rotation (x,y,z)\n",
 			iNode, rowTrans.x, rowTrans.y, rowTrans.z, xRot, yRot, zRot);
 
@@ -540,7 +540,7 @@ int DumpModelTEP::callback(INode *pnode)
 	// Shouldn't have gotten this far if it's a helper object
 	if (pobj->SuperClassID() == HELPER_CLASS_ID)
 	{
-		sprintf(st_szDBG, "ERROR--Helper node %s has an attached mesh, and it shouldn't.", (char*)strNodeName);
+		Q_sprintf(st_szDBG, "ERROR--Helper node %s has an attached mesh, and it shouldn't.", (char*)strNodeName);
 		ASSERT_AND_ABORT(FALSE, st_szDBG);
 	}
 
@@ -629,7 +629,7 @@ int DumpModelTEP::callback(INode *pnode)
 			MtlID mtlidFace = pface->getMatID();
 			if (mtlidFace >= pmtlNode->NumSubMtls())
 			{
-				sprintf(st_szDBG, "ERROR--Bogus sub-material index %d in node %s; highest valid index is %d",
+				Q_sprintf(st_szDBG, "ERROR--Bogus sub-material index %d in node %s; highest valid index is %d",
 					mtlidFace, (char*)strNodeName, pmtlNode->NumSubMtls()-1);
 				// ASSERT_AND_ABORT(FALSE, st_szDBG);
 				mtlidFace = 0;
@@ -647,7 +647,7 @@ int DumpModelTEP::callback(INode *pnode)
 			if (!(pmtlFace->ClassID() == Class_ID(DMTL_CLASS_ID, 0)))
 			{
 
-				sprintf(st_szDBG,
+				Q_sprintf(st_szDBG,
 					"ERROR--Sub-material with index %d (used in node %s) isn't a 'default/standard' material [%x].",
 					mtlidFace, (char*)strNodeName, pmtlFace->ClassID());
 				ASSERT_AND_ABORT(FALSE, st_szDBG);
@@ -659,16 +659,16 @@ int DumpModelTEP::callback(INode *pnode)
 			{
 				if (!(ptexmap->ClassID() == Class_ID(BMTEX_CLASS_ID, 0)))
 				{
-					sprintf(st_szDBG,
+					Q_sprintf(st_szDBG,
 						"ERROR--Sub-material with index %d (used in node %s) doesn't have a bitmap as its diffuse texture.",
 						mtlidFace, (char*)strNodeName);
 					ASSERT_AND_ABORT(FALSE, st_szDBG);
 				}
 				BitmapTex *pbmptex = (BitmapTex*)ptexmap;
-				strcpy(szBitmapName, pbmptex->GetMapName());
+				Q_strcpy(szBitmapName, pbmptex->GetMapName());
 				TSTR strPath, strFile;
 				SplitPathFile(TSTR(szBitmapName), &strPath, &strFile);
-				strcpy(szBitmapName,strFile);
+				Q_strcpy(szBitmapName,strFile);
 			}
 		}
 
@@ -745,16 +745,16 @@ int DumpModelTEP::callback(INode *pnode)
 		ASSERT_AND_ABORT( Length( pt3Vertex2Normal ) <= 1.1, "bogus post normal 2" );
 
 		// Finally dump the bitmap name and 3 lines of face info
-		fprintf(m_pfile, "%s\n", szBitmapName);
-		fprintf(m_pfile, "%3d %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f\n",
+		Q_fprintf(m_pfile, "%s\n", szBitmapName);
+		Q_fprintf(m_pfile, "%3d %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f\n",
 				iNodeV0, v0.x, v0.y, v0.z,
 				pt3Vertex0Normal.x, pt3Vertex0Normal.y, pt3Vertex0Normal.z,
 				UVvertex0.x, UVvertex0.y);
-		fprintf(m_pfile, "%3d %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f\n",
+		Q_fprintf(m_pfile, "%3d %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f\n",
 				iNodeV1, v1.x, v1.y, v1.z,
 				pt3Vertex1Normal.x, pt3Vertex1Normal.y, pt3Vertex1Normal.z,
 				UVvertex1.x, UVvertex1.y);
-		fprintf(m_pfile, "%3d %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f\n",
+		Q_fprintf(m_pfile, "%3d %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f\n",
 				iNodeV2, v2.x, v2.y, v2.z,
 				pt3Vertex2Normal.x, pt3Vertex2Normal.y, pt3Vertex2Normal.z,
 				UVvertex2.x, UVvertex2.y);
@@ -919,7 +919,7 @@ void SetIndexOfINode(INode *pnode, int inode)
 	{
 		ASSERT_MBOX(g_inmMac < MAX_NAMEMAP, "NAMEMAP is full");
 		pnm = &g_rgnm[g_inmMac++];
-		strcpy(pnm->szNodeName, (char*)strNodeName);
+		Q_strcpy(pnm->szNodeName, (char*)strNodeName);
 	}
 	pnm->iNode = inode;
 }
@@ -999,7 +999,7 @@ bool SmdExportClass::hasStringPropertyValue
 	TCHAR buffer[80] ;
 	VariantToString( propertyVariant, buffer, 80 );
 
-	if ( strcmp( buffer, propertyValue )==0)
+	if ( Q_strcmp( buffer, propertyValue )==0)
 		return true ;
 	return false ;
 }
@@ -1035,7 +1035,7 @@ const PROPVARIANT* SmdExportClass::getPropertyVariant
 		if ( pPropSpec->ulKind == PRSPEC_PROPID ) continue ;
 		_tcscpy(szBuf, TSTR(pPropSpec->lpwstr));
 
-		if ( strcmp( propertyName, szBuf ) == 0 )
+		if ( Q_strcmp( propertyName, szBuf ) == 0 )
 			return pPropVar ;
 	}
 

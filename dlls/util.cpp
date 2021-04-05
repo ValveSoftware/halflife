@@ -339,9 +339,9 @@ DBG_AssertFunction(
 		return;
 	char szOut[512];
 	if (szMessage != NULL)
-		sprintf(szOut, "ASSERT FAILED:\n %s \n(%s@%d)\n%s", szExpr, szFile, szLine, szMessage);
+		Q_sprintf(szOut, "ASSERT FAILED:\n %s \n(%s@%d)\n%s", szExpr, szFile, szLine, szMessage);
 	else
-		sprintf(szOut, "ASSERT FAILED:\n %s \n(%s@%d)", szExpr, szFile, szLine);
+		Q_sprintf(szOut, "ASSERT FAILED:\n %s \n(%s@%d)", szExpr, szFile, szLine);
 	ALERT(at_console, szOut);
 	}
 #endif	// DEBUG
@@ -810,14 +810,14 @@ void UTIL_HudMessage( CBaseEntity *pEntity, const hudtextparms_t &textparms, con
 		if ( textparms.effect == 2 )
 			WRITE_SHORT( FixedUnsigned16( textparms.fxTime, 1<<8 ) );
 		
-		if ( strlen( pMessage ) < 512 )
+		if ( Q_strlen( pMessage ) < 512 )
 		{
 			WRITE_STRING( pMessage );
 		}
 		else
 		{
 			char tmp[512];
-			strncpy( tmp, pMessage, 511 );
+			Q_strncpy( tmp, pMessage, 511 );
 			tmp[511] = 0;
 			WRITE_STRING( tmp );
 		}
@@ -897,28 +897,28 @@ void UTIL_SayTextAll( const char *pText, CBaseEntity *pEntity )
 char *UTIL_dtos1( int d )
 {
 	static char buf[8];
-	sprintf( buf, "%d", d );
+	Q_sprintf( buf, "%d", d );
 	return buf;
 }
 
 char *UTIL_dtos2( int d )
 {
 	static char buf[8];
-	sprintf( buf, "%d", d );
+	Q_sprintf( buf, "%d", d );
 	return buf;
 }
 
 char *UTIL_dtos3( int d )
 {
 	static char buf[8];
-	sprintf( buf, "%d", d );
+	Q_sprintf( buf, "%d", d );
 	return buf;
 }
 
 char *UTIL_dtos4( int d )
 {
 	static char buf[8];
-	sprintf( buf, "%d", d );
+	Q_sprintf( buf, "%d", d );
 	return buf;
 }
 
@@ -1085,7 +1085,7 @@ char* UTIL_VarArgs( char *format, ... )
 	static char		string[1024];
 	
 	va_start (argptr, format);
-	vsprintf (string, format,argptr);
+	Q_vsprintf (string, format,argptr);
 	va_end (argptr);
 
 	return string;	
@@ -1159,7 +1159,7 @@ void UTIL_BloodStream( const Vector &origin, const Vector &direction, int color,
 		WRITE_COORD( direction.y );
 		WRITE_COORD( direction.z );
 		WRITE_BYTE( color );
-		WRITE_BYTE( min( amount, 255 ) );
+		WRITE_BYTE( Q_min( amount, 255 ) );
 	MESSAGE_END();
 }				
 
@@ -1191,7 +1191,7 @@ void UTIL_BloodDrips( const Vector &origin, const Vector &direction, int color, 
 		WRITE_SHORT( g_sModelIndexBloodSpray );				// initial sprite model
 		WRITE_SHORT( g_sModelIndexBloodDrop );				// droplet sprite models
 		WRITE_BYTE( color );								// color index into host_basepal
-		WRITE_BYTE( min( max( 3, amount / 10 ), 16 ) );		// size
+		WRITE_BYTE( Q_min( Q_max( 3, amount / 10 ), 16 ) );		// size
 	MESSAGE_END();
 }				
 
@@ -1371,7 +1371,7 @@ BOOL UTIL_TeamsMatch( const char *pTeamName1, const char *pTeamName2 )
 	// Both on a team?
 	if ( *pTeamName1 != 0 && *pTeamName2 != 0 )
 	{
-		if ( !stricmp( pTeamName1, pTeamName2 ) )	// Same Team?
+		if ( !Q_stricmp( pTeamName1, pTeamName2 ) )	// Same Team?
 			return TRUE;
 	}
 
@@ -1384,12 +1384,12 @@ void UTIL_StringToVector( float *pVector, const char *pString )
 	char *pstr, *pfront, tempString[128];
 	int	j;
 
-	strcpy( tempString, pString );
+	Q_strcpy( tempString, pString );
 	pstr = pfront = tempString;
 
 	for ( j = 0; j < 3; j++ )			// lifted from pr_edict.c
 	{
-		pVector[j] = atof( pfront );
+		pVector[j] = Q_atof( pfront );
 
 		while ( *pstr && *pstr != ' ' )
 			pstr++;
@@ -1415,12 +1415,12 @@ void UTIL_StringToIntArray( int *pVector, int count, const char *pString )
 	char *pstr, *pfront, tempString[128];
 	int	j;
 
-	strcpy( tempString, pString );
+	Q_strcpy( tempString, pString );
 	pstr = pfront = tempString;
 
 	for ( j = 0; j < count; j++ )			// lifted from pr_edict.c
 	{
-		pVector[j] = atoi( pfront );
+		pVector[j] = Q_atoi( pfront );
 
 		while ( *pstr && *pstr != ' ' )
 			pstr++;
@@ -1601,7 +1601,7 @@ void UTIL_LogPrintf( char *fmt, ... )
 	static char		string[1024];
 	
 	va_start ( argptr, fmt );
-	vsprintf ( string, fmt, argptr );
+	Q_vsprintf ( string, fmt, argptr );
 	va_end   ( argptr );
 
 	// Print to server console
@@ -1828,7 +1828,7 @@ unsigned short CSaveRestoreBuffer :: TokenHash( const char *pszToken )
 		if ( index >= m_pdata->tokenCount )
 			index -= m_pdata->tokenCount;
 
-		if ( !m_pdata->pTokens[index] || strcmp( pszToken, m_pdata->pTokens[index] ) == 0 )
+		if ( !m_pdata->pTokens[index] || Q_strcmp( pszToken, m_pdata->pTokens[index] ) == 0 )
 		{
 			m_pdata->pTokens[index] = (char *)pszToken;
 			return index;
@@ -1892,7 +1892,7 @@ void CSave :: WriteString( const char *pname, const char *pdata )
 	short	token = (short)TokenHash( pdata );
 	WriteShort( pname, &token, 1 );
 #else
-	BufferField( pname, strlen(pdata) + 1, pdata );
+	BufferField( pname, Q_strlen(pdata) + 1, pdata );
 #endif
 }
 
@@ -1913,13 +1913,13 @@ void CSave :: WriteString( const char *pname, const int *stringId, int count )
 
 	size = 0;
 	for ( i = 0; i < count; i++ )
-		size += strlen( STRING( stringId[i] ) ) + 1;
+		size += Q_strlen( STRING( stringId[i] ) ) + 1;
 
 	BufferHeader( pname, size );
 	for ( i = 0; i < count; i++ )
 	{
 		const char *pString = STRING(stringId[i]);
-		BufferData( pString, strlen(pString)+1 );
+		BufferData( pString, Q_strlen(pString)+1 );
 	}
 #endif
 }
@@ -1977,7 +1977,7 @@ void CSave :: WriteFunction( const char *pname, void **data, int count )
 
 	functionName = NAME_FOR_FUNCTION( (uint32)*data );
 	if ( functionName )
-		BufferField( pname, strlen(functionName) + 1, functionName );
+		BufferField( pname, Q_strlen(functionName) + 1, functionName );
 	else
 		ALERT( at_error, "Invalid function pointer in entity!" );
 }
@@ -1992,7 +1992,7 @@ void EntvarsKeyvalue( entvars_t *pev, KeyValueData *pkvd )
 	{
 		pField = &gEntvarsDescription[i];
 
-		if ( !stricmp( pField->fieldName, pkvd->szKeyName ) )
+		if ( !Q_stricmp( pField->fieldName, pkvd->szKeyName ) )
 		{
 			switch( pField->fieldType )
 			{
@@ -2004,11 +2004,11 @@ void EntvarsKeyvalue( entvars_t *pev, KeyValueData *pkvd )
 
 			case FIELD_TIME:
 			case FIELD_FLOAT:
-				(*(float *)((char *)pev + pField->fieldOffset)) = atof( pkvd->szValue );
+				(*(float *)((char *)pev + pField->fieldOffset)) = Q_atof( pkvd->szValue );
 				break;
 
 			case FIELD_INTEGER:
-				(*(int *)((char *)pev + pField->fieldOffset)) = atoi( pkvd->szValue );
+				(*(int *)((char *)pev + pField->fieldOffset)) = Q_atoi( pkvd->szValue );
 				break;
 
 			case FIELD_POSITION_VECTOR:
@@ -2199,7 +2199,7 @@ void CSave :: BufferData( const char *pdata, int size )
 		return;
 	}
 
-	memcpy( m_pdata->pCurrentData, pdata, size );
+	Q_memcpy( m_pdata->pCurrentData, pdata, size );
 	m_pdata->pCurrentData += size;
 	m_pdata->size += size;
 }
@@ -2235,7 +2235,8 @@ int CRestore::ReadField( void *pBaseData, TYPEDESCRIPTION *pFields, int fieldCou
 	{
 		fieldNumber = (i+startField)%fieldCount;
 		pTest = &pFields[ fieldNumber ];
-		if ( !stricmp( pTest->fieldName, pName ) )
+
+		if ( !Q_stricmp( pTest->fieldName, pName ) )
 		{
 			if ( !m_global || !(pTest->flags & FTYPEDESC_GLOBAL) )
 			{
@@ -2267,7 +2268,7 @@ int CRestore::ReadField( void *pBaseData, TYPEDESCRIPTION *pFields, int fieldCou
 							pString++;
 						}
 						pInputData = pString;
-						if ( strlen( (char *)pInputData ) == 0 )
+						if ( Q_strlen( (char *)pInputData ) == 0 )
 							*((int *)pOutputData) = 0;
 						else
 						{
@@ -2353,7 +2354,7 @@ int CRestore::ReadField( void *pBaseData, TYPEDESCRIPTION *pFields, int fieldCou
 						*((int *)pOutputData) = *( int *)pInputData;
 					break;
 					case FIELD_FUNCTION:
-						if ( strlen( (char *)pInputData ) == 0 )
+						if ( Q_strlen( (char *)pInputData ) == 0 )
 							*((int *)pOutputData) = 0;
 						else
 							*((int *)pOutputData) = FUNCTION_FROM_NAME( (char *)pInputData );
@@ -2413,7 +2414,7 @@ int CRestore::ReadFields( const char *pname, void *pBaseData, TYPEDESCRIPTION *p
 	{
 		// Don't clear global fields
 		if ( !m_global || !(pFields[i].flags & FTYPEDESC_GLOBAL) )
-			memset( ((char *)pBaseData + pFields[i].fieldOffset), 0, pFields[i].fieldSize * gSizes[pFields[i].fieldType] );
+			Q_memset( ((char *)pBaseData + pFields[i].fieldOffset), 0, pFields[i].fieldSize * gSizes[pFields[i].fieldType] );
 	}
 
 	for ( i = 0; i < fileCount; i++ )
@@ -2499,7 +2500,7 @@ void CRestore::BufferReadBytes( char *pOutput, int size )
 	}
 
 	if ( pOutput )
-		memcpy( pOutput, m_pdata->pCurrentData, size );
+		Q_memcpy( pOutput, m_pdata->pCurrentData, size );
 	m_pdata->pCurrentData += size;
 	m_pdata->size += size;
 }
@@ -2538,10 +2539,10 @@ int	CRestore::BufferCheckZString( const char *string )
 		return 0;
 
 	int maxLen = m_pdata->bufferSize - m_pdata->size;
-	int len = strlen( string );
+	int len = Q_strlen( string );
 	if ( len <= maxLen )
 	{
-		if ( !strncmp( string, m_pdata->pCurrentData, len ) )
+		if ( !Q_strncmp( string, m_pdata->pCurrentData, len ) )
 			return 1;
 	}
 	return 0;

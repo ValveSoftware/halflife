@@ -59,11 +59,11 @@ char		incrementfile[_MAX_PATH] = "";
 qboolean	incremental = 0;
 float		gamma = 0.5;
 float		indirect_sun = 1.0;
-qboolean	extra = false;
+qboolean	extra = qfalse;
 float		smoothing_threshold = 0; // default: cos(45.0*(Q_PI/180)); 
 // Cosine of smoothing angle(in radians)
 float		coring = 1.0;	// Light threshold to force to blackness(minimizes lightmaps)
-qboolean	texscale = true;
+qboolean	texscale = qtrue;
 
 /*
 ===================================================================
@@ -147,23 +147,23 @@ void ReadLightFile (char *filename)
 	FILE	*f;
 	char	scan[128];
 	short	argCnt;
-	vec_t	intensity;
-	int		i = 1.0, j, file_texlights = 0;
+	//vec_t	intensity;
+	int		i = 1, j, file_texlights = 0;
 
-	f = fopen (filename, "r");
+	f = Q_fopen (filename, "r");
 	if (!f)
 		Error ("ERROR: Couldn't open texlight file %s", filename);
 	else
-		printf("[Reading texlights from '%s']\n", filename);
+		Q_printf("[Reading texlights from '%s']\n", filename);
 
-	while ( fgets(scan, sizeof(scan), f) )
+	while ( Q_fgets(scan, sizeof(scan), f) )
 	{
 		char	szTexlight[256];
 		vec_t	r, g, b, i = 1;
 		if (num_texlights == MAX_TEXLIGHTS)
 			Error ("MAX_TEXLIGHTS");
 
-		argCnt = sscanf (scan, "%s %f %f %f %f",szTexlight, &r, &g, &b, &i );
+		argCnt = Q_sscanf (scan, "%s %f %f %f %f",szTexlight, &r, &g, &b, &i );
 		
 		if( argCnt == 2 )
 		{
@@ -173,49 +173,49 @@ void ReadLightFile (char *filename)
 		else if ( argCnt == 5 )
 		{
 			// With 1+4 args, the R,G,B values are "scaled" by the fourth numeric value i;
-			r *= i / 255.0;
-			g *= i / 255.0;
-			b *= i / 255.0;
+			r *= i / 255.0f;
+			g *= i / 255.0f;
+			b *= i / 255.0f;
 		}
 		else if( argCnt != 4 )
 		{
-			if (strlen( scan ) > 4)
-				printf("ignoring bad texlight '%s' in %s", scan, filename );
+			if (Q_strlen( scan ) > 4)
+				Q_printf("ignoring bad texlight '%s' in %s", scan, filename );
 			continue;
 		}
 
 		for( j=0; j<num_texlights; j++ )
 		{
-			if ( strcmp( texlights[j].name, szTexlight ) == 0 )
+			if ( Q_strcmp( texlights[j].name, szTexlight ) == 0 )
 			{
-				if ( strcmp(texlights[j].filename, filename ) == 0 )
+				if ( Q_strcmp(texlights[j].filename, filename ) == 0 )
 				{
-					printf( "ERROR\a: Duplication of '%s' in file '%s'!\n",
+					Q_printf( "ERROR\a: Duplication of '%s' in file '%s'!\n",
 							texlights[j].name, texlights[j].filename );
 				} 
 				else if ( texlights[j].value[0] != r
 				  || texlights[j].value[1] != g
 				  || texlights[j].value[2] != b )
 				{
-					printf( "Warning: Overriding '%s' from '%s' with '%s'!\n", 
+					Q_printf( "Warning: Overriding '%s' from '%s' with '%s'!\n", 
 							texlights[j].name, texlights[j].filename, filename );
 				}
 				else
 				{
-					printf( "Warning: Redundant '%s' def in '%s' AND '%s'!\n", 
+					Q_printf( "Warning: Redundant '%s' def in '%s' AND '%s'!\n", 
 							texlights[j].name, texlights[j].filename, filename );
 				}
 				break;
 			}
 		}
-		strcpy( texlights[j].name, szTexlight );
+		Q_strcpy( texlights[j].name, szTexlight );
 		texlights[j].value[0] = r;
 		texlights[j].value[1] = g;
 		texlights[j].value[2] = b;
 		texlights[j].filename = filename;
 		file_texlights++;
 
-		num_texlights = max( num_texlights, j+1 );
+		num_texlights = Q_max( num_texlights, j+1 );
 	}		
 	qprintf ("[%i texlights parsed from '%s']\n\n", file_texlights, filename);
 }
@@ -294,9 +294,9 @@ void BaseLightForFace( dface_t *f, vec3_t light, vec3_t reflectivity )
 	miptex_t	*mt;
 	int			ofs;
 
-	long		sum[3];
+	//long		sum[3];
 	long		samples = 0;
-	int			x, y, i;
+	//int			x, y, i;
 
 	//
 	// check for light emited by texture
@@ -336,11 +336,11 @@ qboolean IsSky (dface_t *f)
 	tx = &texinfo[f->texinfo];
 	ofs = ((dmiptexlump_t *)dtexdata)->dataofs[tx->miptex];
 	mt = (miptex_t *) ( (byte *)dtexdata + ofs);
-	if (!strncmp (mt->name, "sky", 3) )
-		return true;
-	if (!strncmp (mt->name, "SKY", 3) )
-		return true;
-	return false;
+	if (!Q_strncmp (mt->name, "sky", 3) )
+		return qtrue;
+	if (!Q_strncmp (mt->name, "SKY", 3) )
+		return qtrue;
+	return qfalse;
 }
 
 /*
@@ -377,10 +377,10 @@ void MakePatchForFace (int fn, winding_t *w)
 			// Compute the texture "scale" in s,t
 			for( i=0; i<2; i++ )
 				{
-				patch->scale[i] = 0.0;
+				patch->scale[i] = 0.0f;
 				for( j=0; j<3; j++ )
 					patch->scale[i] += tx->vecs[i][j] * tx->vecs[i][j];
-				patch->scale[i] = sqrt( patch->scale[i] );
+				patch->scale[i] = (float)Q_sqrt( patch->scale[i] );
 				}
 			}
 		else
@@ -413,7 +413,7 @@ void MakePatchForFace (int fn, winding_t *w)
 				VectorAdd( dvertexes[dedges[-edge].v[0]].point, centroid, centroid );
 			}
 		}
-		VectorScale( centroid, 1.0 / (f->numedges * 2), centroid );
+		VectorScale( centroid, 1.0f / (f->numedges * 2), centroid );
 		VectorCopy( centroid, face_centroids[fn] );  // Save them for generating the patch normals later.
 
 		patch->faceNumber = fn;
@@ -454,12 +454,12 @@ entity_t *EntityForModel (int modnum)
 	char	*s;
 	char	name[16];
 
-	sprintf (name, "*%i", modnum);
+	Q_sprintf (name, "*%i", modnum);
 	// search the entities for one using modnum
 	for (i=0 ; i<num_entities ; i++)
 	{
 		s = ValueForKey (&entities[i], "model");
-		if (!strcmp (s, name))
+		if (!Q_strcmp (s, name))
 			return &entities[i];
 	}
 
@@ -496,11 +496,11 @@ void MakePatches (void)
 		if ( *(s = ValueForKey(ent,"origin")) )
 		{
 			double	v1, v2, v3;
-			if ( sscanf (s, "%lf %lf %lf", &v1, &v2, &v3) == 3 )
+			if ( Q_sscanf (s, "%lf %lf %lf", &v1, &v2, &v3) == 3 )
 			{
-				origin[0] = v1;
-				origin[1] = v2;
-				origin[2] = v3;
+				origin[0] = (vec_t)v1;
+				origin[1] = (vec_t)v2;
+				origin[2] = (vec_t)v3;
 			}
 		}
 
@@ -542,9 +542,9 @@ void	SubdividePatch (patch_t *patch)
 	vec3_t	split;
 	vec_t	dist;
 	vec_t	widest = -1;
-	int		i, j, widest_axis = -1;
+	int		i,/* j,*/ widest_axis = -1;
 	int		subdivide_it = 0;
-	vec_t	v;
+	//vec_t	v;
 	patch_t	*newp;
 
 	w = patch->winding;
@@ -634,7 +634,7 @@ void	SubdividePatch (patch_t *patch)
 				if ( (patch->face_maxs[i] == patch->maxs[i] || patch->face_mins[i] == patch->mins[i] )
 				  && total[i] > minchop )
 				{
-					patch->chop = max( minchop, patch->chop / 2 );
+					patch->chop = Q_max( minchop, patch->chop / 2 );
 					break;
 				}
 
@@ -647,7 +647,7 @@ void	SubdividePatch (patch_t *patch)
 				if ( (newp->face_maxs[i] == newp->maxs[i] || newp->face_mins[i] == newp->mins[i] )
 				  && total[i] > minchop )
 				{
-					newp->chop = max( minchop, newp->chop / 2 );
+					newp->chop = Q_max( minchop, newp->chop / 2 );
 					break;
 				}
 
@@ -774,7 +774,7 @@ void MakeScales (int threadnum)
 		{
 			transfer_t	*t, *t2;
 
-			patch->transfers = calloc (patch->numtransfers, sizeof(transfer_t));
+			patch->transfers = Q_calloc (patch->numtransfers, sizeof(transfer_t));
 
 			if (!patch->transfers)
 				Error ("Memory allocation failure");
@@ -813,17 +813,17 @@ void WriteWorld (char *name)
 	patch_t		*patch;
 	winding_t	*w;
 
-	out = fopen (name, "w");
+	out = Q_fopen (name, "w");
 	if (!out)
 		Error ("Couldn't open %s", name);
 
 	for (j=0, patch=patches ; j<num_patches ; j++, patch++)
 	{
 		w = patch->winding;
-		fprintf (out, "%i\n", w->numpoints);
+		Q_fprintf (out, "%i\n", w->numpoints);
 		for (i=0 ; i<w->numpoints ; i++)
 		{
-			fprintf (out, "%5.2f %5.2f %5.2f %5.3f %5.3f %5.3f\n",
+			Q_fprintf (out, "%5.2f %5.2f %5.2f %5.3f %5.3f %5.3f\n",
 				w->p[i][0],
 				w->p[i][1],
 				w->p[i][2],
@@ -831,10 +831,10 @@ void WriteWorld (char *name)
 				patch->totallight[ 1 ] / 256,
 				patch->totallight[ 2 ] / 256 );
 		}
-		fprintf (out, "\n");
+		Q_fprintf (out, "\n");
 	}
 
-	fclose (out);
+	Q_fclose (out);
 }
 
 /*
@@ -867,7 +867,7 @@ void SwapTransfersTask (int patchnum)
 
 		if (!patch2->numtransfers)
 		{
-			printf ("WARNING: SwapTransfers: unmatched\n");
+			Q_printf ("WARNING: SwapTransfers: unmatched\n");
 			continue;
 		}
 		//
@@ -1000,13 +1000,13 @@ void BounceLight (void)
 
 	for (i=0 ; i<numbounce ; i++)
 	{
-		RunThreadsOn (num_patches, true, GatherLight);
+		RunThreadsOn (num_patches, qtrue, GatherLight);
 		CollectLight( added );
 
 		qprintf ("\tBounce #%i added RGB(%.0f, %.0f, %.0f)\n", i+1, added[0], added[1], added[2] );
 		if ( dumppatches && (i==0 || i == (unsigned)numbounce-1) )
 		{
-			sprintf (name, "bounce%i.txt", i);
+			Q_sprintf (name, "bounce%i.txt", i);
 			WriteWorld (name);
 		}
 	}
@@ -1068,7 +1068,7 @@ writetransfers(char *transferfile, long total_patches)
 		}
 	}
 	else
-		printf("Insufficient disk space(%ld) for 'QRAD save file'[%s]!\n",
+		Q_printf("Insufficient disk space(%ld) for 'QRAD save file'[%s]!\n",
 				spacerequired - getfilesize(transferfile), transferfile );
 
 
@@ -1086,14 +1086,14 @@ readtransfers(char *transferfile, long numpatches)
 {
 	int		handle;
 	long	readpatches = 0, readtransfers = 0, totalbytes = 0;
-	long	start, end;
-	time(&start);
+	time_t	start, end;
+	Q_time(&start);
 	if ( (handle = _open( transferfile, _O_RDONLY | _O_BINARY )) != -1 )
 	{
 		long			filepatches;
 		unsigned long	bytesread;
 
-		printf("%-20s Restoring [%-13s - ", "MakeAllScales:", transferfile );
+		Q_printf("%-20s Restoring [%-13s - ", "MakeAllScales:", transferfile );
 		
 		if ( (bytesread = _read(handle, &filepatches, sizeof(filepatches))) == sizeof(filepatches) )
 		{
@@ -1109,7 +1109,7 @@ readtransfers(char *transferfile, long numpatches)
 					if ( (bytesread = _read(handle, &patch->numtransfers, sizeof(patch->numtransfers)))
 					  == sizeof(patch->numtransfers) )
 					{
-						if ( patch->transfers = calloc(patch->numtransfers, sizeof(patch->transfers[0])) )
+						if ( patch->transfers = Q_calloc(patch->numtransfers, sizeof(patch->transfers[0])) )
 						{
 							totalbytes += bytesread;
 
@@ -1123,7 +1123,7 @@ readtransfers(char *transferfile, long numpatches)
 									}
 								else
 								{
-									printf("\nMissing transfer count!  Save file will now be rebuilt." );
+									Q_printf("\nMissing transfer count!  Save file will now be rebuilt." );
 									break;
 								}
 							}
@@ -1131,28 +1131,28 @@ readtransfers(char *transferfile, long numpatches)
 						}
 						else
 						{
-							printf("\nMemory allocation failure creating transfer lists(%d*%d)!\n",
+							Q_printf("\nMemory allocation failure creating transfer lists(%d*%d)!\n",
 								  patch->numtransfers, sizeof(transfer_t) );
 							break;
 						}
 					}
 					else
 					{
-						printf("\nMissing patch count!  Save file will now be rebuilt." );
+						Q_printf("\nMissing patch count!  Save file will now be rebuilt." );
 						break;
 					}
 				}
 			}
 			else
-				printf("\nIncorrect transfer patch count found!  Save file will now be rebuilt." );
+				Q_printf("\nIncorrect transfer patch count found!  Save file will now be rebuilt." );
 		}
 		_close( handle );
-		time(&end);
-		printf("%10.3fMB] (%d)\n",totalbytes/(1024.0*1024.0), end-start);
+		Q_time(&end);
+		Q_printf("%10.3fMB] (%d)\n",totalbytes/(1024.0*1024.0), end-start);
 	}
 
 	if (readpatches != numpatches )
-		unlink(transferfile);
+		Q_unlink(transferfile);
 	else
 		total_transfer = readtransfers;
 
@@ -1164,7 +1164,7 @@ readtransfers(char *transferfile, long numpatches)
 
 void MakeAllScales (void)
 {
-	strcpy(transferfile, source);
+	Q_strcpy(transferfile, source);
 	StripExtension( transferfile );
 	DefaultExtension( transferfile, ".r2" );
 
@@ -1175,11 +1175,11 @@ void MakeAllScales (void)
 		// determine visibility between patches
 		BuildVisMatrix ();
 
-		RunThreadsOn (num_patches, true, MakeScales);
+		RunThreadsOn (num_patches, qtrue, MakeScales);
 		if ( incremental )
 			writetransfers(transferfile, num_patches);
 		else
-			unlink(transferfile);
+			Q_unlink(transferfile);
 
 		// release visibility matrix
 		FreeVisMatrix ();
@@ -1196,7 +1196,8 @@ RadWorld
 */
 void RadWorld (void)
 {
-	int	i;
+	//int	i;
+	unsigned int i;
 
 	MakeBackplanes ();
 	MakeParents (0, -1);
@@ -1215,7 +1216,7 @@ void RadWorld (void)
 		CreateDirectLights ();
 
 		// build initial facelights
-		RunThreadsOnIndividual (numfaces, true, BuildFacelights);
+		RunThreadsOnIndividual (numfaces, qtrue, BuildFacelights);
 
 		// free up the direct lights now that we have facelights
 		DeleteDirectLights ();
@@ -1228,7 +1229,7 @@ void RadWorld (void)
 		MakeAllScales ();
 
 		// invert the transfers for gather vs scatter
-		RunThreadsOnIndividual (num_patches, true, SwapTransfersTask);
+		RunThreadsOnIndividual (num_patches, qtrue, SwapTransfersTask);
 
 		// spread light around
 		BounceLight ();
@@ -1241,7 +1242,7 @@ void RadWorld (void)
 	// blend bounced light into direct light and save
 	PrecompLightmapOffsets();
 
-	RunThreadsOnIndividual (numfaces, true, FinalLightFace);
+	RunThreadsOnIndividual (numfaces, qtrue, FinalLightFace);
 }
 
 
@@ -1258,232 +1259,232 @@ int main (int argc, char **argv)
 	int		i;
 	double		start, end;
 
-	printf( "qrad.exe v 1.5 (%s)\n", __DATE__ );
-	printf ("----- Radiosity ----\n");
+	Q_printf( "qrad.exe v 1.5 (%s)\n", __DATE__ );
+	Q_printf ("----- Radiosity ----\n");
 
-	verbose = true;  // Originally FALSE
-	smoothing_threshold = cos(45.0*(Q_PI/180)); // Originally zero.
+	verbose = qtrue;  // Originally FALSE
+	smoothing_threshold = (float)Q_cos(45.0*(Q_PI/180)); // Originally zero.
 
 	for (i=1 ; i<argc ; i++)
 	{
-		if (!strcmp(argv[i],"-dump"))
-			dumppatches = true;
-		else if (!strcmp(argv[i],"-bounce"))
+		if (!Q_strcmp(argv[i],"-dump"))
+			dumppatches = qtrue;
+		else if (!Q_strcmp(argv[i],"-bounce"))
 		{
 			if ( ++i < argc )
 			{
-				numbounce = atoi (argv[i]);
+				numbounce = Q_atoi (argv[i]);
 				if ( numbounce < 0 )
 				{
-					fprintf(stderr, "Error: expected non-negative value after '-bounce'\n" );
+					Q_fprintf(stderr, "Error: expected non-negative value after '-bounce'\n" );
 					return 1;
 				}
 			}
 			else
 			{
-				fprintf( stderr, "Error: expected a value after '-bounce'\n" );
+				Q_fprintf( stderr, "Error: expected a value after '-bounce'\n" );
 				return 1;
 			}
 		}
-		else if (!strcmp(argv[i],"-verbose"))
+		else if (!Q_strcmp(argv[i],"-verbose"))
 		{
-			verbose = true;
+			verbose = qtrue;
 		}
-		else if (!strcmp(argv[i],"-terse"))
+		else if (!Q_strcmp(argv[i],"-terse"))
 		{
-			verbose = false;
+			verbose = qfalse;
 		}
-		else if (!strcmp(argv[i],"-threads"))
+		else if (!Q_strcmp(argv[i],"-threads"))
 		{
 			if ( ++i < argc )
 			{
-				numthreads = atoi (argv[i]);
+				numthreads = Q_atoi (argv[i]);
 				if ( numthreads <= 0 )
 				{
-					fprintf(stderr, "Error: expected positive value after '-threads'\n" );
+					Q_fprintf(stderr, "Error: expected positive value after '-threads'\n" );
 					return 1;
 				}
 			}
 			else
 			{
-				fprintf( stderr, "Error: expected a value after '-threads'\n" );
+				Q_fprintf( stderr, "Error: expected a value after '-threads'\n" );
 				return 1;
 			}
 		}
-		else if (!strcmp(argv[i],"-maxchop"))
+		else if (!Q_strcmp(argv[i],"-maxchop"))
 		{
 			if ( ++i < argc )
 			{
-				maxchop = (float)atof (argv[i]);
+				maxchop = (float)Q_atof (argv[i]);
 				if ( maxchop < 2 )
 				{
-					fprintf(stderr, "Error: expected positive value after '-maxchop'\n" );
+					Q_fprintf(stderr, "Error: expected positive value after '-maxchop'\n" );
 					return 1;
 				}
 			}
 			else
 			{
-				fprintf( stderr, "Error: expected a value after '-maxchop'\n" );
+				Q_fprintf( stderr, "Error: expected a value after '-maxchop'\n" );
 				return 1;
 			}
 		}
-		else if (!strcmp(argv[i],"-chop"))
+		else if (!Q_strcmp(argv[i],"-chop"))
 		{
 			if ( ++i < argc )
 			{
-				minchop = (float)atof (argv[i]);
+				minchop = (float)Q_atof (argv[i]);
 				if ( minchop < 1 )
 				{
-					fprintf(stderr, "Error: expected positive value after '-chop'\n" );
+					Q_fprintf(stderr, "Error: expected positive value after '-chop'\n" );
 					return 1;
 				}
 				if ( minchop < 32 )
 				{
-					fprintf(stderr, "WARNING: Chop values below 32 are not recommended.  Use -extra instead.\n");
+					Q_fprintf(stderr, "WARNING: Chop values below 32 are not recommended.  Use -extra instead.\n");
 				}
 			}
 			else
 			{
-				fprintf( stderr, "Error: expected a value after '-chop'\n" );
+				Q_fprintf( stderr, "Error: expected a value after '-chop'\n" );
 				return 1;
 			}
 		}
-		else if (!strcmp(argv[i],"-scale"))
+		else if (!Q_strcmp(argv[i],"-scale"))
 		{
 			if ( ++i < argc )
 			{
-				lightscale = (float)atof (argv[i]);
+				lightscale = (float)Q_atof (argv[i]);
 			}
 			else
 			{
-				fprintf( stderr, "Error: expected a value after '-scale'\n" );
+				Q_fprintf( stderr, "Error: expected a value after '-scale'\n" );
 				return 1;
 			}
 		}
-		else if (!strcmp(argv[i],"-ambient"))
+		else if (!Q_strcmp(argv[i],"-ambient"))
 		{
 			if ( i+3 < argc )
 			{
- 				ambient[0] = (float)atof (argv[++i]) * 128;
- 				ambient[1] = (float)atof (argv[++i]) * 128;
- 				ambient[2] = (float)atof (argv[++i]) * 128;
+ 				ambient[0] = (float)Q_atof (argv[++i]) * 128;
+ 				ambient[1] = (float)Q_atof (argv[++i]) * 128;
+ 				ambient[2] = (float)Q_atof (argv[++i]) * 128;
 			}
 			else
 			{
-				fprintf( stderr, "Error: expected three color values after '-ambient'\n" );
+				Q_fprintf( stderr, "Error: expected three color values after '-ambient'\n" );
 				return 1;
 			}
 		}
-		else if( !strcmp(argv[i], "-proj") )
+		else if( !Q_strcmp(argv[i], "-proj") )
 		{
 			if ( ++i < argc && *argv[i] )
-				strcpy( qproject, argv[i] );
+				Q_strcpy( qproject, argv[i] );
 			else
 			{
-				fprintf(stderr, "Error: expected path name after '-proj'\n" );
+				Q_fprintf(stderr, "Error: expected path name after '-proj'\n" );
 				return 1;
 			}
 		}
-		else if ( !strcmp(argv[i], "-maxlight") )
+		else if ( !Q_strcmp(argv[i], "-maxlight") )
 		{
 			if ( ++i < argc && *argv[i] )
 			{
-				maxlight = (float)atof (argv[i]) * 128;
+				maxlight = (float)Q_atof (argv[i]) * 128;
 				if ( maxlight <= 0 )
 				{
-					fprintf(stderr, "Error: expected positive value after '-maxlight'\n" );
+					Q_fprintf(stderr, "Error: expected positive value after '-maxlight'\n" );
 					return 1;
 				}
 			}
 			else
 			{
-				fprintf( stderr, "Error: expected a value after '-maxlight'\n" );
+				Q_fprintf( stderr, "Error: expected a value after '-maxlight'\n" );
 				return 1;
 			}
 		}
-		else if ( !strcmp(argv[i], "-lights" ) )
+		else if ( !Q_strcmp(argv[i], "-lights" ) )
 		{
 			if ( ++i < argc && *argv[i] )
 			{
-				strcpy( designer_lights, argv[i] );
+				Q_strcpy( designer_lights, argv[i] );
 			}
 			else
 			{
-				fprintf( stderr, "Error: expected a filepath after '-lights'\n" );
+				Q_fprintf( stderr, "Error: expected a filepath after '-lights'\n" );
 				return 1;
 			}
 		}
-		else if ( !strcmp(argv[i], "-inc" ) )
+		else if ( !Q_strcmp(argv[i], "-inc" ) )
 		{
-			incremental = true;
+			incremental = qtrue;
 		} 
-		else if (!strcmp(argv[i],"-gamma"))
+		else if (!Q_strcmp(argv[i],"-gamma"))
 		{
 			if ( ++i < argc )
 			{
-				gamma = (float)atof (argv[i]);
+				gamma = (float)Q_atof (argv[i]);
 			}
 			else
 			{
-				fprintf( stderr, "Error: expected a value after '-gamma'\n" );
+				Q_fprintf( stderr, "Error: expected a value after '-gamma'\n" );
 				return 1;
 			}
 		}
-		else if (!strcmp(argv[i],"-dlight"))
+		else if (!Q_strcmp(argv[i],"-dlight"))
 		{
 			if ( ++i < argc )
 			{
-				dlight_threshold = (float)atof (argv[i]);
+				dlight_threshold = (float)Q_atof (argv[i]);
 			}
 			else
 			{
-				fprintf( stderr, "Error: expected a value after '-dlight'\n" );
+				Q_fprintf( stderr, "Error: expected a value after '-dlight'\n" );
 				return 1;
 			}
 		}
-		else if (!strcmp(argv[i],"-extra"))
+		else if (!Q_strcmp(argv[i],"-extra"))
 		{
-			extra = true;
+			extra = qtrue;
 		}
-		else if (!strcmp(argv[i],"-sky"))
+		else if (!Q_strcmp(argv[i],"-sky"))
 		{
 			if ( ++i < argc )
 			{
-				indirect_sun = (float)atof (argv[i]);
+				indirect_sun = (float)Q_atof (argv[i]);
 			}
 			else
 			{
-				fprintf( stderr, "Error: expected a value after '-gamma'\n" );
+				Q_fprintf( stderr, "Error: expected a value after '-gamma'\n" );
 				return 1;
 			}
 		}
-		else if (!strcmp(argv[i],"-smooth"))
+		else if (!Q_strcmp(argv[i],"-smooth"))
 		{
 			if ( ++i < argc )
 			{
-				smoothing_threshold = (float)cos(atof(argv[i])*(Q_PI/180.0));
+				smoothing_threshold = (float)Q_cos(Q_atof(argv[i])*(Q_PI/180.0));
 			}
 			else
 			{
-				fprintf( stderr, "Error: expected an angle after '-smooth'\n" );
+				Q_fprintf( stderr, "Error: expected an angle after '-smooth'\n" );
 				return 1;
 			}
 		}
-		else if (!strcmp(argv[i],"-coring"))
+		else if (!Q_strcmp(argv[i],"-coring"))
 		{
 			if ( ++i < argc )
 			{
-				coring = (float)atof( argv[i] );
+				coring = (float)Q_atof( argv[i] );
 			}
 			else
 			{
-				fprintf( stderr, "Error: expected a light threshold after '-coring'\n" );
+				Q_fprintf( stderr, "Error: expected a light threshold after '-coring'\n" );
 				return 1;
 			}
 		}
-		else if (!strcmp(argv[i],"-notexscale"))
+		else if (!Q_strcmp(argv[i],"-notexscale"))
 		{
-			texscale = false;
+			texscale = qfalse;
 		}
 		else
 		{
@@ -1501,34 +1502,34 @@ int main (int argc, char **argv)
 
 	start = I_FloatTime ();
 
-	strcpy (source, argv[i]);
+	Q_strcpy (source, argv[i]);
 	StripExtension (source);
 	SetQdirFromPath (source);
 
 	// Set the required global lights filename
-	strcat( strcpy( global_lights, gamedir ), "lights.rad" );
+	Q_strcat( Q_strcpy( global_lights, gamedir ), "lights.rad" );
 	if ( _access( global_lights, 0x04) == -1 ) 
 	{
 		// try looking in qproject
-		strcat( strcpy( global_lights, qproject ), "lights.rad" );
+		Q_strcat( Q_strcpy( global_lights, qproject ), "lights.rad" );
 		if ( _access( global_lights, 0x04) == -1 ) 
 		{
 			// try looking in the directory we were run from
 			GetModuleFileName( NULL, global_lights, sizeof( global_lights ) );
 			ExtractFilePath( global_lights, global_lights );
-			strcat( global_lights, "lights.rad" );
+			Q_strcat( global_lights, "lights.rad" );
 		}
 	}
 
 	// Set the optional level specific lights filename
-	DefaultExtension( strcpy( level_lights, source ), ".rad" );
+	DefaultExtension( Q_strcpy( level_lights, source ), ".rad" );
 	if ( _access( level_lights, 0x04) == -1 ) *level_lights = 0;	
 
 	ReadLightFile(global_lights);							// Required
 	if ( *designer_lights ) ReadLightFile(designer_lights);	// Command-line
 	if ( *level_lights )	ReadLightFile(level_lights);	// Optional & implied
 
-	strcpy(incrementfile, source);
+	Q_strcpy(incrementfile, source);
 	DefaultExtension(incrementfile, ".r0");
 	DefaultExtension(source, ".bsp");
 
@@ -1537,7 +1538,7 @@ int main (int argc, char **argv)
 
 	if (!visdatasize)
 	{
-		printf ("No vis information, direct lighting only.\n");
+		Q_printf ("No vis information, direct lighting only.\n");
 		numbounce = 0;
 		ambient[0] = ambient[1] = ambient[2] = 0.1f;
 	}
@@ -1558,11 +1559,11 @@ int main (int argc, char **argv)
 	}
 	else
 	{
-		unlink(incrementfile);
+		Q_unlink(incrementfile);
 	}
 
 	end = I_FloatTime ();
-	printf ("%5.0f seconds elapsed\n", end-start);
+	Q_printf ("%5.0f seconds elapsed\n", end-start);
 	
 	return 0;
 }

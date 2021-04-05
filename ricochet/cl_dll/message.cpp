@@ -51,8 +51,8 @@ int CHudMessage::VidInit( void )
 
 void CHudMessage::Reset( void )
 {
- 	memset( m_pMessages, 0, sizeof( m_pMessages[0] ) * maxHUDMessages );
-	memset( m_startTime, 0, sizeof( m_startTime[0] ) * maxHUDMessages );
+ 	Q_memset( m_pMessages, 0, sizeof( m_pMessages[0] ) * maxHUDMessages );
+	Q_memset( m_startTime, 0, sizeof( m_startTime[0] ) * maxHUDMessages );
 	
 	m_gameTitleTime = 0;
 	m_pGameTitle = NULL;
@@ -222,7 +222,7 @@ void CHudMessage::MessageScanStart( void )
 			m_parms.fadeBlend = 0;	// Pure source (on)
 		m_parms.charTime = 0;
 
-		if ( m_parms.pMessage->effect == 1 && (rand()%100) < 10 )
+		if ( m_parms.pMessage->effect == 1 && (Q_rand()%100) < 10 )
 			m_parms.charTime = 1;
 		break;
 
@@ -378,7 +378,7 @@ int CHudMessage::Draw( float fTime )
 			
 			// Fade in is per character in scanning messages
 			case 2:
-				endTime = m_startTime[i] + (pMessage->fadein * strlen( pMessage->pMessage )) + pMessage->fadeout + pMessage->holdtime;
+				endTime = m_startTime[i] + (pMessage->fadein * Q_strlen( pMessage->pMessage )) + pMessage->fadeout + pMessage->holdtime;
 				break;
 			}
 

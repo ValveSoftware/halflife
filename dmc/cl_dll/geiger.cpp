@@ -37,7 +37,7 @@ int CHudGeiger::Init(void)
 
 	gHUD.AddHudElem(this);
 
-	srand( (unsigned)time( NULL ) );
+	Q_srand( (unsigned)Q_time( NULL ) );
 
 	return 1;
 };
@@ -159,18 +159,19 @@ int CHudGeiger::Draw (float flTime)
 			i = 2;
 		}
 
-		flvol = (flvol * ((rand() & 127)) / 255) + 0.25; // UTIL_RandomFloat(0.25, 0.5);
+		flvol = (flvol * ((Q_rand() & 127)) / 255) + 0.25; // UTIL_RandomFloat(0.25, 0.5);
 
-		if ((rand() & 127) < pct || (rand() & 127) < pct)
+		if ((Q_rand() & 127) < pct || (Q_rand() & 127) < pct)
 		{
 			//S_StartDynamicSound (-1, 0, rgsfx[rand() % i], r_origin, flvol, 1.0, 0, 100);	
 			char sz[256];
 			
-			int j = rand() & 1;
+			int j = Q_rand() & 1;
 			if (i > 2)
-				j += rand() & 1;
+				j += Q_rand() & 1;
 
-			sprintf(sz, "player/geiger%d.wav", j + 1);
+			Q_sprintf(sz, "player/geiger%d.wav", j + 1);
+
 			PlaySound(sz, flvol);
 			
 		}

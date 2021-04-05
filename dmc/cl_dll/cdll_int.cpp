@@ -163,7 +163,7 @@ int EXPORT Initialize( cl_enginefunc_t *pEnginefuncs, int iVersion )
 	if (iVersion != CLDLL_INTERFACE_VERSION)
 		return 0;
 
-	memcpy(&gEngfuncs, pEnginefuncs, sizeof(cl_enginefunc_t));
+	Q_memcpy(&gEngfuncs, pEnginefuncs, sizeof(cl_enginefunc_t));
 
 	EV_HookEvents();
 	
@@ -188,7 +188,7 @@ int EXPORT Initialize( cl_enginefunc_t *pEnginefuncs, int iVersion )
 	
 	// Get filesystem interface.
 	g_pFileSystemModule = Sys_LoadModule( szFSDir );
-	assert( g_pFileSystemModule );
+	Q_assert( g_pFileSystemModule );
 	if( !g_pFileSystemModule )
 	{
 		return false;
@@ -201,7 +201,7 @@ int EXPORT Initialize( cl_enginefunc_t *pEnginefuncs, int iVersion )
 	}
 
 	g_pFileSystem = ( IFileSystem * )fileSystemFactory( FILESYSTEM_INTERFACE_VERSION, NULL );
-	assert( g_pFileSystem );
+	Q_assert( g_pFileSystem );
 	if( !g_pFileSystem )
 	{
 		return false;

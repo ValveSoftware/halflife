@@ -249,8 +249,8 @@ void ScorePanel::Initialize( void )
 	m_fLastKillTime = 0;
 	m_iPlayerNum = 0;
 	m_iNumTeams = 0;
-	memset( g_PlayerExtraInfo, 0, sizeof g_PlayerExtraInfo );
-	memset( g_TeamInfo, 0, sizeof g_TeamInfo );
+	Q_memset( g_PlayerExtraInfo, 0, sizeof g_PlayerExtraInfo );
+	Q_memset( g_TeamInfo, 0, sizeof g_TeamInfo );
 }
 
 bool HACK_GetPlayerUniqueID( int iPlayer, char playerID[16] )
@@ -271,7 +271,7 @@ void ScorePanel::Update()
 	if (gViewPort->m_szServerName)
 	{
 		char sz[MAX_SERVERNAME_LENGTH + 16];
-		sprintf(sz, "%s", gViewPort->m_szServerName );
+		Q_sprintf(sz, "%s", gViewPort->m_szServerName );
 		m_TitleLabel.setText(sz);
 	}
 
@@ -343,7 +343,7 @@ void ScorePanel::SortTeams()
 		int j;
 		for ( j = 1; j <= m_iNumTeams; j++ )
 		{
-			if ( !stricmp( g_PlayerExtraInfo[i].teamname, g_TeamInfo[j].name ) )
+			if ( !Q_stricmp( g_PlayerExtraInfo[i].teamname, g_TeamInfo[j].name ) )
 				break;
 		}
 		if ( j > m_iNumTeams )  // player is not in a team, skip to the next guy
@@ -440,7 +440,7 @@ void ScorePanel::SortPlayers( int iTeam, char *team )
 			{
 				cl_entity_t *ent = gEngfuncs.GetEntityByIndex( i );
 
-				if ( ent && !(team && stricmp(g_PlayerExtraInfo[i].teamname, team)) )  
+				if ( ent && !(team && Q_stricmp(g_PlayerExtraInfo[i].teamname, team)) )  
 				{
 					extra_player_info_t *pl_info = &g_PlayerExtraInfo[i];
 					if ( pl_info->frags > highest_frags || pl_info->deaths < lowest_deaths )
@@ -507,21 +507,23 @@ void ScorePanel::RebuildTeams()
 			if ( g_TeamInfo[j].name[0] == '\0' )
 				break;
 
-			if ( !stricmp( g_PlayerExtraInfo[i].teamname, g_TeamInfo[j].name ) )
+			if ( !Q_stricmp( g_PlayerExtraInfo[i].teamname, g_TeamInfo[j].name ) )
 				break;
 		}
 
 		if ( j > m_iNumTeams )
 		{ // they aren't in a listed team, so make a new one
 			// search through for an empty team slot
-			for ( int j = 1; j <= m_iNumTeams; j++ )
+			for ( int k = 1; k <= m_iNumTeams; k++ )
 			{
-				if ( g_TeamInfo[j].name[0] == '\0' )
+				if ( g_TeamInfo[k].name[0] == '\0' )
 					break;
 			}
-			m_iNumTeams = max( j, m_iNumTeams );
 
-			strncpy( g_TeamInfo[j].name, g_PlayerExtraInfo[i].teamname, MAX_TEAM_NAME );
+			m_iNumTeams = Q_max( j, m_iNumTeams );
+
+			Q_strncpy( g_TeamInfo[j].name, g_PlayerExtraInfo[i].teamname, MAX_TEAM_NAME );
+
 			g_TeamInfo[j].players = 0;
 		}
 
@@ -532,7 +534,7 @@ void ScorePanel::RebuildTeams()
 	for ( i = 1; i <= m_iNumTeams; i++ )
 	{
 		if ( g_TeamInfo[i].players < 1 )
-			memset( &g_TeamInfo[i], 0, sizeof(team_info_t) );
+			Q_memset( &g_TeamInfo[i], 0, sizeof(team_info_t) );
 	}
 
 	// Update the scoreboard
@@ -705,7 +707,7 @@ void ScorePanel::FillGrid()
 			}
 
 			// Fill out with the correct data
-			strcpy(sz, "");
+			Q_strcpy(sz, "");
 			if ( m_iIsATeam[row] )
 			{
 				char sz2[128];
@@ -715,22 +717,22 @@ void ScorePanel::FillGrid()
 				case COLUMN_NAME:
 					if ( m_iIsATeam[row] == TEAM_UNASSIGNED )
 					{
-						sprintf( sz2, CHudTextMessage::BufferedLocaliseTextString( "#Queue" ) );
+						Q_sprintf( sz2, CHudTextMessage::BufferedLocaliseTextString( "#Queue" ) );
 					}
 					else if ( m_iIsATeam[row] == TEAM_SPECTATORS )
 					{
-						sprintf( sz2, CHudTextMessage::BufferedLocaliseTextString( "#Spectators" ) );
+						Q_sprintf( sz2, CHudTextMessage::BufferedLocaliseTextString( "#Spectators" ) );
 					}
 					else
 					{
-						sprintf( sz2, CHudTextMessage::BufferedLocaliseTextString( team_info->name ) );
+						Q_sprintf( sz2, CHudTextMessage::BufferedLocaliseTextString( team_info->name ) );
 					}
 
 					// Uppercase it
-					for ( i = 0; i < (int)strlen(sz2); i++)
+					for ( i = 0; i < (int)Q_strlen(sz2); i++)
 					{
 						if ( *(sz2 + i) )
-							sz[i] = toupper( *(sz2 + i) );
+							sz[i] = Q_toupper( *(sz2 + i) );
 					}
 					sz[i] = '\0';
 
@@ -748,7 +750,7 @@ void ScorePanel::FillGrid()
 							pszTemp = "#Player_plural";
 						}
 
-						sprintf(sz, "%s (%d %s)", sz, team_info->players, CHudTextMessage::BufferedLocaliseTextString( pszTemp ) );
+						Q_sprintf(sz, "%s (%d %s)", sz, team_info->players, CHudTextMessage::BufferedLocaliseTextString( pszTemp ) );
 					}
 			
 					break;
@@ -758,20 +760,20 @@ void ScorePanel::FillGrid()
 					break;
 				case COLUMN_KILLS: //Wins
 					if ( g_iArenaMode == FALSE )
-						 strcpy ( sz, " " );
+						 Q_strcpy ( sz, " " );
 					else
 					{
 						if ( m_iIsATeam[row] == TEAM_YES )
-							sprintf(sz, "%d",  team_info->deaths );
+							Q_sprintf(sz, "%d",  team_info->deaths );
 					}
 					break;
 				case COLUMN_DEATHS: //Points
 					if ( m_iIsATeam[row] == TEAM_YES )
-						sprintf(sz, "%d",  team_info->frags );
+						Q_sprintf(sz, "%d",  team_info->frags );
 					break;
 				case COLUMN_LATENCY:
 					if ( m_iIsATeam[row] == TEAM_YES )
-						sprintf(sz, "%d", team_info->ping );
+						Q_sprintf(sz, "%d", team_info->ping );
 					break;
 				default:
 					break;
@@ -797,7 +799,7 @@ void ScorePanel::FillGrid()
 						}
 					}
 					*/
-					sprintf(sz, "%s  ", pl_info->name);
+					Q_sprintf(sz, "%s  ", pl_info->name);
 					break;
 				case COLUMN_VOICE:
 					sz[0] = 0;
@@ -807,11 +809,11 @@ void ScorePanel::FillGrid()
 					
 						if ( g_PlayerExtraInfo[ m_iSortedRows[row] ].teamnumber == 0 && g_iArenaMode == TRUE )
 						{
-							sprintf(sz, "%d",  g_PlayerExtraInfo[ m_iSortedRows[row] ].playerclass );
+							Q_sprintf(sz, "%d",  g_PlayerExtraInfo[ m_iSortedRows[row] ].playerclass );
 						}
 						else
 						{
-							strcpy(sz, "");
+							Q_strcpy(sz, "");
 						}
 					
 					break;
@@ -834,13 +836,13 @@ void ScorePanel::FillGrid()
 
 				case COLUMN_KILLS: //Wins
 			        if ( g_iArenaMode == TRUE )
-					     sprintf(sz, "%d",  g_PlayerExtraInfo[ m_iSortedRows[row] ].deaths );
+					     Q_sprintf(sz, "%d",  g_PlayerExtraInfo[ m_iSortedRows[row] ].deaths );
 					break;
 				case COLUMN_DEATHS: //Points
-					sprintf(sz, "%d",  g_PlayerExtraInfo[ m_iSortedRows[row] ].frags );
+					Q_sprintf(sz, "%d",  g_PlayerExtraInfo[ m_iSortedRows[row] ].frags );
 					break;
 				case COLUMN_LATENCY:
-					sprintf(sz, "%d", g_PlayerInfoList[ m_iSortedRows[row] ].ping );
+					Q_sprintf(sz, "%d", g_PlayerInfoList[ m_iSortedRows[row] ].ping );
 					break;
 				default:
 					break;
@@ -920,10 +922,10 @@ void ScorePanel::mousePressed(MouseCode code, Panel* panel)
 					// remove mute
 					GetClientVoiceMgr()->SetPlayerBlockedState(iPlayer, false);
 
-					sprintf( string1, CHudTextMessage::BufferedLocaliseTextString( "#Unmuted" ), pl_info->name );
-					sprintf( string, "%c** %s\n", HUD_PRINTTALK, string1 );
+					Q_sprintf( string1, CHudTextMessage::BufferedLocaliseTextString( "#Unmuted" ), pl_info->name );
+					Q_sprintf( string, "%c** %s\n", HUD_PRINTTALK, string1 );
 
-					gHUD.m_TextMessage.MsgFunc_TextMsg(NULL, strlen(string)+1, string );
+					gHUD.m_TextMessage.MsgFunc_TextMsg(NULL, Q_strlen(string)+1, string );
 				}
 				else
 				{
@@ -933,11 +935,11 @@ void ScorePanel::mousePressed(MouseCode code, Panel* panel)
 					// mute the player
 					GetClientVoiceMgr()->SetPlayerBlockedState(iPlayer, true);
 
-					sprintf( string1, CHudTextMessage::BufferedLocaliseTextString( "#Muted" ), pl_info->name );
-					sprintf( string2, CHudTextMessage::BufferedLocaliseTextString( "#No_longer_hear_that_player" ) );
-					sprintf( string, "%c** %s %s\n", HUD_PRINTTALK, string1, string2 );
+					Q_sprintf( string1, CHudTextMessage::BufferedLocaliseTextString( "#Muted" ), pl_info->name );
+					Q_sprintf( string2, CHudTextMessage::BufferedLocaliseTextString( "#No_longer_hear_that_player" ) );
+					Q_sprintf( string, "%c** %s %s\n", HUD_PRINTTALK, string1, string2 );
 
-					gHUD.m_TextMessage.MsgFunc_TextMsg(NULL, strlen(string)+1, string );
+					gHUD.m_TextMessage.MsgFunc_TextMsg(NULL, Q_strlen(string)+1, string );
 				}
 			}
 		}

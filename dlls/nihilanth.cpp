@@ -309,12 +309,12 @@ void CNihilanth :: Spawn( void )
 	m_iLevel = 1; 
 	m_iTeleport = 1;
 
-	if (m_szRechargerTarget[0] == '\0')	strcpy( m_szRechargerTarget, "n_recharger" );
-	if (m_szDrawUse[0] == '\0')			strcpy( m_szDrawUse, "n_draw" );
-	if (m_szTeleportUse[0] == '\0')		strcpy( m_szTeleportUse, "n_leaving" );
-	if (m_szTeleportTouch[0] == '\0')	strcpy( m_szTeleportTouch, "n_teleport" );
-	if (m_szDeadUse[0] == '\0')			strcpy( m_szDeadUse, "n_dead" );
-	if (m_szDeadTouch[0] == '\0')		strcpy( m_szDeadTouch, "n_ending" );
+	if (m_szRechargerTarget[0] == '\0')	Q_strcpy( m_szRechargerTarget, "n_recharger" );
+	if (m_szDrawUse[0] == '\0')			Q_strcpy( m_szDrawUse, "n_draw" );
+	if (m_szTeleportUse[0] == '\0')		Q_strcpy( m_szTeleportUse, "n_leaving" );
+	if (m_szTeleportTouch[0] == '\0')	Q_strcpy( m_szTeleportTouch, "n_teleport" );
+	if (m_szDeadUse[0] == '\0')			Q_strcpy( m_szDeadUse, "n_dead" );
+	if (m_szDeadTouch[0] == '\0')		Q_strcpy( m_szDeadTouch, "n_ending" );
 
 	// near death
 	/*
@@ -439,7 +439,7 @@ void CNihilanth :: DyingThink( void )
 	{
 		Flight( );
 
-		if (fabs( pev->origin.z - m_flMaxZ ) < 16)
+		if (Q_fabs( pev->origin.z - m_flMaxZ ) < 16)
 		{
 			pev->velocity = Vector( 0, 0, 0 );
 			FireTargets( m_szDeadUse, this, this, USE_ON, 1.0 );
@@ -462,7 +462,7 @@ void CNihilanth :: DyingThink( void )
 	{
 		if (m_pBall->pev->renderamt > 0)
 		{
-			m_pBall->pev->renderamt = max( 0, m_pBall->pev->renderamt - 2);
+			m_pBall->pev->renderamt = Q_max( 0, m_pBall->pev->renderamt - 2);
 		}
 		else
 		{
@@ -483,7 +483,7 @@ void CNihilanth :: DyingThink( void )
 	switch( RANDOM_LONG( 1, 4 ))
 	{
 	case 1: // head
-		vecDir.z = fabs( vecDir.z ) * 0.5;
+		vecDir.z = Q_fabs( vecDir.z ) * 0.5;
 		vecDir = vecDir + 2 * gpGlobals->v_up;
 		break;
 	case 2: // eyes
@@ -719,7 +719,7 @@ void CNihilanth :: NextActivity( )
 		CBaseEntity *pRecharger = NULL;
 		float flDist = 8192;
 
-		sprintf(szName, "%s%d", m_szRechargerTarget, m_iLevel );
+		Q_sprintf(szName, "%s%d", m_szRechargerTarget, m_iLevel );
 
 		while ((pEnt = UTIL_FindEntityByTargetname( pEnt, szName )) != NULL)
 		{
@@ -763,7 +763,7 @@ void CNihilanth :: NextActivity( )
 			{
 				char szText[64];
 
-				sprintf( szText, "%s%d", m_szDrawUse, m_iLevel );
+				Q_sprintf( szText, "%s%d", m_szDrawUse, m_iLevel );
 				FireTargets( szText, this, this, USE_ON, 1.0 );
 
 				ALERT( at_console, "fireing %s\n", szText );
@@ -811,10 +811,10 @@ void CNihilanth :: NextActivity( )
 				{
 					char szText[64];
 
-					sprintf( szText, "%s%d", m_szTeleportTouch, m_iTeleport );
+					Q_sprintf( szText, "%s%d", m_szTeleportTouch, m_iTeleport );
 					CBaseEntity *pTouch = UTIL_FindEntityByTargetname( NULL, szText );
 
-					sprintf( szText, "%s%d", m_szTeleportUse, m_iTeleport );
+					Q_sprintf( szText, "%s%d", m_szTeleportUse, m_iTeleport );
 					CBaseEntity *pTrigger = UTIL_FindEntityByTargetname( NULL, szText );
 
 					if (pTrigger != NULL || pTouch != NULL)
@@ -884,7 +884,7 @@ void CNihilanth :: HuntThink( void )
 		}
 		else
 		{
-			m_flAdj = min( m_flAdj + 10, 1000 );
+			m_flAdj = Q_min( m_flAdj + 10, 1000 );
 		}
 	}
 
@@ -944,9 +944,9 @@ void CNihilanth :: Flight( void )
 	float flDist = DotProduct( m_posDesired - vecEst, gpGlobals->v_forward );
 
 	// sideways drag
-	m_velocity.x = m_velocity.x * (1.0 - fabs( gpGlobals->v_right.x ) * 0.05);
-	m_velocity.y = m_velocity.y * (1.0 - fabs( gpGlobals->v_right.y ) * 0.05);
-	m_velocity.z = m_velocity.z * (1.0 - fabs( gpGlobals->v_right.z ) * 0.05);
+	m_velocity.x = m_velocity.x * (1.0 - Q_fabs( gpGlobals->v_right.x ) * 0.05);
+	m_velocity.y = m_velocity.y * (1.0 - Q_fabs( gpGlobals->v_right.y ) * 0.05);
+	m_velocity.z = m_velocity.z * (1.0 - Q_fabs( gpGlobals->v_right.z ) * 0.05);
 
 	// general drag
 	m_velocity = m_velocity * 0.995;
@@ -1094,10 +1094,10 @@ void CNihilanth :: HandleAnimEvent( MonsterEvent_t *pEvent )
 		{
 			char szText[32];
 
-			sprintf( szText, "%s%d", m_szTeleportTouch, m_iTeleport );
+			Q_sprintf( szText, "%s%d", m_szTeleportTouch, m_iTeleport );
 			CBaseEntity *pTouch = UTIL_FindEntityByTargetname( NULL, szText );
 
-			sprintf( szText, "%s%d", m_szTeleportUse, m_iTeleport );
+			Q_sprintf( szText, "%s%d", m_szTeleportUse, m_iTeleport );
 			CBaseEntity *pTrigger = UTIL_FindEntityByTargetname( NULL, szText );
 
 			if (pTrigger != NULL || pTouch != NULL)

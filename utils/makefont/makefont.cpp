@@ -45,14 +45,14 @@ Allocates and zeroes memory
 void *zeromalloc( size_t size )
 {
 	unsigned char *pbuffer;
-	pbuffer = ( unsigned char * )malloc( size );
+	pbuffer = ( unsigned char * )Q_malloc( size );
 	if ( !pbuffer )
 	{
-		printf( "Failed on allocation of %i bytes", size );
-		exit( -1 );
+		Q_printf( "Failed on allocation of %i bytes", size );
+		Q_exit( -1 );
 	}
 
-	memset( pbuffer, 0, size );
+	Q_memset( pbuffer, 0, size );
 	return ( void * )pbuffer;
 }
 
@@ -172,7 +172,7 @@ qfont_t *CreateConsoleFont( char *pszFont, int nPointSize, BOOL bItalic, BOOL bU
 			c = (char)( startchar + j * w + i );
 
 			// Only draw printable characters, of course
-			if ( isprint( c ) && c <= 127 )
+			if ( Q_isprint( c ) && c <= 127 )
 			{
 				// Draw it.
 				rcChar.left		= x + 1;
@@ -186,7 +186,7 @@ qfont_t *CreateConsoleFont( char *pszFont, int nPointSize, BOOL bItalic, BOOL bU
 	}
 
 	// Now turn the qfont into raw format
-	memset( &tempbmi, 0, sizeof( BITMAPINFO ) );
+	Q_memset( &tempbmi, 0, sizeof( BITMAPINFO ) );
 	pbmheader = ( BITMAPINFOHEADER * )&tempbmi;
 
 	pbmheader->biSize	= sizeof( BITMAPINFOHEADER );
@@ -202,7 +202,7 @@ qfont_t *CreateConsoleFont( char *pszFont, int nPointSize, BOOL bItalic, BOOL bU
 	// Allocate space for all bits
 	pbmi = ( BITMAPINFO * )zeromalloc( sizeof ( BITMAPINFOHEADER ) + 2 * sizeof( RGBQUAD ) + pbmheader->biSizeImage );
 
-	memcpy( pbmi, &tempbmi, sizeof( BITMAPINFO ) );
+	Q_memcpy( pbmi, &tempbmi, sizeof( BITMAPINFO ) );
 
 	bits = ( unsigned char * )pbmi + sizeof( BITMAPINFOHEADER ) + 2 * sizeof( RGBQUAD ); 
 
@@ -221,7 +221,7 @@ qfont_t *CreateConsoleFont( char *pszFont, int nPointSize, BOOL bItalic, BOOL bU
 		pCur = pqdata;
 		
 		// Set everything to index 255 ( 0xff ) == transparent
-		memset( pCur, 0xFF, w * charwidth * pqf->height );
+		Q_memset( pCur, 0xFF, w * charwidth * pqf->height );
 
 		for ( j = 0; j < h; j++ )
 		{
@@ -365,7 +365,7 @@ qfont_t *CreateConsoleFont( char *pszFont, int nPointSize, BOOL bItalic, BOOL bU
 	}
 
 	// Free memory bits
-	free ( pbmi );
+	Q_free ( pbmi );
 
 	SelectObject( hmemDC, oldfnt );
 	DeleteObject( fnt );
@@ -398,44 +398,44 @@ int main(int argc, char* argv[])
 
 	qfont_t *fonts[ 3 ];
 
-	strcpy( fontname, DEFAULT_FONT );
+	Q_strcpy( fontname, DEFAULT_FONT );
 
-	printf("makefont.exe Version 1.0 by valve (%s)\n", __DATE__ );
+	Q_printf("makefont.exe Version 1.0 by valve (%s)\n", __DATE__ );
 	
-	printf ("----- Creating Console Font ----\n");
+	Q_printf ("----- Creating Console Font ----\n");
 
 	for (i=1 ; i<argc ; i++)
 	{
-		if (!strcmp(argv[i],"-font"))
+		if (!Q_strcmp(argv[i],"-font"))
 		{
-			strcpy( fontname, argv[i+1] );
+			Q_strcpy( fontname, argv[i+1] );
 			i++;
 		}
-		else if (!strcmp(argv[i],"-pointsizes"))
+		else if (!Q_strcmp(argv[i],"-pointsizes"))
 		{
 			if ( i + 3 >= argc )
 			{
 				Error( "Makefont:  Insufficient point sizes specified\n" );
 			}
-			pointsize[0] = atoi( argv[i+1] );
-			pointsize[1] = atoi( argv[i+2] );
-			pointsize[2] = atoi( argv[i+3] );
+			pointsize[0] = Q_atoi( argv[i+1] );
+			pointsize[1] = Q_atoi( argv[i+2] );
+			pointsize[2] = Q_atoi( argv[i+3] );
 			i += 3;
 		}
-		else if (!strcmp(argv[i],"-italic"))
+		else if (!Q_strcmp(argv[i],"-italic"))
 		{
 			bItalic = TRUE;
-			printf ( "italic set\n");
+			Q_printf ( "italic set\n");
 		}
-		else if (!strcmp(argv[i],"-bold"))
+		else if (!Q_strcmp(argv[i],"-bold"))
 		{
 			bBold = TRUE;
-			printf ( "bold set\n");
+			Q_printf ( "bold set\n");
 		}
-		else if (!strcmp(argv[i],"-underline"))
+		else if (!Q_strcmp(argv[i],"-underline"))
 		{
 			bUnderline = TRUE;
-			printf ( "underline set\n");
+			Q_printf ( "underline set\n");
 		}
 		else if ( argv[i][0] == '-' )
 		{
@@ -450,7 +450,7 @@ int main(int argc, char* argv[])
 		Error ("usage: makefont [-font \"fontname\"] [-italic] [-underline] [-bold] [-pointsizes sm med lg] outfile");
 	}
 
-	printf( "Creating %i, %i, and %i point %s fonts\n", pointsize[0], pointsize[1], pointsize[2], fontname );
+	Q_printf( "Creating %i, %i, and %i point %s fonts\n", pointsize[0], pointsize[1], pointsize[2], fontname );
 
 	start = timeGetTime();
 
@@ -461,7 +461,7 @@ int main(int argc, char* argv[])
 	}
 
 	// Create wad file
-	strcpy (destfile, argv[argc - 1]);
+	Q_strcpy (destfile, argv[argc - 1]);
 	StripExtension (destfile);
 	DefaultExtension (destfile, ".wad");
 
@@ -470,7 +470,7 @@ int main(int argc, char* argv[])
 	// Add fonts as lumps
 	for ( i = 0; i < 3; i++ )
 	{
-		sprintf( sz, "font%i", i );
+		Q_sprintf( sz, "font%i", i );
 		AddLump( sz, fonts[ i ], outsize[ i ], TYP_LUMPY + FONT_TAG, false );
 	}
 
@@ -481,12 +481,12 @@ int main(int argc, char* argv[])
 	// Clean up memory
 	for ( i = 0 ; i < 3; i++ )
 	{
-		free( fonts[ i ] );
+		Q_free( fonts[ i ] );
 	}
 
 	end = timeGetTime ();
 
-	printf ( "%5.5f seconds elapsed\n", (float)( end - start )/1000.0 );
+	Q_printf ( "%5.5f seconds elapsed\n", (float)( end - start )/1000.0 );
 	
 	// Display for a second since it might not be running from command prompt
 	Sleep( 1000 );

@@ -11,6 +11,8 @@
 
 #include "bsp5.h"
 
+extern int GetEdge (vec3_t, vec3_t, face_t *);
+
 //===========================================================================
 
 /*
@@ -28,8 +30,8 @@ int WriteClipNodes_r (node_t *node)
 	if (node->planenum == -1)
 	{
 		num = node->contents;
-		free (node->markfaces);
-		free (node);
+		Q_free (node->markfaces);
+		Q_free (node);
 		return num;
 	}
 	
@@ -45,7 +47,7 @@ int WriteClipNodes_r (node_t *node)
 	for (i=0 ; i<2 ; i++)
 		cn->children[i] = WriteClipNodes_r(node->children[i]);
 	
-	free (node);
+	Q_free (node);
 	return c;
 }
 
@@ -83,8 +85,9 @@ void WriteDrawLeaf (node_t *node)
 //
 // write bounding box info
 //	
-	VectorCopy (node->mins, leaf_p->mins);
-	VectorCopy (node->maxs, leaf_p->maxs);
+
+	VectorCopyT (node->mins, leaf_p->mins, short);
+	VectorCopyT (node->maxs, leaf_p->maxs, short);
 	
 	leaf_p->visofs = -1;	// no vis info yet
 	
@@ -106,7 +109,7 @@ void WriteDrawLeaf (node_t *node)
 			f=f->original;		// grab tjunction split faces
 		} while (f);
 	}
-	free (node->markfaces);
+	Q_free (node->markfaces);
 	
 	leaf_p->nummarksurfaces = nummarksurfaces - leaf_p->firstmarksurface;
 }
@@ -153,7 +156,7 @@ void WriteDrawNodes_r (node_t *node)
 {
 	dnode_t	*n;
 	int		i;
-	face_t	*f, *next;
+	face_t	*f/*, *next*/;
 
 // emit a node	
 	if (numnodes == MAX_MAP_NODES)
@@ -161,8 +164,8 @@ void WriteDrawNodes_r (node_t *node)
 	n = &dnodes[numnodes];
 	numnodes++;
 
-	VectorCopy (node->mins, n->mins);
-	VectorCopy (node->maxs, n->maxs);
+	VectorCopyT (node->mins, n->mins, short);
+	VectorCopyT (node->maxs, n->maxs, short);
 
 	if (node->planenum & 1)
 		Error ("WriteDrawNodes_r: odd planenum");
@@ -220,7 +223,7 @@ void FreeDrawNodes_r (node_t *node)
 		FreeFace (f);
 	}
 
-	free (node);
+	Q_free (node);
 }
 
 /*
@@ -278,7 +281,7 @@ FinishBSPFile
 */
 void FinishBSPFile (void)
 {
-	int		i;
+	//int		i;
 
 	qprintf ("--- FinishBSPFile ---\n");
 

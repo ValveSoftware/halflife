@@ -595,9 +595,9 @@ void CGib :: BounceGibTouch ( CBaseEntity *pOther )
 		if ( m_material != matNone && RANDOM_LONG(0,2) == 0 )
 		{
 			float volume;
-			float zvel = fabs(pev->velocity.z);
+			float zvel = Q_fabs(pev->velocity.z);
 		
-			volume = 0.8 * min(1.0, ((float)zvel) / 450.0);
+			volume = 0.8 * Q_min(1.0, ((float)zvel) / 450.0);
 
 			CBreakable::MaterialSoundRandom( edict(), (Materials)m_material, volume );
 		}

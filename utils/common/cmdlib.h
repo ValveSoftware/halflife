@@ -13,6 +13,8 @@
 #ifndef __CMDLIB__
 #define __CMDLIB__
 
+#include "../../public/vstdlib/warnings.h"
+
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -20,6 +22,8 @@
 #include <ctype.h>
 #include <time.h>
 #include <stdarg.h>
+
+#include "../../public/vstdlib/vstdlib.h"
 
 #ifdef __cplusplus
 extern "C"
@@ -29,13 +33,14 @@ extern "C"
 #ifndef __CMDUTIL__
 #define __CMDUTIL__
 #ifndef _NOENUMQBOOL
-typedef enum {false, true} qboolean;
+//typedef enum {false, true} qboolean;
+typedef enum {qfalse, qtrue} qboolean;
 #else
 typedef int qboolean;
-#undef true
-#undef false
-#define true 1
-#define false 0
+//#undef true
+//#undef false
+#define qtrue 1
+#define qfalse 0
 #endif
 
 typedef unsigned char byte;
@@ -50,7 +55,7 @@ extern int myargc;
 extern char **myargv;
 
 void COM_FixSlashes( char *pname );
-char *strupr (char *in);
+//char *strupr (char *in);
 char *strlower (char *in);
 int Q_strncasecmp (char *s1, char *s2, int n);
 int Q_strcasecmp (char *s1, char *s2);

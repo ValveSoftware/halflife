@@ -2452,7 +2452,7 @@ void CDeadHGrunt::KeyValue( KeyValueData *pkvd )
 {
 	if (FStrEq(pkvd->szKeyName, "pose"))
 	{
-		m_iPose = atoi(pkvd->szValue);
+		m_iPose = Q_atoi(pkvd->szValue);
 		pkvd->fHandled = TRUE;
 	}
 	else 

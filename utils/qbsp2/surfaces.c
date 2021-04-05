@@ -14,6 +14,8 @@
 int TexelDelta( face_t *f, dplane_t *plane );
 int TexelSize( face_t *f );
 
+extern int FaceSide (face_t *, dplane_t *);
+extern void SplitFaceTmp( face_t *, dplane_t *, face_t **, face_t ** );
 
 surface_t	newcopy_t;
 
@@ -64,9 +66,9 @@ void SubdivideFace (face_t *f, face_t **prevptr)
 			{
 				v = DotProduct (f->pts[i], tex->vecs[axis]);
 				if (v < mins)
-					mins = v;
+					mins = (float)v;
 				if (v > maxs)
-					maxs = v;
+					maxs = (float)v;
 			}
 		
 			if (maxs - mins <= subdivide_size)
@@ -78,14 +80,14 @@ void SubdivideFace (face_t *f, face_t **prevptr)
 			VectorCopy (tex->vecs[axis], temp);
 			v = VectorNormalize (temp);	
 
-			VectorCopy (temp, plane.normal);
-			plane.dist = (mins + subdivide_size - 16)/v;
+			VectorCopyT (temp, plane.normal, float);
+			plane.dist = (float)((mins + subdivide_size - 16)/v);
 			next = f->next;
 			SplitFace (f, &plane, &front, &back);
 			if (!front || !back)
 			{
 				//PrintMemory();
-				printf("SubdivideFace: didn't split the %d-sided polygon @(%.0f,%.0f,%.0f)", 
+				Q_printf("SubdivideFace: didn't split the %d-sided polygon @(%.0f,%.0f,%.0f)", 
 						f->numpoints, f->pts[0][0], f->pts[0][1], f->pts[0][2] );
 				break;
 			}
@@ -133,15 +135,15 @@ int TexelSize( face_t *f )
 	float		mins, maxs;
 	vec_t		v;
 	int			i, smax, tmax;
-	dplane_t	plane;
-	face_t		*front, *back, *next;
+	//dplane_t	plane;
+	//face_t		*front, *back, *next;
 	texinfo_t	*tex;
-	vec3_t		temp;
+	//vec3_t		temp;
 
 // special (non-surface cached) faces don't need subdivision
 	if ( f->texturenum > numtexinfo )
 	{
-		printf("Error on face\n" );
+		Q_printf("Error on face\n" );
 		return 0;
 	}
 	tex = &texinfo[f->texturenum];
@@ -157,11 +159,11 @@ int TexelSize( face_t *f )
 	{
 		v = DotProduct (f->pts[i], tex->vecs[0]);
 		if (v < mins)
-			mins = v;
+			mins = (float)v;
 		if (v > maxs)
-			maxs = v;
+			maxs = (float)v;
 	}
-	smax = maxs - mins;
+	smax = (int)(maxs - mins);
 
 	mins = 999999;
 	maxs = -999999;
@@ -170,11 +172,11 @@ int TexelSize( face_t *f )
 	{
 		v = DotProduct (f->pts[i], tex->vecs[1]);
 		if (v < mins)
-			mins = v;
+			mins = (float)v;
 		if (v > maxs)
-			maxs = v;
+			maxs = (float)v;
 	}
-	tmax = maxs - mins;
+	tmax = (int)(maxs - mins);
 
 	return smax * tmax;
 }
@@ -220,7 +222,7 @@ static	void InitHash (void)
 	int		newsize[2];
 	int		i;
 	
-	memset (hashverts, 0, sizeof(hashverts));
+	Q_memset (hashverts, 0, sizeof(hashverts));
 
 	for (i=0 ; i<3 ; i++)
 	{
@@ -230,10 +232,10 @@ static	void InitHash (void)
 
 	volume = size[0]*size[1];
 	
-	scale = sqrt(volume / NUM_HASH);
+	scale = Q_sqrt(volume / NUM_HASH);
 
-	newsize[0] = size[0] / scale;
-	newsize[1] = size[1] / scale;
+	newsize[0] = (int)(size[0] / scale);
+	newsize[1] = (int)(size[1] / scale);
 
 	hash_scale[0] = newsize[0] / size[0];
 	hash_scale[1] = newsize[1] / size[1];
@@ -246,8 +248,8 @@ static	unsigned HashVec (vec3_t vec)
 {
 	unsigned	h;
 	
-	h =	hash_scale[0] * (vec[0] - hash_min[0]) * hash_scale[2]
-		+ hash_scale[1] * (vec[1] - hash_min[1]);
+	h =	(unsigned)(hash_scale[0] * (vec[0] - hash_min[0]) * hash_scale[2]
+		+ hash_scale[1] * (vec[1] - hash_min[1]));
 	if ( h >= NUM_HASH)
 		return NUM_HASH - 1;
 	return h;
@@ -268,7 +270,7 @@ int	GetVertex (vec3_t in, int planenum)
 	
 	for (i=0 ; i<3 ; i++)
 	{
-		if ( fabs(in[i] - Q_rint(in[i])) < 0.001)
+		if ( Q_fabs(in[i] - Q_rint(in[i])) < 0.001)
 			vert[i] = Q_rint(in[i]);
 		else
 			vert[i] = in[i];
@@ -278,9 +280,9 @@ int	GetVertex (vec3_t in, int planenum)
 	
 	for (hv=hashverts[h] ; hv ; hv=hv->next)
 	{
-		if ( fabs(hv->point[0]-vert[0])<POINT_EPSILON
-		&& fabs(hv->point[1]-vert[1])<POINT_EPSILON
-		&& fabs(hv->point[2]-vert[2])<POINT_EPSILON )
+		if ( Q_fabs(hv->point[0]-vert[0])<POINT_EPSILON
+		&& Q_fabs(hv->point[1]-vert[1])<POINT_EPSILON
+		&& Q_fabs(hv->point[2]-vert[2])<POINT_EPSILON )
 		{
 			hv->numedges++;
 			if (hv->numplanes == 3)
@@ -313,9 +315,9 @@ int	GetVertex (vec3_t in, int planenum)
 	if (numvertexes == MAX_MAP_VERTS)
 		Error ("numvertexes == MAX_MAP_VERTS");
 
-	dvertexes[numvertexes].point[0] = vert[0];
-	dvertexes[numvertexes].point[1] = vert[1];
-	dvertexes[numvertexes].point[2] = vert[2];
+	dvertexes[numvertexes].point[0] = (float)vert[0];
+	dvertexes[numvertexes].point[1] = (float)vert[1];
+	dvertexes[numvertexes].point[2] = (float)vert[2];
 	numvertexes++;
 
 	return hv->num;

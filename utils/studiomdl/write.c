@@ -64,7 +64,7 @@ void WriteBoneInfo( )
 
 	for (i = 0; i < numbones; i++) 
 	{
-		strcpy( pbone[i].name, bonetable[i].name );
+		Q_strcpy( pbone[i].name, bonetable[i].name );
 		pbone[i].parent			= bonetable[i].parent;
 		pbone[i].flags			= bonetable[i].flags;
 		pbone[i].value[0]		= bonetable[i].pos[0];
@@ -113,8 +113,8 @@ void WriteBoneInfo( )
 			pbone[j].bonecontroller[5] = i;
 			break;
 		default:
-			printf("unknown bonecontroller type\n");
-			exit(1);
+			Q_printf("unknown bonecontroller type\n");
+			Q_exit(1);
 		}
 	}
 
@@ -184,7 +184,7 @@ void WriteSequenceInfo( )
 
 	for (i = 0; i < numseq; i++, pseqdesc++) 
 	{
-		strcpy( pseqdesc->label, sequence[i].name );
+		Q_strcpy( pseqdesc->label, sequence[i].name );
 		pseqdesc->numframes		= sequence[i].numframes;
 		pseqdesc->fps			= sequence[i].fps;
 		pseqdesc->flags			= sequence[i].flags;
@@ -228,7 +228,7 @@ void WriteSequenceInfo( )
 		{
 			pevent[j].frame		= sequence[i].event[j].frame - sequence[i].frameoffset;
 			pevent[j].event		= sequence[i].event[j].event;
-			memcpy( pevent[j].options, sequence[i].event[j].options, sizeof( pevent[j].options ) );
+			Q_memcpy( pevent[j].options, sequence[i].event[j].options, sizeof( pevent[j].options ) );
 		}
 		ALIGN( pData );
 
@@ -255,8 +255,8 @@ void WriteSequenceInfo( )
 
 	for (i = 0; i < numseqgroups; i++) 
 	{
-		strcpy( pseqgroup[i].label, sequencegroup[i].label );
-		strcpy( pseqgroup[i].name, sequencegroup[i].name );
+		Q_strcpy( pseqgroup[i].label, sequencegroup[i].label );
+		Q_strcpy( pseqgroup[i].name, sequencegroup[i].name );
 	}
 
 	// save transition graph
@@ -364,12 +364,12 @@ void WriteTextures( )
 	phdr->texturedataindex = (pData - pStart); 	// must be the end of the file!
 
 	for (i = 0; i < numtextures; i++) {
-		strcpy( ptexture[i].name, texture[i].name );
+		Q_strcpy( ptexture[i].name, texture[i].name );
 		ptexture[i].flags		= texture[i].flags;
 		ptexture[i].width		= texture[i].skinwidth;
 		ptexture[i].height		= texture[i].skinheight;
 		ptexture[i].index		= (pData - pStart);
-		memcpy( pData, texture[i].pdata, texture[i].size );
+		Q_memcpy( pData, texture[i].pdata, texture[i].size );
 		pData += texture[i].size;
 	}
 	ALIGN( pData );
@@ -402,7 +402,7 @@ void WriteModel( )
 
 	for (i = 0, j = 0; i < numbodyparts; i++)
 	{
-		strcpy( pbodypart[i].name, bodypart[i].name );
+		Q_strcpy( pbodypart[i].name, bodypart[i].name );
 		pbodypart[i].nummodels		= bodypart[i].nummodels;
 		pbodypart[i].base			= bodypart[i].base;
 		pbodypart[i].modelindex		= ((byte *)&pmodel[j]) - pStart;
@@ -417,7 +417,7 @@ void WriteModel( )
 		int normimap[MAXSTUDIOVERTS];
 		int n = 0;
 
-		strcpy( pmodel[i].name, model[i]->name );
+		Q_strcpy( pmodel[i].name, model[i]->name );
 
 		// save bbox info
 
@@ -477,7 +477,7 @@ void WriteModel( )
 		{
 			VectorCopy( model[i]->normal[normimap[j]].org, pnorm[j] );
 		}
-		printf("vertices  %6d bytes (%d vertices, %d normals)\n", pData - cur, model[i]->numverts, model[i]->numnorms);
+		Q_printf("vertices  %6d bytes (%d vertices, %d normals)\n", pData - cur, model[i]->numverts, model[i]->numnorms);
 		cur = (int)pData;
 
 		// save mesh info
@@ -508,13 +508,13 @@ void WriteModel( )
 			numCmdBytes = BuildTris( model[i]->pmesh[j]->triangle, model[i]->pmesh[j], &pCmdSrc );
 
 			pmesh[j].triindex	= (pData - pStart);
-			memcpy( pData, pCmdSrc, numCmdBytes );
+			Q_memcpy( pData, pCmdSrc, numCmdBytes );
 			pData += numCmdBytes;
 			ALIGN( pData );
 			total_tris += pmesh[j].numtris;
 			total_strips += numcommandnodes;
 		}
-		printf("mesh      %6d bytes (%d tris, %d strips)\n", pData - cur, total_tris, total_strips);
+		Q_printf("mesh      %6d bytes (%d tris, %d strips)\n", pData - cur, total_tris, total_strips);
 		cur = (int)pData;
 	}	
 }
@@ -539,9 +539,9 @@ void WriteFile (void)
 		// write the non-default sequence group data to separate files
 		char groupname[128], localname[128];
 
-		sprintf( groupname, "%s%02d.mdl", outname, i );
+		Q_sprintf( groupname, "%s%02d.mdl", outname, i );
 
-		printf ("writing %s:\n", groupname);
+		Q_printf ("writing %s:\n", groupname);
 		modelouthandle = SafeOpenWrite (groupname);
 
 		pseqhdr = (studioseqhdr_t *)pStart;
@@ -553,16 +553,16 @@ void WriteFile (void)
 		pData = WriteAnimations( pData, pStart, i );
 
 		ExtractFileBase( groupname, localname );
-		sprintf( sequencegroup[i].name, "models\\%s.mdl", localname );
-		strcpy( pseqhdr->name, sequencegroup[i].name );
+		Q_sprintf( sequencegroup[i].name, "models\\%s.mdl", localname );
+		Q_strcpy( pseqhdr->name, sequencegroup[i].name );
 		pseqhdr->length = pData - pStart;
 
-		printf("total     %6d\n", pseqhdr->length );
+		Q_printf("total     %6d\n", pseqhdr->length );
 
 		SafeWrite( modelouthandle, pStart, pseqhdr->length );
 
-		fclose (modelouthandle);
-		memset( pStart, 0, pseqhdr->length );
+		Q_fclose (modelouthandle);
+		Q_memset( pStart, 0, pseqhdr->length );
 	}
 
 	if (split_textures)
@@ -570,9 +570,9 @@ void WriteFile (void)
 		// write textures out to a separate file
 		char texname[128];
 
-		sprintf( texname, "%sT.mdl", outname );
+		Q_sprintf( texname, "%sT.mdl", outname );
 
-		printf ("writing %s:\n", texname);
+		Q_printf ("writing %s:\n", texname);
 		modelouthandle = SafeOpenWrite (texname);
 
 		phdr = (studiohdr_t *)pStart;
@@ -584,29 +584,29 @@ void WriteFile (void)
 		WriteTextures( );
 
 		phdr->length = pData - pStart;
-		printf("textures  %6d bytes\n", phdr->length );
+		Q_printf("textures  %6d bytes\n", phdr->length );
 
 		SafeWrite( modelouthandle, pStart, phdr->length );
 
-		fclose (modelouthandle);
-		memset( pStart, 0, phdr->length );
+		Q_fclose (modelouthandle);
+		Q_memset( pStart, 0, phdr->length );
 		pData = pStart;
 	}
 
 //
 // write the model output file
 //
-	strcat (outname, ".mdl");
+	Q_strcat (outname, ".mdl");
 	
-	printf ("---------------------\n");
-	printf ("writing %s:\n", outname);
+	Q_printf ("---------------------\n");
+	Q_printf ("writing %s:\n", outname);
 	modelouthandle = SafeOpenWrite (outname);
 
 	phdr = (studiohdr_t *)pStart;
 
 	phdr->id = IDSTUDIOHEADER;
 	phdr->version = STUDIO_VERSION;
-	strcpy( phdr->name, outname );
+	Q_strcpy( phdr->name, outname );
 	VectorCopy( eyeposition, phdr->eyeposition );
 	VectorCopy( bbox[0], phdr->min ); 
 	VectorCopy( bbox[1], phdr->max ); 
@@ -618,32 +618,32 @@ void WriteFile (void)
 	pData = (byte *)phdr + sizeof( studiohdr_t );
 
 	WriteBoneInfo( );
-	printf("bones     %6d bytes (%d)\n", pData - pStart - total, numbones );
+	Q_printf("bones     %6d bytes (%d)\n", pData - pStart - total, numbones );
 	total = pData - pStart;
 
 	pData = WriteAnimations( pData, pStart, 0 );
 
 	WriteSequenceInfo( );
-	printf("sequences %6d bytes (%d frames) [%d:%02d]\n", pData - pStart - total, totalframes, (int)totalseconds / 60, (int)totalseconds % 60 );
+	Q_printf("sequences %6d bytes (%d frames) [%d:%02d]\n", pData - pStart - total, totalframes, (int)totalseconds / 60, (int)totalseconds % 60 );
 	total  = pData - pStart;
 
 	WriteModel( );
-	printf("models    %6d bytes\n", pData - pStart - total );
+	Q_printf("models    %6d bytes\n", pData - pStart - total );
 	total  = pData - pStart;
 
 	if (!split_textures)
 	{
 		WriteTextures( );
-		printf("textures  %6d bytes\n", pData - pStart - total );
+		Q_printf("textures  %6d bytes\n", pData - pStart - total );
 	}
 
 	phdr->length = pData - pStart;
 
-	printf("total     %6d\n", phdr->length );
+	Q_printf("total     %6d\n", phdr->length );
 
 	SafeWrite( modelouthandle, pStart, phdr->length );
 
-	fclose (modelouthandle);
+	Q_fclose (modelouthandle);
 }
 
 

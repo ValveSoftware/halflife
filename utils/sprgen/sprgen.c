@@ -15,12 +15,15 @@
 #pragma warning(disable : 4244)     // type conversion warning.
 #define INCLUDELIBS
 
+#include "../../public/vstdlib/warnings.h"
 
 #ifdef NeXT
 #include <libc.h>
 #endif
 
 #include "spritegn.h"
+
+#include "../../public/vstdlib/vstdlib.h"
 
 #define MAX_BUFFER_SIZE		0x100000
 #define MAX_FRAMES			1000
@@ -34,7 +37,7 @@ char			spriteoutname[1024];
 int				framesmaxs[2];
 int				framecount;
 
-qboolean do16bit = true;
+qboolean do16bit = qtrue;
 
 typedef struct {
 	spriteframetype_t	type;		// single frame or group of frames
@@ -80,12 +83,12 @@ WriteSprite
 void WriteSprite (FILE *spriteouthandle)
 {
 	int			i, groupframe, curframe;
-	dsprite_t	spritetemp;
+	dsprite_t	spritetemp;	
 
-	sprite.boundingradius = sqrt (((framesmaxs[0] >> 1) *
+	sprite.boundingradius = Q_sqrt ((float)(((framesmaxs[0] >> 1) *
 								   (framesmaxs[0] >> 1)) +
 								  ((framesmaxs[1] >> 1) *
-								   (framesmaxs[1] >> 1)));
+								   (framesmaxs[1] >> 1))));
 
 //
 // write out the sprite header
@@ -188,12 +191,12 @@ void ExecCommand (char *cmd, ...)
 	cmdsrun++;
 	
 	va_start (argptr, cmd);
-	vsprintf (cmdline,cmd,argptr);
+	Q_vsprintf (cmdline,cmd,argptr);
 	va_end (argptr);
 	
 //	printf ("=============================================================\n");
 //	printf ("spritegen: %s\n",cmdline);
-	fflush (stdout);
+	Q_fflush (stdout);
 	ret = system (cmdline);
 //	printf ("=============================================================\n");
 	
@@ -211,7 +214,7 @@ void LoadScreen (char *name)
 	static byte origpalette[256*3];
 	int iError;
 
-	printf ("grabbing from %s...\n",name);
+	Q_printf ("grabbing from %s...\n",name);
 	iError = LoadBMP( name, &byteimage, &lbmpalette );
 	if (iError)
 		Error( "unable to load file \"%s\"\n", name );
@@ -220,8 +223,8 @@ void LoadScreen (char *name)
 	byteimageheight = bmhd.h;
 
 	if (sprite.numframes == 0)
-		memcpy( origpalette, lbmpalette, sizeof( origpalette ));
-	else if (memcmp( origpalette, lbmpalette, sizeof( origpalette )) != 0)
+		Q_memcpy( origpalette, lbmpalette, sizeof( origpalette ));
+	else if (Q_memcmp( origpalette, lbmpalette, sizeof( origpalette )) != 0)
 	{
 		Error( "bitmap \"%s\" doesn't share a pallette with the previous bitmap\n", name );
 	}
@@ -235,16 +238,16 @@ Cmd_Type
 */
 void Cmd_Type (void)
 {
-	GetToken (false);
-	if (!strcmp (token, "vp_parallel_upright"))
+	GetToken (qfalse);
+	if (!Q_strcmp (token, "vp_parallel_upright"))
 		sprite.type = SPR_VP_PARALLEL_UPRIGHT;
-	else if (!strcmp (token, "facing_upright"))
+	else if (!Q_strcmp (token, "facing_upright"))
 		sprite.type = SPR_FACING_UPRIGHT;
-	else if (!strcmp (token, "vp_parallel"))
+	else if (!Q_strcmp (token, "vp_parallel"))
 		sprite.type = SPR_VP_PARALLEL;
-	else if (!strcmp (token, "oriented"))
+	else if (!Q_strcmp (token, "oriented"))
 		sprite.type = SPR_ORIENTED;
-	else if (!strcmp (token, "vp_parallel_oriented"))
+	else if (!Q_strcmp (token, "vp_parallel_oriented"))
 		sprite.type = SPR_VP_PARALLEL_ORIENTED;
 	else
 		Error ("Bad sprite type\n");
@@ -258,15 +261,15 @@ Cmd_Texture
 */
 void Cmd_Texture (void)
 {
-	GetToken (false);
+	GetToken (qfalse);
 
-	if (!strcmp (token, "additive"))
+	if (!Q_strcmp (token, "additive"))
 		sprite.texFormat = SPR_ADDITIVE;
-	else if (!strcmp (token, "normal"))
+	else if (!Q_strcmp (token, "normal"))
 		sprite.texFormat = SPR_NORMAL;
-	else if (!strcmp (token, "indexalpha"))
+	else if (!Q_strcmp (token, "indexalpha"))
 		sprite.texFormat = SPR_INDEXALPHA;
-	else if (!strcmp (token, "alphatest"))
+	else if (!Q_strcmp (token, "alphatest"))
 		sprite.texFormat = SPR_ALPHTEST;
 	else
 		Error ("Bad sprite texture type\n");
@@ -280,8 +283,8 @@ Cmd_Beamlength
 */
 void Cmd_Beamlength ()
 {
-	GetToken (false);
-	sprite.beamlength = atof (token);
+	GetToken (qfalse);
+	sprite.beamlength = Q_atof (token);
 }
 
 
@@ -292,7 +295,7 @@ Cmd_Load
 */
 void Cmd_Load (void)
 {
-	GetToken (false);
+	GetToken (qfalse);
 	LoadScreen (ExpandPathAndArchive(token));
 }
 
@@ -310,14 +313,14 @@ void Cmd_Frame ()
 	dspriteframe_t	*pframe;
 	int				pix;
 	
-	GetToken (false);
-	xl = atoi (token);
-	GetToken (false);
-	yl = atoi (token);
-	GetToken (false);
-	w = atoi (token);
-	GetToken (false);
-	h = atoi (token);
+	GetToken (qfalse);
+	xl = Q_atoi (token);
+	GetToken (qfalse);
+	yl = Q_atoi (token);
+	GetToken (qfalse);
+	w = Q_atoi (token);
+	GetToken (qfalse);
+	h = Q_atoi (token);
 
 	if ((xl & 0x07) || (yl & 0x07) || (w & 0x07) || (h & 0x07))
 		Error ("Sprite dimensions not multiples of 8\n");
@@ -334,8 +337,8 @@ void Cmd_Frame ()
 
 	if (TokenAvailable ())
 	{
-		GetToken (false);
-		frames[framecount].interval = atof (token);
+		GetToken (qfalse);
+		frames[framecount].interval = Q_atof (token);
 		if (frames[framecount].interval <= 0.0)
 			Error ("Non-positive interval");
 	}
@@ -346,10 +349,10 @@ void Cmd_Frame ()
 	
 	if (TokenAvailable ())
 	{
-		GetToken (false);
-		pframe->origin[0] = -atoi (token);
-		GetToken (false);
-		pframe->origin[1] = atoi (token);
+		GetToken (qfalse);
+		pframe->origin[0] = -Q_atoi (token);
+		GetToken (qfalse);
+		pframe->origin[1] = Q_atoi (token);
 	}
 	else
 	{
@@ -408,20 +411,20 @@ void Cmd_GroupStart (void)
 
 	while (1)
 	{
-		GetToken (true);
+		GetToken (qtrue);
 		if (endofscript)
 			Error ("End of file during group");
 
-		if (!strcmp (token, "$frame"))
+		if (!Q_strcmp (token, "$frame"))
 		{
 			Cmd_Frame ();
 			frames[groupframe].numgroupframes++;
 		}
-		else if (!strcmp (token, "$load"))
+		else if (!Q_strcmp (token, "$load"))
 		{
 			Cmd_Load ();
 		}
-		else if (!strcmp (token, "$groupend"))
+		else if (!Q_strcmp (token, "$groupend"))
 		{
 			break;
 		}
@@ -446,44 +449,44 @@ void ParseScript (void)
 {
 	while (1)
 	{
-		GetToken (true);
+		GetToken (qtrue);
 		if (endofscript)
 			break;
 	
-		if (!strcmp (token, "$load"))
+		if (!Q_strcmp (token, "$load"))
 		{
 			Cmd_Load ();
 		}
-		if (!strcmp (token, "$spritename"))
+		if (!Q_strcmp (token, "$spritename"))
 		{
 			Cmd_Spritename ();
 		}
-		else if (!strcmp (token, "$type"))
+		else if (!Q_strcmp (token, "$type"))
 		{
 			Cmd_Type ();
 		}
-		else if (!strcmp (token, "$texture"))
+		else if (!Q_strcmp (token, "$texture"))
 		{
 			Cmd_Texture ();
 		}
-		else if (!strcmp (token, "$beamlength"))
+		else if (!Q_strcmp (token, "$beamlength"))
 		{
 			Cmd_Beamlength ();
 		}
-		else if (!strcmp (token, "$sync"))
+		else if (!Q_strcmp (token, "$sync"))
 		{
 			sprite.synctype = ST_SYNC;
 		}
-		else if (!strcmp (token, "$frame"))
+		else if (!Q_strcmp (token, "$frame"))
 		{
 			Cmd_Frame ();
 			sprite.numframes++;
 		}		
-		else if (!strcmp (token, "$load"))
+		else if (!Q_strcmp (token, "$load"))
 		{
 			Cmd_Load ();
 		}
-		else if (!strcmp (token, "$groupstart"))
+		else if (!Q_strcmp (token, "$groupstart"))
 		{
 			Cmd_GroupStart ();
 			sprite.numframes++;
@@ -501,16 +504,16 @@ void Cmd_Spritename (void)
 	if (sprite.numframes)
 		FinishSprite ();
 
-	GetToken (false);
-	sprintf (spriteoutname, "%s%s.spr", spritedir, token);
-	memset (&sprite, 0, sizeof(sprite));
+	GetToken (qfalse);
+	Q_sprintf (spriteoutname, "%s%s.spr", spritedir, token);
+	Q_memset (&sprite, 0, sizeof(sprite));
 	framecount = 0;
 
 	framesmaxs[0] = -9999999;
 	framesmaxs[1] = -9999999;
 
 	if ( !lumpbuffer )
-		lumpbuffer = malloc (MAX_BUFFER_SIZE * 2);	// *2 for padding
+		lumpbuffer = Q_malloc (MAX_BUFFER_SIZE * 2);	// *2 for padding
 
 	if (!lumpbuffer)
 		Error ("Couldn't get buffer memory");
@@ -531,20 +534,20 @@ void FinishSprite (void)
 	if (sprite.numframes == 0)
 		Error ("no frames\n");
 
-	if (!strlen(spriteoutname))
+	if (!Q_strlen(spriteoutname))
 		Error ("Didn't name sprite file");
 		
 	if ((plump - lumpbuffer) > MAX_BUFFER_SIZE)
 		Error ("Sprite package too big; increase MAX_BUFFER_SIZE");
 
 	spriteouthandle = SafeOpenWrite (spriteoutname);
-	printf ("saving in %s\n", spriteoutname);
+	Q_printf ("saving in %s\n", spriteoutname);
 	WriteSprite (spriteouthandle);
-	fclose (spriteouthandle);
+	Q_fclose (spriteouthandle);
 	
-	printf ("spritegen: successful\n");
-	printf ("%d frame(s)\n", sprite.numframes);
-	printf ("%d ungrouped frame(s), including group headers\n", framecount);
+	Q_printf ("spritegen: successful\n");
+	Q_printf ("%d frame(s)\n", sprite.numframes);
+	Q_printf ("%d ungrouped frame(s), including group headers\n", framecount);
 	
 	spriteoutname[0] = 0;		// clear for a new sprite
 }
@@ -561,8 +564,8 @@ int main (int argc, char **argv)
 {
 	int		i;
 
-	printf( "sprgen.exe v 1.1 (%s)\n", __DATE__ );
-	printf ("----- Sprite Gen ----\n");
+	Q_printf( "sprgen.exe v 1.1 (%s)\n", __DATE__ );
+	Q_printf ("----- Sprite Gen ----\n");
 
 	if (argc < 2 || argc > 7 )
 		Error ("usage: sprgen [-archive directory] [-no16bit] [-proj <project>] file.qc");
@@ -571,29 +574,29 @@ int main (int argc, char **argv)
 	{
 		if( *argv[ i ] == '-' )
 		{
-			if( !strcmp( argv[ i ], "-archive" ) )
+			if( !Q_strcmp( argv[ i ], "-archive" ) )
 			{
-				archive = true;
-				strcpy (archivedir, argv[i+1]);
-				printf ("Archiving source to: %s\n", archivedir);
+				archive = qtrue;
+				Q_strcpy (archivedir, argv[i+1]);
+				Q_printf ("Archiving source to: %s\n", archivedir);
 				i++;
 			}
-			else if( !strcmp( argv[ i ], "-proj" ) )
+			else if( !Q_strcmp( argv[ i ], "-proj" ) )
 			{
-				strcpy( qproject, argv[i+1] );
+				Q_strcpy( qproject, argv[i+1] );
 				i++;
 			}
-			else if( !strcmp( argv[ i ], "-16bit" ) )
+			else if( !Q_strcmp( argv[ i ], "-16bit" ) )
 			{
-				do16bit = true;
+				do16bit = qtrue;
 			}
-			else if( !strcmp( argv[ i ], "-no16bit" ) )
+			else if( !Q_strcmp( argv[ i ], "-no16bit" ) )
 			{
-				do16bit = false;
+				do16bit = qfalse;
 			} 
 			else
 			{
-				printf( "Unsupported command line flag: '%s'", argv[i] );
+				Q_printf( "Unsupported command line flag: '%s'", argv[i] );
 			}
 
 		}

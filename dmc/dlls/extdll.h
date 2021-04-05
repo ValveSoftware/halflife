@@ -26,6 +26,8 @@
 #define DEBUG 1
 #endif
 
+#include "vstdlib/warnings.h"
+
 // Silence certain warnings
 #pragma warning(disable : 4244)		// int or float down-conversion
 #pragma warning(disable : 4305)		// int or float data truncation
@@ -75,6 +77,8 @@ typedef int BOOL;
 #include "stdio.h"
 #include "stdlib.h"
 #include "math.h"
+
+#include "vstdlib/vstdlib.h"
 
 // Header file containing definition of globalvars_t and entvars_t
 typedef unsigned int	func_t;					//

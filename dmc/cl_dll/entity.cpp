@@ -137,8 +137,8 @@ void EXPORT HUD_ProcessPlayerState( struct entity_state_s *dst, const struct ent
 	dst->framerate				= src->framerate;
 	dst->body					= src->body;
 
-	memcpy( &dst->controller[0], &src->controller[0], 4 * sizeof( byte ) );
-	memcpy( &dst->blending[0], &src->blending[0], 2 * sizeof( byte ) );
+	Q_memcpy( &dst->controller[0], &src->controller[0], 4 * sizeof( byte ) );
+	Q_memcpy( &dst->blending[0], &src->blending[0], 2 * sizeof( byte ) );
 
 	VectorCopy( src->basevelocity, dst->basevelocity );
 
@@ -212,7 +212,7 @@ void EXPORT HUD_TxferPredictionData ( struct entity_state_s *ps, const struct en
 	// m_iRuneStatus
 	pcd->fuser3					= ppcd->fuser3;
 
-	memcpy( wd, pwd, 32 * sizeof( weapon_data_t ) );
+	Q_memcpy( wd, pwd, 32 * sizeof( weapon_data_t ) );
 }
 
 /*
@@ -447,19 +447,19 @@ void EXPORT HUD_StudioEvent( const struct mstudioevent_s *event, const struct cl
 	switch( event->event )
 	{
 	case 5001:
-		gEngfuncs.pEfxAPI->R_MuzzleFlash( (float *)&entity->attachment[0], atoi( event->options) );
+		gEngfuncs.pEfxAPI->R_MuzzleFlash( (float *)&entity->attachment[0], Q_atoi( event->options) );
 		break;
 	case 5011:
-		gEngfuncs.pEfxAPI->R_MuzzleFlash( (float *)&entity->attachment[1], atoi( event->options) );
+		gEngfuncs.pEfxAPI->R_MuzzleFlash( (float *)&entity->attachment[1], Q_atoi( event->options) );
 		break;
 	case 5021:
-		gEngfuncs.pEfxAPI->R_MuzzleFlash( (float *)&entity->attachment[2], atoi( event->options) );
+		gEngfuncs.pEfxAPI->R_MuzzleFlash( (float *)&entity->attachment[2], Q_atoi( event->options) );
 		break;
 	case 5031:
-		gEngfuncs.pEfxAPI->R_MuzzleFlash( (float *)&entity->attachment[3], atoi( event->options) );
+		gEngfuncs.pEfxAPI->R_MuzzleFlash( (float *)&entity->attachment[3], Q_atoi( event->options) );
 		break;
 	case 5002:
-		gEngfuncs.pEfxAPI->R_SparkEffect( (float *)&entity->attachment[0], atoi( event->options), -100, 100 );
+		gEngfuncs.pEfxAPI->R_SparkEffect( (float *)&entity->attachment[0], Q_atoi( event->options), -100, 100 );
 		break;
 	// Client side sound
 	case 5004:		
@@ -608,18 +608,18 @@ void EXPORT HUD_TempEntUpdate (
 				pTemp->x += pTemp->entity.baseline.origin[0] * frametime;
 				pTemp->y += pTemp->entity.baseline.origin[1] * frametime;
 
-				pTemp->entity.origin[0] = pTemp->x + sin( pTemp->entity.baseline.origin[2] + client_time * pTemp->entity.prevstate.frame ) * (10*pTemp->entity.curstate.framerate);
-				pTemp->entity.origin[1] = pTemp->y + sin( pTemp->entity.baseline.origin[2] + fastFreq + 0.7 ) * (8*pTemp->entity.curstate.framerate);
+				pTemp->entity.origin[0] = pTemp->x + Q_sin( pTemp->entity.baseline.origin[2] + client_time * pTemp->entity.prevstate.frame ) * (10*pTemp->entity.curstate.framerate);
+				pTemp->entity.origin[1] = pTemp->y + Q_sin( pTemp->entity.baseline.origin[2] + fastFreq + 0.7 ) * (8*pTemp->entity.curstate.framerate);
 				pTemp->entity.origin[2] += pTemp->entity.baseline.origin[2] * frametime;
 			}
 			else if ( pTemp->flags & FTENT_SPIRAL )
 			{
 				float s, c;
-				s = sin( pTemp->entity.baseline.origin[2] + fastFreq );
-				c = cos( pTemp->entity.baseline.origin[2] + fastFreq );
+				s = Q_sin( pTemp->entity.baseline.origin[2] + fastFreq );
+				c = Q_cos( pTemp->entity.baseline.origin[2] + fastFreq );
 
-				pTemp->entity.origin[0] += pTemp->entity.baseline.origin[0] * frametime + 8 * sin( client_time * 20 + (int)pTemp );
-				pTemp->entity.origin[1] += pTemp->entity.baseline.origin[1] * frametime + 4 * sin( client_time * 30 + (int)pTemp );
+				pTemp->entity.origin[0] += pTemp->entity.baseline.origin[0] * frametime + 8 * Q_sin( client_time * 20 + (int)pTemp );
+				pTemp->entity.origin[1] += pTemp->entity.baseline.origin[1] * frametime + 4 * Q_sin( client_time * 30 + (int)pTemp );
 				pTemp->entity.origin[2] += pTemp->entity.baseline.origin[2] * frametime;
 			}
 			else 

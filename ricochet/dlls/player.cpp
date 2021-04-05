@@ -1782,13 +1782,13 @@ void CBasePlayer :: UpdateStepSound( void )
 				if (*pTextureName == '{' || *pTextureName == '!')
 					pTextureName++;
 				
-				if (_strnicmp(pTextureName, m_szTextureName, CBTEXTURENAMEMAX-1))
+				if (Q_strnicmp(pTextureName, m_szTextureName, CBTEXTURENAMEMAX-1))
 				{
 					// current texture is different from texture player is on...
 					// set current texture
-					strcpy(szbuffer, pTextureName);
+					Q_strcpy(szbuffer, pTextureName);
 					szbuffer[CBTEXTURENAMEMAX - 1] = 0;
-					strcpy(m_szTextureName, szbuffer);
+					Q_strcpy(m_szTextureName, szbuffer);
 					
 					// ALERT ( at_aiconsole, "texture: %s\n", m_szTextureName );
 
@@ -2117,7 +2117,7 @@ void CBasePlayer::CheckTimeBasedDamage()
 		return;
 
 	// only check for time based damage approx. every 2 seconds
-	if (abs(gpGlobals->time - m_tbdPrev) < 2.0)
+	if (Q_abs(gpGlobals->time - m_tbdPrev) < 2.0)
 		return;
 	
 	m_tbdPrev = gpGlobals->time;
@@ -2150,7 +2150,7 @@ void CBasePlayer::CheckTimeBasedDamage()
 				// after the player has been drowning and finally takes a breath
 				if (m_idrowndmg > m_idrownrestored)
 				{
-					int idif = min(m_idrowndmg - m_idrownrestored, 10);
+					int idif = Q_min(m_idrowndmg - m_idrownrestored, 10);
 
 					TakeHealth(idif, DMG_GENERIC);
 					m_idrownrestored += idif;
@@ -2352,8 +2352,8 @@ void CBasePlayer::CheckSuitUpdate()
 				// play sentence number
 
 				char sentence[CBSENTENCENAME_MAX+1];
-				strcpy(sentence, "!");
-				strcat(sentence, gszallsentencenames[isentence]);
+				Q_strcpy(sentence, "!");
+				Q_strcat(sentence, gszallsentencenames[isentence]);
 				EMIT_SOUND_SUIT(ENT(pev), sentence);
 			}
 			else
@@ -2758,12 +2758,12 @@ pt_end:
 				
 				if ( gun && gun->UseDecrement() )
 				{
-					gun->m_flNextPrimaryAttack		= max( gun->m_flNextPrimaryAttack - gpGlobals->frametime, -1.0 );
-					gun->m_flNextSecondaryAttack	= max( gun->m_flNextSecondaryAttack - gpGlobals->frametime, -0.001 );
+					gun->m_flNextPrimaryAttack		= Q_max( gun->m_flNextPrimaryAttack - gpGlobals->frametime, -1.0 );
+					gun->m_flNextSecondaryAttack	= Q_max( gun->m_flNextSecondaryAttack - gpGlobals->frametime, -0.001 );
 
 					if ( gun->m_flTimeWeaponIdle != 1000 )
 					{
-						gun->m_flTimeWeaponIdle		= max( gun->m_flTimeWeaponIdle - gpGlobals->frametime, -0.001 );
+						gun->m_flTimeWeaponIdle		= Q_max( gun->m_flTimeWeaponIdle - gpGlobals->frametime, -0.001 );
 					}
 				}
 
@@ -2888,7 +2888,7 @@ edict_t *EntSelectSpawnPoint( CBaseEntity *pPlayer )
 	}
 
 	// If startspot is set, (re)spawn there.
-	if ( FStringNull( gpGlobals->startspot ) || !strlen(STRING(gpGlobals->startspot)))
+	if ( FStringNull( gpGlobals->startspot ) || !Q_strlen(STRING(gpGlobals->startspot)))
 	{
 		pSpot = UTIL_FindEntityByClassname(NULL, "info_player_start");
 		if ( !FNullEnt(pSpot) )
@@ -3853,7 +3853,7 @@ int CBasePlayer :: GiveAmmo( int iCount, char *szName, int iMax )
 	if ( i < 0 || i >= MAX_AMMO_SLOTS )
 		return -1;
 
-	int iAdd = min( iCount, iMax - m_rgAmmo[i] );
+	int iAdd = Q_min( iCount, iMax - m_rgAmmo[i] );
 	if ( iAdd < 1 )
 		return i;
 
@@ -3944,7 +3944,7 @@ int CBasePlayer::GetAmmoIndex(const char *psz)
 		if ( !CBasePlayerItem::AmmoInfoArray[i].pszName )
 			continue;
 
-		if (stricmp( psz, CBasePlayerItem::AmmoInfoArray[i].pszName ) == 0)
+		if (Q_stricmp( psz, CBasePlayerItem::AmmoInfoArray[i].pszName ) == 0)
 			return i;
 	}
 
@@ -3967,7 +3967,7 @@ void CBasePlayer::SendAmmoUpdate(void)
 			// send "Ammo" update message
 			MESSAGE_BEGIN( MSG_ONE, gmsgAmmoX, NULL, pev );
 				WRITE_BYTE( i );
-				WRITE_BYTE( max( min( m_rgAmmo[i], 254 ), 0 ) );  // clamp the value to one byte
+				WRITE_BYTE( Q_max( Q_min( m_rgAmmo[i], 254 ), 0 ) );  // clamp the value to one byte
 			MESSAGE_END();
 		}
 	}
@@ -4468,8 +4468,8 @@ Vector CBasePlayer :: AutoaimDeflection( Vector &vecSrc, float flDist, float flD
 		if (DotProduct (dir, gpGlobals->v_forward ) < 0)
 			continue;
 
-		dot = fabs( DotProduct (dir, gpGlobals->v_right ) ) 
-			+ fabs( DotProduct (dir, gpGlobals->v_up ) ) * 0.5;
+		dot = Q_fabs( DotProduct (dir, gpGlobals->v_right ) ) 
+			+ Q_fabs( DotProduct (dir, gpGlobals->v_up ) ) * 0.5;
 
 		// tweek for distance
 		dot *= 1.0 + 0.2 * ((center - vecSrc).Length() / flDist);
@@ -4597,7 +4597,7 @@ BOOL CBasePlayer::HasNamedPlayerItem( const char *pszItemName )
 		
 		while (pItem)
 		{
-			if ( !strcmp( pszItemName, STRING( pItem->pev->classname ) ) )
+			if ( !Q_strcmp( pszItemName, STRING( pItem->pev->classname ) ) )
 			{
 				return TRUE;
 			}
@@ -4652,7 +4652,7 @@ void CDeadHEV::KeyValue( KeyValueData *pkvd )
 {
 	if (FStrEq(pkvd->szKeyName, "pose"))
 	{
-		m_iPose = atoi(pkvd->szValue);
+		m_iPose = Q_atoi(pkvd->szValue);
 		pkvd->fHandled = TRUE;
 	}
 	else 
@@ -4760,22 +4760,22 @@ void CRevertSaved :: KeyValue( KeyValueData *pkvd )
 {
 	if (FStrEq(pkvd->szKeyName, "duration"))
 	{
-		SetDuration( atof(pkvd->szValue) );
+		SetDuration( Q_atof(pkvd->szValue) );
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "holdtime"))
 	{
-		SetHoldTime( atof(pkvd->szValue) );
+		SetHoldTime( Q_atof(pkvd->szValue) );
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "messagetime"))
 	{
-		SetMessageTime( atof(pkvd->szValue) );
+		SetMessageTime( Q_atof(pkvd->szValue) );
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "loadtime"))
 	{
-		SetLoadTime( atof(pkvd->szValue) );
+		SetLoadTime( Q_atof(pkvd->szValue) );
 		pkvd->fHandled = TRUE;
 	}
 	else 

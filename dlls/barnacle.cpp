@@ -178,13 +178,13 @@ void CBarnacle :: BarnacleThink ( void )
 			vecNewEnemyOrigin.y = pev->origin.y;
 
 			// guess as to where their neck is
-			vecNewEnemyOrigin.x -= 6 * cos(m_hEnemy->pev->angles.y * M_PI/180.0);	
-			vecNewEnemyOrigin.y -= 6 * sin(m_hEnemy->pev->angles.y * M_PI/180.0);
+			vecNewEnemyOrigin.x -= 6 * Q_cos(m_hEnemy->pev->angles.y * M_PI/180.0);	
+			vecNewEnemyOrigin.y -= 6 * Q_sin(m_hEnemy->pev->angles.y * M_PI/180.0);
 
 			m_flAltitude -= BARNACLE_PULL_SPEED;
 			vecNewEnemyOrigin.z += BARNACLE_PULL_SPEED;
 
-			if ( fabs( pev->origin.z - ( vecNewEnemyOrigin.z + m_hEnemy->pev->view_ofs.z - 8 ) ) < BARNACLE_BODY_HEIGHT )
+			if ( Q_fabs( pev->origin.z - ( vecNewEnemyOrigin.z + m_hEnemy->pev->view_ofs.z - 8 ) ) < BARNACLE_BODY_HEIGHT )
 			{
 		// prey has just been lifted into position ( if the victim origin + eye height + 8 is higher than the bottom of the barnacle, it is assumed that the head is within barnacle's body )
 				m_fLiftingPrey = FALSE;
@@ -398,7 +398,7 @@ CBaseEntity *CBarnacle :: TongueTouchEnt ( float *pflLength )
 
 	// trace once to hit architecture and see if the tongue needs to change position.
 	UTIL_TraceLine ( pev->origin, pev->origin - Vector ( 0 , 0 , 2048 ), ignore_monsters, ENT(pev), &tr );
-	length = fabs( pev->origin.z - tr.vecEndPos.z );
+	length = Q_fabs( pev->origin.z - tr.vecEndPos.z );
 	if ( pflLength )
 	{
 		*pflLength = length;

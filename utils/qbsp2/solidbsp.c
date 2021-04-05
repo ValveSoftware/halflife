@@ -268,7 +268,7 @@ returns NULL if the surface list can not be divided any more (a leaf)
 */
 surface_t *SelectPartition (surface_t *surfaces, node_t *node, qboolean usemidsplit)
 {
-	int			i,j;
+	int			i/*,j*/;
 	surface_t	*p, *bestsurface;
 
 	//
@@ -613,8 +613,8 @@ void LinkLeafFaces (surface_t *planelist, node_t *leafnode)
 		markfaces[nummarkfaces] = NULL;	// end marker
 		nummarkfaces++;
 
-		leafnode->markfaces = malloc(nummarkfaces * sizeof(*leafnode->markfaces));
-		memcpy (leafnode->markfaces, markfaces, nummarkfaces * sizeof(*leafnode->markfaces));
+		leafnode->markfaces = Q_malloc(nummarkfaces * sizeof(*leafnode->markfaces));
+		Q_memcpy (leafnode->markfaces, markfaces, nummarkfaces * sizeof(*leafnode->markfaces));
 	}
 
 	FreeLeafSurfs (leafnode);
@@ -657,16 +657,16 @@ void MakeNodePortal (node_t *node)
 		else if (p->nodes[1] == node)
 		{
 			clipplane.dist = -clipplane.dist;
-			VectorSubtract (vec3_origin, clipplane.normal, clipplane.normal);
+			VectorSubtractT (vec3_origin, clipplane.normal, clipplane.normal, float);
 			side = 1;
 		}
 		else
 			Error ("MakeNodePortal: mislinked portal");
 
-		w = ClipWinding (w, &clipplane, true);
+		w = ClipWinding (w, &clipplane, qtrue);
 		if (!w)
 		{
-			printf ("WARNING: MakeNodePortal:new portal was clipped away from node@(%.0f,%.0f,%.0f)-(%.0f,%.0f,%.0f)\n",
+			Q_printf ("WARNING: MakeNodePortal:new portal was clipped away from node@(%.0f,%.0f,%.0f)-(%.0f,%.0f,%.0f)\n",
 					node->mins[0], node->mins[1], node->mins[2], 
 					node->maxs[0], node->maxs[1], node->maxs[2]);
 			FreePortal (new_portal);
@@ -803,8 +803,8 @@ qboolean CalcNodeBounds (node_t *node)
 
 	for (i=0 ; i<3 ; i++)
 		if (node->maxs[i] - node->mins[i] > 1024)
-			return true;
-	return false;
+			return qtrue;
+	return qfalse;
 }
 
 /*
@@ -944,7 +944,7 @@ The original surface chain will be completely freed.
 */
 node_t *SolidBSP (surfchain_t *surfhead)
 {
-	int		i;
+	//int		i;
 	node_t	*headnode;
 	
 	qprintf ("----- SolidBSP -----\n");

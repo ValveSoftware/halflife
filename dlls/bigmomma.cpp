@@ -69,12 +69,12 @@ void CInfoBM::KeyValue( KeyValueData* pkvd )
 {
 	if (FStrEq(pkvd->szKeyName, "radius"))
 	{
-		pev->scale = atof(pkvd->szValue);
+		pev->scale = Q_atof(pkvd->szValue);
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "reachdelay"))
 	{
-		pev->speed = atof(pkvd->szValue);
+		pev->speed = Q_atof(pkvd->szValue);
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "reachtarget"))
@@ -392,7 +392,7 @@ void CBigMomma :: KeyValue( KeyValueData *pkvd )
 #if 0
 	if (FStrEq(pkvd->szKeyName, "volume"))
 	{
-		m_volume = atof(pkvd->szValue);
+		m_volume = Q_atof(pkvd->szValue);
 		pkvd->fHandled = TRUE;
 	}
 	else
@@ -1109,7 +1109,7 @@ Vector VecCheckSplatToss( entvars_t *pev, const Vector &vecSpot1, Vector vecSpot
 	// How high should the grenade travel (subtract 15 so the grenade doesn't hit the ceiling)?
 	float height = (vecApex.z - vecSpot1.z) - 15;
 	// How fast does the grenade need to travel to reach that height given gravity?
-	float speed = sqrt( 2 * flGravity * height );
+	float speed = Q_sqrt( 2 * flGravity * height );
 	
 	// How much time does it take to get there?
 	float time = speed / flGravity;

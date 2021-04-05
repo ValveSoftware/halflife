@@ -12,6 +12,8 @@
 
 #include "csg.h"
 
+extern void CheckHullFile( qboolean, char * );
+
 /*
 
 
@@ -29,13 +31,13 @@ FILE	*out[NUM_HULLS];
 int		c_tiny, c_tiny_clip;
 int		c_outfaces;
 
-qboolean	hullfile = false;
+qboolean	hullfile = qfalse;
 static char qhullfile[ 256 ];
 
 qboolean	glview;
 qboolean	noclip;
 qboolean	onlyents;
-qboolean	wadtextures = true;
+qboolean	wadtextures = qtrue;
 
 vec3_t		world_mins, world_maxs;
 
@@ -50,8 +52,8 @@ bface_t *NewFaceFromFace (bface_t *in)
 {
 	bface_t	*newf;
 	
-	newf = malloc (sizeof(bface_t));
-	memset (newf, 0, sizeof(newf));
+	newf = Q_malloc (sizeof(bface_t));
+	Q_memset (newf, 0, sizeof(newf));
 	newf->contents = in->contents;
 	newf->texinfo = in->texinfo;
 	newf->planenum = in->planenum;
@@ -62,8 +64,8 @@ bface_t *NewFaceFromFace (bface_t *in)
 
 void FreeFace (bface_t *f)
 {
-	free (f->w);
-	free (f);
+	Q_free (f->w);
+	Q_free (f);
 }
 
 
@@ -88,9 +90,9 @@ bface_t *ClipFace (brush_t *b, bface_t *f, bface_t **outside,
 {
 	bface_t		*front;
 	winding_t	*fw, *bw;
-	vec_t		d;
+	//vec_t		d;
 	plane_t		*split;
-	int			i, count[3];
+	//int			i, count[3];
 
 	// handle exact plane matches special
 
@@ -171,7 +173,7 @@ WriteFace
 */
 void WriteFace (int hull, bface_t *f)
 {
-	int		i, j;
+	int		i/*, j*/;
 	winding_t	*w;
 	static	int	level = 128;
 	vec_t		light;
@@ -184,12 +186,12 @@ void WriteFace (int hull, bface_t *f)
 	{
 		// .gl format
 		w = f->w;
-		fprintf (out[hull], "%i\n", w->numpoints);
+		Q_fprintf (out[hull], "%i\n", w->numpoints);
 		level+=28;
 		light = (level&255)/255.0;
 		for (i=0 ; i<w->numpoints ; i++)
 		{
-			fprintf (out[hull], "%5.2f %5.2f %5.2f %5.3f %5.3f %5.3f\n",
+			Q_fprintf (out[hull], "%5.2f %5.2f %5.2f %5.3f %5.3f %5.3f\n",
 				w->p[i][0],
 				w->p[i][1],
 				w->p[i][2],
@@ -197,21 +199,21 @@ void WriteFace (int hull, bface_t *f)
 				light,
 				light);
 		}
-		fprintf (out[hull], "\n");
+		Q_fprintf (out[hull], "\n");
 	}
 	else
 	{
 		// .p0 format
 		w = f->w;
-		fprintf (out[hull], "%i %i %i %i\n", f->planenum, f->texinfo, f->contents, w->numpoints);
+		Q_fprintf (out[hull], "%i %i %i %i\n", f->planenum, f->texinfo, f->contents, w->numpoints);
 		for (i=0 ; i<w->numpoints ; i++)
 		{
-			fprintf (out[hull], "%5.2f %5.2f %5.2f\n",
+			Q_fprintf (out[hull], "%5.2f %5.2f %5.2f\n",
 				w->p[i][0],
 				w->p[i][1],
 				w->p[i][2]);
 		}
-		fprintf (out[hull], "\n");
+		Q_fprintf (out[hull], "\n");
 	}
 
 	ThreadUnlock ();
@@ -232,7 +234,7 @@ void SaveOutside (brush_t *b, int hull, bface_t *outside, int mirrorcontents)
 {
 	bface_t	*f , *next, *f2;
 	int		i;
-	int		planenum;
+	//int		planenum;
 	vec3_t	temp;
 
 	for (f=outside ; f ; f=next)
@@ -256,7 +258,7 @@ void SaveOutside (brush_t *b, int hull, bface_t *outside, int mirrorcontents)
 				{
 					if (!f2->used)
 					{
-						f2->used = true;
+						f2->used = qtrue;
 						c_outfaces++;
 					}
 					break;
@@ -393,7 +395,7 @@ void CSGBrush (int brushnum)
 
 		// set outside to a copy of the brush's faces
 		outside = CopyFacesToOutside (bh1);
-		overwrite = false;
+		overwrite = qfalse;
 
 		for (bn=0 ; bn<e->numbrushes ; bn++)
 		{
@@ -401,7 +403,7 @@ void CSGBrush (int brushnum)
 
 			if (bn==brushnum)
 			{
-				overwrite = true;	// later brushes now overwrite
+				overwrite = qtrue;	// later brushes now overwrite
 				continue;
 			}
 
@@ -517,8 +519,8 @@ void EmitPlanes (void)
 	dp = dplanes;
 	for (i=0 ; i<nummapplanes ; i++, mp++, dp++)
 	{
-		VectorCopy ( mp->normal, dp->normal);
-		dp->dist = mp->dist;
+		VectorCopyT ( mp->normal, dp->normal, float);
+		dp->dist = (float)mp->dist;
 		dp->type = mp->type;
 	}
 }
@@ -539,7 +541,7 @@ void SetModelNumbers (void)
 	{
 		if (entities[i].numbrushes)
 		{
-			sprintf (value, "*%i", models);
+			Q_sprintf (value, "*%i", models);
 			models++;
 			SetKeyValue (&entities[i], "model", value);
 		}
@@ -579,16 +581,16 @@ void SetLightStyles (void)
 		
 		// find this targetname
 		for (j=0 ; j<stylenum ; j++)
-			if (!strcmp (lighttargets[j], t))
+			if (!Q_strcmp (lighttargets[j], t))
 				break;
 		if (j == stylenum)
 		{
 			if (stylenum == MAX_SWITCHED_LIGHTS)
 				Error ("stylenum == MAX_SWITCHED_LIGHTS");
-			strcpy (lighttargets[j], t);
+			Q_strcpy (lighttargets[j], t);
 			stylenum++;
 		}
-		sprintf (value, "%i", 32 + j);
+		Q_sprintf (value, "%i", 32 + j);
 		SetKeyValue (e, "style", value);
 	}
 
@@ -604,7 +606,7 @@ void WriteBSP (char *name)
 {
 	char	path[1024];
 
-	strcpy (path, name);
+	Q_strcpy (path, name);
 	DefaultExtension (path, ".bsp");
 
 	SetModelNumbers ();
@@ -633,7 +635,7 @@ void ProcessModels (void)
 	int		placed;
 	int		first, contents;
 	brush_t	temp;
-	vec3_t	origin;
+	//vec3_t	origin;
 
 	for (i=0 ; i<num_entities ; i++)
 	{
@@ -677,7 +679,7 @@ void ProcessModels (void)
 		if (!glview)
 		{
 			for (j=0 ; j<NUM_HULLS ; j++)
-				fprintf (out[j], "-1 -1 -1 -1\n");
+				Q_fprintf (out[j], "-1 -1 -1 -1\n");
 		}
 	}
 }
@@ -724,66 +726,66 @@ extern char qproject[];
 
 int main (int argc, char **argv)
 {
-	int		i, j;
-	int		hull;
-	entity_t	*ent;
+	int		i/*, j*/;
+	//int		hull;
+	//entity_t	*ent;
 	char	source[1024];
 	char	name[1024];
 	double		start, end;
 
-	printf( "qcsg.exe v2.8 (%s)\n", __DATE__ );
-	printf ("---- qcsg ----\n" );
+	Q_printf( "qcsg.exe v2.8 (%s)\n", __DATE__ );
+	Q_printf ("---- qcsg ----\n" );
 
 	for (i=1 ; i<argc ; i++)
 	{
-		if (!strcmp(argv[i],"-threads"))
+		if (!Q_strcmp(argv[i],"-threads"))
 		{
-			numthreads = atoi (argv[i+1]);
+			numthreads = Q_atoi (argv[i+1]);
 			i++;
 		}
-		else if (!strcmp(argv[i],"-glview"))
+		else if (!Q_strcmp(argv[i],"-glview"))
 		{
-			glview = true;
+			glview = qtrue;
 		}
-		else if (!strcmp(argv[i], "-v"))
+		else if (!Q_strcmp(argv[i], "-v"))
 		{
-			printf ("verbose = true\n");
-			verbose = true;
+			Q_printf ("verbose = true\n");
+			verbose = qtrue;
 		}
-		else if (!strcmp(argv[i], "-draw"))
+		else if (!Q_strcmp(argv[i], "-draw"))
 		{
-			printf ("drawflag = true\n");
-			drawflag = true;
+			Q_printf ("drawflag = true\n");
+			drawflag = qtrue;
 		}
-		else if (!strcmp(argv[i], "-noclip"))
+		else if (!Q_strcmp(argv[i], "-noclip"))
 		{
-			printf ("noclip = true\n");
-			noclip = true;
+			Q_printf ("noclip = true\n");
+			noclip = qtrue;
 		}
-		else if (!strcmp(argv[i], "-onlyents"))
+		else if (!Q_strcmp(argv[i], "-onlyents"))
 		{
-			printf ("onlyents = true\n");
-			onlyents = true;
+			Q_printf ("onlyents = true\n");
+			onlyents = qtrue;
 		}
-		else if (!strcmp(argv[i], "-nowadtextures"))
+		else if (!Q_strcmp(argv[i], "-nowadtextures"))
 		{
-			printf ("wadtextures = false\n");
-			wadtextures = false;
+			Q_printf ("wadtextures = false\n");
+			wadtextures = qfalse;
 		}
-		else if (!strcmp(argv[i], "-wadinclude"))
+		else if (!Q_strcmp(argv[i], "-wadinclude"))
 		{
-			pszWadInclude[nWadInclude++] = strdup( argv[i + 1] );
+			pszWadInclude[nWadInclude++] = Q_strdup( argv[i + 1] );
 			i++;
 		}
-		else if( !strcmp( argv[ i ], "-proj" ) )
+		else if( !Q_strcmp( argv[ i ], "-proj" ) )
 		{
-			strcpy( qproject, argv[ i + 1 ] );
+			Q_strcpy( qproject, argv[ i + 1 ] );
 			i++;
 		}
-		else if (!strcmp(argv[i], "-hullfile"))
+		else if (!Q_strcmp(argv[i], "-hullfile"))
 		{
-			hullfile = true;
-			strcpy( qhullfile, argv[i + 1] );
+			hullfile = qtrue;
+			Q_strcpy( qhullfile, argv[i + 1] );
 			i++;
 		}
 		else if (argv[i][0] == '-')
@@ -803,11 +805,11 @@ int main (int argc, char **argv)
 	ThreadSetDefault ();
 	SetQdirFromPath (argv[i]);
 
-	strcpy (source, ExpandArg (argv[i]));
+	Q_strcpy (source, ExpandArg (argv[i]));
 	COM_FixSlashes(source);
 	StripExtension (source);
 
-	strcpy (name, ExpandArg (argv[i]));	
+	Q_strcpy (name, ExpandArg (argv[i]));	
 	DefaultExtension (name, ".map");	// might be .reg
 
 	//
@@ -816,8 +818,8 @@ int main (int argc, char **argv)
 	if (onlyents  && !glview)
 	{
 		char out[1024];
-		int	old_entities;
-		sprintf (out, "%s.bsp", source);
+		//int	old_entities;
+		Q_sprintf (out, "%s.bsp", source);
 		LoadBSPFile (out);
 
 		// Get the new entity data from the map file
@@ -827,7 +829,7 @@ int main (int argc, char **argv)
 		WriteBSP (source);
 
 		end = I_FloatTime ();
-		printf ("%5.0f seconds elapsed\n", end-start);
+		Q_printf ("%5.0f seconds elapsed\n", end-start);
 		return 0;
 	}
 
@@ -836,7 +838,7 @@ int main (int argc, char **argv)
 	//
 	LoadMapFile (name);
 
-	RunThreadsOnIndividual (nummapbrushes, true, CreateBrush);
+	RunThreadsOnIndividual (nummapbrushes, qtrue, CreateBrush);
 
 	BoundWorld ();
 
@@ -847,10 +849,10 @@ int main (int argc, char **argv)
 		char	name[1024];
 
 		if (glview)
-			sprintf (name, "%s.gl%i",source, i);
+			Q_sprintf (name, "%s.gl%i",source, i);
 		else
-			sprintf (name, "%s.p%i",source, i);
-		out[i] = fopen (name, "w");
+			Q_sprintf (name, "%s.p%i",source, i);
+		out[i] = Q_fopen (name, "w");
 		if (!out[i])
 			Error ("Couldn't open %s",name);
 	}
@@ -863,7 +865,7 @@ int main (int argc, char **argv)
 	qprintf ("%5i tiny clips\n", c_tiny_clip);
 
 	for (i=0 ; i<NUM_HULLS ; i++)
-		fclose (out[i]);
+		Q_fclose (out[i]);
 
 	if (!glview)
 	{
@@ -872,7 +874,7 @@ int main (int argc, char **argv)
 	}
 
 	end = I_FloatTime ();
-	printf ("%5.0f seconds elapsed\n", end-start);
+	Q_printf ("%5.0f seconds elapsed\n", end-start);
 
 	return 0;
 }

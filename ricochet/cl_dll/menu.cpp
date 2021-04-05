@@ -117,7 +117,7 @@ void CHudMenu :: SelectMenuItem( int menu_item )
 	if ( (menu_item > 0) && (m_bitsValidSlots & (1 << (menu_item-1))) )
 	{
 		char szbuf[32];
-		sprintf( szbuf, "menuselect %d\n", menu_item );
+		Q_sprintf( szbuf, "menuselect %d\n", menu_item );
 		ClientCmd( szbuf );
 
 		// remove the menu
@@ -153,23 +153,23 @@ int CHudMenu :: MsgFunc_ShowMenu( const char *pszName, int iSize, void *pbuf )
 	{
 		if ( !m_fWaitingForMore ) // this is the start of a new menu
 		{
-			strncpy( g_szPrelocalisedMenuString, READ_STRING(), MAX_MENU_STRING );
+			Q_strncpy( g_szPrelocalisedMenuString, READ_STRING(), MAX_MENU_STRING );
 		}
 		else
 		{  // append to the current menu string
-			strncat( g_szPrelocalisedMenuString, READ_STRING(), MAX_MENU_STRING - strlen(g_szPrelocalisedMenuString) );
+			Q_strncat( g_szPrelocalisedMenuString, READ_STRING(), MAX_MENU_STRING - Q_strlen(g_szPrelocalisedMenuString) );
 		}
 		g_szPrelocalisedMenuString[MAX_MENU_STRING-1] = 0;  // ensure null termination (strncat/strncpy does not)
 
 		if ( !NeedMore )
 		{  // we have the whole string, so we can localise it now
-			strcpy( g_szMenuString, gHUD.m_TextMessage.BufferedLocaliseTextString( g_szPrelocalisedMenuString ) );
+			Q_strcpy( g_szMenuString, gHUD.m_TextMessage.BufferedLocaliseTextString( g_szPrelocalisedMenuString ) );
 
 			// Swap in characters
 			if ( KB_ConvertString( g_szMenuString, &temp ) )
 			{
-				strcpy( g_szMenuString, temp );
-				free( temp );
+				Q_strcpy( g_szMenuString, temp );
+				Q_free( temp );
 			}
 		}
 

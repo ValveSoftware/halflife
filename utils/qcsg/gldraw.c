@@ -43,15 +43,15 @@ void Draw_ClearWindow (void)
 
 	if (!init)
 	{
-		init = true;
+		init = qtrue;
 		InitWindow ();
 	}
 
-	glClearColor (1,0.8,0.8,0);
+	glClearColor (1,0.8f,0.8f,0);
 	glClear (GL_COLOR_BUFFER_BIT);
 
-	w = (draw_maxs[0] - draw_mins[0]);
-	h = (draw_maxs[1] - draw_mins[1]);
+	w = (int)(draw_maxs[0] - draw_mins[0]);
+	h = (int)(draw_maxs[1] - draw_mins[1]);
 
 	mx = draw_mins[0] + w/2;
 	my = draw_mins[1] + h/2;
@@ -116,16 +116,16 @@ void DrawWinding (winding_t *w)
 	if (!drawflag)
 		return;
 
-	glColor4f (0,0,0,0.5);
+	glColor4f (0,0,0,0.5f);
 	glBegin (GL_LINE_LOOP);
 	for (i=0 ; i<w->numpoints ; i++)
-		glVertex3f (w->p[i][0],w->p[i][1],w->p[i][2] );
+		glVertex3f ((GLfloat)w->p[i][0],(GLfloat)w->p[i][1],(GLfloat)w->p[i][2] );
 	glEnd ();
 
-	glColor4f (0,1,0,0.3);
+	glColor4f (0,1,0,0.3f);
 	glBegin (GL_POLYGON);
 	for (i=0 ; i<w->numpoints ; i++)
-		glVertex3f (w->p[i][0],w->p[i][1],w->p[i][2] );
+		glVertex3f ((GLfloat)w->p[i][0],(GLfloat)w->p[i][1],(GLfloat)w->p[i][2] );
 	glEnd ();
 
 	glFlush ();
@@ -138,16 +138,16 @@ void DrawAuxWinding (winding_t *w)
 	if (!drawflag)
 		return;
 
-	glColor4f (0,0,0,0.5);
+	glColor4f (0,0,0,0.5f);
 	glBegin (GL_LINE_LOOP);
 	for (i=0 ; i<w->numpoints ; i++)
-		glVertex3f (w->p[i][0],w->p[i][1],w->p[i][2] );
+		glVertex3f ((GLfloat)w->p[i][0],(GLfloat)w->p[i][1],(GLfloat)w->p[i][2] );
 	glEnd ();
 
-	glColor4f (1,0,0,0.3);
+	glColor4f (1,0,0,0.3f);
 	glBegin (GL_POLYGON);
 	for (i=0 ; i<w->numpoints ; i++)
-		glVertex3f (w->p[i][0],w->p[i][1],w->p[i][2] );
+		glVertex3f ((GLfloat)w->p[i][0],(GLfloat)w->p[i][1],(GLfloat)w->p[i][2] );
 	glEnd ();
 
 	glFlush ();

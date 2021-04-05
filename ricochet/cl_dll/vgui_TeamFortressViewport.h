@@ -429,14 +429,16 @@ protected:
 public:
 	CMenuHandler_StringCommand( char *pszCommand )
 	{
-		strncpy( m_pszCommand, pszCommand, MAX_COMMAND_SIZE);
+		Q_strncpy( m_pszCommand, pszCommand, MAX_COMMAND_SIZE);
+
 		m_pszCommand[MAX_COMMAND_SIZE-1] = '\0';
 		m_iCloseVGUIMenu = false;
 	}
 
 	CMenuHandler_StringCommand( char *pszCommand, int iClose )
 	{
-		strncpy( m_pszCommand, pszCommand, MAX_COMMAND_SIZE);
+		Q_strncpy( m_pszCommand, pszCommand, MAX_COMMAND_SIZE);
+
 		m_pszCommand[MAX_COMMAND_SIZE-1] = '\0';
 		m_iCloseVGUIMenu = true;
 	}
@@ -471,13 +473,13 @@ public:
 		CMenuHandler_StringCommand::actionPerformed( panel );
 
 		// Try to guess the player's new team (it'll be corrected if it's wrong)
-		if ( !strcmp( m_pszCommand, "jointeam 1" ) )
+		if ( !Q_strcmp( m_pszCommand, "jointeam 1" ) )
 			g_iTeamNumber = 1;
-		else if ( !strcmp( m_pszCommand, "jointeam 2" ) )
+		else if ( !Q_strcmp( m_pszCommand, "jointeam 2" ) )
 			g_iTeamNumber = 2;
-		else if ( !strcmp( m_pszCommand, "jointeam 3" ) )
+		else if ( !Q_strcmp( m_pszCommand, "jointeam 3" ) )
 			g_iTeamNumber = 3;
-		else if ( !strcmp( m_pszCommand, "jointeam 4" ) )
+		else if ( !Q_strcmp( m_pszCommand, "jointeam 4" ) )
 			g_iTeamNumber = 4;
 	}
 };
@@ -930,7 +932,7 @@ private:
 public:
 	MapButton( const char *pMapName, const char* text,int x,int y,int wide,int tall ) : CommandButton( text,x,y,wide,tall)
 	{
-		sprintf( m_szMapName, "maps/%s.bsp", pMapName );
+		Q_sprintf( m_szMapName, "maps/%s.bsp", pMapName );
 	}
 
 	virtual int IsNotValid()
@@ -940,7 +942,7 @@ public:
 			return true;
 
 		// Does it match the current map name?
-		if ( strcmp(m_szMapName, level) )
+		if ( Q_strcmp(m_szMapName, level) )
 			return true;
 
 		return false;

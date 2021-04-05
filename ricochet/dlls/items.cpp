@@ -45,7 +45,7 @@ void CWorldItem::KeyValue(KeyValueData *pkvd)
 {
 	if (FStrEq(pkvd->szKeyName, "type"))
 	{
-		m_iType = atoi(pkvd->szValue);
+		m_iType = Q_atoi(pkvd->szValue);
 		pkvd->fHandled = TRUE;
 	}
 	else
@@ -224,7 +224,7 @@ class CItemBattery : public CItem
 			char szcharge[64];
 
 			pPlayer->pev->armorvalue += gSkillData.batteryCapacity;
-			pPlayer->pev->armorvalue = min(pPlayer->pev->armorvalue, MAX_NORMAL_BATTERY);
+			pPlayer->pev->armorvalue = Q_min(pPlayer->pev->armorvalue, MAX_NORMAL_BATTERY);
 
 			EMIT_SOUND( pPlayer->edict(), CHAN_ITEM, "items/gunpickup2.wav", 1, ATTN_NORM );
 
@@ -240,7 +240,7 @@ class CItemBattery : public CItem
 			if (pct > 0)
 				pct--;
 		
-			sprintf( szcharge,"!HEV_%1dP", pct );
+			Q_sprintf( szcharge,"!HEV_%1dP", pct );
 			
 			//EMIT_SOUND_SUIT(ENT(pev), szcharge);
 			pPlayer->SetSuitUpdate(szcharge, FALSE, SUIT_NEXT_IN_30SEC);

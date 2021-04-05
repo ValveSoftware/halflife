@@ -41,7 +41,7 @@ void Demo_WriteBuffer( int type, int size, unsigned char *buffer )
 	*( int * )&buf[pos] = type;
 	pos+=sizeof( int );
 
-	memcpy( &buf[pos], buffer, size );
+	Q_memcpy( &buf[pos], buffer, size );
 
 	// Write full buffer out
 	gEngfuncs.pDemoAPI->WriteBuffer( size + sizeof( int ), buf );

@@ -77,7 +77,7 @@ void AlertMessage( ALERT_TYPE atype, char *szFmt, ... )
 	static char	string[1024];
 	
 	va_start (argptr, szFmt);
-	vsprintf (string, szFmt,argptr);
+	Q_vsprintf (string, szFmt,argptr);
 	va_end (argptr);
 
 	gEngfuncs.Con_Printf( "cl:  " );
@@ -94,7 +94,7 @@ we set up the m_pPlayer field.
 */
 void HUD_PrepEntity( CBaseEntity *pEntity, CBasePlayer *pWeaponOwner )
 {
-	memset( &ev[ num_ents ], 0, sizeof( entvars_t ) );
+	Q_memset( &ev[ num_ents ], 0, sizeof( entvars_t ) );
 	pEntity->pev = &ev[ num_ents++ ];
 
 	pEntity->Precache();
@@ -135,7 +135,7 @@ BOOL CBasePlayerWeapon :: DefaultReload( int iClipSize, int iAnim, float fDelay 
 	if (m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType] <= 0)
 		return FALSE;
 
-	int j = min(iClipSize - m_iClip, m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType]);	
+	int j = Q_min(iClipSize - m_iClip, m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType]);	
 
 	if (j == 0)
 		return FALSE;
@@ -277,7 +277,7 @@ void CBasePlayerWeapon::ItemPostFrame( void )
 	{
 #if 0 // FIXME, need ammo on client to make this work right
 		// complete the reload. 
-		int j = min( iMaxClip() - m_iClip, m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType]);	
+		int j = Q_min( iMaxClip() - m_iClip, m_pPlayer->m_rgAmmo[m_iPrimaryAmmoType]);	
 
 		// Add them to the clip
 		m_iClip += j;
@@ -430,7 +430,7 @@ Don't actually trace, but act like the trace didn't hit anything.
 */
 void UTIL_TraceLine( const Vector &vecStart, const Vector &vecEnd, IGNORE_MONSTERS igmon, edict_t *pentIgnore, TraceResult *ptr )
 {
-	memset( ptr, 0, sizeof( *ptr ) );
+	Q_memset( ptr, 0, sizeof( *ptr ) );
 	ptr->flFraction = 1.0;
 }
 
@@ -590,7 +590,7 @@ int LookupSequence( void *pmodel, const char *label )
 
 	for (int i = 0; i < pstudiohdr->numseq; i++)
 	{
-		if (stricmp( pseqdesc[i].label, label ) == 0)
+		if (Q_stricmp( pseqdesc[i].label, label ) == 0)
 			return i;
 	}
 
@@ -642,7 +642,7 @@ void GetSequenceInfo( void *pmodel, entvars_t *pev, float *pflFrameRate, float *
 	if (pseqdesc->numframes > 1)
 	{
 		*pflFrameRate = 256 * pseqdesc->fps / (pseqdesc->numframes - 1);
-		*pflGroundSpeed = sqrt( pseqdesc->linearmovement[0]*pseqdesc->linearmovement[0]+ pseqdesc->linearmovement[1]*pseqdesc->linearmovement[1]+ pseqdesc->linearmovement[2]*pseqdesc->linearmovement[2] );
+		*pflGroundSpeed = Q_sqrt( pseqdesc->linearmovement[0]*pseqdesc->linearmovement[0]+ pseqdesc->linearmovement[1]*pseqdesc->linearmovement[1]+ pseqdesc->linearmovement[2]*pseqdesc->linearmovement[2] );
 		*pflGroundSpeed = *pflGroundSpeed * pseqdesc->fps / (pseqdesc->numframes - 1);
 	}
 	else
@@ -1070,7 +1070,7 @@ void HUD_WeaponsPostThink( local_state_s *from, local_state_s *to, usercmd_t *cm
 	weapon_data_t nulldata, *pfrom, *pto;
 	static int lasthealth;
 
-	memset( &nulldata, 0, sizeof( nulldata ) );
+	Q_memset( &nulldata, 0, sizeof( nulldata ) );
 
 	HUD_InitClientWeapons();	
 
@@ -1254,7 +1254,7 @@ void HUD_WeaponsPostThink( local_state_s *from, local_state_s *to, usercmd_t *cm
 
 		if ( !pCurrent )
 		{
-			memset( pto, 0, sizeof( weapon_data_t ) );
+			Q_memset( pto, 0, sizeof( weapon_data_t ) );
 			continue;
 		}
 	

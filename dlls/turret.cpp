@@ -215,24 +215,24 @@ void CBaseTurret::KeyValue( KeyValueData *pkvd )
 {
 	if (FStrEq(pkvd->szKeyName, "maxsleep"))
 	{
-		m_flMaxWait = atof(pkvd->szValue);
+		m_flMaxWait = Q_atof(pkvd->szValue);
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "orientation"))
 	{
-		m_iOrientation = atoi(pkvd->szValue);
+		m_iOrientation = Q_atoi(pkvd->szValue);
 		pkvd->fHandled = TRUE;
 
 	}
 	else if (FStrEq(pkvd->szKeyName, "searchspeed"))
 	{
-		m_iSearchSpeed = atoi(pkvd->szValue);
+		m_iSearchSpeed = Q_atoi(pkvd->szValue);
 		pkvd->fHandled = TRUE;
 
 	}
 	else if (FStrEq(pkvd->szKeyName, "turnrate"))
 	{
-		m_iBaseTurnRate = atoi(pkvd->szValue);
+		m_iBaseTurnRate = Q_atoi(pkvd->szValue);
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "style") ||
@@ -453,7 +453,7 @@ void CBaseTurret::EyeOff( )
 	{
 		if (m_eyeBrightness > 0)
 		{
-			m_eyeBrightness = max( 0, m_eyeBrightness - 30 );
+			m_eyeBrightness = Q_max( 0, m_eyeBrightness - 30 );
 			m_pEyeGlow->SetBrightness( m_eyeBrightness );
 		}
 	}
@@ -1077,7 +1077,7 @@ int CBaseTurret::MoveTurret(void)
 	if (m_vecCurAngles.y != m_vecGoalAngles.y)
 	{
 		float flDir = m_vecGoalAngles.y > m_vecCurAngles.y ? 1 : -1 ;
-		float flDist = fabs(m_vecGoalAngles.y - m_vecCurAngles.y);
+		float flDist = Q_fabs(m_vecGoalAngles.y - m_vecCurAngles.y);
 		
 		if (flDist > 180)
 		{

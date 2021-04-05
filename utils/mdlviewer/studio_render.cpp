@@ -11,6 +11,8 @@
 // updates:
 // 1-4-99	fixed AdvanceFrame wraping bug
 
+#include "../../public/vstdlib/warnings.h"
+
 #include <windows.h>
 
 #include <gl\gl.h>
@@ -25,6 +27,8 @@
 #include "../../public/steam/steamtypes.h" // defines int32, required by studio.h
 #include "..\..\engine\studio.h"
 #include "mdlviewer.h"
+
+#include "../../public/vstdlib/vstdlib.h"
 
 
 ////////////////////////////////////////////////////////////////////////
@@ -384,7 +388,7 @@ void StudioModel::SetUpBones ( void )
 		bonematrix[2][3] = pos[i][2];
 
 		if (pbones[i].parent == -1) {
-			memcpy(g_bonetransform[i], bonematrix, sizeof(float) * 12);
+			Q_memcpy(g_bonetransform[i], bonematrix, sizeof(float) * 12);
 		} 
 		else {
 			R_ConcatTransforms (g_bonetransform[pbones[i].parent], bonematrix, g_bonetransform[i]);

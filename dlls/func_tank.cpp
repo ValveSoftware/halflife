@@ -215,57 +215,57 @@ void CFuncTank :: KeyValue( KeyValueData *pkvd )
 {
 	if (FStrEq(pkvd->szKeyName, "yawrate"))
 	{
-		m_yawRate = atof(pkvd->szValue);
+		m_yawRate = Q_atof(pkvd->szValue);
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "yawrange"))
 	{
-		m_yawRange = atof(pkvd->szValue);
+		m_yawRange = Q_atof(pkvd->szValue);
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "yawtolerance"))
 	{
-		m_yawTolerance = atof(pkvd->szValue);
+		m_yawTolerance = Q_atof(pkvd->szValue);
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "pitchrange"))
 	{
-		m_pitchRange = atof(pkvd->szValue);
+		m_pitchRange = Q_atof(pkvd->szValue);
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "pitchrate"))
 	{
-		m_pitchRate = atof(pkvd->szValue);
+		m_pitchRate = Q_atof(pkvd->szValue);
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "pitchtolerance"))
 	{
-		m_pitchTolerance = atof(pkvd->szValue);
+		m_pitchTolerance = Q_atof(pkvd->szValue);
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "firerate"))
 	{
-		m_fireRate = atof(pkvd->szValue);
+		m_fireRate = Q_atof(pkvd->szValue);
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "barrel"))
 	{
-		m_barrelPos.x = atof(pkvd->szValue);
+		m_barrelPos.x = Q_atof(pkvd->szValue);
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "barrely"))
 	{
-		m_barrelPos.y = atof(pkvd->szValue);
+		m_barrelPos.y = Q_atof(pkvd->szValue);
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "barrelz"))
 	{
-		m_barrelPos.z = atof(pkvd->szValue);
+		m_barrelPos.z = Q_atof(pkvd->szValue);
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "spritescale"))
 	{
-		m_spriteScale = atof(pkvd->szValue);
+		m_spriteScale = Q_atof(pkvd->szValue);
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "spritesmoke"))
@@ -285,32 +285,32 @@ void CFuncTank :: KeyValue( KeyValueData *pkvd )
 	}
 	else if (FStrEq(pkvd->szKeyName, "persistence"))
 	{
-		m_persist = atof(pkvd->szValue);
+		m_persist = Q_atof(pkvd->szValue);
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "bullet"))
 	{
-		m_bulletType = (TANKBULLET)atoi(pkvd->szValue);
+		m_bulletType = (TANKBULLET)Q_atoi(pkvd->szValue);
 		pkvd->fHandled = TRUE;
 	}
 	else if ( FStrEq(pkvd->szKeyName, "bullet_damage" )) 
 	{
-		m_iBulletDamage = atoi(pkvd->szValue);
+		m_iBulletDamage = Q_atoi(pkvd->szValue);
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "firespread"))
 	{
-		m_spread = atoi(pkvd->szValue);
+		m_spread = Q_atoi(pkvd->szValue);
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "minRange"))
 	{
-		m_minRange = atof(pkvd->szValue);
+		m_minRange = Q_atof(pkvd->szValue);
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "maxRange"))
 	{
-		m_maxRange = atof(pkvd->szValue);
+		m_maxRange = Q_atof(pkvd->szValue);
 		pkvd->fHandled = TRUE;
 	}
 	else if (FStrEq(pkvd->szKeyName, "master"))
@@ -475,7 +475,7 @@ void CFuncTank :: Think( void )
 	pev->avelocity = g_vecZero;
 	TrackTarget();
 
-	if ( fabs(pev->avelocity.x) > 1 || fabs(pev->avelocity.y) > 1 )
+	if ( Q_fabs(pev->avelocity.x) > 1 || Q_fabs(pev->avelocity.y) > 1 )
 		StartRotSound();
 	else
 		StopRotSound();
@@ -596,7 +596,7 @@ void CFuncTank::TrackTarget( void )
 	if ( m_pController )
 		return;
 
-	if ( CanFire() && ( (fabs(distX) < m_pitchTolerance && fabs(distY) < m_yawTolerance) || (pev->spawnflags & SF_TANK_LINEOFSIGHT) ) )
+	if ( CanFire() && ( (Q_fabs(distX) < m_pitchTolerance && Q_fabs(distY) < m_yawTolerance) || (pev->spawnflags & SF_TANK_LINEOFSIGHT) ) )
 	{
 		BOOL fire = FALSE;
 		Vector forward;
@@ -637,12 +637,12 @@ void CFuncTank::AdjustAnglesForBarrel( Vector &angles, float distance )
 		if ( m_barrelPos.y )
 		{
 			r2 = m_barrelPos.y * m_barrelPos.y;
-			angles.y += (180.0 / M_PI) * atan2( m_barrelPos.y, sqrt( d2 - r2 ) );
+			angles.y += (180.0 / M_PI) * Q_atan2( m_barrelPos.y, Q_sqrt( d2 - r2 ) );
 		}
 		if ( m_barrelPos.z )
 		{
 			r2 = m_barrelPos.z * m_barrelPos.z;
-			angles.x += (180.0 / M_PI) * atan2( -m_barrelPos.z, sqrt( d2 - r2 ) );
+			angles.x += (180.0 / M_PI) * Q_atan2( -m_barrelPos.z, Q_sqrt( d2 - r2 ) );
 		}
 	}
 }
@@ -930,7 +930,7 @@ void CFuncTankMortar::KeyValue( KeyValueData *pkvd )
 {
 	if (FStrEq(pkvd->szKeyName, "iMagnitude"))
 	{
-		pev->impulse = atoi( pkvd->szValue );
+		pev->impulse = Q_atoi( pkvd->szValue );
 		pkvd->fHandled = TRUE;
 	}
 	else
@@ -1012,7 +1012,7 @@ void CFuncTankControls :: Think( void )
 	do 
 	{
 		pTarget = FIND_ENTITY_BY_TARGETNAME( pTarget, STRING(pev->target) );
-	} while ( !FNullEnt(pTarget) && strncmp( STRING(pTarget->v.classname), "func_tank", 9 ) );
+	} while ( !FNullEnt(pTarget) && Q_strncmp( STRING(pTarget->v.classname), "func_tank", 9 ) );
 
 	if ( FNullEnt( pTarget ) )
 	{

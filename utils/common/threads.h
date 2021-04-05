@@ -18,7 +18,7 @@ void ThreadLock (void);
 void ThreadUnlock (void);
 
 #ifndef NO_THREAD_NAMES
-#define RunThreadsOn(n,p,f) { if (p) printf("%-20s ", #f ":"); RunThreadsOn(n,p,f); }
-#define RunThreadsOnIndividual(n,p,f) { if (p) printf("%-20s ", #f ":"); RunThreadsOnIndividual(n,p,f); }
+#define RunThreadsOn(n,p,f) { if (p) Q_printf("%-20s ", #f ":"); RunThreadsOn(n,p,f); }
+#define RunThreadsOnIndividual(n,p,f) { if (p) Q_printf("%-20s ", #f ":"); RunThreadsOnIndividual(n,p,f); }
 #endif
 
