@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2013 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2020 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -21,12 +21,12 @@
 
 /**
  *  \file SDL_touch.h
- *  
+ *
  *  Include file for SDL touch event handling.
  */
 
-#ifndef _SDL_touch_h
-#define _SDL_touch_h
+#ifndef SDL_touch_h_
+#define SDL_touch_h_
 
 #include "SDL_stdinc.h"
 #include "SDL_error.h"
@@ -35,13 +35,19 @@
 #include "begin_code.h"
 /* Set up for C function definitions, even when using C++ */
 #ifdef __cplusplus
-/* *INDENT-OFF* */
 extern "C" {
-/* *INDENT-ON* */
 #endif
 
 typedef Sint64 SDL_TouchID;
 typedef Sint64 SDL_FingerID;
+
+typedef enum
+{
+    SDL_TOUCH_DEVICE_INVALID = -1,
+    SDL_TOUCH_DEVICE_DIRECT,            /* touch screen with window-relative coordinates */
+    SDL_TOUCH_DEVICE_INDIRECT_ABSOLUTE, /* trackpad with absolute device coordinates */
+    SDL_TOUCH_DEVICE_INDIRECT_RELATIVE  /* trackpad with screen cursor-relative coordinates */
+} SDL_TouchDeviceType;
 
 typedef struct SDL_Finger
 {
@@ -54,18 +60,26 @@ typedef struct SDL_Finger
 /* Used as the device ID for mouse events simulated with touch input */
 #define SDL_TOUCH_MOUSEID ((Uint32)-1)
 
+/* Used as the SDL_TouchID for touch events simulated with mouse input */
+#define SDL_MOUSE_TOUCHID ((Sint64)-1)
+
 
 /* Function prototypes */
 
 /**
  *  \brief Get the number of registered touch devices.
  */
-extern DECLSPEC int SDLCALL SDL_GetNumTouchDevices();
+extern DECLSPEC int SDLCALL SDL_GetNumTouchDevices(void);
 
 /**
  *  \brief Get the touch ID with the given index, or 0 if the index is invalid.
  */
 extern DECLSPEC SDL_TouchID SDLCALL SDL_GetTouchDevice(int index);
+
+/**
+ * \brief Get the type of the given touch device.
+ */
+extern DECLSPEC SDL_TouchDeviceType SDLCALL SDL_GetTouchDeviceType(SDL_TouchID touchID);
 
 /**
  *  \brief Get the number of active fingers for a given touch device.
@@ -79,12 +93,10 @@ extern DECLSPEC SDL_Finger * SDLCALL SDL_GetTouchFinger(SDL_TouchID touchID, int
 
 /* Ends C function definitions when using C++ */
 #ifdef __cplusplus
-/* *INDENT-OFF* */
 }
-/* *INDENT-ON* */
 #endif
 #include "close_code.h"
 
-#endif /* _SDL_touch_h */
+#endif /* SDL_touch_h_ */
 
 /* vi: set ts=4 sw=4 expandtab: */

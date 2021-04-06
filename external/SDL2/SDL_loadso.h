@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2013 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2020 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -24,7 +24,7 @@
  *
  *  System dependent library loading routines
  *
- *  Some things to keep in mind:                                        
+ *  Some things to keep in mind:
  *  \li These functions only work on C function names.  Other languages may
  *      have name mangling and intrinsic language support that varies from
  *      compiler to compiler.
@@ -38,8 +38,8 @@
  *      the results you expect. :)
  */
 
-#ifndef _SDL_loadso_h
-#define _SDL_loadso_h
+#ifndef SDL_loadso_h_
+#define SDL_loadso_h_
 
 #include "SDL_stdinc.h"
 #include "SDL_error.h"
@@ -47,9 +47,7 @@
 #include "begin_code.h"
 /* Set up for C function definitions, even when using C++ */
 #ifdef __cplusplus
-/* *INDENT-OFF* */
 extern "C" {
-/* *INDENT-ON* */
 #endif
 
 /**
@@ -74,12 +72,10 @@ extern DECLSPEC void SDLCALL SDL_UnloadObject(void *handle);
 
 /* Ends C function definitions when using C++ */
 #ifdef __cplusplus
-/* *INDENT-OFF* */
 }
-/* *INDENT-ON* */
 #endif
 #include "close_code.h"
 
-#endif /* _SDL_loadso_h */
+#endif /* SDL_loadso_h_ */
 
 /* vi: set ts=4 sw=4 expandtab: */
