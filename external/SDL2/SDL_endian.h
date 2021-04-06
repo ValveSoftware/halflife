@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2013 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2020 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -21,47 +21,48 @@
 
 /**
  *  \file SDL_endian.h
- *  
+ *
  *  Functions for reading and writing endian-specific values
  */
 
-#ifndef _SDL_endian_h
-#define _SDL_endian_h
+#ifndef SDL_endian_h_
+#define SDL_endian_h_
 
 #include "SDL_stdinc.h"
 
 /**
  *  \name The two types of endianness
  */
-/*@{*/
-#define SDL_LIL_ENDIAN	1234
-#define SDL_BIG_ENDIAN	4321
-/*@}*/
+/* @{ */
+#define SDL_LIL_ENDIAN  1234
+#define SDL_BIG_ENDIAN  4321
+/* @} */
 
 #ifndef SDL_BYTEORDER           /* Not defined in SDL_config.h? */
 #ifdef __linux__
 #include <endian.h>
 #define SDL_BYTEORDER  __BYTE_ORDER
-#else /* __linux __ */
+#elif defined(__OpenBSD__)
+#include <endian.h>
+#define SDL_BYTEORDER  BYTE_ORDER
+#else
 #if defined(__hppa__) || \
     defined(__m68k__) || defined(mc68000) || defined(_M_M68K) || \
-    (defined(__MIPS__) && defined(__MISPEB__)) || \
+    (defined(__MIPS__) && defined(__MIPSEB__)) || \
     defined(__ppc__) || defined(__POWERPC__) || defined(_M_PPC) || \
     defined(__sparc__)
-#define SDL_BYTEORDER	SDL_BIG_ENDIAN
+#define SDL_BYTEORDER   SDL_BIG_ENDIAN
 #else
-#define SDL_BYTEORDER	SDL_LIL_ENDIAN
+#define SDL_BYTEORDER   SDL_LIL_ENDIAN
 #endif
-#endif /* __linux __ */
+#endif /* __linux__ */
 #endif /* !SDL_BYTEORDER */
 
 
 #include "begin_code.h"
 /* Set up for C function definitions, even when using C++ */
 #ifdef __cplusplus
-/* *INDENT-OFF* */
 extern "C" {
-/* *INDENT-ON* */
 #endif
 
 /**
@@ -98,6 +99,12 @@ SDL_Swap16(Uint16 x)
   __asm__("rorw #8,%0": "=d"(x): "0"(x):"cc");
     return x;
 }
+#elif defined(__WATCOMC__) && defined(__386__)
+extern _inline Uint16 SDL_Swap16(Uint16);
+#pragma aux SDL_Swap16 = \
+  "xchg al, ah" \
+  parm   [ax]   \
+  modify [ax];
 #else
 SDL_FORCE_INLINE Uint16
 SDL_Swap16(Uint16 x)
@@ -138,6 +145,21 @@ SDL_Swap32(Uint32 x)
   __asm__("rorw #8,%0\n\tswap %0\n\trorw #8,%0": "=d"(x): "0"(x):"cc");
     return x;
 }
+#elif defined(__WATCOMC__) && defined(__386__)
+extern _inline Uint32 SDL_Swap32(Uint32);
+#ifndef __SW_3 /* 486+ */
+#pragma aux SDL_Swap32 = \
+  "bswap eax"  \
+  parm   [eax] \
+  modify [eax];
+#else  /* 386-only */
+#pragma aux SDL_Swap32 = \
+  "xchg al, ah"  \
+  "ror  eax, 16" \
+  "xchg al, ah"  \
+  parm   [eax]   \
+  modify [eax];
+#endif
 #else
 SDL_FORCE_INLINE Uint32
 SDL_Swap32(Uint32 x)
@@ -208,36 +230,34 @@ SDL_SwapFloat(float x)
  *  \name Swap to native
  *  Byteswap item from the specified endianness to the native endianness.
  */
-/*@{*/
+/* @{ */
 #if SDL_BYTEORDER == SDL_LIL_ENDIAN
-#define SDL_SwapLE16(X)	(X)
-#define SDL_SwapLE32(X)	(X)
-#define SDL_SwapLE64(X)	(X)
-#define SDL_SwapFloatLE(X)	(X)
-#define SDL_SwapBE16(X)	SDL_Swap16(X)
-#define SDL_SwapBE32(X)	SDL_Swap32(X)
-#define SDL_SwapBE64(X)	SDL_Swap64(X)
-#define SDL_SwapFloatBE(X)	SDL_SwapFloat(X)
+#define SDL_SwapLE16(X) (X)
+#define SDL_SwapLE32(X) (X)
+#define SDL_SwapLE64(X) (X)
+#define SDL_SwapFloatLE(X)  (X)
+#define SDL_SwapBE16(X) SDL_Swap16(X)
+#define SDL_SwapBE32(X) SDL_Swap32(X)
+#define SDL_SwapBE64(X) SDL_Swap64(X)
+#define SDL_SwapFloatBE(X)  SDL_SwapFloat(X)
 #else
-#define SDL_SwapLE16(X)	SDL_Swap16(X)
-#define SDL_SwapLE32(X)	SDL_Swap32(X)
-#define SDL_SwapLE64(X)	SDL_Swap64(X)
-#define SDL_SwapFloatLE(X)	SDL_SwapFloat(X)
-#define SDL_SwapBE16(X)	(X)
-#define SDL_SwapBE32(X)	(X)
-#define SDL_SwapBE64(X)	(X)
-#define SDL_SwapFloatBE(X)	(X)
+#define SDL_SwapLE16(X) SDL_Swap16(X)
+#define SDL_SwapLE32(X) SDL_Swap32(X)
+#define SDL_SwapLE64(X) SDL_Swap64(X)
+#define SDL_SwapFloatLE(X)  SDL_SwapFloat(X)
+#define SDL_SwapBE16(X) (X)
+#define SDL_SwapBE32(X) (X)
+#define SDL_SwapBE64(X) (X)
+#define SDL_SwapFloatBE(X)  (X)
 #endif
-/*@}*//*Swap to native*/
+/* @} *//* Swap to native */
 
 /* Ends C function definitions when using C++ */
 #ifdef __cplusplus
-/* *INDENT-OFF* */
 }
-/* *INDENT-ON* */
 #endif
 #include "close_code.h"
 
-#endif /* _SDL_endian_h */
+#endif /* SDL_endian_h_ */
 
 /* vi: set ts=4 sw=4 expandtab: */

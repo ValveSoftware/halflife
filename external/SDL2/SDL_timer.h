@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2013 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2020 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -19,12 +19,12 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 
-#ifndef _SDL_timer_h
-#define _SDL_timer_h
+#ifndef SDL_timer_h_
+#define SDL_timer_h_
 
 /**
  *  \file SDL_timer.h
- *  
+ *
  *  Header for the SDL time management routines.
  */
 
@@ -34,17 +34,26 @@
 #include "begin_code.h"
 /* Set up for C function definitions, even when using C++ */
 #ifdef __cplusplus
-/* *INDENT-OFF* */
 extern "C" {
-/* *INDENT-ON* */
 #endif
 
 /**
  * \brief Get the number of milliseconds since the SDL library initialization.
- *  
+ *
  * \note This value wraps if the program runs for more than ~49 days.
  */
 extern DECLSPEC Uint32 SDLCALL SDL_GetTicks(void);
+
+/**
+ * \brief Compare SDL ticks values, and return true if A has passed B
+ *
+ * e.g. if you want to wait 100 ms, you could do this:
+ *  Uint32 timeout = SDL_GetTicks() + 100;
+ *  while (!SDL_TICKS_PASSED(SDL_GetTicks(), timeout)) {
+ *      ... do work until timeout has elapsed
+ *  }
+ */
+#define SDL_TICKS_PASSED(A, B)  ((Sint32)((B) - (A)) <= 0)
 
 /**
  * \brief Get the current value of the high resolution counter
@@ -63,7 +72,7 @@ extern DECLSPEC void SDLCALL SDL_Delay(Uint32 ms);
 
 /**
  *  Function prototype for the timer callback function.
- *  
+ *
  *  The callback function is passed the current timer interval and returns
  *  the next timer interval.  If the returned value is the same as the one
  *  passed in, the periodic alarm continues, otherwise a new alarm is
@@ -79,7 +88,7 @@ typedef int SDL_TimerID;
 /**
  * \brief Add a new timer to the pool of timers already running.
  *
- * \return A timer ID, or NULL when an error occurs.
+ * \return A timer ID, or 0 when an error occurs.
  */
 extern DECLSPEC SDL_TimerID SDLCALL SDL_AddTimer(Uint32 interval,
                                                  SDL_TimerCallback callback,
@@ -97,12 +106,10 @@ extern DECLSPEC SDL_bool SDLCALL SDL_RemoveTimer(SDL_TimerID id);
 
 /* Ends C function definitions when using C++ */
 #ifdef __cplusplus
-/* *INDENT-OFF* */
 }
-/* *INDENT-ON* */
 #endif
 #include "close_code.h"
 
-#endif /* _SDL_timer_h */
+#endif /* SDL_timer_h_ */
 
 /* vi: set ts=4 sw=4 expandtab: */

@@ -2,6 +2,7 @@
 Debug/
 Release/
 ipch/
+.vs/
 *.sdf
 *.suo
 *.user

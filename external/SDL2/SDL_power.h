@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2013 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2020 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -19,12 +19,12 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 
-#ifndef _SDL_power_h
-#define _SDL_power_h
+#ifndef SDL_power_h_
+#define SDL_power_h_
 
 /**
  *  \file SDL_power.h
- *  
+ *
  *  Header for the SDL power management routines.
  */
 
@@ -33,9 +33,7 @@
 #include "begin_code.h"
 /* Set up for C function definitions, even when using C++ */
 #ifdef __cplusplus
-/* *INDENT-OFF* */
 extern "C" {
-/* *INDENT-ON* */
 #endif
 
 /**
@@ -53,27 +51,25 @@ typedef enum
 
 /**
  *  \brief Get the current power supply details.
- *  
+ *
  *  \param secs Seconds of battery life left. You can pass a NULL here if
  *              you don't care. Will return -1 if we can't determine a
  *              value, or we're not running on a battery.
- *  
+ *
  *  \param pct Percentage of battery life left, between 0 and 100. You can
  *             pass a NULL here if you don't care. Will return -1 if we
  *             can't determine a value, or we're not running on a battery.
- *  
+ *
  *  \return The state of the battery (if any).
  */
 extern DECLSPEC SDL_PowerState SDLCALL SDL_GetPowerInfo(int *secs, int *pct);
 
 /* Ends C function definitions when using C++ */
 #ifdef __cplusplus
-/* *INDENT-OFF* */
 }
-/* *INDENT-ON* */
 #endif
 #include "close_code.h"
 
-#endif /* _SDL_power_h */
+#endif /* SDL_power_h_ */
 
 /* vi: set ts=4 sw=4 expandtab: */
