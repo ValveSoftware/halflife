@@ -325,8 +325,8 @@ void CHud :: Init( void )
 
 	CVAR_CREATE( "hud_classautokill", "1", FCVAR_ARCHIVE | FCVAR_USERINFO );		// controls whether or not to suicide immediately on TF class switch
 	CVAR_CREATE( "hud_takesshots", "0", FCVAR_ARCHIVE );		// controls whether or not to automatically take screenshots at the end of a round
-	cl_rollangle = CVAR_CREATE( "cl_rollangle", "0.65", FCVAR_CLIENTDLL | FCVAR_ARCHIVE );
-	cl_rollspeed = CVAR_CREATE( "cl_rollspeed", "300", FCVAR_CLIENTDLL | FCVAR_ARCHIVE );
+	cl_rollangle = CVAR_CREATE( "cl_viewrollangle", "0.65", FCVAR_CLIENTDLL | FCVAR_ARCHIVE );
+	cl_rollspeed = CVAR_CREATE( "cl_viewrollspeed", "300", FCVAR_CLIENTDLL | FCVAR_ARCHIVE );
 	cl_viewroll = CVAR_CREATE( "cl_viewroll", "0", FCVAR_CLIENTDLL | FCVAR_ARCHIVE );
 	cl_bobtilt = CVAR_CREATE( "cl_bobtilt", "0", FCVAR_CLIENTDLL | FCVAR_ARCHIVE );
 
