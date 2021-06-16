@@ -15,6 +15,8 @@
 #include "bspfile.h"
 #include "threads.h"
 
+#pragma comment(lib, "legacy_stdio_definitions.lib")
+
 //#define	ON_EPSILON	0.05
 #define	BOGUS_RANGE	18000
 

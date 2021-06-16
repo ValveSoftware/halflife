@@ -18,6 +18,8 @@
 
 #include <windows.h>
 
+#pragma comment(lib, "legacy_stdio_definitions.lib")
+
 #ifndef DOUBLEVEC_T
 #error you must add -dDOUBLEVEC_T to the project!
 #endif

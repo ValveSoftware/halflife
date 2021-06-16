@@ -14,8 +14,13 @@ RICOCHETWPN_OBJ_DIR=$(RICOCHETDLL_OBJ_DIR)/wpn_shared
 PM_OBJ_DIR=$(RICOCHETDLL_OBJ_DIR)/pm_shared
 GAME_SHARED_OBJ_DIR=$(RICOCHETDLL_OBJ_DIR)/game_shared
 
+DEBUG_CFLAGS=
+ifeq "$(CFG)" "debug"
+	DEBUG_CFLAGS=-D_DEBUG
+endif
+
 #CFLAGS=$(BASE_CFLAGS) -g
-CFLAGS=$(BASE_CFLAGS) -O3 -ffast-math -fno-strength-reduce
+CFLAGS=$(BASE_CFLAGS) $(DEBUG_CFLAGS) -O3 -ffast-math -fno-strength-reduce
 
 RICOCHETDLL_INCLUDEDIRS=-I$(ENGINE_SRC_DIR) -I$(COMMON_SRC_DIR) -I$(PM_SRC_DIR) -I$(GAME_SHARED_SRC_DIR) -I$(PUBLIC_SRC_DIR)
 RICOCHETWPN_INCLUDEDIRS=-I$(RICOCHETDLL_SRC_DIR) -I$(ENGINE_SRC_DIR) -I$(COMMON_SRC_DIR) -I$(PM_SRC_DIR) -I$(PUBLIC_SRC_DIR)
@@ -102,9 +107,9 @@ dirs:
 
 ricochet.$(SHLIBEXT): $(RICOCHETDLL_OBJS) $(RICOCHETWPN_OBJS) $(PM_OBJS) $(GAME_SHARED_OBJS)
 	$(CLINK) $(SHLIBLDFLAGS) -o $(BUILD_DIR)/$@ $(RICOCHETDLL_OBJS) $(RICOCHETWPN_OBJS) $(PM_OBJS) $(GAME_SHARED_OBJS) $(LDFLAGS) $(CPP_LIB)
-	p4 edit ../../game/mod/dlls/$@
-	cp $(BUILD_DIR)/$@  ../../game/mod/dlls
-	./gendbg.sh ../../game/mod/dlls/$@
+	#p4 edit ../../game/mod/dlls/$@
+	#cp $(BUILD_DIR)/$@  ../../game/mod/dlls
+	#./gendbg.sh ../../game/mod/dlls/$@
 		
 $(RICOCHETWPN_OBJ_DIR)/%.o : $(RICOCHETWPN_SRC_DIR)/%.cpp
 	$(DO_RICOCHETWPN_CC)
