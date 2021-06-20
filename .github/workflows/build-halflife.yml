@@ -1,0 +1,224 @@
+name: build-halflife
+
+on: [push]
+
+env:
+  DEBUG_CONFIGURATION: Debug
+  RELEASE_CONFIGURATION: Release
+  PROJECT_FILE_PATH: projects/vs2019/projects.sln
+  UTIL_FILE_PATH: projects/vs2019/utils.sln
+
+jobs:
+  game-dlls:
+    runs-on: windows-2019
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Add MSBuild to PATH
+      uses: microsoft/setup-msbuild@v1.0.2
+
+    - name: Build debug game dlls
+      working-directory: ${{env.GITHUB_WORKSPACE}}
+      run: msbuild /m ${{env.PROJECT_FILE_PATH}} /p:Configuration=${{env.DEBUG_CONFIGURATION}}
+
+    - name: Package debug game dlls
+      working-directory: ${{env.GITHUB_WORKSPACE}}
+      run: |
+        New-Item -Force -ItemType Directory @("$env:TEMP\debug","$env:TEMP\debug\valve","$env:TEMP\debug\dmc","$env:TEMP\debug\ricochet")
+        Copy-Item -Force projects/vs2019/${{env.DEBUG_CONFIGURATION}}/hldll/hl.dll $env:TEMP/debug/valve
+        Copy-Item -Force projects/vs2019/${{env.DEBUG_CONFIGURATION}}/hl_cdll/client.dll $env:TEMP/debug/valve
+        Copy-Item -Force projects/vs2019/${{env.DEBUG_CONFIGURATION}}/dmcdll/dmc.dll $env:TEMP/debug/dmc
+        Copy-Item -Force projects/vs2019/${{env.DEBUG_CONFIGURATION}}/dmc_cdll/client.dll $env:TEMP/debug/dmc
+        Copy-Item -Force projects/vs2019/${{env.DEBUG_CONFIGURATION}}/ricochetdll/mp.dll $env:TEMP/debug/ricochet
+        Copy-Item -Force projects/vs2019/${{env.DEBUG_CONFIGURATION}}/ricochet_cdll/client.dll $env:TEMP/debug/ricochet
+        Compress-Archive -LiteralPath $env:TEMP\debug -DestinationPath .\debug-game-dlls.zip -Force
+
+    - name: Upload debug game dlls
+      uses: actions/upload-artifact@v2
+      with:
+        name: debug-game-libs
+        path: ./debug-game-dlls.zip
+
+    - name: Build release game dlls
+      working-directory: ${{env.GITHUB_WORKSPACE}}
+      run: msbuild /m ${{env.PROJECT_FILE_PATH}} /p:Configuration=${{env.RELEASE_CONFIGURATION}}
+
+    - name: Package release game dlls
+      working-directory: ${{env.GITHUB_WORKSPACE}}
+      run: |
+        New-Item -Force -ItemType Directory @("$env:TEMP\release","$env:TEMP\release\valve","$env:TEMP\release\dmc","$env:TEMP\release\ricochet")
+        Copy-Item -Force projects/vs2019/${{env.RELEASE_CONFIGURATION}}/hldll/hl.dll $env:TEMP/release/valve
+        Copy-Item -Force projects/vs2019/${{env.RELEASE_CONFIGURATION}}/hl_cdll/client.dll $env:TEMP/release/valve
+        Copy-Item -Force projects/vs2019/${{env.RELEASE_CONFIGURATION}}/dmcdll/dmc.dll $env:TEMP/release/dmc
+        Copy-Item -Force projects/vs2019/${{env.RELEASE_CONFIGURATION}}/dmc_cdll/client.dll $env:TEMP/release/dmc
+        Copy-Item -Force projects/vs2019/${{env.RELEASE_CONFIGURATION}}/ricochetdll/mp.dll $env:TEMP/release/ricochet
+        Copy-Item -Force projects/vs2019/${{env.RELEASE_CONFIGURATION}}/ricochet_cdll/client.dll $env:TEMP/release/ricochet
+        Compress-Archive -LiteralPath $env:TEMP\release -DestinationPath .\release-game-dlls.zip -Force
+
+    - name: Upload release game libs
+      uses: actions/upload-artifact@v2
+      with:
+        name: release-game-libs
+        path: ./release-game-dlls.zip
+
+  game-so-libs:
+    runs-on: ubuntu-18.04
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Update sources to include xenial main
+      run: sudo su -c "echo 'deb http://dk.archive.ubuntu.com/ubuntu/ xenial main' >> /etc/apt/sources.list"
+
+    - name: Update sources to include xenial universe
+      run: sudo su -c "echo 'deb http://dk.archive.ubuntu.com/ubuntu/ xenial universe' >> /etc/apt/sources.list"
+
+    - name: Update packages
+      run: sudo apt update -y
+
+    - name: Install make
+      run: sudo apt-get install make
+
+    - name: Install g++-4.8
+      run: sudo apt install g++-4.8 gcc-4.8 -y
+
+    - name: Install headers
+      run: sudo apt-get install gcc-4.8-multilib g++-4.8-multilib -y
+
+    - name: Build debug Linux so libs
+      run: cd linux && make all CFG=${{env.DEBUG_CONFIGURATION}}
+
+    - name: Package debug Linux so libs
+      run: |
+        cd linux
+        mkdir ${{env.DEBUG_CONFIGURATION}}/hl && mv ${{env.DEBUG_CONFIGURATION}}/hl.so ${{env.DEBUG_CONFIGURATION}}/hl && mv ${{env.DEBUG_CONFIGURATION}}/client.so ${{env.DEBUG_CONFIGURATION}}/hl
+        mkdir ${{env.DEBUG_CONFIGURATION}}/dmc && mv ${{env.DEBUG_CONFIGURATION}}/dmc.so ${{env.DEBUG_CONFIGURATION}}/dmc && mv ${{env.DEBUG_CONFIGURATION}}/client_dmc.so ${{env.DEBUG_CONFIGURATION}}/dmc
+        mkdir ${{env.DEBUG_CONFIGURATION}}/ricochet && mv ${{env.DEBUG_CONFIGURATION}}/ricochet.so ${{env.DEBUG_CONFIGURATION}}/ricochet && mv ${{env.DEBUG_CONFIGURATION}}/client_ricochet.so ${{env.DEBUG_CONFIGURATION}}/ricochet
+        zip -r debug-game-linux-libs.zip ${{env.DEBUG_CONFIGURATION}}/hl ${{env.DEBUG_CONFIGURATION}}/dmc ${{env.DEBUG_CONFIGURATION}}/ricochet
+
+    - name: Upload debug Linux game libs
+      uses: actions/upload-artifact@v2
+      with:
+        name: debug-game-linux-libs
+        path: ./linux/debug-game-linux-libs.zip
+
+    - name: Build release Linux so libs
+      run: cd linux && make all CFG=${{env.RELEASE_CONFIGURATION}}
+
+    - name: Package release Linux so libs
+      run: |
+        cd linux
+        mkdir ${{env.RELEASE_CONFIGURATION}}/hl && mv ${{env.RELEASE_CONFIGURATION}}/hl.so ${{env.RELEASE_CONFIGURATION}}/hl && mv ${{env.RELEASE_CONFIGURATION}}/client.so ${{env.RELEASE_CONFIGURATION}}/hl
+        mkdir ${{env.RELEASE_CONFIGURATION}}/dmc && mv ${{env.RELEASE_CONFIGURATION}}/dmc.so ${{env.RELEASE_CONFIGURATION}}/dmc && mv ${{env.RELEASE_CONFIGURATION}}/client_dmc.so ${{env.RELEASE_CONFIGURATION}}/dmc
+        mkdir ${{env.RELEASE_CONFIGURATION}}/ricochet && mv ${{env.RELEASE_CONFIGURATION}}/ricochet.so ${{env.RELEASE_CONFIGURATION}}/ricochet && mv ${{env.RELEASE_CONFIGURATION}}/client_ricochet.so ${{env.RELEASE_CONFIGURATION}}/ricochet
+        zip -r release-game-linux-libs.zip ${{env.RELEASE_CONFIGURATION}}/hl ${{env.RELEASE_CONFIGURATION}}/dmc ${{env.RELEASE_CONFIGURATION}}/ricochet
+
+    - name: Upload release Linux game libs
+      uses: actions/upload-artifact@v2
+      with:
+        name: release-game-linux-libs
+        path: ./linux/release-game-linux-libs.zip
+
+  game-dylibs:
+    runs-on: macOS-10.15
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Install MacOSX10.8.sdk
+      run: |
+        mkdir /tmp/sdk && cd /tmp/sdk
+        curl -sSL https://github.com/phracker/MacOSX-SDKs/releases/download/11.3/MacOSX10.8.sdk.tar.xz > sdk.tar
+        tar -xvf sdk.tar
+        sudo ln -s /tmp/sdk/MacOSX10.8.sdk $(/usr/bin/xcode-select -print-path)/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.8.sdk
+        rm sdk.tar
+
+    - name: Build debug macOS dylibs
+      run: cd linux && make all CFG=${{env.DEBUG_CONFIGURATION}}
+
+    - name: Package debug macOS dylibs
+      run: |
+        cd linux
+        mkdir ${{env.DEBUG_CONFIGURATION}}/hl && mv ${{env.DEBUG_CONFIGURATION}}/hl.dylib ${{env.DEBUG_CONFIGURATION}}/hl && mv ${{env.DEBUG_CONFIGURATION}}/client.dylib ${{env.DEBUG_CONFIGURATION}}/hl
+        mkdir ${{env.DEBUG_CONFIGURATION}}/dmc && mv ${{env.DEBUG_CONFIGURATION}}/dmc.dylib ${{env.DEBUG_CONFIGURATION}}/dmc && mv ${{env.DEBUG_CONFIGURATION}}/client_dmc.dylib ${{env.DEBUG_CONFIGURATION}}/dmc
+        mkdir ${{env.DEBUG_CONFIGURATION}}/ricochet && mv ${{env.DEBUG_CONFIGURATION}}/ricochet.dylib ${{env.DEBUG_CONFIGURATION}}/ricochet && mv ${{env.DEBUG_CONFIGURATION}}/client_ricochet.dylib ${{env.DEBUG_CONFIGURATION}}/ricochet
+        zip -r debug-game-macos-dylibs.zip ${{env.DEBUG_CONFIGURATION}}/hl ${{env.DEBUG_CONFIGURATION}}/dmc ${{env.DEBUG_CONFIGURATION}}/ricochet
+
+    - name: Upload debug macOS game dylibs
+      uses: actions/upload-artifact@v2
+      with:
+        name: debug-game-macos-dylibs
+        path: ./linux/debug-game-macos-dylibs.zip
+
+    - name: Build release macOS dylibs
+      run: cd linux && make all CFG=${{env.RELEASE_CONFIGURATION}}
+
+    - name: Package release macOS dylibs
+      run: |
+        cd linux
+        mkdir ${{env.RELEASE_CONFIGURATION}}/hl && mv ${{env.RELEASE_CONFIGURATION}}/hl.dylib ${{env.RELEASE_CONFIGURATION}}/hl && mv ${{env.RELEASE_CONFIGURATION}}/client.dylib ${{env.RELEASE_CONFIGURATION}}/hl
+        mkdir ${{env.RELEASE_CONFIGURATION}}/dmc && mv ${{env.RELEASE_CONFIGURATION}}/dmc.dylib ${{env.RELEASE_CONFIGURATION}}/dmc && mv ${{env.RELEASE_CONFIGURATION}}/client_dmc.dylib ${{env.RELEASE_CONFIGURATION}}/dmc
+        mkdir ${{env.RELEASE_CONFIGURATION}}/ricochet && mv ${{env.RELEASE_CONFIGURATION}}/ricochet.dylib ${{env.RELEASE_CONFIGURATION}}/ricochet && mv ${{env.RELEASE_CONFIGURATION}}/client_ricochet.dylib ${{env.RELEASE_CONFIGURATION}}/ricochet
+        zip -r release-game-macos-dylibs.zip ${{env.RELEASE_CONFIGURATION}}/hl ${{env.RELEASE_CONFIGURATION}}/dmc ${{env.RELEASE_CONFIGURATION}}/ricochet
+
+    - name: Upload release macOS game dylibs
+      uses: actions/upload-artifact@v2
+      with:
+        name: release-game-macos-dylibs
+        path: ./linux/release-game-macos-dylibs.zip
+
+  windows-util-tools:
+    runs-on: windows-2019
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Add MSBuild to PATH
+      uses: microsoft/setup-msbuild@v1.0.2
+
+    - name: Download openGL libraries
+      working-directory: ${{env.GITHUB_WORKSPACE}}
+      run: |
+        New-Item -ItemType directory -Path @('ext','ext/GL')
+        Invoke-WebRequest -Uri "http://www.songho.ca/opengl/files/glaux.h" | select -ExpandProperty Content | Out-File ext/GL/glaux.h
+        Invoke-WebRequest -Uri "http://www.songho.ca/opengl/files/glaux.lib" -OutFile ext/glaux.lib
+        Invoke-WebRequest -Uri "http://www.opengl.org/resources/libraries/glut/glutdlls37beta.zip" -OutFile $env:TEMP/glut.zip
+        Expand-Archive -Path $env:TEMP/glut.zip -DestinationPath ext
+        Move-Item ext/glut.h ext/GL
+
+    - name: Build debug Windows tools
+      working-directory: ${{env.GITHUB_WORKSPACE}}
+      run: msbuild /m ${{env.UTIL_FILE_PATH}} /p:Configuration=${{env.DEBUG_CONFIGURATION}} /p:IncludePath=../../ext
+
+    - name: Package debug Windows tools
+      working-directory: ${{env.GITHUB_WORKSPACE}}
+      run: |
+        New-Item -Force -ItemType Directory $env:TEMP\${{env.DEBUG_CONFIGURATION}}
+        Copy-Item -Force -Recurse -Filter *.exe -Path projects/vs2019/${{env.DEBUG_CONFIGURATION}} -Destination $env:TEMP/${{env.DEBUG_CONFIGURATION}}
+        Copy-Item -Force projects/vs2019/${{env.DEBUG_CONFIGURATION}}/procinfo/procinfo.lib $env:TEMP/${{env.DEBUG_CONFIGURATION}}/Debug/procinfo
+        Compress-Archive -LiteralPath $env:TEMP\${{env.DEBUG_CONFIGURATION}} -DestinationPath .\windows-debug-tools.zip -Force
+
+    - name: Upload debug Windows tools
+      uses: actions/upload-artifact@v2
+      with:
+        name: windows-debug-tools
+        path: ./windows-debug-tools.zip
+
+    - name: Build release Windows tools
+      working-directory: ${{env.GITHUB_WORKSPACE}}
+      run: msbuild /m ${{env.UTIL_FILE_PATH}} /p:Configuration=${{env.RELEASE_CONFIGURATION}} /p:IncludePath=../../ext
+
+    - name: Package release Windows tools
+      working-directory: ${{env.GITHUB_WORKSPACE}}
+      run: |
+        New-Item -Force -ItemType Directory $env:TEMP\${{env.RELEASE_CONFIGURATION}}
+        Copy-Item -Force -Recurse -Filter *.exe -Path projects/vs2019/${{env.RELEASE_CONFIGURATION}} -Destination $env:TEMP/${{env.RELEASE_CONFIGURATION}}
+        Copy-Item -Force projects/vs2019/${{env.RELEASE_CONFIGURATION}}/procinfo/procinfo.lib $env:TEMP/${{env.RELEASE_CONFIGURATION}}/Release/procinfo
+        Compress-Archive -LiteralPath $env:TEMP\${{env.RELEASE_CONFIGURATION}} -DestinationPath .\windows-release-tools.zip -Force
+
+    - name: Upload release tools
+      uses: actions/upload-artifact@v2
+      with:
+        name: windows-release-tools
+        path: ./windows-release-tools.zip

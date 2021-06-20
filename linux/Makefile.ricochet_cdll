@@ -13,14 +13,19 @@ COMMON_OBJ_DIR=$(RICOCHET_OBJ_DIR)/common
 GAME_SHARED_OBJ_DIR=$(RICOCHET_OBJ_DIR)/game_shared
 PM_SHARED_OBJ_DIR=$(RICOCHET_OBJ_DIR)/pm_shared
 
-CFLAGS=$(BASE_CFLAGS) $(ARCH_CFLAGS) -DCLIENT_DLL -I/usr/include/malloc -D_snwprintf=swprintf \
+DEBUG_CFLAGS=
+ifeq "$(CFG)" "debug"
+	DEBUG_CFLAGS=-D_DEBUG
+endif
+
+CFLAGS=$(BASE_CFLAGS) $(ARCH_CFLAGS) $(DEBUG_CFLAGS) -DCLIENT_DLL -I/usr/include/malloc -D_snwprintf=swprintf \
 		 -DDISABLE_JUMP_ORIGIN -DDISABLE_VEC_ORIGIN -D_MAX_PATH=PATH_MAX
 		 
 INCLUDEDIRS=-I$(RICOCHET_SRC_DIR) -I$(RICOCHET_SRC_DIR)/../dlls -I../engine -I$(PUBLIC_SRC_DIR)  -I$(COMMON_SRC_DIR) \
 	 -I../game_shared -I$(RICOCHET_SRC_DIR)/../pm_shared  -I../utils/vgui/include -I../utils/common -I../external
 
 ifeq ($(OS),Darwin)
-LDFLAGS=$(SHLIBLDFLAGS) $(CPP_LIB) -framework Carbon $(CFG)/vgui.dylib -L. -lSDL2-2.0.0
+LDFLAGS=$(SHLIBLDFLAGS) $(CPP_LIB) -framework Carbon release/vgui.dylib -L. -lSDL2-2.0.0
 else
 LDFLAGS=$(SHLIBLDFLAGS) $(CPP_LIB) vgui.so -L. libSDL2-2.0.so.0
 endif
@@ -114,9 +119,9 @@ all: client_ricochet.$(SHLIBEXT)
 
 client_ricochet.$(SHLIBEXT): $(RICOCHET_OBJS) $(PUBLIC_OBJS) $(COMMON_OBJS) $(GAME_SHARED_OBJS) $(PM_SHARED_OBJS)
 	$(CLINK) -o $(BUILD_DIR)/$@ $(RICOCHET_OBJS) $(PUBLIC_OBJS) $(COMMON_OBJS) $(GAME_SHARED_OBJS) $(PM_SHARED_OBJS) $(LDFLAGS)  $(CPP_LIB)
-	p4 edit ../../game/mod/cl_dlls/client.$(SHLIBEXT)
-	cp $(BUILD_DIR)/$@  ../../game/mod/cl_dlls/client.$(SHLIBEXT)
-	./gendbg.sh ../../game/mod/cl_dlls/client.$(SHLIBEXT)		
+	#p4 edit ../../game/mod/cl_dlls/client.$(SHLIBEXT)
+	#cp $(BUILD_DIR)/$@  ../../game/mod/cl_dlls/client.$(SHLIBEXT)
+	#./gendbg.sh ../../game/mod/cl_dlls/client.$(SHLIBEXT)		
 
 $(RICOCHET_OBJ_DIR):
 	mkdir -p $(RICOCHET_OBJ_DIR)

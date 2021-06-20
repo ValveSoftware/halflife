@@ -12,8 +12,13 @@ DMCDLL_OBJ_DIR=$(BUILD_OBJ_DIR)/dmcdll
 PM_OBJ_DIR=$(DMCDLL_OBJ_DIR)/pm_shared
 GAME_SHARED_OBJ_DIR=$(DMCDLL_OBJ_DIR)/game_shared
 
+DEBUG_CFLAGS=
+ifeq "$(CFG)" "debug"
+	DEBUG_CFLAGS=-D_DEBUG
+endif
+
 #full optimization
-CFLAGS=$(BASE_CFLAGS) $(ARCH_CFLAGS)
+CFLAGS=$(BASE_CFLAGS) $(ARCH_CFLAGS) $(DEBUG_CFLAGS)
 
 DMCDLL_INCLUDEDIRS=-I$(ENGINE_SRC_DIR) -I$(COMMON_SRC_DIR) -I$(PM_SRC_DIR) -I$(GAME_SHARED_SRC_DIR) -I$(PUBLIC_SRC_DIR)
 PM_INCLUDEDIRS=-I$(COMMON_SRC_DIR) -I$(PUBLIC_SRC_DIR)
@@ -93,9 +98,9 @@ dirs:
 
 dmc.$(SHLIBEXT): $(DMCDLL_OBJS) $(PM_OBJS) $(GAME_SHARED_OBJS)
 	$(CLINK) $(SHLIBLDFLAGS) -o $(BUILD_DIR)/$@ $(DMCDLL_OBJS) $(PM_OBJS) $(GAME_SHARED_OBJS) $(LDFLAGS) $(CPP_LIB)
-	p4 edit ../../game/mod/dlls/$@
-	cp $(BUILD_DIR)/$@  ../../game/mod/dlls
-	./gendbg.sh ../../game/mod/dlls/dmc.$(SHLIBEXT)
+	#p4 edit ../../game/mod/dlls/$@
+	#cp $(BUILD_DIR)/$@  ../../game/mod/dlls
+	#./gendbg.sh ../../game/mod/dlls/dmc.$(SHLIBEXT)
 		
 $(DMCDLL_OBJ_DIR)/%.o : $(DMCDLL_SRC_DIR)/%.cpp
 	$(DO_DMCDLL_CC)

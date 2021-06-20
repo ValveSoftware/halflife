@@ -1,0 +1,76 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Header Files\utils">
+      <UniqueIdentifier>{b6851a08-110d-4b63-97bb-002b6c26576e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\utils\serverctrl">
+      <UniqueIdentifier>{b210c226-0069-49ec-87ea-a3c9c16d737b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\utils">
+      <UniqueIdentifier>{7ffbb312-a0a2-4787-af0a-d3e499f4c628}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\utils\servertrl">
+      <UniqueIdentifier>{5de03485-5c29-4f54-95df-161e73d864e2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\utils">
+      <UniqueIdentifier>{1b20963c-0f73-4f11-a8ff-8cec4041bf4c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\utils\serverctrl">
+      <UniqueIdentifier>{f55832d2-48da-4c3e-90bd-66f24f495211}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\utils\serverctrl\res">
+      <UniqueIdentifier>{d2b2c612-d341-4167-80d5-a49ae6887f4a}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\utils\serverctrl\ServerCtrl.cpp">
+      <Filter>Source Files\utils\servertrl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\utils\serverctrl\StdAfx.cpp">
+      <Filter>Source Files\utils\servertrl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\utils\serverctrl\ServerCtrlDlg.cpp">
+      <Filter>Source Files\utils\servertrl</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\utils\serverctrl\resource.h">
+      <Filter>Header Files\utils\serverctrl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\utils\serverctrl\ServerCtrlDlg.h">
+      <Filter>Header Files\utils\serverctrl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\utils\serverctrl\ServerCtrl.h">
+      <Filter>Header Files\utils\serverctrl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\utils\serverctrl\StdAfx.h">
+      <Filter>Header Files\utils\serverctrl</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\..\utils\serverctrl\ServerCtrl.rc">
+      <Filter>Source Files\utils\servertrl</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\utils\serverctrl\res\serverctrl.ico">
+      <Filter>Resource Files\utils\serverctrl\res</Filter>
+    </None>
+    <None Include="..\..\utils\serverctrl\res\serverctrl.rc2">
+      <Filter>Resource Files\utils\serverctrl\res</Filter>
+    </None>
+  </ItemGroup>
+</Project>
