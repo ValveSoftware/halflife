@@ -410,6 +410,7 @@ extern void NullDst(void);
 	(pfnEngDst_pfnGetAppID_t)						NullDst, \
 	(pfnEngDst_pfnGetAliases_t)						NullDst, \
 	(pfnEngDst_pfnVguiWrap2_GetMouseDelta_t)		NullDst, \
+	(pfnEngDst_pfnFilteredClientCmd_t)			NullDst, \
 };
 
 // Use this to init a cldll_func_dst structure to point to NullDst
