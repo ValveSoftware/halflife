@@ -1229,7 +1229,7 @@ void EV_FireCrossbow2( event_args_t *args )
 	{
 		if ( args->iparam1 )
 			gEngfuncs.pEventAPI->EV_WeaponAnimation( CROSSBOW_FIRE1, 1 );
-		else if ( args->iparam2 )
+		else
 			gEngfuncs.pEventAPI->EV_WeaponAnimation( CROSSBOW_FIRE3, 1 );
 	}
 
@@ -1303,7 +1303,7 @@ void EV_FireCrossbow( event_args_t *args )
 	{
 		if ( args->iparam1 )
 			gEngfuncs.pEventAPI->EV_WeaponAnimation( CROSSBOW_FIRE1, 1 );
-		else if ( args->iparam2 )
+		else
 			gEngfuncs.pEventAPI->EV_WeaponAnimation( CROSSBOW_FIRE3, 1 );
 
 		V_PunchAxis( 0, -2.0 );
