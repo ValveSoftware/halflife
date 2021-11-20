@@ -180,13 +180,13 @@ void CBeam::Precache( void )
 
 void CBeam::SetStartEntity( int entityIndex ) 
 { 
-	pev->sequence = (entityIndex & 0x0FFF) | ((pev->sequence&0xF000)<<12); 
+	pev->sequence = (entityIndex & 0x0FFF) | (pev->sequence&0xF000);
 	pev->owner = g_engfuncs.pfnPEntityOfEntIndex( entityIndex );
 }
 
 void CBeam::SetEndEntity( int entityIndex ) 
 { 
-	pev->skin = (entityIndex & 0x0FFF) | ((pev->skin&0xF000)<<12); 
+	pev->skin = (entityIndex & 0x0FFF) | (pev->skin&0xF000);
 	pev->aiment = g_engfuncs.pfnPEntityOfEntIndex( entityIndex );
 }
 
