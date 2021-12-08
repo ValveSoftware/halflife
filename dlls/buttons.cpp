@@ -141,7 +141,7 @@ TYPEDESCRIPTION CMultiSource::m_SaveData[] =
 	DEFINE_FIELD( CMultiSource, m_globalstate, FIELD_STRING ),
 };
 
-IMPLEMENT_SAVERESTORE( CMultiSource, CBaseEntity );
+IMPLEMENT_SAVERESTORE( CMultiSource, CPointEntity );
 
 LINK_ENTITY_TO_CLASS( multisource, CMultiSource );
 //
