@@ -58,7 +58,7 @@ TYPEDESCRIPTION CRecharge::m_SaveData[] =
 	DEFINE_FIELD( CRecharge, m_flSoundTime, FIELD_TIME ),
 };
 
-IMPLEMENT_SAVERESTORE( CRecharge, CBaseEntity );
+IMPLEMENT_SAVERESTORE( CRecharge, CBaseToggle );
 
 LINK_ENTITY_TO_CLASS(func_recharge, CRecharge);
 
