@@ -1417,23 +1417,15 @@ void CBaseEntity::FireBullets(ULONG cShots, Vector vecSrc, Vector vecDirShooting
 			
 			if ( iTracerFreq != 1 )		// guns that always trace also always decal
 				tracer = 1;
-			switch( iBulletType )
-			{
-			case BULLET_MONSTER_MP5:
-			case BULLET_MONSTER_9MM:
-			case BULLET_MONSTER_12MM:
-			default:
-				MESSAGE_BEGIN( MSG_PAS, SVC_TEMPENTITY, vecTracerSrc );
-					WRITE_BYTE( TE_TRACER );
-					WRITE_COORD( vecTracerSrc.x );
-					WRITE_COORD( vecTracerSrc.y );
-					WRITE_COORD( vecTracerSrc.z );
-					WRITE_COORD( tr.vecEndPos.x );
-					WRITE_COORD( tr.vecEndPos.y );
-					WRITE_COORD( tr.vecEndPos.z );
-				MESSAGE_END();
-				break;
-			}
+			MESSAGE_BEGIN( MSG_PAS, SVC_TEMPENTITY, vecTracerSrc );
+				WRITE_BYTE( TE_TRACER );
+				WRITE_COORD( vecTracerSrc.x );
+				WRITE_COORD( vecTracerSrc.y );
+				WRITE_COORD( vecTracerSrc.z );
+				WRITE_COORD( tr.vecEndPos.x );
+				WRITE_COORD( tr.vecEndPos.y );
+				WRITE_COORD( tr.vecEndPos.z );
+			MESSAGE_END();
 		}
 		// do damage, paint decals
 		if (tr.flFraction != 1.0)
