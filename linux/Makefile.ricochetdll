@@ -94,17 +94,17 @@ GAME_SHARED_OBJS = \
 all: dirs ricochet.$(SHLIBEXT)
 
 dirs:
-	-mkdir $(BUILD_OBJ_DIR)
-	-mkdir $(RICOCHETDLL_OBJ_DIR)
-	-mkdir $(RICOCHETWPN_OBJ_DIR)
-	-mkdir $(PM_OBJ_DIR)
-	-mkdir $(GAME_SHARED_OBJ_DIR)
+	-mkdir -p $(BUILD_OBJ_DIR)
+	-mkdir -p $(RICOCHETDLL_OBJ_DIR)
+	-mkdir -p $(RICOCHETWPN_OBJ_DIR)
+	-mkdir -p $(PM_OBJ_DIR)
+	-mkdir -p $(GAME_SHARED_OBJ_DIR)
 
 ricochet.$(SHLIBEXT): $(RICOCHETDLL_OBJS) $(RICOCHETWPN_OBJS) $(PM_OBJS) $(GAME_SHARED_OBJS)
 	$(CLINK) $(SHLIBLDFLAGS) -o $(BUILD_DIR)/$@ $(RICOCHETDLL_OBJS) $(RICOCHETWPN_OBJS) $(PM_OBJS) $(GAME_SHARED_OBJS) $(LDFLAGS) $(CPP_LIB)
-	p4 edit ../../game/mod/dlls/$@
-	cp $(BUILD_DIR)/$@  ../../game/mod/dlls
-	./gendbg.sh ../../game/mod/dlls/$@
+	$(P4_EDIT_START) ../../game/ricochet/dlls/$@ $(P4_EDIT_END)
+	cp $(BUILD_DIR)/$@  ../../game/ricochet/dlls
+	./gendbg.sh ../../game/ricochet/dlls/$@
 		
 $(RICOCHETWPN_OBJ_DIR)/%.o : $(RICOCHETWPN_SRC_DIR)/%.cpp
 	$(DO_RICOCHETWPN_CC)

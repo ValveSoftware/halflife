@@ -111,7 +111,7 @@ public:
 	int				IRelationship ( CBaseEntity *pTarget );
 	virtual int		CanPlaySentence( BOOL fDisregardState );
 	virtual void	PlaySentence( const char *pszSentence, float duration, float volume, float attenuation );
-	void			PlayScriptedSentence( const char *pszSentence, float duration, float volume, float attenuation, BOOL bConcurrent, CBaseEntity *pListener );
+	virtual void	PlayScriptedSentence( const char *pszSentence, float duration, float volume, float attenuation, BOOL bConcurrent, CBaseEntity *pListener );
 	void			KeyValue( KeyValueData *pkvd );
 
 	// AI functions

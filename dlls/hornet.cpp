@@ -188,7 +188,7 @@ void CHornet :: StartDart ( void )
 	pev->nextthink = gpGlobals->time + 4;
 }
 
-void CHornet::IgniteTrail( void )
+void CHornet::IgniteTrail( void ) 
 {
 /*
 

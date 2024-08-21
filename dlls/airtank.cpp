@@ -20,7 +20,7 @@
 #include "nodes.h"
 #include "player.h"
 
-class CAirtank : public CGrenade
+class CAirtank : public CGrenade 
 {
 	void Spawn( void );
 	void Precache( void );

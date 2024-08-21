@@ -55,7 +55,7 @@ void CMP5::Spawn( )
 	SET_MODEL(ENT(pev), "models/w_9mmAR.mdl");
 	m_iId = WEAPON_MP5;
 
-	m_iDefaultAmmo = MP5_DEFAULT_GIVE;
+	m_iDefaultAmmo = gpGlobals->maxClients > 1 ? MP5_MAX_CLIP : MP5_DEFAULT_GIVE;
 
 	FallInit();// get ready to fall down.
 }
@@ -158,9 +158,9 @@ void CMP5::PrimaryAttack()
 	Vector vecDir;
 
 #ifdef CLIENT_DLL
-	if ( !bIsMultiplayer() )
+	if ( bIsMultiplayer() )
 #else
-	if ( !g_pGameRules->IsMultiplayer() )
+	if ( g_pGameRules->IsMultiplayer() )
 #endif
 	{
 		// optimized multiplayer. Widened to make it easier to hit a moving player

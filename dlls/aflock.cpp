@@ -111,6 +111,7 @@ public:
 LINK_ENTITY_TO_CLASS( monster_flyer, CFlockingFlyer );
 LINK_ENTITY_TO_CLASS( monster_flyer_flock, CFlockingFlyerFlock );
 
+
 TYPEDESCRIPTION	CFlockingFlyer::m_SaveData[] = 
 {
 	DEFINE_FIELD( CFlockingFlyer, m_pSquadLeader, FIELD_CLASSPTR ),

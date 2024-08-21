@@ -53,7 +53,7 @@ InterfaceReg::InterfaceReg( InstantiateInterfaceFn fn, const char *pName ) :
 // ------------------------------------------------------------------------------------ //
 // CreateInterface.
 // ------------------------------------------------------------------------------------ //
-EXPORT_FUNCTION IBaseInterface *CreateInterface( const char *pName, int *pReturnCode )
+EXPORT_FUNCTION void *CreateInterface( const char *pName, int *pReturnCode )
 {
 	InterfaceReg *pCur;
 	
@@ -76,6 +76,8 @@ EXPORT_FUNCTION IBaseInterface *CreateInterface( const char *pName, int *pReturn
 	return NULL;	
 }
 
+// BEN-NOTE: unifying this on all platforms
+#if 0
 #ifdef LINUX
 static IBaseInterface *CreateInterfaceLocal( const char *pName, int *pReturnCode )
 {
@@ -99,7 +101,8 @@ static IBaseInterface *CreateInterfaceLocal( const char *pName, int *pReturnCode
 	}
 	return NULL;	
 }
-#endif
+#endif // LINUX
+#endif // 0
 
 #ifdef _WIN32
 #define WIN32_LEAN_AND_MEAN
@@ -238,11 +241,14 @@ CreateInterfaceFn Sys_GetFactory( CSysModule *pModule )
 //-----------------------------------------------------------------------------
 CreateInterfaceFn Sys_GetFactoryThis( void )
 {
-#ifdef LINUX
+	// BEN-NOTE: unifying this on all platforms
+//#ifdef LINUX
+#if 0
 	return CreateInterfaceLocal;
 #else
 	return CreateInterface;
-#endif
+#endif // LINUX
+
 }
 
 //-----------------------------------------------------------------------------

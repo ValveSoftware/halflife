@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2013 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2022 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -21,29 +21,27 @@
 
 /**
  *  \file SDL_test_images.h
- *  
+ *
  *  Include file for SDL test framework.
  *
  *  This code is a part of the SDL2_test library, not the main SDL library.
  */
 
-/* 
+/*
 
  Defines some images for tests.
-  
+
 */
 
-#ifndef _SDL_test_images_h
-#define _SDL_test_images_h
+#ifndef SDL_test_images_h_
+#define SDL_test_images_h_
 
 #include "SDL.h"
 
 #include "begin_code.h"
 /* Set up for C function definitions, even when using C++ */
 #ifdef __cplusplus
-/* *INDENT-OFF* */
 extern "C" {
-/* *INDENT-ON* */
 #endif
 
 /**
@@ -52,31 +50,29 @@ extern "C" {
 typedef struct SDLTest_SurfaceImage_s {
   int width;
   int height;
-  unsigned int bytes_per_pixel; /* 3:RGB, 4:RGBA */ 
+  unsigned int bytes_per_pixel; /* 3:RGB, 4:RGBA */
   const char *pixel_data;
 } SDLTest_SurfaceImage_t;
 
 /* Test images */
-SDL_Surface *SDLTest_ImageBlit();
-SDL_Surface *SDLTest_ImageBlitColor();
-SDL_Surface *SDLTest_ImageBlitAlpha();
-SDL_Surface *SDLTest_ImageBlitBlendAdd();
-SDL_Surface *SDLTest_ImageBlitBlend();
-SDL_Surface *SDLTest_ImageBlitBlendMod();
-SDL_Surface *SDLTest_ImageBlitBlendNone();
-SDL_Surface *SDLTest_ImageBlitBlendAll();
-SDL_Surface *SDLTest_ImageFace();
-SDL_Surface *SDLTest_ImagePrimitives();
-SDL_Surface *SDLTest_ImagePrimitivesBlend();
+SDL_Surface *SDLTest_ImageBlit(void);
+SDL_Surface *SDLTest_ImageBlitColor(void);
+SDL_Surface *SDLTest_ImageBlitAlpha(void);
+SDL_Surface *SDLTest_ImageBlitBlendAdd(void);
+SDL_Surface *SDLTest_ImageBlitBlend(void);
+SDL_Surface *SDLTest_ImageBlitBlendMod(void);
+SDL_Surface *SDLTest_ImageBlitBlendNone(void);
+SDL_Surface *SDLTest_ImageBlitBlendAll(void);
+SDL_Surface *SDLTest_ImageFace(void);
+SDL_Surface *SDLTest_ImagePrimitives(void);
+SDL_Surface *SDLTest_ImagePrimitivesBlend(void);
 
 /* Ends C function definitions when using C++ */
 #ifdef __cplusplus
-/* *INDENT-OFF* */
 }
-/* *INDENT-ON* */
 #endif
 #include "close_code.h"
 
-#endif /* _SDL_test_images_h */
+#endif /* SDL_test_images_h_ */
 
 /* vi: set ts=4 sw=4 expandtab: */

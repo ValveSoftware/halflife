@@ -32,7 +32,7 @@ class CShower : public CBaseEntity
 	void Think( void );
 	void Touch( CBaseEntity *pOther );
 	int ObjectCaps( void ) { return FCAP_DONT_SAVE; }
-};
+}; 
 
 LINK_ENTITY_TO_CLASS( spark_shower, CShower );
 

@@ -22,7 +22,7 @@ INCLUDEDIRS=-I$(PUBLIC_SRC_DIR) -I../utils/vgui/include -I$(DMC_SRC_DIR)/../dlls
 ifeq ($(OS),Darwin)
 LDFLAGS=$(SHLIBLDFLAGS) $(CPP_LIB) -framework Carbon $(CFG)/vgui.dylib -L. -lSDL2-2.0.0
 else
-LDFLAGS=$(SHLIBLDFLAGS) $(CPP_LIB) vgui.so -L. libSDL2-2.0.so.0
+LDFLAGS=$(SHLIBLDFLAGS) $(CPP_LIB) vgui.so -L. -lSDL2
 endif
 
 DO_CC=$(CPLUS) $(INCLUDEDIRS) $(CFLAGS) -o $@ -c $<
@@ -115,9 +115,9 @@ all: client_dmc.$(SHLIBEXT)
 
 client_dmc.$(SHLIBEXT): $(DMC_OBJS) $(PUBLIC_OBJS) $(COMMON_OBJS) $(GAME_SHARED_OBJS) $(PM_SHARED_OBJS)
 	$(CLINK) -o $(BUILD_DIR)/$@ $(DMC_OBJS) $(PUBLIC_OBJS) $(COMMON_OBJS) $(GAME_SHARED_OBJS) $(PM_SHARED_OBJS) $(LDFLAGS) $(CPP_LIB)
-	p4 edit ../../game/mod/cl_dlls/client.$(SHLIBEXT)
-	cp $(BUILD_DIR)/$@  ../../game/mod/cl_dlls/client.$(SHLIBEXT)
-	./gendbg.sh ../../game/mod/cl_dlls/client.$(SHLIBEXT)
+	$(P4_EDIT_START) ../../game/dmc/cl_dlls/client.$(SHLIBEXT) $(P4_EDIT_END)
+	cp $(BUILD_DIR)/$@  ../../game/dmc/cl_dlls/client.$(SHLIBEXT)
+	./gendbg.sh ../../game/dmc/cl_dlls/client.$(SHLIBEXT)
 
 
 $(DMC_OBJ_DIR):

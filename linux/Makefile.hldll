@@ -124,6 +124,7 @@ HLDLL_OBJS = \
 	$(HLDLL_OBJ_DIR)/tripmine.o \
 	$(HLDLL_OBJ_DIR)/turret.o \
 	$(HLDLL_OBJ_DIR)/util.o \
+	$(HLDLL_OBJ_DIR)/vehicle.o \
 	$(HLDLL_OBJ_DIR)/weapons.o \
 	$(HLDLL_OBJ_DIR)/world.o \
 	$(HLDLL_OBJ_DIR)/xen.o \
@@ -143,17 +144,17 @@ GAME_SHARED_OBJS = \
 all: dirs hl.$(SHLIBEXT)
 
 dirs:
-	-mkdir $(BUILD_OBJ_DIR)
-	-mkdir $(HLDLL_OBJ_DIR)
-	-mkdir $(HLWPN_OBJ_DIR)
-	-mkdir $(PM_OBJ_DIR)
-	-mkdir $(GAME_SHARED_OBJ_DIR)
+	-mkdir -p $(BUILD_OBJ_DIR)
+	-mkdir -p $(HLDLL_OBJ_DIR)
+	-mkdir -p $(HLWPN_OBJ_DIR)
+	-mkdir -p $(PM_OBJ_DIR)
+	-mkdir -p $(GAME_SHARED_OBJ_DIR)
 
 hl.$(SHLIBEXT): $(HLDLL_OBJS) $(HLWPN_OBJS) $(PM_OBJS) $(GAME_SHARED_OBJS)
 	$(CC) $(LDFLAGS) $(SHLIBLDFLAGS) -o $(BUILD_DIR)/$@ $(HLDLL_OBJS) $(HLWPN_OBJS) $(PM_OBJS) $(GAME_SHARED_OBJS)
-	p4 edit ../../game/mod/dlls/hl.$(SHLIBEXT)
-	cp $(BUILD_DIR)/$@  ../../game/mod/dlls/hl.$(SHLIBEXT)
-	./gendbg.sh ../../game/mod/dlls/hl.$(SHLIBEXT)
+	$(P4_EDIT_START) ../../game/valve/dlls/hl.$(SHLIBEXT) $(P4_EDIT_END)
+	cp $(BUILD_DIR)/$@  ../../game/valve/dlls/hl.$(SHLIBEXT)
+	./gendbg.sh ../../game/valve/dlls/hl.$(SHLIBEXT)
 	
 $(HLWPN_OBJ_DIR)/%.o : $(HLWPN_SRC_DIR)/%.cpp
 	$(DO_HLWPN_CC)

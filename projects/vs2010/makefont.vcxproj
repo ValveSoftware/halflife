@@ -63,7 +63,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>../../common;../../utils/common</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../common;../../public;../../utils/common</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -71,7 +71,7 @@
       <AdditionalDependencies>winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy $(TargetPath) ..\..\..\valve /r /i</Command>
+      <Command>xcopy $(TargetPath) ..\..\..\valve\ /r /i</Command>
     </PostBuildEvent>
     <PostBuildEvent>
       <Message>Copyint  to  valve\ </Message>

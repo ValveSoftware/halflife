@@ -193,9 +193,12 @@ int CCrowbar::Swing( int fFirst )
 	}
 #endif
 
-	PLAYBACK_EVENT_FULL( FEV_NOTHOST, m_pPlayer->edict(), m_usCrowbar, 
-	0.0, (float *)&g_vecZero, (float *)&g_vecZero, 0, 0, 0,
-	0.0, 0, 0.0 );
+	if ( fFirst )
+	{
+		PLAYBACK_EVENT_FULL( FEV_NOTHOST, m_pPlayer->edict(), m_usCrowbar,
+							0.0, (float *)&g_vecZero, (float *)&g_vecZero, 0, 0, 0,
+							0.0, 0, 0.0 );
+	}
 
 
 	if ( tr.flFraction >= 1.0 )
@@ -232,7 +235,9 @@ int CCrowbar::Swing( int fFirst )
 
 		ClearMultiDamage( );
 
-		if ( (m_flNextPrimaryAttack + 1 < UTIL_WeaponTimeBase() ) || g_pGameRules->IsMultiplayer() )
+		// JoshA: Changed from < -> <= to fix the full swing logic since client weapon prediction.
+		// -1.0f + 1.0f = 0.0f. UTIL_WeaponTimeBase is always 0 with client weapon prediction (0 time base vs curtime base)
+		if ( ( m_flNextPrimaryAttack + 1.0f <= UTIL_WeaponTimeBase() ) || g_pGameRules->IsMultiplayer() )
 		{
 			// first swing does full damage
 			pEntity->TraceAttack(m_pPlayer->pev, gSkillData.plrDmgCrowbar, gpGlobals->v_forward, &tr, DMG_CLUB ); 
@@ -307,7 +312,7 @@ int CCrowbar::Swing( int fFirst )
 		m_flNextPrimaryAttack = GetNextAttackDelay(0.25);
 		
 		SetThink( &CCrowbar::Smack );
-		pev->nextthink = UTIL_WeaponTimeBase() + 0.2;
+		pev->nextthink = gpGlobals->time + 0.2;
 
 		
 	}

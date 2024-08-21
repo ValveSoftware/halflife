@@ -1,4 +1,4 @@
-/***
+/*** 
 *
 *	Copyright (c) 1996-2001, Valve LLC. All rights reserved.
 *	
@@ -407,7 +407,7 @@ int CTripmine::GetItemInfo(ItemInfo *p)
 
 BOOL CTripmine::Deploy( )
 {
-	//pev->body = 0;
+	pev->body = 0;
 	return DefaultDeploy( "models/v_tripmine.mdl", "models/p_tripmine.mdl", TRIPMINE_DRAW, "trip" );
 }
 

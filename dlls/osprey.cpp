@@ -37,7 +37,7 @@ typedef struct
 
 #define MAX_CARRY	24
 
-class COsprey : public CBaseMonster
+class COsprey : public CBaseMonster 
 {
 public:
 	int		Save( CSave &save );

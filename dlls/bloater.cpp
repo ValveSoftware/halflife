@@ -166,7 +166,7 @@ void CBloater :: AttackSnd( void )
 // HandleAnimEvent - catches the monster-specific messages
 // that occur when tagged animation frames are played.
 //=========================================================
-void CBloater :: HandleAnimEvent( MonsterEvent_t *pEvent )
+void CBloater :: HandleAnimEvent( MonsterEvent_t *pEvent ) 
 {
 	switch( pEvent->event )
 	{

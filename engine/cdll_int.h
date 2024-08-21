@@ -31,11 +31,17 @@ extern "C" {
 #include "ref_params.h"
 #include "r_efx.h"
 #include "studio_event.h"
+#include "minmax.h"
+
+#ifdef _WIN32
+#include <windows.h>
+#endif
 
 // this file is included by both the engine and the client-dll,
 // so make sure engine declarations aren't done twice
 
-typedef int HSPRITE;	// handle to a graphic
+typedef int HANDLE_SPRITE;	// handle to a graphic
+#define HSPRITE HANDLE_SPRITE
 
 #define SCRINFO_SCREENFLASH 1
 #define SCRINFO_STRETCHED	2
@@ -193,6 +199,7 @@ extern module_t	g_module;
 #define RecEnghudHookUserMsg(a, b)			(g_engdstAddrs.pfnHookUserMsg(&a, &b))
 #define RecEnghudServerCmd(a)				(g_engdstAddrs.pfnServerCmd(&a))
 #define RecEnghudClientCmd(a)				(g_engdstAddrs.pfnClientCmd(&a))
+#define RecEnghudFilteredClientCmd(a)		(g_engdstAddrs.pfnFilteredClientCmd(&a))
 #define RecEngPrimeMusicStream(a, b)	(g_engdstAddrs.pfnPrimeMusicStream(&a, &b))
 #define RecEnghudGetPlayerInfo(a, b)		(g_engdstAddrs.pfnGetPlayerInfo(&a, &b))
 #define RecEnghudPlaySoundByName(a, b)		(g_engdstAddrs.pfnPlaySoundByName(&a, &b))
@@ -410,6 +417,7 @@ extern void NullDst(void);
 	(pfnEngDst_pfnGetAppID_t)						NullDst, \
 	(pfnEngDst_pfnGetAliases_t)						NullDst, \
 	(pfnEngDst_pfnVguiWrap2_GetMouseDelta_t)		NullDst, \
+	(pfnEngDst_pfnFilteredClientCmd_t)				NullDst, \
 };
 
 // Use this to init a cldll_func_dst structure to point to NullDst

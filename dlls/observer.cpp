@@ -223,7 +223,7 @@ void CBasePlayer::Observer_CheckProperties()
 }
 
 // Attempt to change the observer mode
-void CBasePlayer::Observer_SetMode( int iMode )
+void CBasePlayer::Observer_SetMode( int iMode ) 
 {
 
 	// Just abort if we're changing to the mode we're already in

@@ -564,6 +564,9 @@ void CHalfLifeMultiplay :: PlayerSpawn( CBasePlayer *pPlayer )
 	BOOL		addDefault;
 	CBaseEntity	*pWeaponEntity = NULL;
 
+	int nAutoWepSwitch = pPlayer->m_iAutoWepSwitch;
+	pPlayer->m_iAutoWepSwitch = 2;
+
 	pPlayer->pev->weapons |= (1<<IT_AXE);
 	
 	addDefault = TRUE;
@@ -585,6 +588,8 @@ void CHalfLifeMultiplay :: PlayerSpawn( CBasePlayer *pPlayer )
 		pPlayer->m_iQuakeWeapon = pPlayer->W_BestWeapon();
 		pPlayer->W_SetCurrentAmmo();
 	}
+
+	pPlayer->m_iAutoWepSwitch = nAutoWepSwitch;
 }
 
 //=========================================================
@@ -1304,14 +1309,12 @@ int ReloadMapCycleFile( char *filename, mapcycle_t *cycle )
 			hasbuffer = 0;
 			memset( szBuffer, 0, MAX_RULE_BUFFER );
 
-
 			pFileList = COM_Parse( pFileList );
 			if ( strlen( com_token ) <= 0 )
-
-
 				break;
 
-			strcpy( szMap, com_token );
+			strncpy( szMap, com_token, sizeof( szMap ) );
+			szMap[ sizeof( szMap ) - 1 ] = '\0';
 
 			// Any more tokens on this line?
 			if ( COM_TokenWaiting( pFileList ) )
@@ -1320,7 +1323,8 @@ int ReloadMapCycleFile( char *filename, mapcycle_t *cycle )
 				if ( strlen( com_token ) > 0 )
 				{
 					hasbuffer = 1;
-					strcpy( szBuffer, com_token );
+					strncpy( szBuffer, com_token, sizeof( szBuffer ) );
+					szBuffer[ sizeof( szBuffer ) - 1 ] = '\0';
 				}
 			}
 

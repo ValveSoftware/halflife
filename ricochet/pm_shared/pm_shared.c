@@ -16,6 +16,7 @@
 #include <assert.h>
 #include "mathlib.h"
 #include "const.h"
+#include "minmax.h"
 #include "usercmd.h"
 #include "pm_defs.h"
 #include "pm_shared.h"
@@ -29,11 +30,11 @@
 
 #ifdef CLIENT_DLL
 	// Spectator Mode
-	float	vecNewViewAngles[3];
-	float	vecNewViewOrigin[3];
-	int		iHasNewViewAngles;
-	int		iHasNewViewOrigin;
-	int		iIsSpectator;
+	extern float	vecNewViewAngles[3];
+	extern float	vecNewViewOrigin[3];
+	extern int		iHasNewViewAngles;
+	extern int		iHasNewViewOrigin;
+	extern int		iIsSpectator;
 #endif
 
 static int pm_shared_initialized = 0;
@@ -120,8 +121,6 @@ typedef struct hull_s
 
 // double to float warning
 #pragma warning(disable : 4244)
-#define max(a, b)  (((a) > (b)) ? (a) : (b))
-#define min(a, b)  (((a) < (b)) ? (a) : (b))
 // up / down
 #define	PITCH	0
 // left / right
@@ -902,8 +901,12 @@ int PM_FlyMove (void)
 
 // modify original_velocity so it parallels all of the clip planes
 //
-		if ( pmove->movetype == MOVETYPE_WALK &&
-			((pmove->onground == -1) || (pmove->friction != 1)) )	// relfect player velocity
+		// relfect player velocity 
+		// Only give this a try for first impact plane because you can get yourself stuck in an acute corner by jumping in place
+		//  and pressing forward and nobody was really using this bounce/reflection feature anyway...
+		if (	numplanes == 1 &&
+				pmove->movetype == MOVETYPE_WALK &&
+				((pmove->onground == -1) || (pmove->friction != 1)) )
 		{
 			for ( i = 0; i < numplanes; i++ )
 			{
@@ -2828,7 +2831,7 @@ void PM_DropPunchAngle ( vec3_t punchangle )
 	
 	len = VectorNormalize ( punchangle );
 	len -= (10.0 + len * 0.5) * pmove->frametime;
-	len = max( len, 0.0 );
+	len = max( len, 0.0f );
 	VectorScale ( punchangle, len, punchangle);
 }
 

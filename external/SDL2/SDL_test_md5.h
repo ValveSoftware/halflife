@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2013 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2022 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -21,7 +21,7 @@
 
 /**
  *  \file SDL_test_md5.h
- *  
+ *
  *  Include file for SDL test framework.
  *
  *  This code is a part of the SDL2_test library, not the main SDL library.
@@ -53,15 +53,13 @@
  ***********************************************************************
 */
 
-#ifndef _SDL_test_md5_h
-#define _SDL_test_md5_h
+#ifndef SDL_test_md5_h_
+#define SDL_test_md5_h_
 
 #include "begin_code.h"
 /* Set up for C function definitions, even when using C++ */
 #ifdef __cplusplus
-/* *INDENT-OFF* */
 extern "C" {
-/* *INDENT-ON* */
 #endif
 
 /* ------------ Definitions --------- */
@@ -71,46 +69,46 @@ extern "C" {
 
 /* Data structure for MD5 (Message-Digest) computation */
   typedef struct {
-    MD5UINT4  i[2];		/* number of _bits_ handled mod 2^64 */
-    MD5UINT4  buf[4];		/* scratch buffer */
-    unsigned char in[64];	/* input buffer */
-    unsigned char digest[16];	/* actual digest after Md5Final call */
+    MD5UINT4  i[2];     /* number of _bits_ handled mod 2^64 */
+    MD5UINT4  buf[4];       /* scratch buffer */
+    unsigned char in[64];   /* input buffer */
+    unsigned char digest[16];   /* actual digest after Md5Final call */
   } SDLTest_Md5Context;
 
 /* ---------- Function Prototypes ------------- */
 
-/** 
- * /brief initialize the context
+/**
+ * \brief initialize the context
  *
- * /param  mdContext		pointer to context variable
+ * \param  mdContext        pointer to context variable
  *
  * Note: The function initializes the message-digest context
- *       mdContext. Call before each new use of the context - 
+ *       mdContext. Call before each new use of the context -
  *       all fields are set to zero.
  */
  void SDLTest_Md5Init(SDLTest_Md5Context * mdContext);
 
 
 /**
- * /brief update digest from variable length data
- * 
- * /param  mdContext       pointer to context variable
- * /param  inBuf           pointer to data array/string
- * /param  inLen           length of data array/string
+ * \brief update digest from variable length data
  *
- * Note: The function updates the message-digest context to account 
+ * \param  mdContext       pointer to context variable
+ * \param  inBuf           pointer to data array/string
+ * \param  inLen           length of data array/string
+ *
+ * Note: The function updates the message-digest context to account
  *       for the presence of each of the characters inBuf[0..inLen-1]
  *       in the message whose digest is being computed.
 */
 
  void SDLTest_Md5Update(SDLTest_Md5Context * mdContext, unsigned char *inBuf,
-				 unsigned int inLen);
+                 unsigned int inLen);
 
 
-/*
- * /brief complete digest computation
+/**
+ * \brief complete digest computation
  *
- * /param mdContext		pointer to context variable
+ * \param mdContext     pointer to context variable
  *
  * Note: The function terminates the message-digest computation and
  *       ends with the desired message digest in mdContext.digest[0..15].
@@ -122,12 +120,10 @@ extern "C" {
 
 /* Ends C function definitions when using C++ */
 #ifdef __cplusplus
-/* *INDENT-OFF* */
 }
-/* *INDENT-ON* */
 #endif
 #include "close_code.h"
 
-#endif /* _SDL_test_md5_h */
+#endif /* SDL_test_md5_h_ */
 
 /* vi: set ts=4 sw=4 expandtab: */

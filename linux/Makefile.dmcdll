@@ -86,16 +86,16 @@ GAME_SHARED_OBJS = \
 all: dirs dmc.$(SHLIBEXT)
 
 dirs:
-	-mkdir $(BUILD_OBJ_DIR)
-	-mkdir $(DMCDLL_OBJ_DIR)
-	-mkdir $(PM_OBJ_DIR)
-	-mkdir $(GAME_SHARED_OBJ_DIR)
+	-mkdir -p $(BUILD_OBJ_DIR)
+	-mkdir -p $(DMCDLL_OBJ_DIR)
+	-mkdir -p $(PM_OBJ_DIR)
+	-mkdir -p $(GAME_SHARED_OBJ_DIR)
 
 dmc.$(SHLIBEXT): $(DMCDLL_OBJS) $(PM_OBJS) $(GAME_SHARED_OBJS)
 	$(CLINK) $(SHLIBLDFLAGS) -o $(BUILD_DIR)/$@ $(DMCDLL_OBJS) $(PM_OBJS) $(GAME_SHARED_OBJS) $(LDFLAGS) $(CPP_LIB)
-	p4 edit ../../game/mod/dlls/$@
-	cp $(BUILD_DIR)/$@  ../../game/mod/dlls
-	./gendbg.sh ../../game/mod/dlls/dmc.$(SHLIBEXT)
+	$(P4_EDIT_START) ../../game/dmc/dlls/$@ $(P4_EDIT_END)
+	cp $(BUILD_DIR)/$@  ../../game/dmc/dlls
+	./gendbg.sh ../../game/dmc/dlls/dmc.$(SHLIBEXT)
 		
 $(DMCDLL_OBJ_DIR)/%.o : $(DMCDLL_SRC_DIR)/%.cpp
 	$(DO_DMCDLL_CC)

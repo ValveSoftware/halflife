@@ -38,7 +38,7 @@ class CRoach : public CBaseMonster
 {
 public:
 	void Spawn( void );
-	void Precache( void );
+	void Precache( void ); 
 	void SetYawSpeed( void );
 	void EXPORT MonsterThink ( void );
 	void Move ( float flInterval );

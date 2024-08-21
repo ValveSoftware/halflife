@@ -791,7 +791,7 @@ class CDeadBarney : public CBaseMonster
 {
 public:
 	void Spawn( void );
-	int	Classify ( void ) { return	CLASS_PLAYER_ALLY; }
+	int	Classify ( void ) { return	CLASS_PLAYER_ALLY; } 
 
 	void KeyValue( KeyValueData *pkvd );
 

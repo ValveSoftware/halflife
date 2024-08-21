@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2013 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2022 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -21,23 +21,23 @@
 
 /**
  *  \file SDL_quit.h
- *  
+ *
  *  Include file for SDL quit event handling.
  */
 
-#ifndef _SDL_quit_h
-#define _SDL_quit_h
+#ifndef SDL_quit_h_
+#define SDL_quit_h_
 
 #include "SDL_stdinc.h"
 #include "SDL_error.h"
 
 /**
  *  \file SDL_quit.h
- *  
+ *
  *  An ::SDL_QUIT event is generated when the user tries to close the application
  *  window.  If it is ignored or filtered out, the window will remain open.
  *  If it is not ignored or filtered, it is queued normally and the window
- *  is allowed to close.  When the window is closed, screen updates will 
+ *  is allowed to close.  When the window is closed, screen updates will
  *  complete, but have no effect.
  *
  *  SDL_Init() installs signal handlers for SIGINT (keyboard interrupt)
@@ -46,7 +46,7 @@
  *  to determine the cause of an ::SDL_QUIT event, but setting a signal
  *  handler in your application will override the default generation of
  *  quit events for that signal.
- *  
+ *
  *  \sa SDL_Quit()
  */
 
@@ -55,4 +55,4 @@
 #define SDL_QuitRequested() \
         (SDL_PumpEvents(), (SDL_PeepEvents(NULL,0,SDL_PEEKEVENT,SDL_QUIT,SDL_QUIT) > 0))
 
-#endif /* _SDL_quit_h */
+#endif /* SDL_quit_h_ */

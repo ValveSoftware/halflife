@@ -99,6 +99,8 @@ public:
 	
 	void TalkInit( void );
 
+	char* GetScientistModel() const;
+
 	void			Killed( entvars_t *pevAttacker, int iGib );
 	
 	virtual int		Save( CSave &save );
@@ -424,6 +426,17 @@ DEFINE_CUSTOM_SCHEDULES( CScientist )
 IMPLEMENT_CUSTOM_SCHEDULES( CScientist, CTalkMonster );
 
 
+char* CScientist::GetScientistModel() const
+{
+	char* pszOverride = (char*)CVAR_GET_STRING("_sv_override_scientist_mdl");
+	if (pszOverride && strlen(pszOverride) > 5) // at least requires ".mdl"
+	{
+		return pszOverride;
+	}
+
+	return "models/scientist.mdl";
+}
+
 void CScientist::DeclineFollowing( void )
 {
 	Talk( 10 );
@@ -658,7 +671,7 @@ void CScientist :: Spawn( void )
 {
 	Precache( );
 
-	SET_MODEL(ENT(pev), "models/scientist.mdl");
+	SET_MODEL(ENT(pev), GetScientistModel());
 	UTIL_SetSize(pev, VEC_HUMAN_HULL_MIN, VEC_HUMAN_HULL_MAX);
 
 	pev->solid			= SOLID_SLIDEBOX;
@@ -694,7 +707,7 @@ void CScientist :: Spawn( void )
 //=========================================================
 void CScientist :: Precache( void )
 {
-	PRECACHE_MODEL("models/scientist.mdl");
+	PRECACHE_MODEL(GetScientistModel());
 	PRECACHE_SOUND("scientist/sci_pain1.wav");
 	PRECACHE_SOUND("scientist/sci_pain2.wav");
 	PRECACHE_SOUND("scientist/sci_pain3.wav");
@@ -1098,17 +1111,31 @@ int CScientist::FriendNumber( int arrayNumber )
 //=========================================================
 // Dead Scientist PROP
 //=========================================================
-class CDeadScientist : public CBaseMonster
+class CDeadScientist : public CBaseMonster 
 {
 public:
 	void Spawn( void );
 	int	Classify ( void ) { return	CLASS_HUMAN_PASSIVE; }
+
+	// passed into Precache which is non-const
+	char* GetScientistModel() const;
 
 	void KeyValue( KeyValueData *pkvd );
 	int	m_iPose;// which sequence to display
 	static char *m_szPoses[7];
 };
 char *CDeadScientist::m_szPoses[] = { "lying_on_back", "lying_on_stomach", "dead_sitting", "dead_hang", "dead_table1", "dead_table2", "dead_table3" };
+
+char* CDeadScientist::GetScientistModel() const
+{
+	char* pszOverride = (char*)CVAR_GET_STRING("_sv_override_scientist_mdl");
+	if (pszOverride && strlen(pszOverride) > 5) // at least requires ".mdl"
+	{
+		return pszOverride;
+	}
+
+	return "models/scientist.mdl";
+}
 
 void CDeadScientist::KeyValue( KeyValueData *pkvd )
 {
@@ -1127,8 +1154,8 @@ LINK_ENTITY_TO_CLASS( monster_scientist_dead, CDeadScientist );
 //
 void CDeadScientist :: Spawn( )
 {
-	PRECACHE_MODEL("models/scientist.mdl");
-	SET_MODEL(ENT(pev), "models/scientist.mdl");
+	PRECACHE_MODEL(GetScientistModel());
+	SET_MODEL(ENT(pev), GetScientistModel());
 	
 	pev->effects		= 0;
 	pev->sequence		= 0;
@@ -1209,8 +1236,8 @@ SITTING_ANIM_sitting3
 //
 void CSittingScientist :: Spawn( )
 {
-	PRECACHE_MODEL("models/scientist.mdl");
-	SET_MODEL(ENT(pev), "models/scientist.mdl");
+	PRECACHE_MODEL(GetScientistModel());
+	SET_MODEL(ENT(pev), GetScientistModel());
 	Precache();
 	InitBoneControllers();
 

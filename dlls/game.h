@@ -40,6 +40,7 @@ extern cvar_t	allowmonsters;
 // Engine Cvars
 extern cvar_t	*g_psv_gravity;
 extern cvar_t	*g_psv_aim;
+extern cvar_t	*g_psv_allow_autoaim;
 extern cvar_t	*g_footsteps;
 
 #endif		// GAME_H

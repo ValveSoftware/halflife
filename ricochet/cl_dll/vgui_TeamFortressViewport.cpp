@@ -75,6 +75,7 @@ int g_iUser2;
 #define SBOARD_INDENT_Y_400		20
 
 void IN_ResetMouse( void );
+void IN_ResetRelativeMouseState(void);
 extern CMenuPanel *CMessageWindowPanel_Create( const char *szMOTD, const char *szTitle, int iShadeFullscreen, int iRemoveMe, int x, int y, int wide, int tall );
 
 using namespace vgui;
@@ -1683,6 +1684,13 @@ void TeamFortressViewport::UpdateCursorState()
 	}
 
 	IN_ResetMouse();
+
+    if (g_iVisibleMouse)
+    {
+        //Clear any residual input so our camera doesn't jerk when dismissing the UI
+        IN_ResetRelativeMouseState();
+    }
+
 	g_iVisibleMouse = false;
 	App::getInstance()->setCursorOveride( App::getInstance()->getScheme()->getCursor(Scheme::scu_none) );
 }

@@ -1,4 +1,4 @@
-//========= Copyright © 1996-2001, Valve LLC, All rights reserved. ============
+//========= Copyright ï¿½ 1996-2001, Valve LLC, All rights reserved. ============
 //
 // Purpose: 
 //
@@ -162,7 +162,8 @@ void UTIL_StringToVector( float * pVector, const char *pString )
 	char *pstr, *pfront, tempString[128];
 	int	j;
 
-	strcpy( tempString, pString );
+	strncpy( tempString, pString, sizeof( tempString ) );
+	tempString[ sizeof( tempString ) - 1 ] = '\0';
 	pstr = pfront = tempString;
 	
 	for ( j = 0; j < 3; j++ )		
@@ -578,7 +579,7 @@ void CHudSpectator::DirectorMessage( int iSize, void *pbuf )
 */
 
 		case DRC_CMD_STUFFTEXT:
-							ClientCmd( READ_STRING() );
+							FilteredClientCmd( READ_STRING() );
 							break;
 
 		default			:	gEngfuncs.Con_DPrintf("CHudSpectator::DirectorMessage: unknown command %i.\n", cmd );

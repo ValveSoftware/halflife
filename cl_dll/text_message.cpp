@@ -46,6 +46,7 @@ int CHudTextMessage::Init(void)
 // the new value is pushed into dst_buffer
 char *CHudTextMessage::LocaliseTextString( const char *msg, char *dst_buffer, int buffer_size )
 {
+	int len = buffer_size;
 	char *dst = dst_buffer;
 	for ( char *src = (char*)msg; *src != 0 && buffer_size > 0; buffer_size-- )
 	{
@@ -85,7 +86,7 @@ char *CHudTextMessage::LocaliseTextString( const char *msg, char *dst_buffer, in
 		}
 	}
 
-	dst_buffer[buffer_size-1] = 0; // ensure null termination
+	dst_buffer[len-1] = 0; // ensure null termination
 	return dst_buffer;
 }
 
@@ -195,7 +196,7 @@ int CHudTextMessage::MsgFunc_TextMsg( const char *pszName, int iSize, void *pbuf
 
 	case HUD_PRINTNOTIFY:
 		psz[0] = 1;  // mark this message to go into the notify buffer
-		safe_sprintf( psz+1, MSG_BUF_SIZE, msg_text, sstr1, sstr2, sstr3, sstr4 );
+		safe_sprintf( psz+1, MSG_BUF_SIZE - 1, msg_text, sstr1, sstr2, sstr3, sstr4 );
 		ConsolePrint( ConvertCRtoNL( psz ) );
 		break;
 

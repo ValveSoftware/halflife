@@ -31,7 +31,7 @@
 //=========================================================
 // MonsterMaker - this ent creates monsters during the game.
 //=========================================================
-class CMonsterMaker : public CBaseMonster
+class CMonsterMaker : public CBaseMonster 
 {
 public:
 	void Spawn( void );

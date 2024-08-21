@@ -16,12 +16,16 @@
 #define HUD_IFACEH
 #pragma once
 
+#ifndef EXPORT
 #ifdef _WIN32
 #define EXPORT		_declspec( dllexport )
 #else
 #define EXPORT  __attribute__ ((visibility("default")))
 #endif
+#endif // ndef EXPORT
+
 #define DLLEXPORT EXPORT
+
 
 typedef int (*pfnUserMsgHook)(const char *pszName, int iSize, void *pbuf);
 #include "wrect.h"

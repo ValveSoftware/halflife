@@ -154,7 +154,7 @@ void CApache :: Spawn( void )
 
 void CApache::Precache( void )
 {
-	PRECACHE_MODEL("models/apache.mdl");
+	PRECACHE_MODEL("models/apache.mdl"); 
 
 	PRECACHE_SOUND("apache/ap_rotor1.wav");
 	PRECACHE_SOUND("apache/ap_rotor2.wav");

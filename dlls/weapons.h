@@ -36,7 +36,7 @@ public:
 	static void UseSatchelCharges( entvars_t *pevOwner, SATCHELCODE code );
 
 	void Explode( Vector vecSrc, Vector vecAim );
-	void Explode( TraceResult *pTrace, int bitsDamageType );
+	virtual void Explode( TraceResult *pTrace, int bitsDamageType );
 	void EXPORT Smoke( void );
 
 	void EXPORT BounceTouch( CBaseEntity *pOther );
@@ -99,7 +99,7 @@ public:
 #define RPG_WEIGHT			20
 #define GAUSS_WEIGHT		20
 #define EGON_WEIGHT			20
-#define HORNETGUN_WEIGHT	10
+#define HORNETGUN_WEIGHT	15
 #define HANDGRENADE_WEIGHT	5
 #define SNARK_WEIGHT		5
 #define SATCHEL_WEIGHT		-10
@@ -191,6 +191,7 @@ typedef	enum
 #define ITEM_FLAG_NOAUTOSWITCHEMPTY	4
 #define ITEM_FLAG_LIMITINWORLD		8
 #define ITEM_FLAG_EXHAUSTIBLE		16 // A player can totally exhaust their ammo supply and lose this weapon
+#define ITEM_FLAG_NOAUTOSWITCHTO	32
 
 #define WEAPON_IS_ONTARGET 0x40
 
@@ -647,6 +648,7 @@ public:
 	BOOL Deploy( );
 	void Reload( void );
 	void WeaponIdle( void );
+	void ItemPostFrame( void );
 	int m_fInReload;
 	float m_flNextReload;
 	int m_iShell;
@@ -736,11 +738,17 @@ public:
 	void EXPORT FollowThink( void );
 	void EXPORT IgniteThink( void );
 	void EXPORT RocketTouch( CBaseEntity *pOther );
+
+	virtual void Explode( TraceResult *pTrace, int bitsDamageType );
+
 	static CRpgRocket *CreateRpgRocket( Vector vecOrigin, Vector vecAngles, CBaseEntity *pOwner, CRpg *pLauncher );
+
+	CRpg* GetLauncher();
 
 	int m_iTrail;
 	float m_flIgniteTime;
-	CRpg *m_pLauncher;// pointer back to the launcher that fired me. 
+	
+	EHANDLE m_hLauncher; // pointer back to the launcher that fired me. 
 };
 
 class CGauss : public CBasePlayerWeapon
@@ -828,6 +836,7 @@ public:
 	void Fire( const Vector &vecOrigSrc, const Vector &vecDir );
 
 	BOOL HasAmmo( void );
+	BOOL CanHolster();
 
 	void UseAmmo( int count );
 	

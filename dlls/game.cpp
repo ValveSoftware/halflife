@@ -46,6 +46,7 @@ cvar_t  mp_chattime = {"mp_chattime","10", FCVAR_SERVER };
 // Engine Cvars
 cvar_t 	*g_psv_gravity = NULL;
 cvar_t	*g_psv_aim = NULL;
+cvar_t	*g_psv_allow_autoaim = NULL;
 cvar_t	*g_footsteps = NULL;
 
 //CVARS FOR SKILL LEVEL SETTINGS
@@ -450,6 +451,10 @@ cvar_t	sk_player_leg3	= { "sk_player_leg3","1" };
 
 // END Cvars for Skill Level settings
 
+cvar_t sv_pushable_fixed_tick_fudge = { "sv_pushable_fixed_tick_fudge", "15" };
+
+cvar_t sv_busters = { "sv_busters", "0" };
+
 // Register your console variables here
 // This gets called one time when the game is initialied
 void GameDLLInit( void )
@@ -458,6 +463,7 @@ void GameDLLInit( void )
 
 	g_psv_gravity = CVAR_GET_POINTER( "sv_gravity" );
 	g_psv_aim = CVAR_GET_POINTER( "sv_aim" );
+	g_psv_allow_autoaim = CVAR_GET_POINTER( "sv_allow_autoaim" );
 	g_footsteps = CVAR_GET_POINTER( "mp_footsteps" );
 
 	CVAR_REGISTER (&displaysoundlist);
@@ -483,6 +489,8 @@ void GameDLLInit( void )
 	CVAR_REGISTER (&allowmonsters);
 
 	CVAR_REGISTER (&mp_chattime);
+
+	CVAR_REGISTER( &sv_busters );
 
 // REGISTER CVARS FOR SKILL LEVEL STUFF
 	// Agrunt
@@ -884,6 +892,8 @@ void GameDLLInit( void )
 	CVAR_REGISTER ( &sk_player_leg2 );
 	CVAR_REGISTER ( &sk_player_leg3 );
 // END REGISTER CVARS FOR SKILL LEVEL STUFF
+
+	CVAR_REGISTER ( &sv_pushable_fixed_tick_fudge );
 
 	SERVER_COMMAND( "exec skill.cfg\n" );
 }

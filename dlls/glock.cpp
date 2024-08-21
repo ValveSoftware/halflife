@@ -228,13 +228,7 @@ void CGlock::GlockFire( float flSpread , float flCycleTime, BOOL fUseAutoAim )
 
 void CGlock::Reload( void )
 {
-	int iResult;
-
-	if (m_iClip == 0)
-		iResult = DefaultReload( 17, GLOCK_RELOAD, 1.5 );
-	else
-		iResult = DefaultReload( 18, GLOCK_RELOAD_NOT_EMPTY, 1.5 );
-
+	int iResult = DefaultReload( GLOCK_MAX_CLIP, m_iClip > 0 ? GLOCK_RELOAD_NOT_EMPTY : GLOCK_RELOAD, 1.5 );
 	if (iResult)
 	{
 		m_flTimeWeaponIdle = gpGlobals->time + RANDOM_FLOAT ( 10, 15 );

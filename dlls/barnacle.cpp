@@ -84,7 +84,7 @@ int	CBarnacle :: Classify ( void )
 //
 // Returns number of events handled, 0 if none.
 //=========================================================
-void CBarnacle :: HandleAnimEvent( MonsterEvent_t *pEvent )
+void CBarnacle :: HandleAnimEvent( MonsterEvent_t *pEvent ) 
 {
 	switch( pEvent->event )
 	{

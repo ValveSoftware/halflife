@@ -557,7 +557,7 @@ void CLeech::UpdateMotion( void )
 void CLeech::SwimThink( void )
 {
 	TraceResult		tr;
-	float			flLeftSide;
+	float			flLeftSide; 
 	float			flRightSide;
 	float			targetSpeed;
 	float			targetYaw = 0;

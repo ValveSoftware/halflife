@@ -331,7 +331,7 @@ void CMultiManager :: KeyValue( KeyValueData *pkvd )
 		{
 			char tmp[128];
 
-			UTIL_StripToken( pkvd->szKeyName, tmp );
+			UTIL_StripToken( pkvd->szKeyName, tmp, sizeof( tmp ) );
 			m_iTargetName [ m_cTargets ] = ALLOC_STRING( tmp );
 			m_flTargetDelay [ m_cTargets ] = atof (pkvd->szValue);
 			m_cTargets++;
@@ -1002,7 +1002,19 @@ void CBaseTrigger :: HurtTouch ( CBaseEntity *pOther )
 #endif
 
 	if ( fldmg < 0 )
-		pOther->TakeHealth( -fldmg, m_bitsDamageInflict );
+	{
+		BOOL bApplyHeal = TRUE;
+
+		if ( g_pGameRules->IsMultiplayer() && pOther->IsPlayer() )
+		{
+			bApplyHeal = pOther->pev->deadflag == DEAD_NO;
+		}
+
+		if ( bApplyHeal ) 
+		{
+			pOther->TakeHealth( -fldmg, m_bitsDamageInflict );
+		}
+	}
 	else
 		pOther->TakeDamage( pev, pev, fldmg, m_bitsDamageInflict );
 

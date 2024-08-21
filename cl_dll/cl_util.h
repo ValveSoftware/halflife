@@ -83,6 +83,7 @@ inline struct cvar_s *CVAR_CREATE( const char *cv, const char *val, const int fl
 #define GetScreenInfo (*gEngfuncs.pfnGetScreenInfo)
 #define ServerCmd (*gEngfuncs.pfnServerCmd)
 #define EngineClientCmd (*gEngfuncs.pfnClientCmd)
+#define EngineFilteredClientCmd (*gEngfuncs.pfnFilteredClientCmd)
 #define SetCrosshair (*gEngfuncs.pfnSetCrosshair)
 #define AngleVectors (*gEngfuncs.pfnAngleVectors)
 
@@ -162,8 +163,6 @@ inline int safe_sprintf( char *dst, int len_dst, const char *format, ...)
 inline void PlaySound( char *szSound, float vol ) { gEngfuncs.pfnPlaySoundByName( szSound, vol ); }
 inline void PlaySound( int iSound, float vol ) { gEngfuncs.pfnPlaySoundByIndex( iSound, vol ); }
 
-#define max(a, b)  (((a) > (b)) ? (a) : (b))
-#define min(a, b)  (((a) < (b)) ? (a) : (b))
 #define fabs(x)	   ((x) > 0 ? (x) : 0 - (x))
 
 void ScaleColors( int &r, int &g, int &b, int a );

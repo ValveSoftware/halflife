@@ -1,4 +1,4 @@
-/***
+/*** 
 *
 *	Copyright (c) 1996-2001, Valve LLC. All rights reserved.
 *	
@@ -423,11 +423,11 @@ void CTalkMonster :: StartTask( Task_t *pTask )
 
 			if (yaw < 0)
 			{
-				pev->ideal_yaw = min( yaw + 45, 0 ) + pev->angles.y;
+				pev->ideal_yaw = min( yaw + 45.0f, 0.0f ) + pev->angles.y;
 			}
 			else
 			{
-				pev->ideal_yaw = max( yaw - 45, 0 ) + pev->angles.y;
+				pev->ideal_yaw = max( yaw - 45.0f, 0.0f ) + pev->angles.y;
 			}
 		}
 		TaskComplete();
@@ -1402,7 +1402,7 @@ BOOL CTalkMonster::CanFollow( void )
 {
 	if ( m_MonsterState == MONSTERSTATE_SCRIPT )
 	{
-		if ( !m_pCine->CanInterrupt() )
+		if ( !m_pCine || !m_pCine->CanInterrupt() )
 			return FALSE;
 	}
 	

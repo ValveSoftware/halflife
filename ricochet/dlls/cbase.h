@@ -60,6 +60,10 @@ CBaseEntity
 #endif
 #endif
 
+#if defined EXPORT
+#undef EXPORT
+#endif
+
 #define EXPORT CBASE_DLLEXPORT
 
 extern "C" CBASE_DLLEXPORT int GetEntityAPI( DLL_FUNCTIONS *pFunctionTable, int interfaceVersion );

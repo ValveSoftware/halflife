@@ -171,6 +171,10 @@ void CGauss::PrimaryAttack()
 
 void CGauss::SecondaryAttack()
 {
+	// JoshA: Sanitize this so it's not total garbage on level transition
+	// and we end up ear blasting the player!
+	m_pPlayer->m_flStartCharge = min( m_pPlayer->m_flStartCharge, gpGlobals->time );
+
 	// don't fire underwater
 	if ( m_pPlayer->pev->waterlevel == 3 )
 	{
@@ -308,6 +312,10 @@ void CGauss::SecondaryAttack()
 void CGauss::StartFire( void )
 {
 	float flDamage;
+
+	// JoshA: Sanitize this so it's not total garbage on level transition
+	// and we end up ear blasting the player!
+	m_pPlayer->m_flStartCharge = min( m_pPlayer->m_flStartCharge, gpGlobals->time );
 	
 	UTIL_MakeVectors( m_pPlayer->pev->v_angle + m_pPlayer->pev->punchangle );
 	Vector vecAiming = gpGlobals->v_forward;
@@ -375,7 +383,7 @@ void CGauss::Fire( Vector vecOrigSrc, Vector vecDir, float flDamage )
 	int fFirstBeam = 1;
 	int	nMaxHits = 10;
 
-	pentIgnore = ENT( m_pPlayer->pev );
+	pentIgnore = m_pPlayer->edict();
 
 #ifdef CLIENT_DLL
 	if ( m_fPrimaryFire == false )
@@ -426,6 +434,13 @@ void CGauss::Fire( Vector vecOrigSrc, Vector vecDir, float flDamage )
 		if (pEntity->pev->takedamage)
 		{
 			ClearMultiDamage();
+
+			// if you hurt yourself clear the headshot bit
+			if (m_pPlayer->pev == pEntity->pev)
+			{
+				tr.iHitgroup = 0;
+			}
+
 			pEntity->TraceAttack( m_pPlayer->pev, flDamage, vecDir, &tr, DMG_BULLET );
 			ApplyMultiDamage(m_pPlayer->pev, m_pPlayer->pev);
 		}
