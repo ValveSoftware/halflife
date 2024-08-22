@@ -60,14 +60,8 @@ Remember: Just because the issue you reported was reported here does not mean th
 Building the SDK code
 -------
 
-Visual Studio 2019 is required to build mod DLLs on Windows. In the Visual Studio installer, install "Desktop development with C++" under "Workloads" and "C++ MFC for latest v142 build tools (x86 & x64)" under "Individual components". Python must also be installed to run scripts used as part of the build process (Python 3.9 has been tested).
+Visual Studio 2019 is required to build mod DLLs on Windows. In the Visual Studio installer, install "Desktop development with C++" under "Workloads" and "C++ MFC for latest v142 build tools (x86 & x64)" under "Individual components". VS2019 projects can be found in the `projects\vs2019` folder.
 
-To generate a Visual Studio solution with projects for each mod, run `create_vs_projects.bat` from a command line. This will create a solution file called `goldsrc.sln` in a folder called `build-debugoptimized-sln`. You can add `release` to the command line to generate a solution that builds the Release configuration instead, e.g. `create_vs_projects.bat release`. 
-
-create_vs_projects uses [Meson](https://mesonbuild.com/) to generate the projects and solution. Each mod DLL must have a corresponding `meson.build` file that specifies the included files and dependencies.
-
-By default, as a post-build step, built mod DLLs are copied to a folder called `game` one level up from the root SDK folder. This behavior can be customized by modifying `vs_add_build_steps.py` under `devtools`. 
-
-Tools have not yet been updated for Meson / VS2019, but can be built using the VS2010 projects in the projects\vs2010 folder. See the `readme.txt` file there.
+Tools have not yet been updated for VS2019, but can be built using the VS2010 projects in the `projects\vs2010` folder. See the `readme.txt` file there.
 
 Linux binaries are built using Makefiles found in the `linux` folder, and are expected to be built / run in the Steam Runtime "scout" environment. You will need to set the environment variables VALVE_NO_AUTO_P4=1 and USE_STEAM_RUNTIME=1 while building.
