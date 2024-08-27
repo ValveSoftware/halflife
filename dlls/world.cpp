@@ -230,7 +230,7 @@ static void InitBodyQue(void)
 //
 void CopyToBodyQue(entvars_t *pev) 
 {
-	if (pev->effects & EF_NODRAW)
+	if (pev->effects & EF_NODRAW || pev->modelindex == 0 )
 		return;
 
 	entvars_t *pevHead	= VARS(g_pBodyQueueHead);
@@ -467,13 +467,11 @@ LINK_ENTITY_TO_CLASS( worldspawn, CWorld );
 #define SF_WORLD_FORCETEAM	0x0004		// Force teams
 
 extern DLL_GLOBAL BOOL		g_fGameOver;
-float g_flWeaponCheat; 
 
 void CWorld :: Spawn( void )
 {
 	g_fGameOver = FALSE;
 	Precache( );
-	g_flWeaponCheat = CVAR_GET_FLOAT( "sv_cheats" );  // Is the impulse 101 command allowed?
 }
 
 void CWorld :: Precache( void )

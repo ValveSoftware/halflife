@@ -25,7 +25,7 @@ public:
 	Activity	GetStoppedActivity( void );
 	void		Killed( entvars_t *pevAttacker, int iGib );
 	void		Stop( void );
-	float		ChangeYaw( int speed );
+	float		ChangeYaw( int yawSpeed );
 	void		HandleAnimEvent( MonsterEvent_t *pEvent );
 	void		MoveExecute( CBaseEntity *pTargetEnt, const Vector &vecDir, float flInterval );
 	void		Move( float flInterval = 0.1 );
@@ -46,6 +46,7 @@ protected:
 	float		m_stopTime;			// Last time we stopped (to avoid switching states too soon)
 	float		m_momentum;			// Weight for desired vs. momentum velocity
 	const char	*m_pFlapSound;
+	float		m_flLastZYawTime;	// Last frame time Z was changed when yaw was changed
 };
 
 

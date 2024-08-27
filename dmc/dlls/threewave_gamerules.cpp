@@ -1659,8 +1659,8 @@ void CItemFlag::Spawn ( void )
     UTIL_SetOrigin( pev, pev->origin );
     UTIL_SetSize(pev, Vector(-16, -16, 0), Vector(16, 16, 16)); 
 
-    SetThink( FlagThink );
-    SetTouch( FlagTouch ); 
+    SetThink( &CItemFlag::FlagThink );
+    SetTouch( &CItemFlag::FlagTouch ); 
 
     pev->nextthink = gpGlobals->time + 0.3; 
 
@@ -2016,8 +2016,8 @@ void CItemFlag::Materialize( void )
 
 	Dropped = FALSE;
 
-    SetTouch( FlagTouch );
-    SetThink( FlagThink );
+    SetTouch( &CItemFlag::FlagTouch );
+    SetThink( &CItemFlag::FlagThink );
 } 
 
 
@@ -2137,7 +2137,7 @@ void CCarriedFlag ::Spawn( )
 
 	m_iOwnerOldVel = 0;
 
-    SetThink( FlagThink );
+    SetThink( &CCarriedFlag::FlagThink );
     pev->nextthink = gpGlobals->time + 0.1;
 } 
 
@@ -2472,7 +2472,7 @@ void CResistRune::MakeTouchable ( void )
 	pev->nextthink = gpGlobals->time + 120; // if no one touches it in two minutes,
 											// respawn it somewhere else, so inaccessible 
 											// ones will come 'back'
-	SetThink ( RuneRespawn );
+	SetThink ( &CResistRune::RuneRespawn );
 }
 
 void CResistRune::Spawn ( void )
@@ -2513,10 +2513,10 @@ void CResistRune::Spawn ( void )
 	
 	pev->owner = NULL;
 	
-	SetTouch( RuneTouch );
+	SetTouch( &CResistRune::RuneTouch );
 	
 	pev->nextthink = gpGlobals->time + 1; 
-	SetThink ( MakeTouchable );
+	SetThink ( &CResistRune::MakeTouchable );
 }
 
 
@@ -2529,7 +2529,7 @@ void CStrengthRune::MakeTouchable ( void )
 	pev->nextthink = gpGlobals->time + 120; // if no one touches it in two minutes,
 											// respawn it somewhere else, so inaccessible 
 											// ones will come 'back'
-	SetThink ( RuneRespawn );
+	SetThink ( &CStrengthRune::RuneRespawn );
 }
 
 void CStrengthRune::RuneTouch ( CBaseEntity *pOther )
@@ -2636,10 +2636,10 @@ void CStrengthRune::Spawn ( void )
 	
 	pev->owner = NULL;
 	
-	SetTouch( RuneTouch );
+	SetTouch( &CStrengthRune::RuneTouch );
 
 	pev->nextthink = gpGlobals->time + 1; 
-	SetThink ( MakeTouchable );
+	SetThink ( &CStrengthRune::MakeTouchable );
 }
 
 
@@ -2651,7 +2651,7 @@ void CHasteRune::MakeTouchable ( void )
 	pev->nextthink = gpGlobals->time + 120; // if no one touches it in two minutes,
 											// respawn it somewhere else, so inaccessible 
 											// ones will come 'back'
-	SetThink ( RuneRespawn );
+	SetThink ( &CHasteRune::RuneRespawn );
 }
 
 
@@ -2761,12 +2761,12 @@ void CHasteRune::Spawn ( void )
 	
 	pev->owner = NULL;
 	
-	SetTouch( RuneTouch );
+	SetTouch( &CHasteRune::RuneTouch );
 
 	pev->nextthink = gpGlobals->time + 1; // if no one touches it in two minutes,
 											// respawn it somewhere else, so inaccessible 
 											// ones will come 'back'
-	SetThink ( MakeTouchable );
+	SetThink ( &CHasteRune::MakeTouchable );
 }
 
 
@@ -2779,7 +2779,7 @@ void CRegenRune::MakeTouchable ( void )
 	pev->nextthink = gpGlobals->time + 120; // if no one touches it in two minutes,
 											// respawn it somewhere else, so inaccessible 
 											// ones will come 'back'
-	SetThink ( RuneRespawn );
+	SetThink ( &CRegenRune::RuneRespawn );
 }
 
 void CRegenRune::RuneTouch ( CBaseEntity *pOther )
@@ -2887,12 +2887,12 @@ void CRegenRune::Spawn ( void )
 	
 	pev->owner = NULL;
 
-	SetTouch( RuneTouch );
+	SetTouch( &CRegenRune::RuneTouch );
 
 	pev->nextthink = gpGlobals->time + 1; // if no one touches it in two minutes,
 											// respawn it somewhere else, so inaccessible 
 											// ones will come 'back'
-	SetThink ( MakeTouchable );
+	SetThink ( &CRegenRune::MakeTouchable );
 }
 
 
@@ -3044,7 +3044,7 @@ void CGrapple::GrappleTouch ( CBaseEntity *pOther )
 		STOP_SOUND( ((CBasePlayer *)pOwner)->edict(), CHAN_WEAPON, "weapons/grfire.wav" );
 
         pev->enemy = pOther->edict();// remember this guy!
-        SetThink ( Grapple_Track );
+        SetThink ( &CGrapple::Grapple_Track );
         pev->nextthink = gpGlobals->time;
 		m_flNextIdleTime = gpGlobals->time + 0.1;
 		pev->solid = SOLID_NOT;
@@ -3225,8 +3225,8 @@ void CGrapple::Spawn ( void )
 
 	SET_MODEL ( ENT(pev),"models/hook.mdl");
 
-	SetTouch ( GrappleTouch );
-	SetThink ( OnAirThink );
+	SetTouch ( &CGrapple::GrappleTouch );
+	SetThink ( &CGrapple::OnAirThink );
 
 	pev->nextthink = gpGlobals->time + 0.1;
 }

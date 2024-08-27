@@ -1,9 +1,5 @@
 Directory Contents
 ==================
-
-projects.sln
-  Solution file for Visual C++ 2010 Express, containing the main projects for
-  compiling the valve, dmc and ricochet DLL files.
   
 utils.sln
   Solution file containing projects for the utilities.

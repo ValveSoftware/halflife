@@ -336,7 +336,7 @@ void CMultiManager :: KeyValue( KeyValueData *pkvd )
 		{
 			char tmp[128];
 
-			UTIL_StripToken( pkvd->szKeyName, tmp );
+			UTIL_StripToken( pkvd->szKeyName, tmp, sizeof( tmp ) );
 			m_iTargetName [ m_cTargets ] = ALLOC_STRING( tmp );
 			m_flTargetDelay [ m_cTargets ] = atof (pkvd->szValue);
 			m_cTargets++;
@@ -1836,7 +1836,10 @@ void CTriggerPush :: Touch( CBaseEntity *pOther )
 		}
 		else
 		{	// Push field, transfer to base velocity
-			Vector vecPush = (pev->speed * pev->movedir);
+			// JoshA: This is multiplied by gpGlobals->frametime later on when
+			// it is integrated into velocity in the gravity/physics system.
+			// To keep it consistent, multiply by gpGlobals->frametime.
+			Vector vecPush = (pev->speed * pev->movedir) / (gpGlobals->frametime ? gpGlobals->frametime : 1.0f);
 			if ( pevToucher->flags & FL_BASEVELOCITY )
 				vecPush = vecPush +  pevToucher->basevelocity;
 

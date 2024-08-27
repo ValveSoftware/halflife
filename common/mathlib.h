@@ -108,8 +108,8 @@ void __inline restore_fpu_cw(void)
 	_asm	fldcw	old_cw
 }
 #else
+#define quick_ftol(f) ((int)(f))
 #define set_fpu_cw() /* */
-#define quick_ftol(f) ftol(f)
 #define restore_fpu_cw() /* */
 #endif
 

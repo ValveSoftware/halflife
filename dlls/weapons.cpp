@@ -1,4 +1,4 @@
-/***
+/*** 
 *
 *	Copyright (c) 1996-2001, Valve LLC. All rights reserved.
 *	
@@ -56,6 +56,8 @@ MULTIDAMAGE gMultiDamage;
 
 #define TRACER_FREQ		4			// Tracers fire every fourth bullet
 
+extern bool IsBustingGame();
+extern bool IsPlayerBusting( CBaseEntity *pPlayer );
 
 //=========================================================
 // MaxAmmoCarry - pass in a name and this function will tell
@@ -510,6 +512,19 @@ void CBasePlayerItem::FallThink ( void )
 
 		Materialize(); 
 	}
+	else if ( m_pPlayer != NULL )
+	{
+		SetThink( NULL );
+	}
+
+	//This weapon is an egon, it has no owner and we're in busting mode, so just remove it when it hits the ground
+	if ( IsBustingGame() && FNullEnt( pev->owner ) )
+	{
+		if ( !strcmp( "weapon_egon", STRING( pev->classname ) ) )
+		{
+			UTIL_Remove( this );
+		}
+	}
 }
 
 //=========================================================
@@ -950,7 +965,7 @@ BOOL CBasePlayerWeapon :: IsUseable( void )
 		if ( m_pPlayer->m_rgAmmo[ PrimaryAmmoIndex() ] <= 0 && iMaxAmmo1() != -1 )			
 		{
 			// clip is empty (or nonexistant) and the player has no more ammo of this type. 
-			return FALSE;
+			return CanDeploy();
 		}
 	}
 
@@ -1106,6 +1121,9 @@ void CBasePlayerAmmo :: DefaultTouch( CBaseEntity *pOther )
 	{
 		return;
 	}
+
+	if ( IsPlayerBusting( pOther ) )
+		return;
 
 	if (AddAmmo( pOther ))
 	{
@@ -1572,8 +1590,10 @@ IMPLEMENT_SAVERESTORE( CRpg, CBasePlayerWeapon );
 TYPEDESCRIPTION	CRpgRocket::m_SaveData[] = 
 {
 	DEFINE_FIELD( CRpgRocket, m_flIgniteTime, FIELD_TIME ),
-	DEFINE_FIELD( CRpgRocket, m_pLauncher, FIELD_CLASSPTR ),
+	DEFINE_FIELD( CRpgRocket, m_hLauncher, FIELD_EHANDLE ),
 };
+
+
 IMPLEMENT_SAVERESTORE( CRpgRocket, CGrenade );
 
 TYPEDESCRIPTION	CShotgun::m_SaveData[] = 

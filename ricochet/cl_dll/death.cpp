@@ -76,7 +76,7 @@ int CHudDeathNotice :: Init( void )
 
 	HOOK_MESSAGE( DeathMsg );
 
-	CVAR_CREATE( "hud_deathnotice_time", "6", 0 );
+	CVAR_CREATE( "hud_deathnotice_time", "6", FCVAR_ARCHIVE );
 
 	return 1;
 }

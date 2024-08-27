@@ -16,6 +16,7 @@
 #include <assert.h>
 #include "mathlib.h"
 #include "const.h"
+#include "minmax.h"
 #include "usercmd.h"
 #include "pm_defs.h"
 #include "pm_shared.h"
@@ -123,8 +124,6 @@ typedef struct hull_s
 
 // double to float warning
 #pragma warning(disable : 4244)
-#define max(a, b)  (((a) > (b)) ? (a) : (b))
-#define min(a, b)  (((a) < (b)) ? (a) : (b))
 // up / down
 #define	PITCH	0
 // left / right
@@ -520,7 +519,8 @@ void PM_UpdateStepSound( void )
 	speed = Length( pmove->velocity );
 
 	// determine if we are on a ladder
-	fLadder = ( pmove->movetype == MOVETYPE_FLY );// IsOnLadder();
+	//The Barnacle Grapple sets the FL_IMMUNE_LAVA flag to indicate that the player is not on a ladder - Solokiller
+	fLadder = ( pmove->movetype == MOVETYPE_FLY ) && !( pmove->flags & FL_IMMUNE_LAVA );// IsOnLadder();
 
 	// UNDONE: need defined numbers for run, walk, crouch, crouch run velocities!!!!	
 	if ( ( pmove->flags & FL_DUCKING) || fLadder )
@@ -898,8 +898,12 @@ int PM_FlyMove (void)
 
 // modify original_velocity so it parallels all of the clip planes
 //
-		if ( pmove->movetype == MOVETYPE_WALK &&
-			((pmove->onground == -1) || (pmove->friction != 1)) )	// relfect player velocity
+		// relfect player velocity 
+		// Only give this a try for first impact plane because you can get yourself stuck in an acute corner by jumping in place
+		//  and pressing forward and nobody was really using this bounce/reflection feature anyway...
+		if (	numplanes == 1 &&
+				pmove->movetype == MOVETYPE_WALK &&
+				((pmove->onground == -1) || (pmove->friction != 1)) )
 		{
 			for ( i = 0; i < numplanes; i++ )
 			{
@@ -1651,9 +1655,9 @@ int PM_CheckStuck (void)
 	VectorCopy (pmove->origin, base);
 
 	// 
-	// Deal with precision error in network.
+	// Deal with precision error in network and cases where the player can get stuck on level transitions in singleplayer.
 	// 
-	if (!pmove->server)
+	if (!pmove->server || !pmove->multiplayer)
 	{
 		// World or BSP model
 		if ( ( hitent == 0 ) ||
@@ -1677,8 +1681,6 @@ int PM_CheckStuck (void)
 			} while (nReps < 54);
 		}
 	}
-
-	// Only an issue on the client.
 
 	if (pmove->server)
 		idx = 0;
@@ -2822,7 +2824,7 @@ void PM_DropPunchAngle ( vec3_t punchangle )
 	
 	len = VectorNormalize ( punchangle );
 	len -= (10.0 + len * 0.5) * pmove->frametime;
-	len = max( len, 0.0 );
+	len = max( len, 0.0f );
 	VectorScale ( punchangle, len, punchangle);
 }
 
@@ -2848,6 +2850,17 @@ void PM_CheckParamters( void )
 	{
 		pmove->maxspeed = min( maxspeed, pmove->maxspeed );
 	}
+
+#if !defined( _TFC )
+	// Slow down, I'm pulling it! (a box maybe) but only when I'm standing on ground
+	//
+	// JoshA: Moved this to CheckParamters rather than working on the velocity,
+	// as otherwise it affects every integration step incorrectly.
+	if ( ( pmove->onground != -1 ) && ( pmove->cmd.buttons & IN_USE) )
+	{
+		pmove->maxspeed *= 1.0f / 3.0f;
+	}
+#endif
 
 	if ( ( spd != 0.0 ) &&
 		 ( spd > pmove->maxspeed ) )
@@ -2970,13 +2983,19 @@ void PM_PlayerMove ( qboolean server )
 	}
 
 	// Always try and unstick us unless we are in NOCLIP mode
-	if ( pmove->movetype != MOVETYPE_NOCLIP && pmove->movetype != MOVETYPE_NONE )
-	{
-		if ( PM_CheckStuck() )
-		{
-			return;  // Can't move, we're stuck
-		}
-	}
+    if ( pmove->movetype != MOVETYPE_NOCLIP && pmove->movetype != MOVETYPE_NONE )
+    {
+        if ( PM_CheckStuck() )
+        {
+			//Let the user try to duck to get unstuck
+            PM_Duck();
+
+            if ( PM_CheckStuck() )
+            {
+                return;  // Can't move, we're stuck
+            }
+        }
+    }
 
 	// Now that we are "unstuck", see where we are ( waterlevel and type, pmove->onground ).
 	PM_CatagorizePosition();
@@ -3020,14 +3039,6 @@ void PM_PlayerMove ( qboolean server )
 			pmove->movetype = MOVETYPE_WALK;
 		}
 	}
-
-#if !defined( _TFC )
-	// Slow down, I'm pulling it! (a box maybe) but only when I'm standing on ground
-	if ( ( pmove->onground != -1 ) && ( pmove->cmd.buttons & IN_USE) )
-	{
-		VectorScale( pmove->velocity, 0.3, pmove->velocity );
-	}
-#endif
 
 	// Handle movement
 	switch ( pmove->movetype )

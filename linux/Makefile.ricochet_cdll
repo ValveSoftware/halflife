@@ -22,7 +22,7 @@ INCLUDEDIRS=-I$(RICOCHET_SRC_DIR) -I$(RICOCHET_SRC_DIR)/../dlls -I../engine -I$(
 ifeq ($(OS),Darwin)
 LDFLAGS=$(SHLIBLDFLAGS) $(CPP_LIB) -framework Carbon $(CFG)/vgui.dylib -L. -lSDL2-2.0.0
 else
-LDFLAGS=$(SHLIBLDFLAGS) $(CPP_LIB) vgui.so -L. libSDL2-2.0.so.0
+LDFLAGS=$(SHLIBLDFLAGS) $(CPP_LIB) vgui.so -L. -lSDL2
 endif
 
 DO_CC=$(CPLUS) $(INCLUDEDIRS) $(CFLAGS) -o $@ -c $<
@@ -114,9 +114,9 @@ all: client_ricochet.$(SHLIBEXT)
 
 client_ricochet.$(SHLIBEXT): $(RICOCHET_OBJS) $(PUBLIC_OBJS) $(COMMON_OBJS) $(GAME_SHARED_OBJS) $(PM_SHARED_OBJS)
 	$(CLINK) -o $(BUILD_DIR)/$@ $(RICOCHET_OBJS) $(PUBLIC_OBJS) $(COMMON_OBJS) $(GAME_SHARED_OBJS) $(PM_SHARED_OBJS) $(LDFLAGS)  $(CPP_LIB)
-	p4 edit ../../game/mod/cl_dlls/client.$(SHLIBEXT)
-	cp $(BUILD_DIR)/$@  ../../game/mod/cl_dlls/client.$(SHLIBEXT)
-	./gendbg.sh ../../game/mod/cl_dlls/client.$(SHLIBEXT)		
+	$(P4_EDIT_START) ../../game/ricochet/cl_dlls/client.$(SHLIBEXT) $(P4_EDIT_END)
+	cp $(BUILD_DIR)/$@  ../../game/ricochet/cl_dlls/client.$(SHLIBEXT)
+	./gendbg.sh ../../game/ricochet/cl_dlls/client.$(SHLIBEXT)		
 
 $(RICOCHET_OBJ_DIR):
 	mkdir -p $(RICOCHET_OBJ_DIR)

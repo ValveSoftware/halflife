@@ -345,7 +345,7 @@ extern void			UTIL_LogPrintf( char *fmt, ... );
 // Sorta like FInViewCone, but for nonmonsters. 
 extern float UTIL_DotPoints ( const Vector &vecSrc, const Vector &vecCheck, const Vector &vecDir );
 
-extern void UTIL_StripToken( const char *pKey, char *pDest );// for redundant keynames
+extern void UTIL_StripToken( const char *pKey, char *pDest, int nLen );// for redundant keynames
 
 // Misc functions
 extern void SetMovedir(entvars_t* pev);

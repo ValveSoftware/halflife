@@ -1,36 +1,40 @@
-//========= Copyright � 1996-2008, Valve LLC, All rights reserved. ============
-//
-// Purpose:
-//
-//=============================================================================
+//========= Copyright 1996-2022, Valve LLC, All rights reserved. ============
 
 #ifndef STEAMTYPES_H
 #define STEAMTYPES_H
-#ifdef _WIN32
-#pragma once
-#endif
+
+#define S_CALLTYPE __cdecl
+// WARNING: __cdecl is potentially #defined away in steam_api_common.h
 
 // Steam-specific types. Defined here so this header file can be included in other code bases.
-#if defined( __GNUC__ ) && !defined(POSIX)
+#ifndef WCHARTYPES_H
+typedef unsigned char uint8;
+#endif
+
+#ifdef __GNUC__
 	#if __GNUC__ < 4
 		#error "Steamworks requires GCC 4.X (4.2 or 4.4 have been tested)"
 	#endif
-	#define POSIX 1
 #endif
 
-#if defined(__x86_64__) || defined(_WIN64)
+#if defined(__LP64__) || defined(__x86_64__) || defined(_WIN64) || defined(__aarch64__) || defined(__s390x__)
 #define X64BITS
 #endif
 
+#if !defined(VALVE_BIG_ENDIAN)
+#if defined(_PS3)
 // Make sure VALVE_BIG_ENDIAN gets set on PS3, may already be set previously in Valve internal code.
-#if !defined(VALVE_BIG_ENDIAN) && defined(_PS3)
-#define VALVE_BIG_ENDIAN
+#define VALVE_BIG_ENDIAN 1
+#endif
+#if defined( __GNUC__ ) && __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
+#define VALVE_BIG_ENDIAN 1
+#endif
 #endif
 
 typedef unsigned char uint8;
 typedef signed char int8;
 
-#if defined( _WIN32 )
+#if defined( _WIN32 ) && !defined( __GNUC__ )
 
 typedef __int16 int16;
 typedef unsigned __int16 uint16;
@@ -38,6 +42,9 @@ typedef __int32 int32;
 typedef unsigned __int32 uint32;
 typedef __int64 int64;
 typedef unsigned __int64 uint64;
+
+typedef int64 lint64;
+typedef uint64 ulint64;
 
 #ifdef X64BITS
 typedef __int64 intp;				// intp is an integer that can accomodate a pointer
@@ -55,6 +62,16 @@ typedef int int32;
 typedef unsigned int uint32;
 typedef long long int64;
 typedef unsigned long long uint64;
+
+// [u]int64 are actually defined as 'long long' and gcc 64-bit
+// doesn't automatically consider them the same as 'long int'.
+// Changing the types for [u]int64 is complicated by
+// there being many definitions, so we just
+// define a 'long int' here and use it in places that would
+// otherwise confuse the compiler.
+typedef long int lint64;
+typedef unsigned long int ulint64;
+
 #ifdef X64BITS
 typedef long long intp;
 typedef unsigned long long uintp;
@@ -65,113 +82,104 @@ typedef unsigned int uintp;
 
 #endif // else _WIN32
 
-#ifdef __cplusplus
-const int k_cubSaltSize   = 8;
-#else
-#define k_cubSaltSize 8
-#endif
-
-typedef	uint8 Salt_t[ k_cubSaltSize ];
-
-//-----------------------------------------------------------------------------
-// GID (GlobalID) stuff
-// This is a globally unique identifier.  It's guaranteed to be unique across all
-// racks and servers for as long as a given universe persists.
-//-----------------------------------------------------------------------------
-// NOTE: for GID parsing/rendering and other utils, see gid.h
-typedef uint64 GID_t;
-
-#ifdef __cplusplus
-const GID_t k_GIDNil = 0xfffffffffffffffful;
-#else
-#define k_GIDNil 0xffffffffffffffffull;
-#endif
-
-// For convenience, we define a number of types that are just new names for GIDs
-typedef GID_t JobID_t;			// Each Job has a unique ID
-typedef GID_t TxnID_t;			// Each financial transaction has a unique ID
-
-#ifdef __cplusplus
-const GID_t k_TxnIDNil = k_GIDNil;
-const GID_t k_TxnIDUnknown = 0;
-#else
-#define k_TxnIDNil k_GIDNil;
-#define  k_TxnIDUnknown 0;
-#endif
-
-// this is baked into client messages and interfaces as an int, 
-// make sure we never break this.
-typedef uint32 PackageId_t;
-#ifdef __cplusplus
-const PackageId_t k_uPackageIdFreeSub = 0x0;
-const PackageId_t k_uPackageIdInvalid = 0xFFFFFFFF;
-#else
-#define k_uPackageIdFreeSub 0x0;
-#define k_uPackageIdInvalid 0xFFFFFFFF;
-#endif
-
-// this is baked into client messages and interfaces as an int, 
-// make sure we never break this.
 typedef uint32 AppId_t;
-#ifdef __cplusplus
-const AppId_t k_uAppIdInvalid = 0x0;
-#else
-#define k_uAppIdInvalid 0x0;
-#endif
+static const AppId_t k_uAppIdInvalid = 0x0;
 
-typedef uint64 AssetClassId_t;
-#ifdef __cplusplus
-const AssetClassId_t k_ulAssetClassIdInvalid = 0x0;
-#else
-#define k_ulAssetClassIdInvalid 0x0;
-#endif
-
-typedef uint32 PhysicalItemId_t;
-#ifdef __cplusplus
-const PhysicalItemId_t k_uPhysicalItemIdInvalid = 0x0;
-#else
-#define k_uPhysicalItemIdInvalid 0x0;
-#endif
-
-
-// this is baked into client messages and interfaces as an int, 
-// make sure we never break this.  AppIds and DepotIDs also presently
-// share the same namespace, but since we'd like to change that in the future
-// I've defined it seperately here.
+// AppIds and DepotIDs also presently share the same namespace
 typedef uint32 DepotId_t;
-#ifdef __cplusplus
-const DepotId_t k_uDepotIdInvalid = 0x0;
-#else
-#define k_uDepotIdInvalid 0x0;
-#endif
+static const DepotId_t k_uDepotIdInvalid = 0x0;
 
-// RTime32
-// We use this 32 bit time representing real world time.
-// It offers 1 second resolution beginning on January 1, 1970 (Unix time)
+// RTime32.  Seconds elapsed since Jan 1 1970, i.e. unix timestamp.
+// It's the same as time_t, but it is always 32-bit and unsigned.  
 typedef uint32 RTime32;
-
-typedef uint32 CellID_t;
-#ifdef __cplusplus
-const CellID_t k_uCellIDInvalid = 0xFFFFFFFF;
-#else
-#define k_uCellIDInvalid 0x0;
-#endif
 
 // handle to a Steam API call
 typedef uint64 SteamAPICall_t;
-#ifdef __cplusplus
-const SteamAPICall_t k_uAPICallInvalid = 0x0;
-#else
-#define k_uAPICallInvalid 0x0;
-#endif
+static const SteamAPICall_t k_uAPICallInvalid = 0x0;
 
 typedef uint32 AccountID_t;
 
-typedef uint32 PartnerId_t;
+// Party Beacon ID
+typedef uint64 PartyBeaconID_t;
+static const PartyBeaconID_t k_ulPartyBeaconIdInvalid = 0;
+
+typedef enum
+{
+	k_ESteamIPTypeIPv4 = 0,
+	k_ESteamIPTypeIPv6 = 1,
+} ESteamIPType;
+
 #ifdef __cplusplus
-const PartnerId_t k_uPartnerIdInvalid = 0;
-#else
-#define k_uPartnerIdInvalid 0x0;
+
+#pragma pack( push, 1 )
+
+struct SteamIPAddress_t
+{
+	union {
+
+		uint32			m_unIPv4;		// Host order
+		uint8			m_rgubIPv6[16];		// Network order! Same as inaddr_in6.  (0011:2233:4455:6677:8899:aabb:ccdd:eeff)
+
+		// Internal use only
+		uint64			m_ipv6Qword[2];	// big endian
+	};
+
+	ESteamIPType m_eType;
+
+	bool IsSet() const 
+	{ 
+		if ( k_ESteamIPTypeIPv4 == m_eType )
+		{
+			return m_unIPv4 != 0;
+		}
+		else 
+		{
+			return m_ipv6Qword[0] !=0 || m_ipv6Qword[1] != 0; 
+		}
+	}
+
+	static SteamIPAddress_t IPv4Any()
+	{
+		SteamIPAddress_t ipOut;
+		ipOut.m_eType = k_ESteamIPTypeIPv4;
+		ipOut.m_unIPv4 = 0;
+
+		return ipOut;
+	}
+
+	static SteamIPAddress_t IPv6Any()
+	{
+		SteamIPAddress_t ipOut;
+		ipOut.m_eType = k_ESteamIPTypeIPv6;
+		ipOut.m_ipv6Qword[0] = 0;
+		ipOut.m_ipv6Qword[1] = 0;
+
+		return ipOut;
+	}
+
+	static SteamIPAddress_t IPv4Loopback()
+	{
+		SteamIPAddress_t ipOut;
+		ipOut.m_eType = k_ESteamIPTypeIPv4;
+		ipOut.m_unIPv4 = 0x7f000001;
+
+		return ipOut;
+	}
+
+	static SteamIPAddress_t IPv6Loopback()
+	{
+		SteamIPAddress_t ipOut;
+		ipOut.m_eType = k_ESteamIPTypeIPv6;
+		ipOut.m_ipv6Qword[0] = 0;
+		ipOut.m_ipv6Qword[1] = 0;
+		ipOut.m_rgubIPv6[15] = 1;
+
+		return ipOut;
+	}
+};
+
+#pragma pack( pop )
+
 #endif
 
 #endif // STEAMTYPES_H

@@ -146,8 +146,8 @@ int CHudBenchmark::MsgFunc_Bench(const char *pszName, int iSize, void *pbuf)
 	m_fReceiveTime = gHUD.m_flTime;
 	m_StoredLatency = ( m_fReceiveTime - m_fSendTime );
 
-	m_StoredLatency = min( 1.0, m_StoredLatency );
-	m_StoredLatency = max( 0.0, m_StoredLatency );
+	m_StoredLatency = min( 1.0f, m_StoredLatency );
+	m_StoredLatency = max( 0.0f, m_StoredLatency );
 
 	m_StoredPacketLoss = 0.0;
 
@@ -286,8 +286,8 @@ void CHudBenchmark::Think( void )
 			float switch_time;
 			float total_time;
 			
-			latency = max( 0.0, latency );
-			latency = min( 1.0, latency );
+			latency = max( 0.0f, latency );
+			latency = min( 1.0f, latency );
 
 			total_time = Bench_GetSwitchTime();
 			total_time -= 2.0;
@@ -341,8 +341,8 @@ void CHudBenchmark::Think( void )
 
 			// Only takes 1/2 time to get up to maximum speed
 			frac *= 2.0;
-			frac = max( 0.0, frac );
-			frac = min( 1.0, frac );
+			frac = max( 0.0f, frac );
+			frac = min( 1.0f, frac );
 
 			m_nObjects = (int)(NUM_BENCH_OBJ * frac);
 		}

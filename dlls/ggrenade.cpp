@@ -13,7 +13,7 @@
 *
 ****/
 /*
-
+ 
 ===== generic grenade.cpp ========================================================
 
 */
@@ -454,7 +454,7 @@ CGrenade * CGrenade :: ShootSatchelCharge( entvars_t *pevOwner, Vector vecStart,
 
 
 
-void CGrenade :: UseSatchelCharges( entvars_t *pevOwner, SATCHELCODE code )
+void CGrenade :: UseSatchelCharges( entvars_t *pevOwner, SATCHELCODE code ) 
 {
 	edict_t *pentFind;
 	edict_t *pentOwner;

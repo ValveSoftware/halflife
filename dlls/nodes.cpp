@@ -1433,7 +1433,7 @@ int	CGraph :: RejectInlineLinks ( CLink *pLinkPool, FILE *file )
 // TestHull is a modelless clip hull that verifies reachable
 // nodes by walking from every node to each of it's connections
 //=========================================================
-class CTestHull : public CBaseMonster
+class CTestHull : public CBaseMonster 
 {
 
 public:

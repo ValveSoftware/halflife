@@ -78,6 +78,7 @@ int g_iUser3 = 0;
 #define SBOARD_INDENT_Y_400		20
 
 void IN_ResetMouse( void );
+void IN_ResetRelativeMouseState( void );
 extern CMenuPanel *CMessageWindowPanel_Create( const char *szMOTD, const char *szTitle, int iShadeFullscreen, int iRemoveMe, int x, int y, int wide, int tall );
 extern float * GetClientColor( int clientIndex );
 
@@ -817,8 +818,7 @@ try
 
 			// Get the button text
 			pfile = gEngfuncs.COM_ParseFile(pfile, token);
-			strncpy( cText, token, 32 );
-			cText[31] = '\0';
+			CHudTextMessage::LocaliseTextString( token, cText, sizeof( cText ) );
 
 			// save off the last button text we've come across (for error reporting)
 			strcpy( szLastButtonText, cText );
@@ -2079,6 +2079,12 @@ void TeamFortressViewport::UpdateCursorState()
 	if ( !gEngfuncs.pDemoAPI->IsPlayingback() )
 	{
 		IN_ResetMouse();
+	}
+
+	if ( g_iVisibleMouse )
+	{
+		//Clear any residual input so our camera doesn't jerk when dismissing the UI
+		IN_ResetRelativeMouseState();
 	}
 
 	g_iVisibleMouse = false;

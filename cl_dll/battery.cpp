@@ -134,7 +134,11 @@ int CHudBattery::Draw(float flTime)
 	int iOffset = (m_prc1->bottom - m_prc1->top)/6;
 
 	y = ScreenHeight - gHUD.m_iFontHeight - gHUD.m_iFontHeight / 2;
-	x = ScreenWidth/5;
+	
+	int width = (m_prc1->right - m_prc1->left);
+
+	// this used to just be ScreenWidth/5 but that caused real issues at higher resolutions. Instead, base it on the width of this sprite.
+	x = 3 * width;
 
 	// make sure we have the right sprite handles
 	if ( !m_hSprite1 )
@@ -151,7 +155,8 @@ int CHudBattery::Draw(float flTime)
 		SPR_DrawAdditive( 0, x, y - iOffset + (rc.top - m_prc2->top), &rc);
 	}
 
-	x += (m_prc1->right - m_prc1->left);
+	x += width;
+	y += (int)(gHUD.m_iFontHeight * 0.2f);
 	x = gHUD.DrawHudNumber(x, y, DHN_3DIGITS | DHN_DRAWZERO, m_iBat, r, g, b);
 
 	return 1;

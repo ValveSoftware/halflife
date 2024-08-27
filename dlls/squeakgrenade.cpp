@@ -1,4 +1,4 @@
-/***
+/*** 
 *
 *	Copyright (c) 1996-2001, Valve LLC. All rights reserved.
 *	
@@ -340,7 +340,7 @@ void CSqueakGrenade::SuperBounceTouch( CBaseEntity *pOther )
 	// higher pitch as squeeker gets closer to detonation time
 	flpitch = 155.0 - 60.0 * ((m_flDie - gpGlobals->time) / SQUEEK_DETONATE_DELAY);
 
-	if ( pOther->pev->takedamage && m_flNextAttack < gpGlobals->time )
+	if ( pOther->pev->takedamage && m_flNextAttack < gpGlobals->time && ( pOther->pev->flags & FL_WORLDBRUSH ) == 0)
 	{
 		// attack!
 
@@ -492,25 +492,66 @@ void CSqueak::Holster( int skiplocal /* = 0 */ )
 	EMIT_SOUND(ENT(m_pPlayer->pev), CHAN_WEAPON, "common/null.wav", 1.0, ATTN_NORM);
 }
 
+// up / down
+#define	PITCH	0
+// left / right
+#define	YAW		1
+// fall over
+#define	ROLL	2 
+
+void AngleVectors(const vec3_t angles, vec3_t& forward, vec3_t& right, vec3_t& up)
+{
+	float		angle;
+	float		sr, sp, sy, cr, cp, cy;
+
+	angle = angles[YAW] * (M_PI * 2 / 360);
+	sy = sin(angle);
+	cy = cos(angle);
+	angle = angles[PITCH] * (M_PI * 2 / 360);
+	sp = sin(angle);
+	cp = cos(angle);
+	angle = angles[ROLL] * (M_PI * 2 / 360);
+	sr = sin(angle);
+	cr = cos(angle);
+
+	forward[0] = cp * cy;
+	forward[1] = cp * sy;
+	forward[2] = -sp;
+	right[0] = (-1 * sr * sp * cy + -1 * cr * -sy);
+	right[1] = (-1 * sr * sp * sy + -1 * cr * cy);
+	right[2] = -1 * sr * cp;
+	up[0] = (cr * sp * cy + -sr * -sy);
+	up[1] = (cr * sp * sy + -sr * cy);
+	up[2] = cr * cp;
+}
 
 void CSqueak::PrimaryAttack()
 {
 	if ( m_pPlayer->m_rgAmmo[ m_iPrimaryAmmoType ] )
 	{
-		UTIL_MakeVectors( m_pPlayer->pev->v_angle );
+		vec3_t forward, right, up;
+		vec3_t vEntityForward = m_pPlayer->pev->v_angle;
+		vEntityForward[0] = 0;
+		AngleVectors(vEntityForward, forward, right, up);
+		vEntityForward = forward;
+
+		AngleVectors(m_pPlayer->pev->v_angle, forward, right, up);
 		TraceResult tr;
 		Vector trace_origin;
 
 		// HACK HACK:  Ugly hacks to handle change in origin based on new physics code for players
 		// Move origin up if crouched and start trace a bit outside of body ( 20 units instead of 16 )
+		float flAimDownFraction = m_pPlayer->pev->v_angle[0] > 0 ? m_pPlayer->pev->v_angle[0] / 90.f : 0;
 		trace_origin = m_pPlayer->pev->origin;
 		if ( m_pPlayer->pev->flags & FL_DUCKING )
 		{
-			trace_origin = trace_origin - ( VEC_HULL_MIN - VEC_DUCK_HULL_MIN );
+			trace_origin = trace_origin - (flAimDownFraction + 1) * ( VEC_HULL_MIN - VEC_DUCK_HULL_MIN );
 		}
 
+
+		Vector vTraceForward = (flAimDownFraction * vEntityForward) + (1 - flAimDownFraction) * forward;
 		// find place to toss monster
-		UTIL_TraceLine( trace_origin + gpGlobals->v_forward * 20, trace_origin + gpGlobals->v_forward * 64, dont_ignore_monsters, NULL, &tr );
+		UTIL_TraceLine(trace_origin + vTraceForward * 24, trace_origin + forward * 60, dont_ignore_monsters, NULL, &tr);
 
 	int flags;
 #ifdef CLIENT_WEAPONS
@@ -519,16 +560,16 @@ void CSqueak::PrimaryAttack()
 	flags = 0;
 #endif
 
-	    PLAYBACK_EVENT_FULL( flags, m_pPlayer->edict(), m_usSnarkFire, 0.0, (float *)&g_vecZero, (float *)&g_vecZero, 0.0, 0.0, 0, 0, 0, 0 );
+	    PLAYBACK_EVENT_FULL( flags, m_pPlayer->edict(), m_usSnarkFire, 0.0, (float *)&g_vecZero, (float *)&g_vecZero, 0.0, 0.0, 0, 0, 0, 0 );		
 
-		if ( tr.fAllSolid == 0 && tr.fStartSolid == 0 && tr.flFraction > 0.25 )
+		if (tr.fAllSolid == 0 && tr.fStartSolid == 0 && tr.flFraction > 0 )
 		{
 			// player "shoot" animation
 			m_pPlayer->SetAnimation( PLAYER_ATTACK1 );
 
 #ifndef CLIENT_DLL
 			CBaseEntity *pSqueak = CBaseEntity::Create( "monster_snark", tr.vecEndPos, m_pPlayer->pev->v_angle, m_pPlayer->edict() );
-			pSqueak->pev->velocity = gpGlobals->v_forward * 200 + m_pPlayer->pev->velocity;
+			pSqueak->pev->velocity = vTraceForward * 200 + m_pPlayer->pev->velocity;
 #endif
 
 			// play hunt sound

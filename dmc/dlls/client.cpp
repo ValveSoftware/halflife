@@ -374,8 +374,6 @@ ClientCommand
 called each time a player uses a "cmd" command
 ============
 */
-extern float g_flWeaponCheat;
-
 // Use CMD_ARGV,  CMD_ARGV, and CMD_ARGC to get pointers the character string command.
 void ClientCommand( edict_t *pEntity )
 {
@@ -401,7 +399,7 @@ void ClientCommand( edict_t *pEntity )
 	}
 	else if ( FStrEq(pcmd, "give" ) )
 	{
-		if ( g_flWeaponCheat != 0.0)
+		if ( CVAR_GET_FLOAT( "sv_cheats" ) != 0.0)
 		{
 			int iszItem = ALLOC_STRING( CMD_ARGV(1) );	// Make a copy of the classname
 			GetClassPtr((CBasePlayer *)pev)->GiveNamedItem( STRING(iszItem) );
@@ -467,7 +465,23 @@ void ClientCommand( edict_t *pEntity )
 	else
 	{
 		// tell the user they entered an unknown command
-		ClientPrint( &pEntity->v, HUD_PRINTCONSOLE, UTIL_VarArgs( "Unknown command: %s\n", pcmd ) );
+		char command[128];
+
+		// check the length of the command (prevents crash)
+		// max total length is 192 ...and we're adding a string below ("Unknown command: %s\n")
+		strncpy( command, pcmd, 127 );
+		command[127] = '\0';
+
+		// First parse the name and remove any %'s
+		for ( char *pApersand = command; pApersand != NULL && *pApersand != 0; pApersand++ )
+		{
+			// Replace it with a space
+			if ( *pApersand == '%' )
+				*pApersand = ' ';
+		}
+
+		// tell the user they entered an unknown command
+		ClientPrint( &pEntity->v, HUD_PRINTCONSOLE, UTIL_VarArgs( "Unknown command: %s\n", command ) );
 	}
 }
 
@@ -1199,6 +1213,12 @@ int AddToFullPack( struct entity_state_s *state, int e, edict_t *ent, edict_t *h
 		state->health		= ent->v.health;
 	}
 
+	CBaseEntity	*pEntity = static_cast<CBaseEntity*>( GET_PRIVATE( ent ) );
+	if ( pEntity && pEntity->Classify() != CLASS_NONE && pEntity->Classify() != CLASS_MACHINE )
+		state->eflags |= EFLAG_FLESH_SOUND;
+	else
+		state->eflags &= ~EFLAG_FLESH_SOUND;
+
 	return 1;
 }
 
@@ -1553,9 +1573,9 @@ int GetWeaponData( struct edict_s *player, struct weapon_data_s *info )
 						item->m_iId						= II.iId;
 						item->m_iClip					= gun->m_iClip;
 
-						item->m_flTimeWeaponIdle		= max( gun->m_flTimeWeaponIdle, -0.001 );
-						item->m_flNextPrimaryAttack		= max( gun->m_flNextPrimaryAttack, -0.001 );
-						item->m_flNextSecondaryAttack	= max( gun->m_flNextSecondaryAttack, -0.001 );
+						item->m_flTimeWeaponIdle		= max( gun->m_flTimeWeaponIdle, -0.001f );
+						item->m_flNextPrimaryAttack		= max( gun->m_flNextPrimaryAttack, -0.001f );
+						item->m_flNextSecondaryAttack	= max( gun->m_flNextSecondaryAttack, -0.001f );
 						item->m_fInReload				= gun->m_fInReload;
 					}
 				}

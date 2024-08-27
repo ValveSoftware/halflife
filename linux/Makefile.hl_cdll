@@ -23,7 +23,7 @@ INCLUDEDIRS=-I$(HL_SRC_DIR) -I../dlls -I../tfc -I$(COMMON_SRC_DIR) -I$(PUBLIC_SR
 ifeq ($(OS),Darwin)
 LDFLAGS=$(SHLIBLDFLAGS) $(CPP_LIB) -framework Carbon $(CFG)/vgui.dylib -L. -lSDL2-2.0.0
 else
-LDFLAGS=$(SHLIBLDFLAGS) $(CPP_LIB)  -L$(CFG) vgui.so -L. libSDL2-2.0.so.0
+LDFLAGS=$(SHLIBLDFLAGS) $(CPP_LIB) -L$(CFG) vgui.so -L. -lSDL2
 endif
 
 DO_CC=$(CPLUS) $(INCLUDEDIRS) $(CFLAGS) -o $@ -c $<
@@ -114,6 +114,7 @@ PUBLIC_OBJS = \
 	$(PUBLIC_OBJ_DIR)/interface.o \
 
 COMMON_OBJS = \
+	$(COMMON_OBJ_DIR)/validator.o \
 	$(COMMON_OBJ_DIR)/parsemsg.o \
 
 GAME_SHARED_OBJS = \
@@ -137,9 +138,9 @@ all: client.$(SHLIBEXT)
 
 client.$(SHLIBEXT): $(HL1_OBJS) $(PUBLIC_OBJS) $(COMMON_OBJS) $(GAME_SHARED_OBJS) $(DLL_OBJS) $(PM_SHARED_OBJS)
 	$(CLINK) -o $(BUILD_DIR)/$@ $(HL1_OBJS) $(PUBLIC_OBJS) $(COMMON_OBJS) $(GAME_SHARED_OBJS) $(DLL_OBJS) $(PM_SHARED_OBJS) $(LDFLAGS) $(CPP_LIB)
-	p4 edit ../../game/mod/cl_dlls/$@
-	cp $(BUILD_DIR)/$@  ../../game/mod/cl_dlls
-	./gendbg.sh ../../game/mod/cl_dlls/client.$(SHLIBEXT)
+	$(P4_EDIT_START) ../../game/valve/cl_dlls/$@ $(P4_EDIT_END)
+	cp $(BUILD_DIR)/$@  ../../game/valve/cl_dlls
+	./gendbg.sh ../../game/valve/cl_dlls/client.$(SHLIBEXT)
 
 $(HL1_OBJ_DIR):
 	mkdir -p $(HL1_OBJ_DIR)

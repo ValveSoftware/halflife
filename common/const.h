@@ -116,6 +116,7 @@
 
 // entity flags
 #define EFLAG_SLERP				1	// do studio interpolation of this entity
+#define EFLAG_FLESH_SOUND		2	// JoshA: Whether this entity should sound like flesh. (ie. pEntity->Classify() != CLASS_NONE && pEntity->Classify() != CLASS_MACHINE)
 		
 //
 // temp entity events

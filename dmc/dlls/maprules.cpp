@@ -799,7 +799,7 @@ void CGamePlayerEquip::KeyValue( KeyValueData *pkvd )
 			{
 				char tmp[128];
 
-				UTIL_StripToken( pkvd->szKeyName, tmp );
+				UTIL_StripToken( pkvd->szKeyName, tmp, sizeof( tmp ) );
 
 				m_weaponNames[i] = ALLOC_STRING(tmp);
 				m_weaponCount[i] = atoi(pkvd->szValue);

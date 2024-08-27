@@ -2,6 +2,7 @@
 // 02/21/97 JCB Added extended DirectInput code to support external controllers.
 
 #include "port.h"
+#include <SDL2/SDL_events.h>
 #include <SDL2/SDL_mouse.h>
 #include <SDL2/SDL_gamecontroller.h>
 
@@ -99,7 +100,7 @@ enum _ControlList
 
 DWORD	dwAxisMap[ JOY_MAX_AXES ];
 DWORD	dwControlMap[ JOY_MAX_AXES ];
-DWORD	pdwRawValue[ JOY_MAX_AXES ];
+int		pdwRawValue[ JOY_MAX_AXES ];
 DWORD		joy_oldbuttonstate, joy_oldpovstate;
 
 int			joy_id;
@@ -121,6 +122,7 @@ cvar_t	*joy_advaxisz;
 cvar_t	*joy_advaxisr;
 cvar_t	*joy_advaxisu;
 cvar_t	*joy_advaxisv;
+cvar_t	*joy_supported;
 cvar_t	*joy_forwardthreshold;
 cvar_t	*joy_sidethreshold;
 cvar_t	*joy_pitchthreshold;
@@ -255,6 +257,19 @@ FIXME: Call through to engine?
 void IN_ResetMouse( void )
 {
 }
+
+/*
+===========
+IN_ResetRelativeMouseState
+===========
+*/
+void IN_ResetRelativeMouseState(void)
+{
+    SDL_PumpEvents();
+    int deltaX, deltaY;
+    SDL_GetRelativeMouseState(&deltaX, &deltaY);
+}
+
 
 /*
 ===========
@@ -737,8 +752,6 @@ void IN_JoyMove ( float frametime, usercmd_t *cmd )
 	{
 		// get the floating point zero-centered, potentially-inverted data for the current axis
 		fAxisValue = (float) pdwRawValue[i];
-		// move centerpoint to zero
-		fAxisValue -= 32768.0;
 
 		if (joy_wwhack2->value != 0.0)
 		{
@@ -903,7 +916,7 @@ IN_Init
 void IN_Init (void)
 {
 	m_filter				= gEngfuncs.pfnRegisterVariable ( "m_filter","0", FCVAR_ARCHIVE );
-	sensitivity				= gEngfuncs.pfnRegisterVariable ( "sensitivity","3", FCVAR_ARCHIVE ); // user mouse sensitivity setting.
+	sensitivity				= gEngfuncs.pfnRegisterVariable ( "sensitivity","3", FCVAR_ARCHIVE | FCVAR_FILTERSTUFFTEXT ); // user mouse sensitivity setting.
 
 	in_joystick				= gEngfuncs.pfnRegisterVariable ( "joystick","0", FCVAR_ARCHIVE );
 	joy_name				= gEngfuncs.pfnRegisterVariable ( "joyname", "joystick", 0 );
@@ -914,6 +927,7 @@ void IN_Init (void)
 	joy_advaxisr			= gEngfuncs.pfnRegisterVariable ( "joyadvaxisr", "0", 0 );
 	joy_advaxisu			= gEngfuncs.pfnRegisterVariable ( "joyadvaxisu", "0", 0 );
 	joy_advaxisv			= gEngfuncs.pfnRegisterVariable ( "joyadvaxisv", "0", 0 );
+	joy_supported			= gEngfuncs.pfnRegisterVariable ( "joysupported", "1", 0 );
 	joy_forwardthreshold	= gEngfuncs.pfnRegisterVariable ( "joyforwardthreshold", "0.15", 0 );
 	joy_sidethreshold		= gEngfuncs.pfnRegisterVariable ( "joysidethreshold", "0.15", 0 );
 	joy_pitchthreshold		= gEngfuncs.pfnRegisterVariable ( "joypitchthreshold", "0.15", 0 );

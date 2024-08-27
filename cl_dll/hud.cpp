@@ -81,7 +81,8 @@ static CHLVoiceStatusHelper g_VoiceStatusHelper;
 
 extern client_sprite_t *GetSpriteList(client_sprite_t *pList, const char *psz, int iRes, int iCount);
 
-extern cvar_t *sensitivity;
+extern float IN_GetMouseSensitivity();
+
 cvar_t *cl_lw = NULL;
 
 void ShutdownInput (void);
@@ -326,8 +327,9 @@ void CHud :: Init( void )
 	m_iLogo = 0;
 	m_iFOV = 0;
 
-	CVAR_CREATE( "zoom_sensitivity_ratio", "1.2", 0 );
-	default_fov = CVAR_CREATE( "default_fov", "90", 0 );
+	CVAR_CREATE( "zoom_sensitivity_ratio", "1.2", FCVAR_ARCHIVE );
+	CVAR_CREATE( "cl_autowepswitch", "1", FCVAR_USERINFO|FCVAR_ARCHIVE );
+	default_fov = CVAR_CREATE( "default_fov", "90", FCVAR_ARCHIVE );
 	m_pCvarStealMouse = CVAR_CREATE( "hud_capturemouse", "1", FCVAR_ARCHIVE );
 	m_pCvarDraw = CVAR_CREATE( "hud_draw", "1", FCVAR_ARCHIVE );
 	cl_lw = gEngfuncs.pfnGetCvarPointer( "cl_lw" );
@@ -371,6 +373,9 @@ void CHud :: Init( void )
 	ServersInit();
 
 	MsgFunc_ResetHUD(0, 0, NULL );
+
+	gEngfuncs.pfnClientCmd("richpresence_gamemode\n"); // reset
+	gEngfuncs.pfnClientCmd("richpresence_update\n");
 }
 
 // CHud destructor
@@ -425,10 +430,15 @@ void CHud :: VidInit( void )
 	m_hsprLogo = 0;	
 	m_hsprCursor = 0;
 
-	if (ScreenWidth < 640)
-		m_iRes = 320;
-	else
+	if (ScreenWidth > 2560 && ScreenHeight > 1600)
+		m_iRes = 2560;
+	else if (ScreenWidth >= 1280 && ScreenHeight > 720)
+		m_iRes = 1280;
+	else if (ScreenWidth >= 640)
 		m_iRes = 640;
+	else
+		m_iRes = 320;
+	
 
 	// Only load this once
 	if ( !m_pSpriteList )
@@ -653,7 +663,7 @@ int CHud::MsgFunc_SetFOV(const char *pszName,  int iSize, void *pbuf)
 	else
 	{  
 		// set a new sensitivity that is proportional to the change from the FOV default
-		m_flMouseSensitivity = sensitivity->value * ((float)newfov / (float)def_fov) * CVAR_GET_FLOAT("zoom_sensitivity_ratio");
+		m_flMouseSensitivity = IN_GetMouseSensitivity() * ((float)newfov / (float)def_fov) * CVAR_GET_FLOAT("zoom_sensitivity_ratio");
 	}
 
 	return 1;

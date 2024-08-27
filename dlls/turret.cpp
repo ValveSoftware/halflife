@@ -51,7 +51,7 @@ typedef enum
 	TURRET_ANIM_DIE,
 } TURRET_ANIM;
 
-class CBaseTurret : public CBaseMonster
+class CBaseTurret : public CBaseMonster 
 {
 public:
 	void Spawn(void);

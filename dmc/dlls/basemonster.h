@@ -108,6 +108,8 @@ public:
 	SCRIPTSTATE			m_scriptState;		// internal cinematic state
 	CCineMonster		*m_pCine;
 
+	float 				m_flLastYawTime;	// Last time yaw change was computed
+
 	virtual int		Save( CSave &save ); 
 	virtual int		Restore( CRestore &restore );
 	

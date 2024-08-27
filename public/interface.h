@@ -14,9 +14,12 @@
 //    for legacy code). In this case, you need to make a new version name for your new interface, and make a wrapper interface and 
 //    expose it for the old interface.
 
-//#if _MSC_VER >= 1300  // VC7
-//#include "tier1/interface.h"
-//#else
+// JoshA: Everything uses this now.
+#if 1
+#include "tier1/interface.h"
+#else
+
+#error use proper interface only
 
 #ifndef INTERFACE_H
 #define INTERFACE_H
@@ -92,9 +95,19 @@ public:
 	static InterfaceReg __g_Create##className##interfaceName##_reg(__Create##className##interfaceName##_interface, versionName);
 
 // Use this to expose a singleton interface. This creates the global variable for you automatically.
+#if !defined(_STATIC_LINKED) || !defined(_SUBSYSTEM)
 #define EXPOSE_SINGLE_INTERFACE(className, interfaceName, versionName) \
-	static className __g_##className##_singleton;\
+	static className __g_##className##_singleton; \
 	EXPOSE_SINGLE_INTERFACE_GLOBALVAR(className, interfaceName, versionName, __g_##className##_singleton)
+#else
+#define EXPOSE_SINGLE_INTERFACE(className, interfaceName, versionName) \
+	namespace _SUBSYSTEM \
+	{	\
+		static className __g_##className##_singleton; \
+	}	\
+	EXPOSE_SINGLE_INTERFACE_GLOBALVAR(className, interfaceName, versionName, __g_##className##_singleton)
+#endif
+
 
 
 #ifdef WIN32
@@ -144,6 +157,6 @@ extern CreateInterfaceFn	Sys_GetFactory( CSysModule *pModule );
 
 
 #endif
-//#endif // MSVC 6.0
+#endif // MSVC 6.0
 
 

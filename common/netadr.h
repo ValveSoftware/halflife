@@ -19,21 +19,26 @@
 #pragma once
 #endif
 
+// JoshA: Unfortunately netadr_s is passed to clients for connectionless packets.
+// No Valve mod uses them, but custom mods *might*, so not changing the start of this struct layout.
+// It's very unlikely they touch this, but I'd like to play as safe as possible with all ABI etc for mod compat.
+// If we want to add IPv6 someday, bung it at the end of netadr_s and leave ip + ipx alone.
+
 typedef enum
 {
 	NA_UNUSED,
 	NA_LOOPBACK,
 	NA_BROADCAST,
 	NA_IP,
-	NA_IPX,
-	NA_BROADCAST_IPX,
+	NA_IPX, // deprecated
+	NA_BROADCAST_IPX, // deprecated
 } netadrtype_t;
 
 typedef struct netadr_s
 {
 	netadrtype_t	type;
 	unsigned char	ip[4];
-	unsigned char	ipx[10];
+	unsigned char	ipx[10]; // deprecated
 	unsigned short	port;
 } netadr_t;
 

@@ -33,7 +33,7 @@
 #define ACT_T_STRIKE		1030
 #define ACT_T_REARIDLE	1040
 
-class CTentacle : public CBaseMonster
+class CTentacle : public CBaseMonster 
 {
 public:
 	CTentacle( void );
