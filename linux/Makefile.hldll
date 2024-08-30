@@ -157,7 +157,7 @@ ifeq ($(CREATE_OUTPUT_DIRS),1)
 	mkdir -p $(HL_OUTPUT_DIR)/dlls
 endif
 	$(P4_EDIT_START) $(HL_OUTPUT_DIR)/dlls/hl.$(SHLIBEXT) $(P4_EDIT_END)
-	cp -f $(BUILD_DIR)/$@  $(HL_OUTPUT_DIR)/dlls/hl.$(SHLIBEXT)
+	cp $(BUILD_DIR)/$@  $(HL_OUTPUT_DIR)/dlls/hl.$(SHLIBEXT)
 	./gendbg.sh $(HL_OUTPUT_DIR)/dlls/hl.$(SHLIBEXT)
 	
 $(HLWPN_OBJ_DIR)/%.o : $(HLWPN_SRC_DIR)/%.cpp
