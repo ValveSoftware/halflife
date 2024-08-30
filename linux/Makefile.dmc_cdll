@@ -12,6 +12,7 @@ PUBLIC_OBJ_DIR=$(DMC_OBJ_DIR)/public
 COMMON_OBJ_DIR=$(DMC_OBJ_DIR)/common
 GAME_SHARED_OBJ_DIR=$(DMC_OBJ_DIR)/game_shared
 PM_SHARED_OBJ_DIR=$(DMC_OBJ_DIR)/pm_shared
+DMC_OUTPUT_DIR=$(SOURCE_DIR)/../game/dmc
 
 CFLAGS=$(BASE_CFLAGS) $(ARCH_CFLAGS) -DCLIENT_DLL -DDMC_BUILD -I/usr/include/malloc -D_snwprintf=swprintf \
 		 -DDISABLE_JUMP_ORIGIN -DDISABLE_VEC_ORIGIN -D_MAX_PATH=PATH_MAX
@@ -115,9 +116,12 @@ all: client_dmc.$(SHLIBEXT)
 
 client_dmc.$(SHLIBEXT): $(DMC_OBJS) $(PUBLIC_OBJS) $(COMMON_OBJS) $(GAME_SHARED_OBJS) $(PM_SHARED_OBJS)
 	$(CLINK) -o $(BUILD_DIR)/$@ $(DMC_OBJS) $(PUBLIC_OBJS) $(COMMON_OBJS) $(GAME_SHARED_OBJS) $(PM_SHARED_OBJS) $(LDFLAGS) $(CPP_LIB)
-	$(P4_EDIT_START) ../../game/dmc/cl_dlls/client.$(SHLIBEXT) $(P4_EDIT_END)
-	cp $(BUILD_DIR)/$@  ../../game/dmc/cl_dlls/client.$(SHLIBEXT)
-	./gendbg.sh ../../game/dmc/cl_dlls/client.$(SHLIBEXT)
+ifeq ($(CREATE_OUTPUT_DIRS),1)
+	mkdir -p $(DMC_OUTPUT_DIR)/cl_dlls
+endif
+	$(P4_EDIT_START) $(DMC_OUTPUT_DIR)/cl_dlls/client.$(SHLIBEXT) $(P4_EDIT_END)
+	cp $(BUILD_DIR)/$@  $(DMC_OUTPUT_DIR)/cl_dlls/client.$(SHLIBEXT)
+	./gendbg.sh $(DMC_OUTPUT_DIR)/cl_dlls/client.$(SHLIBEXT)
 
 
 $(DMC_OBJ_DIR):

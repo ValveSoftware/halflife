@@ -11,6 +11,7 @@ PM_SRC_DIR=$(SOURCE_DIR)/dmc/pm_shared
 DMCDLL_OBJ_DIR=$(BUILD_OBJ_DIR)/dmcdll
 PM_OBJ_DIR=$(DMCDLL_OBJ_DIR)/pm_shared
 GAME_SHARED_OBJ_DIR=$(DMCDLL_OBJ_DIR)/game_shared
+DMC_OUTPUT_DIR=$(SOURCE_DIR)/../game/dmc
 
 #full optimization
 CFLAGS=$(BASE_CFLAGS) $(ARCH_CFLAGS)
@@ -93,9 +94,12 @@ dirs:
 
 dmc.$(SHLIBEXT): $(DMCDLL_OBJS) $(PM_OBJS) $(GAME_SHARED_OBJS)
 	$(CLINK) $(SHLIBLDFLAGS) -o $(BUILD_DIR)/$@ $(DMCDLL_OBJS) $(PM_OBJS) $(GAME_SHARED_OBJS) $(LDFLAGS) $(CPP_LIB)
-	$(P4_EDIT_START) ../../game/dmc/dlls/$@ $(P4_EDIT_END)
-	cp $(BUILD_DIR)/$@  ../../game/dmc/dlls
-	./gendbg.sh ../../game/dmc/dlls/dmc.$(SHLIBEXT)
+ifeq ($(CREATE_OUTPUT_DIRS),1)
+	mkdir -p $(DMC_OUTPUT_DIR)/dlls
+endif
+	$(P4_EDIT_START) .$(DMC_OUTPUT_DIR)/dlls/$@ $(P4_EDIT_END)
+	cp $(BUILD_DIR)/$@  $(DMC_OUTPUT_DIR)/dlls
+	./gendbg.sh $(DMC_OUTPUT_DIR)/dlls/dmc.$(SHLIBEXT)
 		
 $(DMCDLL_OBJ_DIR)/%.o : $(DMCDLL_SRC_DIR)/%.cpp
 	$(DO_DMCDLL_CC)
