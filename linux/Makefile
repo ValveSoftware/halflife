@@ -25,33 +25,20 @@ DBG_SRC_DIR=$(SOURCE_DIR)/dbg
 
 BUILD_OBJ_DIR=$(BUILD_DIR)/obj
 
-ifneq "$(origin VALVE_NO_AUTO_P4)" "undefined"
-	P4_EDIT_START = chmod -R +w
-	P4_EDIT_END = || true
-	P4_REVERT_START = true
-	P4_REVERT_END =
-else
-	P4_EDIT_START = p4 edit
-	P4_EDIT_END =
-	P4_REVERT_START = p4 revert
-	P4_REVERT_END =
-endif
+P4_EDIT_START = chmod -R +w
+P4_EDIT_END = || true
+P4_REVERT_START = true
+P4_REVERT_END =
 
 ARCH=i386
 ELF-GC-DYNSTR=./elf-gc-dynstr
 
+# Note that we expect to be building inside a Steam Runtime "scout" container
 ifeq ($(OS),Linux)
-	ifneq ($(USE_STEAM_RUNTIME),1)
-		CC="/valve/bin/gcc-4.6 -m32"
-		CPLUS="/valve/bin/g++-4.6 -m32"
-		CPP_LIB:=-L$(shell /valve/bin/g++-4.6 -m32 -print-file-name=libstdc++.so | xargs dirname) -lstdc++ -ldl -lpthread
-				CLINK=$(CC)
-	else
 		CC="gcc-5 -m32 -std=gnu++11 -fno-delete-null-pointer-checks -fno-gnu-unique -fvisibility=hidden"
 		CPLUS="g++-5 -m32 -std=gnu++11 -fno-delete-null-pointer-checks -fno-gnu-unique -fvisibility=hidden"
 		CPP_LIB:=-L$(shell g++-5 -m32 -print-file-name=libstdc++.so | xargs dirname) -lstdc++ -ldl -lpthread
 				CLINK=$(CC)
-	endif
 endif
 
 ifeq ($(OS),Darwin)

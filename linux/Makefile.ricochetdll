@@ -13,6 +13,7 @@ RICOCHETDLL_OBJ_DIR=$(BUILD_OBJ_DIR)/ricochetdll
 RICOCHETWPN_OBJ_DIR=$(RICOCHETDLL_OBJ_DIR)/wpn_shared
 PM_OBJ_DIR=$(RICOCHETDLL_OBJ_DIR)/pm_shared
 GAME_SHARED_OBJ_DIR=$(RICOCHETDLL_OBJ_DIR)/game_shared
+RICOCHET_OUTPUT_DIR=$(SOURCE_DIR)/../game/ricochet
 
 #CFLAGS=$(BASE_CFLAGS) -g
 CFLAGS=$(BASE_CFLAGS) -O3 -ffast-math -fno-strength-reduce
@@ -102,9 +103,12 @@ dirs:
 
 ricochet.$(SHLIBEXT): $(RICOCHETDLL_OBJS) $(RICOCHETWPN_OBJS) $(PM_OBJS) $(GAME_SHARED_OBJS)
 	$(CLINK) $(SHLIBLDFLAGS) -o $(BUILD_DIR)/$@ $(RICOCHETDLL_OBJS) $(RICOCHETWPN_OBJS) $(PM_OBJS) $(GAME_SHARED_OBJS) $(LDFLAGS) $(CPP_LIB)
-	$(P4_EDIT_START) ../../game/ricochet/dlls/$@ $(P4_EDIT_END)
-	cp $(BUILD_DIR)/$@  ../../game/ricochet/dlls
-	./gendbg.sh ../../game/ricochet/dlls/$@
+ifeq ($(CREATE_OUTPUT_DIRS),1)
+	mkdir -p $(RICOCHET_OUTPUT_DIR)/dlls
+endif
+	$(P4_EDIT_START) $(RICOCHET_OUTPUT_DIR)/dlls/$@ $(P4_EDIT_END)
+	cp $(BUILD_DIR)/$@  $(RICOCHET_OUTPUT_DIR)/dlls
+	./gendbg.sh $(RICOCHET_OUTPUT_DIR)/dlls/$@
 		
 $(RICOCHETWPN_OBJ_DIR)/%.o : $(RICOCHETWPN_SRC_DIR)/%.cpp
 	$(DO_RICOCHETWPN_CC)

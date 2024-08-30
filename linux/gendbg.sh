@@ -1,20 +1,12 @@
 #!/bin/bash
 
-if [[ -n "$VALVE_NO_AUTO_P4" ]]; then
-	p4_edit () {
-		chmod -R +w "$@" || true
-	}
-	p4_revert () {
-		true
-	}
-else
-	p4_edit () {
-		p4 edit "$@"
-	}
-	p4_revert () {
-		p4 revert "$@"
-	}
-fi
+
+p4_edit () {
+	chmod -R +w "$@" || true
+}
+p4_revert () {
+	true
+}
 
 UNAME=$(uname)
 if [ "$UNAME" == "Darwin" ]; then
@@ -24,11 +16,7 @@ if [ "$UNAME" == "Darwin" ]; then
 	exit 0;
 fi
 
-if [[ -z "$USE_STEAM_RUNTIME" ]]; then
-	OBJCOPY=/valve/bin/objcopy
-else
-	OBJCOPY=objcopy
-fi
+OBJCOPY=objcopy
 
 function usage {
 	echo "$0 /path/to/input/file [-o /path/to/output/file ]"

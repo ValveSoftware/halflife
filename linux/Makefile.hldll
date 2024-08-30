@@ -11,6 +11,7 @@ HLDLL_OBJ_DIR=$(BUILD_OBJ_DIR)/hldll
 HLWPN_OBJ_DIR=$(HLDLL_OBJ_DIR)/wpn_shared
 PM_OBJ_DIR=$(HLDLL_OBJ_DIR)/pm_shared
 GAME_SHARED_OBJ_DIR=$(HLDLL_OBJ_DIR)/game_shared
+HL_OUTPUT_DIR=$(SOURCE_DIR)/../game/valve
 
 #CFLAGS=$(BASE_CFLAGS) $(ARCH_CFLAGS) $(SHLIBCFLAGS) -DCLIENT_WEAPONS
 CFLAGS=$(BASE_CFLAGS)  $(ARCH_CFLAGS)  -DCLIENT_WEAPONS
@@ -152,9 +153,12 @@ dirs:
 
 hl.$(SHLIBEXT): $(HLDLL_OBJS) $(HLWPN_OBJS) $(PM_OBJS) $(GAME_SHARED_OBJS)
 	$(CC) $(LDFLAGS) $(SHLIBLDFLAGS) -o $(BUILD_DIR)/$@ $(HLDLL_OBJS) $(HLWPN_OBJS) $(PM_OBJS) $(GAME_SHARED_OBJS)
-	$(P4_EDIT_START) ../../game/valve/dlls/hl.$(SHLIBEXT) $(P4_EDIT_END)
-	cp $(BUILD_DIR)/$@  ../../game/valve/dlls/hl.$(SHLIBEXT)
-	./gendbg.sh ../../game/valve/dlls/hl.$(SHLIBEXT)
+ifeq ($(CREATE_OUTPUT_DIRS),1)
+	mkdir -p $(HL_OUTPUT_DIR)/dlls
+endif
+	$(P4_EDIT_START) $(HL_OUTPUT_DIR)/dlls/hl.$(SHLIBEXT) $(P4_EDIT_END)
+	cp -f $(BUILD_DIR)/$@  $(HL_OUTPUT_DIR)/dlls/hl.$(SHLIBEXT)
+	./gendbg.sh $(HL_OUTPUT_DIR)/dlls/hl.$(SHLIBEXT)
 	
 $(HLWPN_OBJ_DIR)/%.o : $(HLWPN_SRC_DIR)/%.cpp
 	$(DO_HLWPN_CC)

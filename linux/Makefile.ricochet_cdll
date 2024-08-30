@@ -12,6 +12,7 @@ PUBLIC_OBJ_DIR=$(RICOCHET_OBJ_DIR)/public
 COMMON_OBJ_DIR=$(RICOCHET_OBJ_DIR)/common
 GAME_SHARED_OBJ_DIR=$(RICOCHET_OBJ_DIR)/game_shared
 PM_SHARED_OBJ_DIR=$(RICOCHET_OBJ_DIR)/pm_shared
+RICOCHET_OUTPUT_DIR=$(SOURCE_DIR)/../game/ricochet
 
 CFLAGS=$(BASE_CFLAGS) $(ARCH_CFLAGS) -DCLIENT_DLL -I/usr/include/malloc -D_snwprintf=swprintf \
 		 -DDISABLE_JUMP_ORIGIN -DDISABLE_VEC_ORIGIN -D_MAX_PATH=PATH_MAX
@@ -114,9 +115,12 @@ all: client_ricochet.$(SHLIBEXT)
 
 client_ricochet.$(SHLIBEXT): $(RICOCHET_OBJS) $(PUBLIC_OBJS) $(COMMON_OBJS) $(GAME_SHARED_OBJS) $(PM_SHARED_OBJS)
 	$(CLINK) -o $(BUILD_DIR)/$@ $(RICOCHET_OBJS) $(PUBLIC_OBJS) $(COMMON_OBJS) $(GAME_SHARED_OBJS) $(PM_SHARED_OBJS) $(LDFLAGS)  $(CPP_LIB)
-	$(P4_EDIT_START) ../../game/ricochet/cl_dlls/client.$(SHLIBEXT) $(P4_EDIT_END)
-	cp $(BUILD_DIR)/$@  ../../game/ricochet/cl_dlls/client.$(SHLIBEXT)
-	./gendbg.sh ../../game/ricochet/cl_dlls/client.$(SHLIBEXT)		
+ifeq ($(CREATE_OUTPUT_DIRS),1)
+	mkdir -p $(RICOCHET_OUTPUT_DIR)/cl_dlls
+endif
+	$(P4_EDIT_START) $(RICOCHET_OUTPUT_DIR)/cl_dlls/client.$(SHLIBEXT) $(P4_EDIT_END)
+	cp $(BUILD_DIR)/$@  $(RICOCHET_OUTPUT_DIR)/cl_dlls/client.$(SHLIBEXT)
+	./gendbg.sh $(RICOCHET_OUTPUT_DIR)/cl_dlls/client.$(SHLIBEXT)		
 
 $(RICOCHET_OBJ_DIR):
 	mkdir -p $(RICOCHET_OBJ_DIR)
