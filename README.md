@@ -1,7 +1,7 @@
 Half Life 1 SDK LICENSE
 ======================
 
-Half Life 1 SDK Copyright © Valve Corp.  
+Half Life 1 SDK Copyright © Valve Corp.
 
 THIS DOCUMENT DESCRIBES A CONTRACT BETWEEN YOU AND VALVE CORPORATION (“Valve”).  PLEASE READ IT BEFORE DOWNLOADING OR USING THE HALF LIFE 1 SDK (“SDK”). BY DOWNLOADING AND/OR USING THE SOURCE ENGINE SDK YOU ACCEPT THIS LICENSE. IF YOU DO NOT AGREE TO THE TERMS OF THIS LICENSE PLEASE DON’T DOWNLOAD OR USE THE SDK.
 
@@ -60,8 +60,8 @@ Remember: Just because the issue you reported was reported here does not mean th
 Building the SDK code
 -------
 
-Visual Studio 2019 is required to build mod DLLs on Windows. In the Visual Studio installer, install "Desktop development with C++" under "Workloads" and "C++ MFC for latest v142 build tools (x86 & x64)" under "Individual components". VS2019 projects can be found in the `projects\vs2019` folder.
+[Visual Studio](https://visualstudio.microsoft.com/) 2019 is required to build mod DLLs on Windows. In the Visual Studio installer, install "**Desktop development with C++**" under "**Workloads**" and "**C++ MFC for latest v142 build tools (x86 & x64)**" under "**Individual components**". VS2019 projects can be found in the `projects\vs2019` folder.
 
 Tools have not yet been updated for VS2019, but can be built using the VS2010 projects in the `projects\vs2010` folder. See the `readme.txt` file there.
 
-Linux binaries can be built using Makefiles found in the `linux` folder. They expect to be built / run in the Steam Runtime "scout" environment. The built binaries are copied to a directory called "game" at the same level as the root directory for the git repository. You can set CREATE_OUTPUT_DIRS=1 while building to create the output directory structure automatically.
+Linux binaries can be built using Makefiles found in the `linux` folder. They expect to be built / run in the [Steam Runtime "scout" environment](https://gitlab.steamos.cloud/steamrt/scout/sdk). The built binaries are copied to a directory called `game` at the same level as the root directory for the git repository. You can set `CREATE_OUTPUT_DIRS=1` while building to create the output directory structure automatically.
