@@ -109,9 +109,42 @@ public:
 	void	KeyValue( KeyValueData *pkvd );
 	void	EXPORT StaticDecal( void );
 	void	EXPORT TriggerDecal( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE useType, float value );
+	virtual	int Save( CSave &save );
+	virtual	int Restore( CRestore &restore );
+	static	TYPEDESCRIPTION m_SaveData[];
+private:
+	float	m_fPlacedOnEntity;
 };
 
 LINK_ENTITY_TO_CLASS( infodecal, CDecal );
+
+TYPEDESCRIPTION CDecal :: m_SaveData[] =
+{
+	DEFINE_FIELD(CDecal, m_fPlacedOnEntity, FIELD_BOOLEAN ),
+};
+
+int CDecal :: Save( CSave &save )
+{
+	if ( !CBaseEntity::Save(save) )
+		return 0;
+
+	return save.WriteFields("infodecal", this, m_SaveData, ARRAYSIZE(m_SaveData));
+}
+
+int CDecal :: Restore( CRestore &restore )
+{
+	if ( !CBaseEntity::Restore(restore) )
+		return 0;
+
+	int status = restore.ReadFields("infodecal", this, m_SaveData, ARRAYSIZE(m_SaveData));
+
+	if ( m_fPlacedOnEntity )
+		Spawn();
+	else
+		REMOVE_ENTITY(ENT(pev));
+
+	return status;
+}
 
 // UNDONE:  These won't get sent to joining players in multi-player
 void CDecal :: Spawn( void )
@@ -177,7 +210,10 @@ void CDecal :: StaticDecal( void )
 
 	g_engfuncs.pfnStaticDecal( pev->origin, (int)pev->skin, entityIndex, modelIndex );
 
-	SUB_Remove();
+	m_fPlacedOnEntity = modelIndex > 0;
+
+	if ( modelIndex == 0 )
+		SUB_Remove();
 }
 
 
