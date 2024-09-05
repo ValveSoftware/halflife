@@ -832,7 +832,7 @@ void CBasePlayer::PackDeadPlayerItems( void )
 
 		if ( iAmmoRules == GR_PLR_DROP_AMMO_ACTIVE && iWeaponRules == GR_PLR_DROP_GUN_ACTIVE )
 		{
-			if ( FClassnameIs( rgpPackWeapons[0]->pev, "weapon_satchel" ) && ( iPackAmmo[0] == -1 || ( m_rgAmmo[iPackAmmo[0]] == 0 ) ) )
+			if ( m_pActiveItem && FClassnameIs( rgpPackWeapons[0]->pev, "weapon_satchel" ) && ( iPackAmmo[0] == -1 || ( m_rgAmmo[iPackAmmo[0]] == 0 ) ) )
 			{
 				bPackItems = FALSE;
 			}
@@ -3301,6 +3301,9 @@ void CBasePlayer::SelectItem(const char *pstr)
 	if (pItem == m_pActiveItem)
 		return;
 
+	if (!pItem->CanDeploy())
+		return;
+
 	ResetAutoaim( );
 
 	// FIX, this needs to queue them up and delay
@@ -3329,6 +3332,9 @@ void CBasePlayer::SelectLastItem(void)
 	{
 		return;
 	}
+
+	if (!m_pLastItem->CanDeploy())
+		return;
 
 	ResetAutoaim( );
 
