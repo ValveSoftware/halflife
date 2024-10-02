@@ -832,7 +832,8 @@ void CBasePlayer::PackDeadPlayerItems( void )
 
 		if ( iAmmoRules == GR_PLR_DROP_AMMO_ACTIVE && iWeaponRules == GR_PLR_DROP_GUN_ACTIVE )
 		{
-			if ( FClassnameIs( rgpPackWeapons[0]->pev, "weapon_satchel" ) && ( iPackAmmo[0] == -1 || ( m_rgAmmo[iPackAmmo[0]] == 0 ) ) )
+			if ( rgpPackWeapons[0] == nullptr 
+				|| ( FClassnameIs( rgpPackWeapons[0]->pev, "weapon_satchel" ) && ( iPackAmmo[0] == -1 || ( m_rgAmmo[iPackAmmo[0]] == 0 ) ) ) )
 			{
 				bPackItems = FALSE;
 			}
@@ -3212,12 +3213,6 @@ int CBasePlayer::Restore( CRestore &restore )
 	m_flNextAttack = UTIL_WeaponTimeBase();
 #endif
 
-	// Force a flashlight update for the HUD
-	if ( m_flFlashLightTime == 0 )
-	{
-		m_flFlashLightTime = 1;
-	}
-
 	return status;
 }
 
@@ -4129,6 +4124,12 @@ void CBasePlayer :: UpdateClientData( void )
 		FireTargets( "game_playerspawn", this, this, USE_TOGGLE, 0 );
 
 		InitStatusBar();
+
+		// Update initial flashlight state
+		MESSAGE_BEGIN( MSG_ONE, gmsgFlashlight, NULL, pev );
+			WRITE_BYTE( FlashlightIsOn() ? 1 : 0 );
+			WRITE_BYTE( m_iFlashBattery );
+		MESSAGE_END();
 	}
 
 	if ( m_iHideHUD != m_iClientHideHUD )

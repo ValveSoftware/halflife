@@ -60,8 +60,8 @@ extern int iTeamColors[5][3];
 #define MAX_SERVERNAME_LENGTH	32
 
 // Use this to set any co-ords in 640x480 space
-#define XRES(x)					(x  * ((float)ScreenWidth / 640))
-#define YRES(y)					(y  * ((float)ScreenHeight / 480))
+#define XRES(x)					((x) * ((float)ScreenWidth / 640))
+#define YRES(y)					((y) * ((float)ScreenHeight / 480))
 
 // Command Menu positions 
 #define MAX_MENUS				40
