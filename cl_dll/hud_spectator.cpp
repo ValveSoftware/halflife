@@ -656,10 +656,10 @@ int CHudSpectator::Draw(float flTime)
 		// check if name would be in inset window
 		if ( m_pip->value != INSET_OFF )
 		{
-			if (	m_vPlayerPos[i][0] > XRES( m_OverviewData.insetWindowX ) &&
-					m_vPlayerPos[i][1] > YRES( m_OverviewData.insetWindowY ) &&
-					m_vPlayerPos[i][0] < XRES( m_OverviewData.insetWindowX + m_OverviewData.insetWindowWidth ) &&
-					m_vPlayerPos[i][1] < YRES( m_OverviewData.insetWindowY + m_OverviewData.insetWindowHeight) 
+			if (	m_vPlayerPos[i][0] > XRES_HD( m_OverviewData.insetWindowX ) &&
+					m_vPlayerPos[i][1] > YRES_HD( m_OverviewData.insetWindowY ) &&
+					m_vPlayerPos[i][0] < XRES_HD( m_OverviewData.insetWindowX + m_OverviewData.insetWindowWidth ) &&
+					m_vPlayerPos[i][1] < YRES_HD( m_OverviewData.insetWindowY + m_OverviewData.insetWindowHeight) 
 				) continue;
 		}
 

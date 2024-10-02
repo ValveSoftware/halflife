@@ -74,12 +74,14 @@ void WeaponsResource :: LoadWeaponSprites( WEAPON *pWeapon )
 {
 	int i, iRes;
 
-	
+#if !defined( _TFC )
 	if (ScreenWidth > 2560 && ScreenHeight > 1600)
 		iRes = 2560;
 	else if (ScreenWidth >= 1280 && ScreenHeight > 720)
 		iRes = 1280;
-	else if (ScreenWidth >= 640)
+	else
+#endif
+	if (ScreenWidth >= 640)
 		iRes = 640;
 	else
 		iRes = 320;
@@ -332,11 +334,14 @@ int CHudAmmo::VidInit(void)
 
 	int nScale = 1;
 
+#if !defined( _TFC )
 	if (ScreenWidth > 2560 && ScreenHeight > 1600)
 		nScale = 4;
 	else if (ScreenWidth >= 1280 && ScreenHeight > 720)
 		nScale = 3;
-	else if (ScreenWidth >= 640)
+	else 
+#endif
+	if (ScreenWidth >= 640)
 		nScale = 2;
 
 	giABWidth = 10 * nScale;
