@@ -35,7 +35,7 @@ extern CGraph WorldGraph;
 #define	HOUNDEYE_MAX_ATTACK_RADIUS		384
 #define	HOUNDEYE_SQUAD_BONUS			(float)1.1
 
-#define HOUNDEYE_EYE_FRAMES 4 // how many different switchable maps for the eye
+#define HOUNDEYE_EYE_FRAMES 3 // how many different switchable maps for the eye
 
 #define HOUNDEYE_SOUND_STARTLE_VOLUME	128 // how loud a sound has to be to badly scare a sleeping houndeye
 
@@ -794,6 +794,10 @@ void CHoundeye :: RunTask ( Task_t *pTask )
 			{
 				pev->skin++;
 			}
+			else
+			{
+				TaskComplete();
+			}
 			break;
 		}
 	case TASK_HOUND_HOP_BACK:
@@ -961,6 +965,7 @@ Task_t	tlHoundSleep[] =
 	{ TASK_HOUND_FALL_ASLEEP,	(float)0				},
 	{ TASK_WAIT_RANDOM,			(float)25				},
 	{ TASK_HOUND_CLOSE_EYE,		(float)0				},
+	{ TASK_WAIT_INDEFINITE,		(float)0				},
 	//{ TASK_WAIT,				(float)10				},
 	//{ TASK_WAIT_RANDOM,			(float)10				},
 };
@@ -1008,7 +1013,7 @@ Task_t	tlHoundWakeUrgent[] =
 {
 	{ TASK_HOUND_OPEN_EYE,		(float)0			},
 	{ TASK_PLAY_SEQUENCE,		(float)ACT_HOP		},
-	{ TASK_FACE_IDEAL,			(float)0			},
+	//{ TASK_FACE_IDEAL,			(float)0			},
 	{ TASK_HOUND_WAKE_UP,		(float)0			},
 };
 
