@@ -1629,6 +1629,13 @@ TYPEDESCRIPTION	CEgon::m_SaveData[] =
 };
 IMPLEMENT_SAVERESTORE( CEgon, CBasePlayerWeapon );
 
+TYPEDESCRIPTION	CHgun::m_SaveData[] = 
+{
+	DEFINE_FIELD( CHgun, m_flRechargeTime, FIELD_TIME ),
+	DEFINE_FIELD( CHgun, m_iFirePhase, FIELD_INTEGER ),
+};
+IMPLEMENT_SAVERESTORE( CHgun, CBasePlayerWeapon );
+
 TYPEDESCRIPTION	CSatchel::m_SaveData[] = 
 {
 	DEFINE_FIELD( CSatchel, m_chargeReady, FIELD_INTEGER ),

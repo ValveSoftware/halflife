@@ -869,6 +869,12 @@ private:
 class CHgun : public CBasePlayerWeapon
 {
 public:
+#ifndef CLIENT_DLL
+	int		Save( CSave &save );
+	int		Restore( CRestore &restore );
+	static	TYPEDESCRIPTION m_SaveData[];
+#endif
+
 	void Spawn( void );
 	void Precache( void );
 	int iItemSlot( void ) { return 4; }
@@ -886,7 +892,7 @@ public:
 
 	float m_flRechargeTime;
 	
-	int m_iFirePhase;// don't save me.
+	int m_iFirePhase;
 
 	virtual BOOL UseDecrement( void )
 	{ 
