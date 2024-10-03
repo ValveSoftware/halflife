@@ -153,6 +153,8 @@ extern trace_t SV_ClipMoveToEntity (edict_t *ent, vec3_t start, vec3_t mins, vec
 void CL_DLLEXPORT CAM_Think( void )
 {
 //	RecClCamThink();
+	if ( gEngfuncs.GetMaxClients() > 1 && CL_IsThirdPerson() )
+		CAM_ToFirstPerson();
 
 	vec3_t origin;
 	vec3_t ext, pnt, camForward, camRight, camUp;
