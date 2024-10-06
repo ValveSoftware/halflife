@@ -62,7 +62,7 @@ TYPEDESCRIPTION CEnvGlobal::m_SaveData[] =
 	DEFINE_FIELD( CEnvGlobal, m_initialstate, FIELD_INTEGER ),
 };
 
-IMPLEMENT_SAVERESTORE( CEnvGlobal, CBaseEntity );
+IMPLEMENT_SAVERESTORE( CEnvGlobal, CPointEntity );
 
 LINK_ENTITY_TO_CLASS( env_global, CEnvGlobal );
 
