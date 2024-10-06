@@ -1172,8 +1172,6 @@ void EV_Crowbar( event_args_t *args )
 
 	if ( EV_IsLocal( idx ) )
 	{
-		gEngfuncs.pEventAPI->EV_WeaponAnimation( CROWBAR_ATTACK1MISS, 1 );
-
 		switch( (g_iSwing++) % 3 )
 		{
 			case 0:
