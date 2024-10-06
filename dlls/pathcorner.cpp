@@ -127,7 +127,7 @@ TYPEDESCRIPTION	CPathTrack::m_SaveData[] =
 	DEFINE_FIELD( CPathTrack, m_altName, FIELD_STRING ),
 };
 
-IMPLEMENT_SAVERESTORE( CPathTrack, CBaseEntity );
+IMPLEMENT_SAVERESTORE( CPathTrack, CPointEntity );
 LINK_ENTITY_TO_CLASS( path_track, CPathTrack );
 
 //
