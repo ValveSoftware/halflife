@@ -35,9 +35,9 @@ ELF-GC-DYNSTR=./elf-gc-dynstr
 
 # Note that we expect to be building inside a Steam Runtime "scout" container
 ifeq ($(OS),Linux)
-		CC="gcc-5 -m32 -std=gnu++11 -fno-delete-null-pointer-checks -fno-gnu-unique -fvisibility=hidden"
-		CPLUS="g++-5 -m32 -std=gnu++11 -fno-delete-null-pointer-checks -fno-gnu-unique -fvisibility=hidden"
-		CPP_LIB:=-L$(shell g++-5 -m32 -print-file-name=libstdc++.so | xargs dirname) -lstdc++ -ldl -lpthread
+		CC="gcc -m32 -std=gnu++11 -fno-delete-null-pointer-checks -fno-gnu-unique -fvisibility=hidden"
+		CPLUS="g++ -m32 -std=gnu++11 -fno-delete-null-pointer-checks -fno-gnu-unique -fvisibility=hidden"
+		CPP_LIB:=-L$(shell g++ -m32 -print-file-name=libstdc++.so | xargs dirname) -lstdc++ -ldl -lpthread
 				CLINK=$(CC)
 endif
 
