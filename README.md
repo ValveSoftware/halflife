@@ -22,9 +22,11 @@ If you would like to use the SDK for a commercial purpose, please contact Valve 
 Half-Life 1
 ======================
 
-This is the README for the Half-Life 1 engine and its associated games.
+This is the GitHub Repository for the Half-Life 1 engine and its associated games.
 
-Please use this repository to report bugs and feature requests for Half-Life 1 related products.
+Here, you can find the SDK code of the client & server DLLs for Half-Life, Deathmatch Classic and Ricochet. The three DLLs are at their latest versions as published on Steam with the Half-Life 25th Anniversary Update. If you wish to use the older SDK from 2013, it can be found in the `steam_legacy` branch.
+
+Additionally you can use this repository to report bugs and feature requests for Half-Life 1 related products.
 
 Reporting Issues
 ----------------
