@@ -148,6 +148,7 @@ void CHudMessage::MessageScanNextChar( void )
 	srcRed = m_parms.pMessage->r1;
 	srcGreen = m_parms.pMessage->g1;
 	srcBlue = m_parms.pMessage->b1;
+	destRed = destGreen = destBlue = 0;
 	blend = 0;	// Pure source
 
 	switch( m_parms.pMessage->effect )
@@ -155,7 +156,6 @@ void CHudMessage::MessageScanNextChar( void )
 	// Fade-in / Fade-out
 	case 0:
 	case 1:
-		destRed = destGreen = destBlue = 0;
 		blend = m_parms.fadeBlend;
 		break;
 
@@ -170,7 +170,6 @@ void CHudMessage::MessageScanNextChar( void )
 		{
 			float deltaTime = m_parms.time - m_parms.charTime;
 
-			destRed = destGreen = destBlue = 0;
 			if ( m_parms.time > m_parms.fadeTime )
 			{
 				blend = m_parms.fadeBlend;
