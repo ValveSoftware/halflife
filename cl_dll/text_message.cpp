@@ -72,17 +72,17 @@ char *CHudTextMessage::LocaliseTextString( const char *msg, char *dst_buffer, in
 			}
 
 			// copy string into message over the msg name
-			for ( char *wsrc = (char*)clmsg->pMessage; *wsrc != 0; wsrc++, dst++ )
+			for ( char *wsrc = (char*)clmsg->pMessage; *wsrc != 0 && buffer_size > 0; wsrc++, dst++, buffer_size-- )
 			{
 				*dst = *wsrc;
 			}
-			*dst = 0;
+			if ( buffer_size >= 1 ) *dst = 0; // The buffer_size has already been decreased by the amount of data written, so 1 character left is sufficient. No else case is needed because for this case (end of buffer) zero termination is ensured at the end of this function.
 		}
 		else
 		{
 			*dst = *src;
 			dst++, src++;
-			*dst = 0;
+			if ( buffer_size >= 2 ) *dst = 0; // This is the 2nd byte written. No else case is needed because for this case (end of buffer) zero termination is ensured at the end of this function.
 		}
 	}
 
