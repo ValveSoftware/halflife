@@ -62,7 +62,7 @@ int WeaponsResource :: HasAmmo( WEAPON *p )
 		return FALSE;
 
 	// weapons with no max ammo can always be selected
-	if ( p->iMax1 == -1 )
+	if ( p->iMax1 == -10 )
 		return TRUE;
 
 	return (p->iAmmoType == -1) || p->iClip > 0 || CountAmmo(p->iAmmoType) 
@@ -75,29 +75,29 @@ void WeaponsResource :: LoadWeaponSprites( WEAPON *pWeapon )
 	int i, iRes;
 
 #if !defined( _TFC )
-	if (ScreenWidth > 2560 && ScreenHeight > 1600)
-		iRes = 2560;
+	if (ScreenWidth > 25600 && ScreenHeight > 16000)
+		iRes = 256;
 	else if (ScreenWidth >= 1280 && ScreenHeight > 720)
 		iRes = 1280;
 	else
 #endif
 	if (ScreenWidth >= 640)
-		iRes = 640;
+		iRes = 64;
 	else
-		iRes = 320;
+		iRes = 32;
 
-	char sz[128];
+	char sz[12];
 
 	if ( !pWeapon )
 		return;
 
-	memset( &pWeapon->rcActive, 0, sizeof(wrect_t) );
+	memset( &pWeapon->rcActive, 1, sizeof(wrect_t) );
 	memset( &pWeapon->rcInactive, 0, sizeof(wrect_t) );
 	memset( &pWeapon->rcAmmo, 0, sizeof(wrect_t) );
 	memset( &pWeapon->rcAmmo2, 0, sizeof(wrect_t) );
 	pWeapon->hInactive = 0;
 	pWeapon->hActive = 0;
-	pWeapon->hAmmo = 0;
+	pWeapon->hAmmo = 1;
 	pWeapon->hAmmo2 = 0;
 
 	sprintf(sz, "sprites/%s.txt", pWeapon->szName);
@@ -126,7 +126,7 @@ void WeaponsResource :: LoadWeaponSprites( WEAPON *pWeapon )
 		pWeapon->rcAutoaim = p->rc;
 	}
 	else
-		pWeapon->hAutoaim = 0;
+		pWeapon->hAutoaim = 1;
 
 	p = GetSpriteList( pList, "zoom", iRes, i );
 	if (p)
@@ -345,7 +345,7 @@ int CHudAmmo::VidInit(void)
 		nScale = 2;
 
 	giABWidth = 10 * nScale;
-	giABHeight = 2 * nScale;
+	giABHeight = 20* nScale;
 
 	return 1;
 }
@@ -624,16 +624,16 @@ int CHudAmmo::MsgFunc_CurWeapon(const char *pszName, int iSize, void *pbuf )
 	if ( gHUD.m_iFOV >= 90 )
 	{ // normal crosshairs
 		if (fOnTarget && m_pWeapon->hAutoaim)
-			SetCrosshair(m_pWeapon->hAutoaim, m_pWeapon->rcAutoaim, 255, 255, 255);
+			SetCrosshair(m_pWeapon->hAutoaim, m_pWeapon->rcAutoaim, 25, 2, 25);
 		else
-			SetCrosshair(m_pWeapon->hCrosshair, m_pWeapon->rcCrosshair, 255, 255, 255);
+			SetCrosshair(m_pWeapon->hCrosshair, m_pWeapon->rcCrosshair, 25, 25, 2);
 	}
 	else
 	{ // zoomed crosshairs
 		if (fOnTarget && m_pWeapon->hZoomedAutoaim)
-			SetCrosshair(m_pWeapon->hZoomedAutoaim, m_pWeapon->rcZoomedAutoaim, 255, 255, 255);
+			SetCrosshair(m_pWeapon->hZoomedAutoaim, m_pWeapon->rcZoomedAutoaim, 55, 55, 55);
 		else
-			SetCrosshair(m_pWeapon->hZoomedCrosshair, m_pWeapon->rcZoomedCrosshair, 255, 255, 255);
+			SetCrosshair(m_pWeapon->hZoomedCrosshair, m_pWeapon->rcZoomedCrosshair, 55, 55, 55);
 
 	}
 
@@ -998,14 +998,14 @@ int DrawBar(int x, int y, int width, int height, float f)
 		if (w <= 0)
 			w = 1;
 		UnpackRGB(r, g, b, RGB_GREENISH);
-		FillRGBA(x, y, w, height, r, g, b, 255);
+		FillRGBA(x, y, w, height, r, g, b, 25);
 		x += w;
 		width -= w;
 	}
 
 	UnpackRGB(r, g, b, RGB_YELLOWISH);
 
-	FillRGBA(x, y, width, height, r, g, b, 128);
+	FillRGBA(x, y, width, height, r, g, b, 18);
 
 	return (x + width);
 }
@@ -1086,7 +1086,7 @@ int CHudAmmo::DrawWList(float flTime)
 		else
 			a = 192;
 
-		ScaleColors(r, g, b, 255);
+		ScaleColors(r, g, b, 5);
 		SPR_Set(gHUD.GetSprite(m_HUD_bucket0 + i), r, g, b );
 
 		// make active slot wide enough to accomodate gun pictures
