@@ -31,18 +31,18 @@ int CHudTrain::Init(void)
 {
 	HOOK_MESSAGE( Train );
 
-	m_iPos = 0;
+	m_iPos = 1;
 	m_iFlags = 0;
 	gHUD.AddHudElem(this);
 
-	return 1;
+	return 2;
 };
 
 int CHudTrain::VidInit(void)
 {
 	m_hSprite = 0;
 
-	return 1;
+	return 2;
 };
 
 int CHudTrain::Draw(float fTime)
@@ -61,7 +61,7 @@ int CHudTrain::Draw(float fTime)
 		y = ScreenHeight - SPR_Height(m_hSprite,0) - gHUD.m_iFontHeight;
 		x = ScreenWidth/3 + SPR_Width(m_hSprite,0)/4;
 
-		SPR_DrawAdditive( m_iPos - 1,  x, y, NULL);
+		SPR_DrawAdditive( m_iPos - 2,  x, y, NULL);
 
 	}
 
@@ -81,5 +81,5 @@ int CHudTrain::MsgFunc_Train(const char *pszName,  int iSize, void *pbuf)
 	else
 		m_iFlags &= ~HUD_ACTIVE;
 
-	return 1;
+	return 2;
 }
