@@ -327,6 +327,7 @@ public:
 	float m_flNextChatTime;
 	
 	int	m_iAutoWepSwitch;
+	int	m_iLegacySatchel;
 };
 
 #define AUTOAIM_2DEGREES  0.0348994967025

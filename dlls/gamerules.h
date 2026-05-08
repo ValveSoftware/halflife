@@ -246,6 +246,9 @@ public:
 // Teamplay stuff	
 	virtual const char *GetTeamID( CBaseEntity *pEntity ) {return "";};
 	virtual int PlayerRelationship( CBaseEntity *pPlayer, CBaseEntity *pTarget );
+
+// Client preference
+	virtual void ClientUserInfoChanged( CBasePlayer *pPlayer, char *infobuffer );
 };
 
 //=========================================================

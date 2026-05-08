@@ -140,10 +140,21 @@ void CHandGrenade::WeaponIdle( void )
 		else
 			angThrow.x = -10 + angThrow.x * ( ( 90 + 10 ) / 90.0 );
 
-		static float flMultiplier = 6.5f;
+		float flMultiplier = 6.5f;
+		float flMaxVel = 1000.0f;
+
+#ifndef CLIENT_DLL
+		extern cvar_t legacy_hgrenade;
+		if ( legacy_hgrenade.value > 0 )
+		{
+			flMultiplier = 4.0f;
+			flMaxVel = 500.0f;
+		}
+#endif
+
 		float flVel = ( 90 - angThrow.x ) * flMultiplier;
-		if ( flVel > 1000 )
-			flVel = 1000;
+		if ( flVel > flMaxVel )
+			flVel = flMaxVel;
 
 		UTIL_MakeVectors( angThrow );
 

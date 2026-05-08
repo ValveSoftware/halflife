@@ -455,6 +455,8 @@ cvar_t sv_pushable_fixed_tick_fudge = { "sv_pushable_fixed_tick_fudge", "15" };
 
 cvar_t sv_busters = { "sv_busters", "0" };
 
+cvar_t legacy_hgrenade = { "sv_legacy_hgrenade", "0", FCVAR_SERVER };
+
 // Register your console variables here
 // This gets called one time when the game is initialied
 void GameDLLInit( void )
@@ -894,6 +896,8 @@ void GameDLLInit( void )
 // END REGISTER CVARS FOR SKILL LEVEL STUFF
 
 	CVAR_REGISTER ( &sv_pushable_fixed_tick_fudge );
+
+	CVAR_REGISTER ( &legacy_hgrenade );
 
 	SERVER_COMMAND( "exec skill.cfg\n" );
 }

@@ -4348,6 +4348,17 @@ void CBasePlayer :: SetPrefsFromUserinfo( char * infobuffer )
 	{
 		m_iAutoWepSwitch = atoi( pszKeyVal );
 	}
+
+	// Set satchel charge control preference
+	pszKeyVal = g_engfuncs.pfnInfoKeyValue( infobuffer, "cl_legacy_satchel" );
+	if ( FStrEq( pszKeyVal, "" ) )
+	{
+		m_iLegacySatchel = 0;
+	}
+	else
+	{
+		m_iLegacySatchel = atoi( pszKeyVal );
+	}
 }
 
 

@@ -951,6 +951,7 @@ public:
 	void Holster( int skiplocal = 0 );
 	void WeaponIdle( void );
 	void Throw( void );
+	void Detonate( void );
 	
 	virtual BOOL UseDecrement( void )
 	{ 

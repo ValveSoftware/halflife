@@ -23,6 +23,10 @@
 #include "player.h"
 #include "gamerules.h"
 
+#ifdef CLIENT_DLL
+extern cvar_t *legacy_satchel;
+#endif
+
 enum satchel_e {
 	SATCHEL_IDLE1 = 0,
 	SATCHEL_FIDGET1,
@@ -350,15 +354,47 @@ void CSatchel::Holster( int skiplocal /* = 0 */ )
 
 void CSatchel::PrimaryAttack()
 {
-	// we're reloading, don't allow fire
-	if( m_chargeReady != 2 )
-	{
-		Throw();
-	}
+#ifdef CLIENT_DLL
+	if ( legacy_satchel->value > 0 )
+#else
+	if ( m_pPlayer->m_iLegacySatchel > 0 )
+#endif
+		switch (m_chargeReady)
+		{
+		case 0:
+			Throw();
+			break;
+		case 1:
+			Detonate();
+			break;
+		}
+	else
+		// we're reloading, don't allow fire
+		if( m_chargeReady != 2 )
+		{
+			Throw();
+		}
 }
 
-
 void CSatchel::SecondaryAttack( void )
+{
+#ifdef CLIENT_DLL
+	if ( legacy_satchel->value > 0 )
+#else
+	if ( m_pPlayer->m_iLegacySatchel > 0 )
+#endif
+	{
+		// we're reloading, don't allow fire
+		if( m_chargeReady != 2 )
+		{
+			Throw();
+		}
+	}
+	else
+		Detonate();
+}
+
+void CSatchel::Detonate( void )
 {
 	if ( m_chargeReady == 1 )
 	{

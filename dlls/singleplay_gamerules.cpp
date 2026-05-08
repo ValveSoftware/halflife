@@ -406,3 +406,11 @@ BOOL CHalfLifeRules :: FAllowMonsters( void )
 {
 	return TRUE;
 }
+
+//=========================================================
+//=========================================================
+void CHalfLifeRules::ClientUserInfoChanged( CBasePlayer *pPlayer, char *infobuffer )
+{
+	// Set preferences
+	pPlayer->SetPrefsFromUserinfo( infobuffer );
+}

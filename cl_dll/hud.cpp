@@ -84,6 +84,7 @@ extern client_sprite_t *GetSpriteList(client_sprite_t *pList, const char *psz, i
 extern float IN_GetMouseSensitivity();
 
 cvar_t *cl_lw = NULL;
+cvar_t *legacy_satchel = NULL;
 
 void ShutdownInput (void);
 
@@ -329,6 +330,7 @@ void CHud :: Init( void )
 
 	CVAR_CREATE( "zoom_sensitivity_ratio", "1.2", FCVAR_ARCHIVE );
 	CVAR_CREATE( "cl_autowepswitch", "1", FCVAR_USERINFO|FCVAR_ARCHIVE );
+	legacy_satchel = CVAR_CREATE( "cl_legacy_satchel", "0", FCVAR_USERINFO | FCVAR_ARCHIVE );
 	default_fov = CVAR_CREATE( "default_fov", "90", FCVAR_ARCHIVE );
 	m_pCvarStealMouse = CVAR_CREATE( "hud_capturemouse", "1", FCVAR_ARCHIVE );
 	m_pCvarDraw = CVAR_CREATE( "hud_draw", "1", FCVAR_ARCHIVE );
