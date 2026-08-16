@@ -868,7 +868,7 @@ int CHudAmmo::Draw(float flTime)
 	y = ScreenHeight - gHUD.m_iFontHeight - gHUD.m_iFontHeight/2;
 
 	/******************* DRAW CROSSHAIR *********************/
-	if ( pCrosshair.value )
+	if ( pCrosshair->value )
 	{
 		iCrossLength = gHUD.m_scrinfo.charWidths[ *chCrossHair ];
 		iCrossY = ScreenHeight / 2 - gHUD.m_scrinfo.iCharHeight / 2;
