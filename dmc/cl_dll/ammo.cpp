@@ -824,6 +824,7 @@ int CHudAmmo::Draw(float flTime)
 	int iCrossY;
 	int	iCrossLength;
 	char *chCrossHair = "+"; // Heh
+	cvar_t *pCrosshair = gEngfuncs.pfnGetCvarPointer("crosshair");
 
 	/*if (!(gHUD.m_iWeaponBits & (1<<(WEAPON_SUIT)) ))
 		return 1;*/
@@ -867,11 +868,14 @@ int CHudAmmo::Draw(float flTime)
 	y = ScreenHeight - gHUD.m_iFontHeight - gHUD.m_iFontHeight/2;
 
 	/******************* DRAW CROSSHAIR *********************/
-	iCrossLength = gHUD.m_scrinfo.charWidths[ *chCrossHair ];
-	iCrossY = ScreenHeight / 2 - gHUD.m_scrinfo.iCharHeight / 2;
-	iCrossX = ScreenWidth / 2 - iCrossLength / 2;
+	if ( pCrosshair->value )
+	{
+		iCrossLength = gHUD.m_scrinfo.charWidths[ *chCrossHair ];
+		iCrossY = ScreenHeight / 2 - gHUD.m_scrinfo.iCharHeight / 2;
+		iCrossX = ScreenWidth / 2 - iCrossLength / 2;
 	
-	gHUD.DrawHudString( iCrossX, iCrossY, iCrossX + 50, chCrossHair, 170, 170, 170 );
+		gHUD.DrawHudString( iCrossX, iCrossY, iCrossX + 50, chCrossHair, 170, 170, 170 );
+	}
 	/******************* DRAW CROSSHAIR *********************/
 
 	// Does weapon have any ammo at all?
