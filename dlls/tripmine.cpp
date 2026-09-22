@@ -271,6 +271,7 @@ void CTripmineGrenade :: BeamBreakThink( void  )
 	// HACKHACK Set simple box using this really nice global!
 	gpGlobals->trace_flags = FTRACE_SIMPLEBOX;
 	UTIL_TraceLine( pev->origin, m_vecEnd, dont_ignore_monsters, ENT( pev ), &tr );
+	gpGlobals->trace_flags = 0;
 
 	// ALERT( at_console, "%f : %f\n", tr.flFraction, m_flBeamLength );
 
